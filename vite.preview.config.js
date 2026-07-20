@@ -1,0 +1,25 @@
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'path'
+
+// Standalone preview build: aliases real Supabase-backed services to
+// in-memory mocks, uses preview.html as the entry, and outputs to
+// dist-preview/ with relative asset paths so it can be opened directly
+// from the filesystem (no server required) or hosted as a static site.
+export default defineConfig({
+  plugins: [react()],
+  base: './',
+  resolve: {
+    alias: {
+      '../services/lessonsService': path.resolve(__dirname, 'src/preview/mockLessonsService.js'),
+      '../services/generationService': path.resolve(__dirname, 'src/preview/mockGenerationService.js'),
+      '../lib/supabaseClient': path.resolve(__dirname, 'src/preview/mockSupabaseClient.js'),
+    },
+  },
+  build: {
+    outDir: 'dist-preview',
+    rollupOptions: {
+      input: path.resolve(__dirname, 'preview.html'),
+    },
+  },
+})

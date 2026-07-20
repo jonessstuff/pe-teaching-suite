@@ -1,0 +1,831 @@
+import { useRef, useState } from 'react'
+import {
+  FileText, ClipboardList, CloudRain, Mail, ClipboardCheck,
+  LayoutTemplate, Loader2, Printer, Download, X, Star, BookOpen,
+  CheckSquare, Shuffle, Flame, BookMarked, Send, Globe, Users, FileWarning, ChevronDown,
+  Copy, Check,
+} from 'lucide-react'
+import {
+  generateSubPlan, generateQuiz, generateWeatherAlt,
+  generateParentNote, generateObservationSummary, generatePoster,
+  generateRubric, generateFamilyNewsletter, generateDifferentiatedLesson,
+  generateProgressNote, generateExitTicket, generateCrossCurricular,
+  generateWarmup, generateBehaviorNote, generateConferencePrep,
+} from '../../services/generationService'
+import { updateLesson } from '../../services/lessonsService'
+import { createAssessment } from '../../services/assessmentService'
+import SubPlanRenderer from '../renderers/SubPlanRenderer'
+import QuizRenderer from '../renderers/QuizRenderer'
+import WeatherAltRenderer from '../renderers/WeatherAltRenderer'
+import ParentNoteRenderer from '../renderers/ParentNoteRenderer'
+import ObservationSummaryRenderer from '../renderers/ObservationSummaryRenderer'
+import PosterRenderer from '../renderers/PosterRenderer'
+import RubricRenderer from '../renderers/RubricRenderer'
+import FamilyNewsletterRenderer from '../renderers/FamilyNewsletterRenderer'
+import DifferentiatedLessonRenderer from '../renderers/DifferentiatedLessonRenderer'
+import { useTrial } from '../../context/TrialContext'
+import { WATERMARK_TEXT } from '../../services/trialService'
+
+const PE_SUBJECTS = new Set(['PE', 'Health', "Family Life", "Driver's Ed", "Strength & Conditioning"])
+const DIFF_TYPES = ['advanced', 'below_grade', 'sensory', 'ell', 'physical']
+const DIFF_LABELS = { advanced: 'Advanced', below_grade: 'Below Grade', sensory: 'Sensory', ell: 'ELL', physical: 'Physical' }
+
+export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) {
+  const { requestExport, isPaid } = useTrial()
+  const [lo, setLo] = useState(lessonObject)
+  const [toolView, setToolView] = useState(null)
+  const [error, setError] = useState(null)
+  const [showPoster, setShowPoster] = useState(false)
+  const posterSvgRef = useRef(null)
+
+  const [generatingSubPlan, setGeneratingSubPlan] = useState(false)
+  const [generatingQuiz, setGeneratingQuiz] = useState(false)
+  const [generatingWeatherAlt, setGeneratingWeatherAlt] = useState(false)
+  const [generatingParentNote, setGeneratingParentNote] = useState(false)
+  const [generatingObsSummary, setGeneratingObsSummary] = useState(false)
+  const [generatingPoster, setGeneratingPoster] = useState(false)
+  const [generatingRubric, setGeneratingRubric] = useState(false)
+  const [generatingNewsletter, setGeneratingNewsletter] = useState(false)
+  const [generatingDiff, setGeneratingDiff] = useState(false)
+  const [generatingExitTicket, setGeneratingExitTicket] = useState(false)
+  const [generatingCross, setGeneratingCross] = useState(false)
+
+  // Session-scoped results (not persisted to lesson row)
+  const [rubric, setRubric] = useState(null)
+  const [newsletter, setNewsletter] = useState(null)
+  const [diffLesson, setDiffLesson] = useState(null)
+  const [exitTickets, setExitTickets] = useState(null)
+  const [crossConnections, setCrossConnections] = useState(null)
+  const [quizSavedToBank, setQuizSavedToBank] = useState(false)
+  const [rubricSavedToBank, setRubricSavedToBank] = useState(false)
+
+  // Progress note form state
+  const [showProgressForm, setShowProgressForm] = useState(false)
+  const [progressForm, setProgressForm] = useState({ studentName: '', iepGoal: '', goalCategory: 'participation', observationNotes: '', performanceLevel: 'emerging' })
+  const [progressNote, setProgressNote] = useState(null)
+  const [generatingProgress, setGeneratingProgress] = useState(false)
+
+  // Behavior note form
+  const [showBehaviorForm, setShowBehaviorForm] = useState(false)
+  const [behaviorForm, setBehaviorForm] = useState({ studentName: '', incidentDescription: '', gradeLevel: '' })
+  const [behaviorNote, setBehaviorNote] = useState(null)
+  const [generatingBehavior, setGeneratingBehavior] = useState(false)
+
+  // Conference prep form
+  const [showConferenceForm, setShowConferenceForm] = useState(false)
+  const [conferenceForm, setConferenceForm] = useState({ studentName: '', gradeBand: '', strengths: '', areasOfConcern: '', goals: '' })
+  const [conferencePrep, setConferencePrep] = useState(null)
+  const [generatingConference, setGeneratingConference] = useState(false)
+
+  // Warmup form
+  const [showWarmupForm, setShowWarmupForm] = useState(false)
+  const [warmupOptions, setWarmupOptions] = useState(null)
+  const [generatingWarmup, setGeneratingWarmup] = useState(false)
+
+  const [expanded, setExpanded] = useState(false)
+
+  const hasSubPlan = Boolean(lo?.sub_script)
+  const hasQuiz = Boolean(lo?.quiz_questions && Object.keys(lo.quiz_questions).length > 0)
+  const hasWeatherAlt = Boolean(lo?.weather_alt_warm_up || lo?.weather_alt_notes)
+  const hasParentNote = Boolean(lo?.parent_note_intro || lo?.parent_note_skills?.length)
+  const hasObsSummary = Boolean(lo?.obs_overview)
+  const hasPoster = Boolean(lo?.poster_content?.steps?.length)
+  const isPE = PE_SUBJECTS.has(subject)
+
+  async function run(setter, fn) {
+    setter(true)
+    setError(null)
+    try {
+      await fn()
+    } catch (err) {
+      setError(err.message ?? 'Generation failed. Please try again.')
+    } finally {
+      setter(false)
+    }
+  }
+
+  function toggle(view) {
+    setToolView((prev) => (prev === view ? null : view))
+  }
+
+  async function handleGenerateSubPlan() {
+    await run(setGeneratingSubPlan, async () => {
+      const fields = await generateSubPlan(savedId)
+      const updated = await updateLesson(savedId, { lessonObject: fields })
+      setLo(updated.lesson_object)
+      setToolView('subplan')
+    })
+  }
+
+  async function handleGenerateQuiz() {
+    await run(setGeneratingQuiz, async () => {
+      const fields = await generateQuiz(savedId)
+      const updated = await updateLesson(savedId, { lessonObject: fields })
+      setLo(updated.lesson_object)
+      setToolView('quiz')
+    })
+  }
+
+  async function handleGenerateWeatherAlt() {
+    await run(setGeneratingWeatherAlt, async () => {
+      const fields = await generateWeatherAlt(savedId)
+      const updated = await updateLesson(savedId, { lessonObject: fields })
+      setLo(updated.lesson_object)
+      setToolView('weatheralt')
+    })
+  }
+
+  async function handleGenerateParentNote() {
+    await run(setGeneratingParentNote, async () => {
+      const fields = await generateParentNote(savedId)
+      const updated = await updateLesson(savedId, { lessonObject: fields })
+      setLo(updated.lesson_object)
+      setToolView('parentnote')
+    })
+  }
+
+  async function handleGenerateObsSummary() {
+    await run(setGeneratingObsSummary, async () => {
+      const fields = await generateObservationSummary(savedId)
+      const updated = await updateLesson(savedId, { lessonObject: fields })
+      setLo(updated.lesson_object)
+      setToolView('observation')
+    })
+  }
+
+  async function handleGeneratePoster() {
+    await run(setGeneratingPoster, async () => {
+      const fields = await generatePoster(lo)
+      const updated = await updateLesson(savedId, { lessonObject: fields })
+      setLo(updated.lesson_object)
+      setShowPoster(true)
+    })
+  }
+
+  async function handleGenerateRubric() {
+    await run(setGeneratingRubric, async () => {
+      const result = await generateRubric(savedId)
+      setRubric(result.rubric)
+      setToolView('rubric')
+    })
+  }
+
+  async function handleSaveRubricToBank() {
+    if (!rubric) return
+    try {
+      await createAssessment({ title: rubric.title || `${lo?.title} Rubric`, subject: lo?.subject, gradeBands: lo?.grade_bands ?? [], assessmentType: 'rubric', content: rubric, lessonId: savedId })
+      setRubricSavedToBank(true)
+    } catch (err) { setError(err.message) }
+  }
+
+  async function handleSaveQuizToBank() {
+    if (!hasQuiz) return
+    try {
+      await createAssessment({ title: `${lo?.title} Quiz`, subject: lo?.subject, gradeBands: lo?.grade_bands ?? [], assessmentType: 'quiz', content: lo.quiz_questions, lessonId: savedId })
+      setQuizSavedToBank(true)
+    } catch (err) { setError(err.message) }
+  }
+
+  async function handleGenerateNewsletter() {
+    await run(setGeneratingNewsletter, async () => {
+      const result = await generateFamilyNewsletter(savedId)
+      setNewsletter(result.family_newsletter)
+      setToolView('newsletter')
+    })
+  }
+
+  async function handleGenerateDiff(type) {
+    await run(setGeneratingDiff, async () => {
+      const result = await generateDifferentiatedLesson(savedId, type)
+      setDiffLesson(result.differentiation)
+      setToolView('diff')
+    })
+  }
+
+  async function handleGenerateExitTicket() {
+    await run(setGeneratingExitTicket, async () => {
+      const result = await generateExitTicket(savedId)
+      setExitTickets(result.exit_tickets)
+      setToolView('exitticket')
+    })
+  }
+
+  async function handleGenerateCross() {
+    await run(setGeneratingCross, async () => {
+      const result = await generateCrossCurricular(savedId)
+      setCrossConnections(result.connections)
+      setToolView('cross')
+    })
+  }
+
+  async function handleGenerateProgress(e) {
+    e.preventDefault()
+    await run(setGeneratingProgress, async () => {
+      const result = await generateProgressNote(savedId, progressForm)
+      setProgressNote(result.progress_note)
+      setToolView('progress')
+      setShowProgressForm(false)
+    })
+  }
+
+  async function handleGenerateBehavior(e) {
+    e.preventDefault()
+    await run(setGeneratingBehavior, async () => {
+      const result = await generateBehaviorNote({ ...behaviorForm, subject })
+      setBehaviorNote(result.behavior_note)
+      setToolView('behavior')
+      setShowBehaviorForm(false)
+    })
+  }
+
+  async function handleGenerateConference(e) {
+    e.preventDefault()
+    await run(setGeneratingConference, async () => {
+      const result = await generateConferencePrep({ ...conferenceForm, subject })
+      setConferencePrep(result.conference_prep)
+      setToolView('conference')
+      setShowConferenceForm(false)
+    })
+  }
+
+  async function handleGenerateWarmup() {
+    await run(setGeneratingWarmup, async () => {
+      const result = await generateWarmup({ subject, gradeBand: lo?.grade_bands?.[0] ?? 5, duration: 10, equipment: lo?.equipment_needed ?? [] })
+      setWarmupOptions(result.warmup_options)
+      setToolView('warmup')
+    })
+  }
+
+  async function handlePrintPoster() {
+    const svgEl = posterSvgRef.current
+    if (!svgEl) return
+    if (!(await requestExport())) return
+    // Trial exports carry a print-only watermark footer (paid users don't).
+    const watermark = isPaid
+      ? ''
+      : `<div style="position:fixed;bottom:0;left:0;right:0;padding:4px 0;border-top:1px solid #ccc;text-align:center;font-size:9px;color:#6b7280">${WATERMARK_TEXT}</div>`
+    const html = `<!DOCTYPE html><html><head><title>Lesson Poster</title><style>body{margin:0;padding:0}svg{display:block;width:100%;height:auto}</style></head><body>${svgEl.outerHTML}${watermark}</body></html>`
+    const win = window.open('', '_blank', 'width=900,height=1100')
+    if (!win) return
+    win.document.write(html)
+    win.document.close()
+    win.focus()
+    win.print()
+  }
+
+  async function handleDownloadPoster() {
+    const svgEl = posterSvgRef.current
+    if (!svgEl) return
+    if (!(await requestExport())) return
+    const SCALE = 2
+    const SVG_W = 816
+    const SVG_H = 1056
+    const svgStr = new XMLSerializer().serializeToString(svgEl)
+    const blobUrl = URL.createObjectURL(new Blob([svgStr], { type: 'image/svg+xml' }))
+    const img = new Image()
+    img.src = blobUrl
+    await new Promise((res, rej) => { img.onload = res; img.onerror = rej })
+    const canvas = document.createElement('canvas')
+    canvas.width = SVG_W * SCALE
+    canvas.height = SVG_H * SCALE
+    const ctx = canvas.getContext('2d')
+    ctx.scale(SCALE, SCALE)
+    ctx.drawImage(img, 0, 0)
+    URL.revokeObjectURL(blobUrl)
+    const { jsPDF } = await import('jspdf')
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'letter' })
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 612, 792)
+    // Trial exports carry a watermark footer (paid users don't).
+    if (!isPaid) {
+      pdf.setFontSize(8)
+      pdf.setTextColor(107, 114, 128)
+      pdf.text(WATERMARK_TEXT, 306, 782, { align: 'center' })
+    }
+    pdf.save(`${(lo?.title ?? 'lesson').replace(/\s+/g, '-').toLowerCase()}-poster.pdf`)
+  }
+
+  return (
+    <div className="mt-10 print:hidden space-y-6">
+      {/* Tool button strip */}
+      <div className="border-t border-ink-900 pt-6 space-y-4">
+        <p className="label-eyebrow text-ink-400">Generate from this lesson</p>
+
+        {/* Primary tools — always visible */}
+        <div className="flex flex-wrap gap-2">
+          {/* Sub plan */}
+          {!hasSubPlan ? (
+            <button onClick={handleGenerateSubPlan} disabled={generatingSubPlan} className="btn-primary">
+              {generatingSubPlan ? <Loader2 size={16} className="animate-spin" /> : <FileText size={16} />}
+              Generate sub plan
+            </button>
+          ) : (
+            <button onClick={() => toggle('subplan')} className={toolView === 'subplan' ? 'btn-primary' : 'btn-secondary'}>
+              <FileText size={16} />
+              Sub plan
+            </button>
+          )}
+
+          {/* Quiz */}
+          {!hasQuiz ? (
+            <button onClick={handleGenerateQuiz} disabled={generatingQuiz} className="btn-primary">
+              {generatingQuiz ? <Loader2 size={16} className="animate-spin" /> : <ClipboardList size={16} />}
+              Generate quiz
+            </button>
+          ) : (
+            <button onClick={() => toggle('quiz')} className={toolView === 'quiz' ? 'btn-primary' : 'btn-secondary'}>
+              <ClipboardList size={16} />
+              Quiz
+            </button>
+          )}
+
+          {/* Observation prep */}
+          {!hasObsSummary ? (
+            <button onClick={handleGenerateObsSummary} disabled={generatingObsSummary} className="btn-secondary">
+              {generatingObsSummary ? <Loader2 size={16} className="animate-spin" /> : <ClipboardCheck size={16} />}
+              Observation prep
+            </button>
+          ) : (
+            <button onClick={() => toggle('observation')} className={toolView === 'observation' ? 'btn-primary' : 'btn-secondary'}>
+              <ClipboardCheck size={16} />
+              Obs. prep
+            </button>
+          )}
+
+          {/* Parent note */}
+          {!hasParentNote ? (
+            <button onClick={handleGenerateParentNote} disabled={generatingParentNote} className="btn-secondary">
+              {generatingParentNote ? <Loader2 size={16} className="animate-spin" /> : <Mail size={16} />}
+              Parent note
+            </button>
+          ) : (
+            <button onClick={() => toggle('parentnote')} className={toolView === 'parentnote' ? 'btn-primary' : 'btn-secondary'}>
+              <Mail size={16} />
+              Parent note
+            </button>
+          )}
+
+          {/* Print */}
+          <button onClick={async () => { if (await requestExport()) window.print() }} className="btn-secondary">
+            <Printer size={16} />
+            Print lesson
+          </button>
+        </div>
+
+        {/* Separator + expand toggle */}
+        <div className="border-t border-ink-900/50 pt-3">
+          <button onClick={() => setExpanded(e => !e)} className="btn-secondary flex items-center gap-1.5 text-xs">
+            <ChevronDown size={13} className={`transition-transform duration-150${expanded ? ' rotate-180' : ''}`} />
+            More tools
+          </button>
+        </div>
+
+        {/* Secondary tools — expanded on demand */}
+        {expanded && (
+          <div className="flex flex-wrap gap-2">
+            {/* Weather alt — PE subjects only */}
+            {isPE && (
+              !hasWeatherAlt ? (
+                <button onClick={handleGenerateWeatherAlt} disabled={generatingWeatherAlt} className="btn-secondary">
+                  {generatingWeatherAlt ? <Loader2 size={16} className="animate-spin" /> : <CloudRain size={16} />}
+                  Weather alternative
+                </button>
+              ) : (
+                <button onClick={() => toggle('weatheralt')} className={toolView === 'weatheralt' ? 'btn-primary' : 'btn-secondary'}>
+                  <CloudRain size={16} />
+                  Indoor alt
+                </button>
+              )
+            )}
+
+            {/* Poster */}
+            {!hasPoster ? (
+              <button onClick={handleGeneratePoster} disabled={generatingPoster} className="btn-secondary">
+                {generatingPoster ? <Loader2 size={16} className="animate-spin" /> : <LayoutTemplate size={16} />}
+                Generate poster
+              </button>
+            ) : (
+              <button onClick={() => setShowPoster(true)} className="btn-secondary">
+                <LayoutTemplate size={16} />
+                View poster
+              </button>
+            )}
+
+            {/* Rubric */}
+            <button onClick={rubric ? () => toggle('rubric') : handleGenerateRubric} disabled={generatingRubric} className={rubric && toolView === 'rubric' ? 'btn-primary' : 'btn-secondary'}>
+              {generatingRubric ? <Loader2 size={16} className="animate-spin" /> : <Star size={16} />}
+              {rubric ? 'Rubric' : 'Generate rubric'}
+            </button>
+
+            {/* Exit ticket */}
+            <button onClick={exitTickets ? () => toggle('exitticket') : handleGenerateExitTicket} disabled={generatingExitTicket} className={exitTickets && toolView === 'exitticket' ? 'btn-primary' : 'btn-secondary'}>
+              {generatingExitTicket ? <Loader2 size={16} className="animate-spin" /> : <CheckSquare size={16} />}
+              Exit ticket
+            </button>
+
+            {/* Family newsletter */}
+            <button onClick={newsletter ? () => toggle('newsletter') : handleGenerateNewsletter} disabled={generatingNewsletter} className={newsletter && toolView === 'newsletter' ? 'btn-primary' : 'btn-secondary'}>
+              {generatingNewsletter ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+              Family newsletter
+            </button>
+
+            {/* Differentiation */}
+            {!diffLesson ? (
+              <div className="relative group/diff">
+                <button disabled={generatingDiff} className="btn-secondary">
+                  {generatingDiff ? <Loader2 size={16} className="animate-spin" /> : <Shuffle size={16} />}
+                  Differentiate
+                </button>
+                <div className="absolute top-full left-0 z-10 mt-1 hidden group-hover/diff:block min-w-[140px] rounded-lg border border-ink-800 bg-ink-100 shadow-lg">
+                  {DIFF_TYPES.map(type => (
+                    <button key={type} onClick={() => handleGenerateDiff(type)} className="block w-full px-3 py-2 text-left text-sm text-ink-700 hover:bg-ink-200 first:rounded-t-lg last:rounded-b-lg">
+                      {DIFF_LABELS[type]}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <button onClick={() => toggle('diff')} className={toolView === 'diff' ? 'btn-primary' : 'btn-secondary'}>
+                <Shuffle size={16} /> Differentiation
+              </button>
+            )}
+
+            {/* Cross-curricular */}
+            <button onClick={crossConnections ? () => toggle('cross') : handleGenerateCross} disabled={generatingCross} className={crossConnections && toolView === 'cross' ? 'btn-primary' : 'btn-secondary'}>
+              {generatingCross ? <Loader2 size={16} className="animate-spin" /> : <Globe size={16} />}
+              Cross-curricular
+            </button>
+
+            {/* Warm-up */}
+            <button onClick={warmupOptions ? () => toggle('warmup') : handleGenerateWarmup} disabled={generatingWarmup} className={warmupOptions && toolView === 'warmup' ? 'btn-primary' : 'btn-secondary'}>
+              {generatingWarmup ? <Loader2 size={16} className="animate-spin" /> : <Flame size={16} />}
+              Warm-up options
+            </button>
+
+            {/* Progress note */}
+            <button onClick={() => setShowProgressForm(f => !f)} className={showProgressForm || toolView === 'progress' ? 'btn-primary' : 'btn-secondary'}>
+              <BookOpen size={16} />
+              Progress note
+            </button>
+
+            {/* Behavior note */}
+            <button onClick={() => setShowBehaviorForm(f => !f)} className={showBehaviorForm || toolView === 'behavior' ? 'btn-primary' : 'btn-secondary'}>
+              <FileWarning size={16} />
+              Behavior note
+            </button>
+
+            {/* Conference prep */}
+            <button onClick={() => setShowConferenceForm(f => !f)} className={showConferenceForm || toolView === 'conference' ? 'btn-primary' : 'btn-secondary'}>
+              <Users size={16} />
+              Conference prep
+            </button>
+          </div>
+        )}
+
+        {error && <p className="text-sm text-red-400">{error}</p>}
+      </div>
+
+      {/* Active tool output */}
+      {toolView === 'subplan' && hasSubPlan && (
+        <div className="space-y-3">
+          <SubPlanRenderer lesson={lo} />
+          <ToolActions onClose={() => setToolView(null)} />
+        </div>
+      )}
+      {toolView === 'quiz' && hasQuiz && (
+        <div className="space-y-3">
+          <QuizRenderer quiz_questions={lo.quiz_questions} />
+          {!quizSavedToBank && (
+            <button onClick={handleSaveQuizToBank} className="btn-secondary text-xs">
+              <BookMarked size={14} /> Save quiz to Assessment Bank
+            </button>
+          )}
+          {quizSavedToBank && <p className="text-xs text-green-400">Saved to Assessment Bank ✓</p>}
+          <ToolActions onClose={() => setToolView(null)} />
+        </div>
+      )}
+      {toolView === 'weatheralt' && hasWeatherAlt && (
+        <div className="space-y-3">
+          <WeatherAltRenderer lesson={lo} />
+          <ToolActions onClose={() => setToolView(null)} />
+        </div>
+      )}
+      {toolView === 'parentnote' && hasParentNote && (
+        <div className="space-y-3">
+          <ParentNoteRenderer lesson={lo} />
+          <ToolActions onClose={() => setToolView(null)} />
+        </div>
+      )}
+      {toolView === 'observation' && hasObsSummary && (
+        <div className="space-y-3">
+          <ObservationSummaryRenderer lesson={lo} />
+          <ToolActions onClose={() => setToolView(null)} />
+        </div>
+      )}
+      {toolView === 'rubric' && rubric && (
+        <div className="space-y-3">
+          <RubricRenderer rubric={rubric} />
+          {!rubricSavedToBank && (
+            <button onClick={handleSaveRubricToBank} className="btn-secondary text-xs">
+              <BookMarked size={14} /> Save rubric to Assessment Bank
+            </button>
+          )}
+          {rubricSavedToBank && <p className="text-xs text-green-400">Saved to Assessment Bank ✓</p>}
+          <ToolActions onClose={() => setToolView(null)} />
+        </div>
+      )}
+      {toolView === 'newsletter' && newsletter && (
+        <div className="space-y-3">
+          <FamilyNewsletterRenderer newsletter={newsletter} />
+          <ToolActions
+            copyText={[
+              newsletter.subject_line,
+              newsletter.week_of ? `Week of ${newsletter.week_of}` : null,
+              newsletter.what_we_learned ? `WHAT WE LEARNED\n${newsletter.what_we_learned}` : null,
+              newsletter.why_it_matters ? `WHY IT MATTERS\n${newsletter.why_it_matters}` : null,
+              newsletter.try_at_home?.length ? `TRY IT AT HOME\n${newsletter.try_at_home.map(t => `· ${t}`).join('\n')}` : null,
+              newsletter.coming_up_next ? `COMING UP NEXT\n${newsletter.coming_up_next}` : null,
+              newsletter.closing ?? null,
+            ].filter(Boolean).join('\n\n')}
+            onClose={() => setToolView(null)}
+          />
+        </div>
+      )}
+      {toolView === 'diff' && diffLesson && (
+        <div className="space-y-3">
+          <DifferentiatedLessonRenderer differentiation={diffLesson} />
+          <ToolActions
+            copyText={Object.entries(diffLesson).map(([, p]) => [
+              `── ${p.label ?? 'Differentiation'} ──`,
+              p.warm_up ? `Warm-up\n${p.warm_up}` : null,
+              p.main_activity ? `Main Activity\n${p.main_activity}` : null,
+              p.materials ? `Materials\n${p.materials}` : null,
+              p.assessment ? `Assessment\n${p.assessment}` : null,
+              p.notes ? `Notes\n${p.notes}` : null,
+            ].filter(Boolean).join('\n\n')).join('\n\n')}
+            onClose={() => setToolView(null)}
+          />
+        </div>
+      )}
+      {toolView === 'exitticket' && exitTickets && (
+        <div className="space-y-4">
+          <p className="label-eyebrow text-ink-400">Exit Tickets — 3 formats</p>
+          {exitTickets.map((et, i) => (
+            <div key={i} className="card p-4 space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="label-eyebrow text-ink-500">{et.format}</span>
+                <span className="font-semibold text-ink-50">{et.title}</span>
+              </div>
+              <p className="text-sm text-ink-700">{et.question}</p>
+              {et.instructions && <p className="text-xs text-ink-500 italic">{et.instructions}</p>}
+            </div>
+          ))}
+          <ToolActions
+            copyText={['EXIT TICKETS', ...exitTickets.map(et =>
+              [
+                `${et.format.toUpperCase()} — ${et.title}`,
+                et.question,
+                et.instructions ? `Instructions: ${et.instructions}` : null,
+              ].filter(Boolean).join('\n')
+            )].join('\n\n')}
+            onClose={() => setToolView(null)}
+          />
+        </div>
+      )}
+      {toolView === 'cross' && crossConnections && (
+        <div className="space-y-3">
+          <p className="label-eyebrow text-ink-400">Cross-Curricular Connections</p>
+          {crossConnections.map((c, i) => (
+            <div key={i} className="card p-4 space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="label-eyebrow text-ink-500">{c.subject}</span>
+                <code className="text-xs bg-ink-900 px-1.5 py-0.5 rounded text-ink-300">{c.standard_code}</code>
+              </div>
+              <p className="text-xs text-ink-600">{c.standard_text}</p>
+              <p className="text-sm text-ink-700">{c.connection_description}</p>
+            </div>
+          ))}
+          <ToolActions
+            copyText={['CROSS-CURRICULAR CONNECTIONS', ...crossConnections.map(c =>
+              `${c.subject} — ${c.standard_code}\n${c.standard_text}\n${c.connection_description}`
+            )].join('\n\n')}
+            onClose={() => setToolView(null)}
+          />
+        </div>
+      )}
+      {toolView === 'warmup' && warmupOptions && (
+        <div className="space-y-3">
+          <p className="label-eyebrow text-ink-400">Warm-Up Options</p>
+          {warmupOptions.map((w, i) => (
+            <div key={i} className="card p-4 space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-ink-50">{w.title}</span>
+                <span className="text-xs text-ink-500">{w.duration_mins} min</span>
+              </div>
+              <p className="text-sm text-ink-700">{w.description}</p>
+              {w.equipment_needed?.length > 0 && (
+                <p className="text-xs text-ink-600">Equipment: {w.equipment_needed.join(', ')}</p>
+              )}
+            </div>
+          ))}
+          <ToolActions
+            copyText={['WARM-UP OPTIONS', ...warmupOptions.map(w =>
+              [
+                `${w.title} (${w.duration_mins} min)`,
+                w.description,
+                w.equipment_needed?.length ? `Equipment: ${w.equipment_needed.join(', ')}` : null,
+              ].filter(Boolean).join('\n')
+            )].join('\n\n')}
+            onClose={() => setToolView(null)}
+          />
+        </div>
+      )}
+      {toolView === 'progress' && progressNote && (
+        <div className="card p-5 space-y-3">
+          <p className="label-eyebrow text-ink-400">IEP Progress Note</p>
+          <p className="text-sm text-ink-700 leading-relaxed whitespace-pre-wrap">{progressNote}</p>
+          <ToolActions copyText={progressNote} onClose={() => setToolView(null)} />
+        </div>
+      )}
+      {toolView === 'behavior' && behaviorNote && (
+        <div className="card p-5 space-y-3">
+          <p className="label-eyebrow text-ink-400">Behavior Management Note</p>
+          <p className="text-sm text-ink-700 leading-relaxed whitespace-pre-wrap">{behaviorNote}</p>
+          <ToolActions copyText={behaviorNote} onClose={() => setToolView(null)} />
+        </div>
+      )}
+      {toolView === 'conference' && conferencePrep && (
+        <div className="card p-5 space-y-4">
+          <p className="label-eyebrow text-ink-400">Conference Prep</p>
+          {conferencePrep.opening_statement && <p className="text-sm text-ink-700"><strong>Opening:</strong> {conferencePrep.opening_statement}</p>}
+          {conferencePrep.strengths?.length > 0 && (
+            <div><p className="text-xs font-semibold text-ink-500 mb-1">Strengths</p>
+              <ul className="space-y-0.5">{conferencePrep.strengths.map((s,i) => <li key={i} className="text-sm text-ink-700 flex gap-2"><span>·</span>{s}</li>)}</ul>
+            </div>
+          )}
+          {conferencePrep.concerns?.length > 0 && (
+            <div><p className="text-xs font-semibold text-ink-500 mb-1">Concerns</p>
+              <ul className="space-y-0.5">{conferencePrep.concerns.map((s,i) => <li key={i} className="text-sm text-ink-700 flex gap-2"><span>·</span>{s}</li>)}</ul>
+            </div>
+          )}
+          {conferencePrep.specific_examples?.length > 0 && (
+            <div><p className="text-xs font-semibold text-ink-500 mb-1">Specific Examples</p>
+              <ul className="space-y-0.5">{conferencePrep.specific_examples.map((s,i) => <li key={i} className="text-sm text-ink-700 flex gap-2"><span>·</span>{s}</li>)}</ul>
+            </div>
+          )}
+          {conferencePrep.next_steps?.length > 0 && (
+            <div><p className="text-xs font-semibold text-ink-500 mb-1">Next Steps</p>
+              <ul className="space-y-0.5">{conferencePrep.next_steps.map((s,i) => <li key={i} className="text-sm text-ink-700 flex gap-2"><span>·</span>{s}</li>)}</ul>
+            </div>
+          )}
+          {conferencePrep.closing_statement && <p className="text-sm text-ink-700"><strong>Closing:</strong> {conferencePrep.closing_statement}</p>}
+          <ToolActions
+            copyText={[
+              conferencePrep.opening_statement ? `Opening:\n${conferencePrep.opening_statement}` : null,
+              conferencePrep.strengths?.length ? `Strengths:\n${conferencePrep.strengths.map(s => `· ${s}`).join('\n')}` : null,
+              conferencePrep.concerns?.length ? `Concerns:\n${conferencePrep.concerns.map(s => `· ${s}`).join('\n')}` : null,
+              conferencePrep.specific_examples?.length ? `Specific Examples:\n${conferencePrep.specific_examples.map(s => `· ${s}`).join('\n')}` : null,
+              conferencePrep.next_steps?.length ? `Next Steps:\n${conferencePrep.next_steps.map(s => `· ${s}`).join('\n')}` : null,
+              conferencePrep.closing_statement ? `Closing:\n${conferencePrep.closing_statement}` : null,
+            ].filter(Boolean).join('\n\n')}
+            onClose={() => { setConferencePrep(null); setToolView(null) }}
+          />
+        </div>
+      )}
+
+      {/* Inline forms */}
+      {showProgressForm && (
+        <form onSubmit={handleGenerateProgress} className="card p-5 space-y-3">
+          <p className="label-eyebrow text-ink-400">IEP Progress Note</p>
+          {[
+            { key: 'studentName', label: 'Student name', placeholder: 'First name or initials' },
+            { key: 'iepGoal', label: 'IEP goal', placeholder: 'Describe the specific IEP goal…' },
+            { key: 'observationNotes', label: 'Observation notes', placeholder: 'What did you observe this week?' },
+          ].map(({ key, label, placeholder }) => (
+            <div key={key}>
+              <label className="block text-xs font-medium text-ink-500 mb-1">{label}</label>
+              <textarea rows={2} value={progressForm[key]} onChange={e => setProgressForm(f => ({ ...f, [key]: e.target.value }))} placeholder={placeholder} className="input-field resize-none" />
+            </div>
+          ))}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-ink-500 mb-1">Goal category</label>
+              <select value={progressForm.goalCategory} onChange={e => setProgressForm(f => ({ ...f, goalCategory: e.target.value }))} className="input-field">
+                {['participation', 'skill_acquisition', 'behavior', 'communication', 'independence'].map(c => <option key={c} value={c}>{c.replace('_', ' ')}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-ink-500 mb-1">Performance level</label>
+              <select value={progressForm.performanceLevel} onChange={e => setProgressForm(f => ({ ...f, performanceLevel: e.target.value }))} className="input-field">
+                {['emerging', 'approaching', 'meeting', 'exceeding'].map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+          </div>
+          <button type="submit" disabled={generatingProgress} className="btn-primary">
+            {generatingProgress ? <Loader2 size={14} className="animate-spin" /> : <BookOpen size={14} />} Generate note
+          </button>
+        </form>
+      )}
+
+      {showBehaviorForm && (
+        <form onSubmit={handleGenerateBehavior} className="card p-5 space-y-3">
+          <p className="label-eyebrow text-ink-400">Behavior Management Note</p>
+          {[
+            { key: 'studentName', label: 'Student name', placeholder: 'First name or initials' },
+            { key: 'gradeLevel', label: 'Grade level', placeholder: 'e.g. 4' },
+            { key: 'incidentDescription', label: 'Incident description', placeholder: 'Describe what happened objectively…' },
+          ].map(({ key, label, placeholder }) => (
+            <div key={key}>
+              <label className="block text-xs font-medium text-ink-500 mb-1">{label}</label>
+              <textarea rows={key === 'incidentDescription' ? 3 : 1} value={behaviorForm[key]} onChange={e => setBehaviorForm(f => ({ ...f, [key]: e.target.value }))} placeholder={placeholder} className="input-field resize-none" />
+            </div>
+          ))}
+          <button type="submit" disabled={generatingBehavior} className="btn-primary">
+            {generatingBehavior ? <Loader2 size={14} className="animate-spin" /> : <FileWarning size={14} />} Generate note
+          </button>
+        </form>
+      )}
+
+      {showConferenceForm && (
+        <form onSubmit={handleGenerateConference} className="card p-5 space-y-3">
+          <p className="label-eyebrow text-ink-400">Parent Conference Prep</p>
+          {[
+            { key: 'studentName', label: 'Student name', placeholder: 'First name or initials' },
+            { key: 'gradeBand', label: 'Grade band', placeholder: 'e.g. 3-5' },
+            { key: 'strengths', label: 'Strengths', placeholder: 'What is this student doing well?' },
+            { key: 'areasOfConcern', label: 'Areas of concern', placeholder: 'What needs to improve?' },
+            { key: 'goals', label: 'Goals to discuss', placeholder: 'What goals will you set together?' },
+          ].map(({ key, label, placeholder }) => (
+            <div key={key}>
+              <label className="block text-xs font-medium text-ink-500 mb-1">{label}</label>
+              <textarea rows={2} value={conferenceForm[key]} onChange={e => setConferenceForm(f => ({ ...f, [key]: e.target.value }))} placeholder={placeholder} className="input-field resize-none" />
+            </div>
+          ))}
+          <button type="submit" disabled={generatingConference} className="btn-primary">
+            {generatingConference ? <Loader2 size={14} className="animate-spin" /> : <Users size={14} />} Generate prep
+          </button>
+        </form>
+      )}
+
+      {/* Poster modal */}
+      {showPoster && hasPoster && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center overflow-y-auto bg-black/75 px-4 py-6">
+          <div className="flex w-full max-w-[816px] items-center justify-between mb-4 shrink-0">
+            <h2 className="text-sm font-semibold text-white">Lesson Poster</h2>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handlePrintPoster}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-white/10 px-3 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors"
+              >
+                <Printer size={15} />
+                Print
+              </button>
+              <button
+                onClick={handleDownloadPoster}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-white/10 px-3 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors"
+              >
+                <Download size={15} />
+                Download PDF
+              </button>
+              <button
+                onClick={() => setShowPoster(false)}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-white/10 px-3 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors"
+              >
+                <X size={15} />
+                Close
+              </button>
+            </div>
+          </div>
+          <div className="w-full max-w-[816px] rounded-lg overflow-hidden shadow-2xl shrink-0">
+            <PosterRenderer ref={posterSvgRef} posterContent={lo.poster_content} />
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function ToolActions({ copyText, onClose }) {
+  const { requestExport } = useTrial()
+  const [copied, setCopied] = useState(false)
+  function handleCopy() {
+    navigator.clipboard.writeText(copyText)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+  return (
+    <div className="flex gap-2 border-t border-ink-900 pt-3 mt-1">
+      {copyText !== undefined && (
+        <button onClick={handleCopy} className="btn-secondary text-xs">
+          {copied ? <Check size={13} /> : <Copy size={13} />}
+          {copied ? 'Copied!' : 'Copy'}
+        </button>
+      )}
+      <button onClick={async () => { if (await requestExport()) window.print() }} className="btn-secondary text-xs">
+        <Printer size={13} /> Print
+      </button>
+      <button onClick={onClose} className="btn-secondary text-xs">
+        <X size={13} /> Close
+      </button>
+    </div>
+  )
+}

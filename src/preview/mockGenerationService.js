@@ -1,0 +1,40 @@
+import { sampleKickballLesson } from '../types/sampleLesson'
+
+/**
+ * Mock generationService for the standalone preview build.
+ * Returns canned data after a short delay to simulate the real
+ * AI generation calls.
+ */
+
+const SUB_PLAN_FIELDS = {
+  sub_friendly_instructions:
+    "Today the class is playing kickball outside. You don't need any PE background — just follow the script below, keep an eye on safety, and use the diagram to set up the field.",
+  sub_script:
+    '1. Take students to the field and have them sit on the line.\n2. Lead a quick warm-up: students jog one lap, then toss a ball back and forth with a partner for 2 minutes.\n3. Split students into the two pre-assigned teams (list is on the clipboard).\n4. Explain the basic rules: kick the ball, run the bases, field team gets outs by tagging a base or the runner.\n5. Play 2-3 innings, rotating fielding positions every 2 outs (use the clap signal).\n6. With 5 minutes left, blow the whistle, have students walk one cool-down lap, then sit for a 1-2 minute reflection.',
+  sub_management_script:
+    "If students argue about a call, restate the rule calmly and move on — don't relitigate plays. If a student refuses to participate, offer them a 'helper' role (scorekeeper, base coach). The clap-clap signal means freeze and look at the teacher.",
+  sub_diagram:
+    '      [Outfield Zone 3]\n   [Zone 2]   [Zone 1]\n        \\     /\n  3rd -- HOME -- 1st\n        |\n       2nd\n\nTeams sit on the foul line before splitting up.',
+}
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+export async function generateLesson(input) {
+  await delay(800)
+  return {
+    ...sampleKickballLesson,
+    title: input.topic || sampleKickballLesson.title,
+    unit: input.unit || sampleKickballLesson.unit,
+    subject: input.subject,
+    grade_bands: input.gradeBands,
+    duration_minutes: input.durationMinutes,
+    class_size: input.classSize,
+  }
+}
+
+export async function generateSubPlan() {
+  await delay(800)
+  return SUB_PLAN_FIELDS
+}

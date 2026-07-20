@@ -1,0 +1,170 @@
+/**
+ * Unit generation prompt builder.
+ *
+ * Builds a prompt that asks the model to return a JSON array of 1-3
+ * sequential LessonObjects (one per day) for a single unit, with
+ * explicit instructions to build progressively across days without
+ * repeating warm-ups/instruction verbatim.
+ *
+ * Mirrors lessonPrompt.js's schema and conventions so the resulting
+ * objects can be saved/rendered exactly like single-lesson objects.
+ */
+
+import { resolveStateName } from "./stateNames.js";
+
+function getSubjectGuidance(subject, stateName) {
+  const isVirginia = stateName === "Virginia";
+  switch (subject) {
+    case "Health":
+      return isVirginia
+        ? "Focus on health literacy, wellness concepts, decision-making, and SOL-aligned health standards (Virginia SOL x.1.y format)."
+        : `Focus on health literacy, wellness concepts, decision-making, and ${stateName} health education standards. Use the correct standard code format for ${stateName}.`;
+    case "Family Life":
+      return isVirginia
+        ? "Focus on age-appropriate Family Life Education content per Virginia FLE curriculum guidelines, handled with sensitivity and grade-appropriate framing."
+        : `Focus on age-appropriate family life and health education content per ${stateName} curriculum guidelines, handled with sensitivity and grade-appropriate framing.`;
+    case "Driver's Ed":
+      return isVirginia
+        ? "Focus on classroom/in-car driver education content aligned to Virginia DOE Driver Education standards."
+        : `Focus on classroom/in-car driver education content aligned to ${stateName} driver education standards.`;
+    default: // PE
+      return isVirginia
+        ? "Focus on motor skill development, game play, fitness, and SOL-aligned physical education standards (Virginia SOL PE.x.y format, e.g. 6.2.a)."
+        : `Focus on motor skill development, game play, fitness, and ${stateName} physical education standards. Use the correct standard code format for ${stateName}.`;
+  }
+}
+
+/**
+ * @param {Object} input
+ * @param {number[]} input.gradeBands
+ * @param {string} input.unitName        e.g. "Pickleball"
+ * @param {string} [input.theme]         optional theme/topic notes for the unit
+ * @param {number} input.days            1-3
+ * @param {"PE"|"Health"|"Family Life"|"Driver's Ed"} input.subject
+ * @param {string[]} input.equipment
+ * @param {number} input.classSize
+ * @param {number} input.durationMinutes
+ * @param {string} [input.targetStandard]
+ * @param {string} [input.state]           two-letter US state abbreviation, e.g. "VA"
+ * @param {boolean} [input.stationsMode]   when true, structure independent_practice as rotating stations
+ * @param {number} [input.stationCount]    number of stations (2-6), used when stationsMode is true
+ * @param {{ name_or_initials: string, accommodation_notes: string }[]} [input.students]
+ * @returns {{ system: string, user: string }}
+ */
+export function buildUnitGenerationPrompt(input) {
+  const {
+    gradeBands = [],
+    unitName = "",
+    theme = "",
+    days = 3,
+    subject = "PE",
+    equipment = [],
+    classSize = 28,
+    durationMinutes = 45,
+    targetStandard = "",
+    state = "",
+    stationsMode = false,
+    stationCount = 3,
+    students = [],
+  } = input;
+
+  const stateName = resolveStateName(state);
+  const subjectGuidance = getSubjectGuidance(subject, stateName);
+  const dayCount = Math.min(Math.max(Number(days) || 1, 1), 3);
+
+  const system = `You are an expert ${subject} curriculum writer for ${stateName} middle/high schools, producing content that exactly matches real district Plan Book formatting conventions.
+
+${subjectGuidance}
+
+You must return ONLY a single JSON object — no markdown fences, no commentary, no preamble — matching this exact schema:
+
+{
+  "days": [
+    {
+      "title": string,
+      "grade_bands": number[],
+      "unit": string,
+      "subject": "PE" | "Health" | "Family Life" | "Driver's Ed",
+      "duration_minutes": number,
+      "class_size": number,
+      "standards": [{ "grade": number, "code": string, "text": string }],
+      "learning_targets": { "<grade>": string },
+      "success_criteria": { "<grade>": string[] },
+      "skill_focus": string[],
+      "assessment_type": "formative" | "summative" | "self-assessment",
+      "equipment_needed": string[],
+      "equipment_alternatives": string[],
+      "location": string,
+      "setup_diagram": string,
+      "warm_up": string,
+      "fitness_activities": string,
+      "whole_group_instruction": string,
+      "independent_practice": string,
+      "closure": string,
+      "modifications": { "<grade>": string },
+      "known_vocabulary": string[],
+      "new_vocabulary": string[],
+      "routines": string[],
+      "behavior_notes": string[],
+      "safety_notes": string[],
+      "sub_friendly_instructions": "",
+      "sub_script": "",
+      "sub_management_script": "",
+      "sub_diagram": "",
+      "suggested_video_searches": string[]
+    }
+  ]
+}
+
+The "days" array must contain exactly ${dayCount} lesson object(s), one per day, in order.
+
+Rules for EACH day's lesson object:
+- REQUIRED: suggested_video_searches must always contain exactly 2-3 search queries — this field should never be empty. Write specific, well-formed YouTube search queries directly relevant to that day's topic, skill, or vocabulary. Vary the queries across days to match each day's specific focus and progression — not generic topic names.
+- Provide one standards entry PER grade band. Only use a standard code if you are confident it matches the official ${stateName} ${subject} standards framework. If you are not certain of the exact code for a given grade, use the closest real code structure you can reasonably infer and append '(verify against official standards)' to the end of that standard's description text — do not present an uncertain code as definitively correct.
+- learning_targets, success_criteria, and modifications must have one entry per grade band, keyed by the grade number as a string.
+- success_criteria arrays should have exactly 3 bullets per grade band, phrased as "I can..." statements.
+- learning_targets should be phrased as "Today I will..." statements.
+- The lesson/instruction fields (warm_up, fitness_activities, whole_group_instruction, independent_practice, closure) are SHARED across all grade bands — write them so they work for the full range given. Format these fields with clear structure: use \\n\\n between major phases or sections (give each a descriptive header, e.g. "PHASE 1:", "MAIN ACTIVITY:", "COOL-DOWN:") and \\n between individual steps or cues within a phase. Do NOT write one continuous paragraph — structure each field like a teacher's actual lesson notes, with named sections and numbered or sequenced steps.
+- modifications should describe concrete differentiation strategies per grade band (not generic "differentiate as needed" language).
+- setup_diagram should be a simple text/ASCII layout description of the space and equipment placement.
+- equipment_needed should reflect realistic quantities for the given class size.
+- Leave sub_friendly_instructions, sub_script, sub_management_script, and sub_diagram as empty strings — they are generated separately.
+- The "unit" field on every day should be the unit name: "${unitName}".
+- The "title" field should be formatted as "${unitName} Day N: <specific focus of that day>" (e.g. "${unitName} Day 1: Introduction to Grip and Serve").
+- Do not include any fields not listed in the schema above.${stationsMode ? `
+
+STATIONS MODE: In each day's independent_practice section, structure the content explicitly as ${stationCount} rotating skill stations. Label each station as STATION A, STATION B, STATION C, etc. — do NOT use "Round 1", "Round 2", or any other labeling. The rotation structure must be unambiguous. For each station: state the skill focus in the header (e.g. "STATION A — Chest Pass Technique"), describe the physical setup, describe the activity, specify rotation timing, and note any equipment needed at that station. Use \\n\\n between stations. Vary the station activities across days to match the unit's progression.` : ""}
+
+CRITICAL — Progression across days (this is the whole point of a unit):
+- Day 1 should introduce foundational skills/concepts for this unit.
+${dayCount >= 2 ? `- Day 2 should build directly on Day 1: reference and extend the specific skills introduced, do not reintroduce them from scratch, and do not reuse the same warm_up or whole_group_instruction content verbatim.` : ""}
+${dayCount >= 3 ? `- Day 3 should build on Days 1-2, moving toward application/game play or assessment, again with fresh warm_up and instruction content that progresses the skill set.` : ""}
+- Vary the warm_up, fitness_activities, and independent_practice activities across days so the unit doesn't feel repetitive, while staying thematically connected.
+- known_vocabulary for Day 2+ should include new_vocabulary terms introduced on prior days.
+- standards may repeat across days if the same standard spans multiple lessons, but success_criteria and instructional content should reflect that day's specific focus and progression.${students.length > 0 ? `
+
+ACCOMMODATIONS: The following students in this class need specific accommodations. In each day's "modifications" field for their grade band, write the standard grade-level differentiation content first, then append each student's accommodation as a clearly labeled separate line at the END of that field. Each accommodation must be specific to that day's actual activities (not generic advice) and formatted exactly as:
+
+\\n\\nACCOMMODATION — [name_or_initials]: [specific accommodation referencing that day's lesson activity]
+
+Example: "\\n\\nACCOMMODATION — Jamie: during the Day 2 rally drill, allow Jamie to use a shorter court boundary and a foam ball, accommodating limited mobility"
+
+Do NOT blend student accommodations into the middle of a paragraph. They must appear as distinctly labeled lines at the end of the modifications text, one per student. The named accommodations must appear in every day of the unit, adapted to each day's specific activities.
+
+Students requiring accommodations:
+${students.map((s) => `- ${s.name_or_initials}: ${s.accommodation_notes}`).join("\n")}` : ""}`;
+
+  const user = `Generate a ${dayCount}-day unit with these parameters:
+
+- Grade band(s): ${gradeBands.join(", ") || "6, 7, 8"}
+- Unit name: ${unitName || "(generate an appropriate unit name from the theme/topic)"}
+- Theme/topic notes: ${theme || "(infer an appropriate progression for this unit)"}
+- Subject: ${subject}
+- Equipment on hand: ${equipment.length ? equipment.join(", ") : "standard PE/classroom equipment"}
+- Class size: ${classSize}
+- Duration per lesson: ${durationMinutes} minutes${targetStandard ? `\n- Target standard/objective: ${targetStandard} (build the unit specifically around this standard; ensure it appears in the standards array for the relevant day(s))` : ""}
+
+Return the JSON object now, with exactly ${dayCount} day(s) in the "days" array.`;
+
+  return { system, user };
+}
