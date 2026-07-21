@@ -41,9 +41,11 @@ Deno.serve(async (req: Request) => {
 
   const { system, user } = buildCteLessonPrompt(body as Record<string, unknown>)
 
-  // ELL accommodations add a substantial extra section, pushing responses past
-  // the base budget and truncating the JSON.
-  const maxTokens = includeELL ? 12000 : 8000
+  // Token budget vs the ~150s wall: Haiku generates ~90 tok/s here, so ~13K output
+  // tokens is the practical ceiling before the function time limit. A full HS lesson
+  // needs more than the old 8000 cap (it was truncating mid-JSON), so raise the base
+  // to 12000 (~135s worst case). ELL adds a substantial section; 13000 is the safe max.
+  const maxTokens = includeELL ? 13000 : 12000
 
   // A dense HS lesson can take >150s to generate. The Claude call is non-streaming,
   // so nothing reaches the client until it completes, and Supabase kills the worker

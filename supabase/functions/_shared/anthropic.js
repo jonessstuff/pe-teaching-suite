@@ -74,6 +74,50 @@ function parseJsonFromText(text) {
   try {
     return JSON.parse(cleaned);
   } catch (err) {
+    // Some models (esp. faster ones) ignore "return ONLY JSON" and wrap the object
+    // in a preamble or trailing commentary. Extract the first balanced {...} object
+    // and parse that. This only runs as a fallback — clean JSON parses above.
+    const extracted = extractFirstJsonObject(cleaned);
+    if (extracted) {
+      try {
+        return JSON.parse(extracted);
+      } catch {
+        // fall through to the original error
+      }
+    }
     throw new Error(`Failed to parse model response as JSON: ${err.message}`);
   }
+}
+
+/**
+ * Extracts the first complete, balanced JSON object from a string, tolerating
+ * surrounding prose. Returns null if no complete object is present (e.g. the
+ * response was truncated before the closing brace). Quote/escape aware so braces
+ * inside string values don't throw off the depth count.
+ *
+ * @param {string} text
+ * @returns {string | null}
+ */
+function extractFirstJsonObject(text) {
+  const start = text.indexOf("{");
+  if (start === -1) return null;
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+  for (let i = start; i < text.length; i++) {
+    const ch = text[i];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (ch === "\\") escaped = true;
+      else if (ch === '"') inString = false;
+    } else if (ch === '"') {
+      inString = true;
+    } else if (ch === "{") {
+      depth++;
+    } else if (ch === "}") {
+      depth--;
+      if (depth === 0) return text.slice(start, i + 1);
+    }
+  }
+  return null; // no matching close brace — likely truncated
 }
