@@ -69,7 +69,10 @@ Deno.serve(async (req: Request) => {
       }, 10000)
 
       try {
-        const result = await callClaudeForJson(system, user, maxTokens, CTE_MODEL, schema)
+        // Structured outputs guarantees valid JSON, but the ELL-augmented schema
+        // exceeds Anthropic's compiled-grammar size limit (400). ELL is opt-in and
+        // rarer, so skip the schema there and fall back to the tolerant text parser.
+        const result = await callClaudeForJson(system, user, maxTokens, CTE_MODEL, includeELL ? null : schema)
         finished = true
         clearInterval(keepalive)
         controller.enqueue(encoder.encode(JSON.stringify(result)))
