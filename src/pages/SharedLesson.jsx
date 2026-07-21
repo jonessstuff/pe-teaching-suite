@@ -3,6 +3,8 @@ import { useParams, Link } from 'react-router-dom'
 import { Loader2, AlertCircle } from 'lucide-react'
 import { getSharedLesson } from '../services/sharingService'
 import PlanBookRenderer from '../components/renderers/PlanBookRenderer'
+import CtePlanRenderer from '../components/renderers/CtePlanRenderer'
+import AdaptivePERenderer from '../components/renderers/AdaptivePERenderer'
 
 export default function SharedLesson() {
   const { token } = useParams()
@@ -62,7 +64,13 @@ export default function SharedLesson() {
             </div>
 
             <div className="rounded-xl border border-ink-200 bg-white p-6 print:border-gray-300">
-              <PlanBookRenderer lessonObject={lesson.lesson_object} />
+              {lesson.lesson_object?.subject === 'Adaptive PE' ? (
+                <AdaptivePERenderer lesson={lesson.lesson_object} />
+              ) : lesson.lesson_object?.subject === 'CTE' ? (
+                <CtePlanRenderer lesson={lesson.lesson_object} />
+              ) : (
+                <PlanBookRenderer lesson={lesson.lesson_object} />
+              )}
             </div>
 
             {/* CTA */}
