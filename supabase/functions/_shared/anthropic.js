@@ -15,9 +15,11 @@ const MODEL = "claude-sonnet-4-6";
  * @param {string} system
  * @param {string} user
  * @param {number} [maxTokens]
+ * @param {string} [model]  override the default model (e.g. a faster model for
+ *   generations that must complete within a tight function time limit)
  * @returns {Promise<any>}
  */
-export async function callClaudeForJson(system, user, maxTokens = 4096) {
+export async function callClaudeForJson(system, user, maxTokens = 4096, model = MODEL) {
   const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
   if (!apiKey) {
     throw new Error("ANTHROPIC_API_KEY is not configured");
@@ -31,7 +33,7 @@ export async function callClaudeForJson(system, user, maxTokens = 4096) {
       "anthropic-version": "2023-06-01",
     },
     body: JSON.stringify({
-      model: MODEL,
+      model,
       max_tokens: maxTokens,
       system,
       messages: [{ role: "user", content: user }],

@@ -6,6 +6,12 @@ const VALID_PATHWAYS = ["hospitality", "finance", "marketing", "human_services"]
 const VALID_TIERS = ["ms", "hs"]
 const VALID_LEVELS = ["introductory", "concentrator", "completer"]
 
+// A full CTE lesson (~6-7K output tokens) takes ~150s on Sonnet, right at Supabase's
+// hard function time limit — so generations tip over and fail. Haiku 4.5 generates the
+// same lesson ~2-3x faster (~50-70s), landing comfortably under the limit. The keepalive
+// stream below stays as a safety net. Model choice is CTE-specific; other generators keep Sonnet.
+const CTE_MODEL = "claude-haiku-4-5"
+
 Deno.serve(async (req: Request) => {
   console.log("[generate-cte-lesson] handler entered, method:", req.method)
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders })
@@ -61,7 +67,7 @@ Deno.serve(async (req: Request) => {
       }, 10000)
 
       try {
-        const result = await callClaudeForJson(system, user, maxTokens)
+        const result = await callClaudeForJson(system, user, maxTokens, CTE_MODEL)
         finished = true
         clearInterval(keepalive)
         controller.enqueue(encoder.encode(JSON.stringify(result)))
