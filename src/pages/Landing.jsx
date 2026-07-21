@@ -198,7 +198,7 @@ export default function Landing() {
             <ModuleCard
               name="CTE"
               color="pink"
-              description="Career & Technical Education across Hospitality & Tourism, Finance, and Marketing pathways — standards-aligned and industry-relevant."
+              description="Career & Technical Education across Hospitality & Tourism, Finance, Marketing, and Human Services / Family & Consumer Sciences pathways — standards-aligned and industry-relevant."
             />
           </div>
         </div>

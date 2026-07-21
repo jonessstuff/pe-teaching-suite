@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Briefcase, UtensilsCrossed, Landmark, Megaphone, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
+import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
 import { generateCteLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
@@ -26,6 +26,12 @@ const PATHWAYS = [
     description: 'The marketing mix, promotion, selling & branding',
     icon: Megaphone,
   },
+  {
+    value: 'human_services',
+    label: 'Human Services / FCS',
+    description: 'Family & Consumer Sciences, independent living & workplace readiness',
+    icon: HeartHandshake,
+  },
 ]
 
 const LEVELS = [
@@ -38,6 +44,7 @@ const TOPIC_PLACEHOLDERS = {
   hospitality: 'e.g. Guest service recovery, Front desk check-in procedure, Food safety & sanitation (ServSafe), Planning a destination tour',
   finance:     'e.g. Building a monthly budget, Comparing two credit-card offers, Simple vs. compound interest, Reading a pay stub',
   marketing:   'e.g. Identify a target market, Build the marketing mix for a product, Analyze a real ad campaign, DECA role-play prep',
+  human_services: 'e.g. Reading a nutrition label, Building a personal budget, Age-appropriate child activities, Mock job interview & workplace readiness',
 }
 
 const MATERIAL_PLACEHOLDERS = {
@@ -70,6 +77,16 @@ const MATERIAL_PLACEHOLDERS = {
     'e.g. Market-research survey template',
     'e.g. Brand logo cards for analysis',
     'e.g. Projector for campaign analysis',
+  ],
+  human_services: [
+    'e.g. Nutrition labels / food models',
+    'e.g. Measuring cups & basic foods-lab tools',
+    'e.g. Budget worksheet (printed)',
+    'e.g. Child-development activity supplies',
+    'e.g. Mock interview question cards',
+    'e.g. Sample consumer contracts / ads',
+    'e.g. FCCLA STAR Event guidelines',
+    'e.g. Laptops for research — 1 per pair',
   ],
 }
 
@@ -245,7 +262,7 @@ export default function CteGenerator() {
         {/* Pathway selector */}
         <div className="space-y-3">
           <h2 className="text-sm font-semibold text-ink-200">Pathway</h2>
-          <div className="grid gap-3 sm:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {PATHWAYS.map(({ value, label, description, icon: Icon }) => (
               <button
                 key={value}
@@ -422,9 +439,10 @@ export default function CteGenerator() {
               id="cte-competency"
               type="text"
               placeholder={
-                pathway === 'hospitality' ? 'e.g. Demonstrate proper handwashing (ServSafe)' :
-                pathway === 'finance'     ? 'e.g. Calculate compound interest (Jump$tart)' :
-                                            'e.g. Identify a target market (DECA PI)'
+                pathway === 'hospitality'    ? 'e.g. Demonstrate proper handwashing (ServSafe)' :
+                pathway === 'finance'        ? 'e.g. Calculate compound interest (Jump$tart)' :
+                pathway === 'human_services' ? 'e.g. Plan a balanced meal (AAFCS Nutrition & Wellness)' :
+                                               'e.g. Identify a target market (DECA PI)'
               }
               value={targetCompetency}
               onChange={(e) => setTargetCompetency(e.target.value)}

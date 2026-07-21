@@ -19,6 +19,7 @@ const PATHWAY_LABELS = {
   hospitality: "Hospitality & Tourism",
   finance: "Finance",
   marketing: "Marketing",
+  human_services: "Human Services / Family & Consumer Sciences",
 }
 
 function tierLevelLabel(tier, level) {
@@ -56,6 +57,12 @@ function getCteCompetencyGuidance(pathway, tier, level, stateName) {
     marketing: `Secondary frameworks for Marketing — include entries from these where the lesson content maps to them:
 - DECA competitive event guidelines — align applied tasks to relevant DECA events and the DECA performance indicators (e.g., Principles of Marketing, Marketing Communications, Professional Selling). Framework field: "DECA".
 - National Standards for Business Education (NBEA), Marketing strand. Framework field: "NBEA Marketing".`,
+    human_services: `Primary national framework for Human Services / Family & Consumer Sciences — lead the competency list with entries from this, and treat the state CTE task list above as the state verification layer for it:
+- National Standards for Family and Consumer Sciences Education (AAFCS) — the primary content framework for this pathway (Comprehensive Standards and their Content Standards / Competencies across areas such as Consumer & Family Resources, Nutrition & Wellness, Human Development, Interpersonal Relationships, Career/Community/Family Connections, and Housing & Interior Design). Framework field: "AAFCS". Use the "X.Y.Z" comprehensive/competency numbering only when confident; otherwise describe the competency and omit the code.
+Then include entries from these where the lesson content maps to them:
+- AAFCS Pre-PAC (Pre-Professional Assessment and Certification) — the industry-credential assessments this pathway builds toward (e.g., Leadership Essentials, Nutrition/Food/Wellness Consultant, Food Science Fundamentals, Culinary Arts). Framework field: "Pre-PAC". Especially relevant for nutrition, food, wellness, and leadership content.
+- FCCLA (Family, Career and Community Leaders of America) — the pathway CTSO (national, parallel to DECA/FBLA). Align applied tasks and projects to relevant FCCLA competitive events and national programs (e.g., STAR Events, FCCLA national programs like Families First, Career Connection). Framework field: "FCCLA".
+Content areas to prioritize: Family & Consumer Sciences core plus Independent Living / Workplace Readiness — these map to the Virginia FCS-Development and "Career, Community and Family Connections" courses.`,
   }[pathway] ?? ""
 
   const rigorNote =
@@ -80,6 +87,7 @@ function getCredentialFocus(pathway) {
     hospitality: ["ServSafe Food Handler / Manager (National Restaurant Association)", "AHLEI certifications (e.g., Certified Guest Service Professional)"],
     finance: ["W!SE Financial Literacy Certification", "FBLA competitive event recognition", "Jump$tart-aligned personal finance certificates"],
     marketing: ["DECA competitive event certifications", "NBEA Marketing-aligned recognition", "A*S*K / Marketing industry micro-credentials"],
+    human_services: ["AAFCS Pre-PAC certifications (e.g., Leadership Essentials, Nutrition/Food/Wellness, Food Science Fundamentals)", "FCCLA competitive event & national program recognition", "ServSafe Food Handler (for foods/nutrition content)"],
   }[pathway] ?? []
 }
 
@@ -151,6 +159,28 @@ function getPhaseDescriptions(pathway) {
         desc: "Teams present or pitch briefly using a structured protocol; peers give one strength and one suggestion in marketing language. Connect the task to a real marketing career and the DECA event / NBEA standard it supports. End with one professional takeaway. 5–8 minutes.",
       },
     },
+    human_services: {
+      warm_up: {
+        name: "Real-Life Hook",
+        desc: "Open with a concrete, everyday human-services or family/consumer scenario — a household budgeting dilemma, a nutrition-label comparison, a child-development moment, a workplace-readiness situation, a real community resource. Students react to a situation they or a family they know could actually face. Connect to a real role, agency, or life decision. 5–8 minutes.",
+      },
+      whole_group_instruction: {
+        name: "Concept Instruction",
+        desc: "Teach the core FCS / human-services concept directly using correct vocabulary (e.g., nutrient density, developmentally appropriate practice, resource management, consumer rights, interpersonal communication, workplace readiness). Ground it in the AAFCS National Standards content area it belongs to. Address a common misconception and check understanding before hands-on work. 8–12 minutes.",
+      },
+      fitness_activities: {
+        name: "Skill Demonstration",
+        desc: "Model the practical FCS skill or procedure step by step the way it is done in a home, workplace, or human-services setting — a food-prep or knife-safety technique, a childcare or age-appropriate activity setup, a budgeting or resource-management process, a mock interview or professional interaction. Name each step. Students watch, then walk through it once with teacher support. 5–10 minutes.",
+      },
+      independent_practice: {
+        name: "Hands-On Application",
+        desc: "Students apply the skill in a realistic lab, simulation, or project: a foods lab, a child-development activity plan, a personal/household budget, an independent-living or workplace-readiness task, or an FCCLA-style project. Describe exactly what students do, what a competent result looks like, and what the teacher observes and coaches. Include a checklist or rubric aligned to how the task is evaluated (AAFCS competency, Pre-PAC objective, or FCCLA event). 15–20 minutes.",
+      },
+      closure: {
+        name: "Reflection & Life/Career Connection",
+        desc: "Students reflect on how today's skill applies to their own independent living, family, or future workplace, and name one thing they would do with it outside class. Connect the skill to a real human-services or FCS career and to the credential/competition it supports (AAFCS Pre-PAC / FCCLA). End with a brief exit ticket. 5–8 minutes.",
+      },
+    },
   }
   return map[pathway] ?? map.hospitality
 }
@@ -174,12 +204,27 @@ function getPathwaySequence(pathway) {
       { level: "concentrator", course: "Marketing Management / Advertising & Promotion", description: "Promotion, selling, market research, brand strategy, applied campaigns." },
       { level: "completer", course: "Advanced Marketing / Capstone, DECA & Work-Based Learning", description: "Capstone project, DECA competitive events, entrepreneurship, internship in a marketing role." },
     ],
+    human_services: [
+      { level: "introductory", course: "Introduction to Family & Consumer Sciences / FCS Exploratory", description: "Broad FCS foundations — nutrition & wellness, human development, relationships, resource management, and career awareness across the Human Services cluster." },
+      { level: "concentrator", course: "Independent Living / Workplace Readiness (FCS-Development)", description: "Applied independent-living and employability skills — personal finance, foods & nutrition, consumer decisions, professional communication, aligned to AAFCS competencies." },
+      { level: "completer", course: "Career, Community and Family Connections / Capstone, FCCLA & Work-Based Learning", description: "Capstone connecting FCS skills to careers and community, FCCLA leadership & competitive events, AAFCS Pre-PAC credential attainment, and work-based learning placement." },
+    ],
   }[pathway] ?? []
+}
+
+// Optional pathway-specific work-based learning guidance, appended to the WBL block.
+// Human Services uses Virginia's High-Quality Work-Based Learning (HQWBL) model, which
+// recognizes a broader set of 12 methods than the internship/shadow/speaker default.
+function getWblGuidance(pathway) {
+  if (pathway === "human_services") {
+    return `\nThis pathway follows Virginia's High-Quality Work-Based Learning (HQWBL) model, which recognizes 12 methods: job shadowing, service learning, mentorship, externship, school-based enterprise, internship, entrepreneurship, clinical experience, cooperative education, youth registered apprenticeship, registered apprenticeship, and supervised agricultural experience. When filling the fields below, draw the most lesson-appropriate ideas from this broader set (not only internships/shadows) — e.g., service learning with a community agency, a school-based enterprise, a clinical/childcare experience, or a mentorship — and fold them into the internships and job_shadows arrays as fits this lesson's content and tier.`
+  }
+  return ""
 }
 
 /**
  * @param {Object} input
- * @param {'hospitality'|'finance'|'marketing'} input.pathway
+ * @param {'hospitality'|'finance'|'marketing'|'human_services'} input.pathway
  * @param {'ms'|'hs'} input.tier
  * @param {'introductory'|'concentrator'|'completer'|''} [input.level]  required when tier === 'hs'
  * @param {string}  input.topic
@@ -218,6 +263,7 @@ export function buildCteLessonPrompt({
   const credentialFocus = getCredentialFocus(pathway)
   const phases = getPhaseDescriptions(pathway)
   const sequence = getPathwaySequence(pathway)
+  const wblGuidance = getWblGuidance(pathway)
 
   const isMultiStage = sessionNumber > 0
   const stageLabel = isMultiStage ? `Stage ${sessionNumber} of ${totalSessions}` : ""
@@ -263,7 +309,7 @@ Competencies: ${competencyGuidance}
 WORK-BASED LEARNING (work_based_learning field): CTE lessons connect to the workplace. Provide realistic, pathway- and tier-appropriate work-based learning ideas tied to THIS lesson's content:
 - internships: 2–3 internship or practicum ideas relevant to this pathway and this lesson's skill (scale to tier — MS = short job-exploration visits; Completer = semester-long placements).
 - guest_speakers: 2–3 specific types of industry guest speakers plus 2–3 questions students should ask each.
-- job_shadows: 2–3 concrete job-shadow suggestions naming the role and what students should observe.
+- job_shadows: 2–3 concrete job-shadow suggestions naming the role and what students should observe.${wblGuidance}
 
 CAREER PATHWAY CONTEXT (career_pathway_context field): Show teachers where this lesson sits in the course sequence. The pathway course sequence is:
 ${sequenceForPrompt}
@@ -323,7 +369,7 @@ Field notes:
 - tier: always exactly "${tier}"; level: always exactly "${effectiveLevel}"
 - unit: the broader CTE unit this lesson belongs to (e.g., "Guest Service & Front Office", "Credit & Borrowing", "The Marketing Mix")
 - stage_label: ${isMultiStage ? `"${stageLabel}" — required exactly as shown` : `"" (empty string — standalone lesson)`}
-- competencies: framework field must match the framework name exactly ("VA CTE" / "State CTE", "ServSafe", "AHLEI", "Jump$tart", "CEE", "FBLA", "DECA", "NBEA Marketing"). If unsure of a code, leave code as "" and describe the competency in text.
+- competencies: framework field must match the framework name exactly ("VA CTE" / "State CTE", "ServSafe", "AHLEI", "Jump$tart", "CEE", "FBLA", "DECA", "NBEA Marketing", "AAFCS", "Pre-PAC", "FCCLA"). If unsure of a code, leave code as "" and describe the competency in text.
 - credential_focus: the industry-recognized credentials this pathway prepares students toward. Suggested for ${pathwayLabel}: ${credentialFocus.join("; ")}. Adjust to the lesson.
 - learning_target: a single "Today I will…" statement for this tier/level (NOT keyed by grade).
 - success_criteria: exactly 3 "I can…" statements for this tier/level.

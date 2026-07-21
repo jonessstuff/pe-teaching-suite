@@ -175,7 +175,7 @@ export default function ModulePicker() {
               </span>
             </div>
             <p className="text-sm text-ink-400 leading-relaxed">
-              Career &amp; Technical Education for MS–HS — Hospitality &amp; Tourism, Finance, and Marketing pathways
+              Career &amp; Technical Education for MS–HS — Hospitality &amp; Tourism, Finance, Marketing, and Human Services / FCS pathways
             </p>
           </div>
           <div className="flex items-center gap-1.5 text-sm font-medium text-pink-400 transition-[gap] group-hover:gap-2.5">

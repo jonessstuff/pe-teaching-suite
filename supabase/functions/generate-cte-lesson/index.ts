@@ -2,7 +2,7 @@ import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js"
 import { buildCteLessonPrompt } from "../_shared/cteLessonPrompt.js"
 import { callClaudeForJson } from "../_shared/anthropic.js"
 
-const VALID_PATHWAYS = ["hospitality", "finance", "marketing"]
+const VALID_PATHWAYS = ["hospitality", "finance", "marketing", "human_services"]
 const VALID_TIERS = ["ms", "hs"]
 const VALID_LEVELS = ["introductory", "concentrator", "completer"]
 

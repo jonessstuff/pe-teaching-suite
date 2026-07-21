@@ -5,12 +5,14 @@ const PHASE_LABELS = {
   hospitality: ['Industry Hook', 'Direct Instruction', 'Skill Demonstration', 'Hands-On Service Application', 'Debrief & Industry Connection'],
   finance:     ['Financial Bell-Ringer', 'Concept Instruction', 'Guided Worked Example', 'Applied Finance Task', 'Reflection & Real-World Connection'],
   marketing:   ['Marketing Hook', 'Concept Instruction', 'Example Analysis', 'Applied Marketing Task', 'Present & Debrief'],
+  human_services: ['Real-Life Hook', 'Concept Instruction', 'Skill Demonstration', 'Hands-On Application', 'Reflection & Life/Career Connection'],
 }
 
 const PATHWAY_LABELS = {
   hospitality: 'Hospitality & Tourism',
   finance:     'Finance',
   marketing:   'Marketing',
+  human_services: 'Human Services / Family & Consumer Sciences',
 }
 
 const LEVEL_LABELS = {
