@@ -4,7 +4,14 @@ import { Sparkles, BookOpen, BookMarked, ArrowRight, ArrowLeft, Loader2, Calenda
 import { supabase } from '../lib/supabaseClient'
 import { listLessons } from '../services/lessonsService'
 import { listPeriods } from '../services/classPeriodsService'
+import { SUBJECT_AREAS } from '../types/lessonObject'
 import LessonCard from '../components/lesson/LessonCard'
+
+// PE & Health module scope — the subjects that belong to this home page.
+// Mirrors the filter used in LessonGenerator, LessonLibrary, and CurriculumMap.
+const PE_HEALTH_SUBJECTS = SUBJECT_AREAS.filter(
+  (s) => s !== 'Library/Media' && s !== 'Art' && s !== 'Music' && s !== 'Adaptive PE' && s !== 'STEM' && s !== 'CTE'
+)
 
 const TIPS = [
   'Tip: Click Copy on any Plan Book section to paste straight into PlanbookEdu.',
@@ -66,9 +73,10 @@ export default function Dashboard() {
       .catch(() => setPeriods([]))
   }, [])
 
-  // PE & Health scope: exclude Library/Media lessons from counts and recent activity
+  // PE & Health scope: only this module's own subjects appear in counts and recent activity.
+  // Missing subject defaults to 'PE' (matching LessonCard), keeping legacy lessons visible here.
   const lessons = (allLessons ?? []).filter(
-    (l) => (l.lesson_object?.subject ?? l.subject ?? '') !== 'Library/Media'
+    (l) => PE_HEALTH_SUBJECTS.includes(l.lesson_object?.subject ?? l.subject ?? 'PE')
   )
 
   const totalLessons = allLessons !== null ? lessons.length : null
