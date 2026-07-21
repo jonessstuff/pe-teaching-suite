@@ -120,7 +120,6 @@ export default function CteGenerator() {
   // UI state
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-  const [includeELL, setIncludeELL] = useState(false)
 
   const placeholders = MATERIAL_PLACEHOLDERS[pathway] ?? MATERIAL_PLACEHOLDERS.hospitality
 
@@ -153,10 +152,12 @@ export default function CteGenerator() {
         state,
         sessionNumber: isMultiStage ? sessionNumber : 0,
         totalSessions: isMultiStage ? totalSessions : 0,
-        includeELL,
+        // ELL accommodations are disabled for CTE: the ELL-augmented schema exceeds
+        // the structured-outputs grammar limit and the schema-less fallback is unreliable.
+        includeELL: false,
       })
 
-      const saved = await createLesson(lessonObject, { aiModel: 'claude-sonnet-4-6' })
+      const saved = await createLesson(lessonObject, { aiModel: 'claude-haiku-4-5' })
 
       setGeneratedLesson(lessonObject)
       setSavedId(saved.id)
@@ -556,23 +557,6 @@ export default function CteGenerator() {
           )}
         </div>
 
-        <div className="card p-6 space-y-3">
-          <h2 className="text-sm font-semibold text-ink-200">ELL accommodations</h2>
-          <label className="flex cursor-pointer items-start gap-3">
-            <input
-              type="checkbox"
-              checked={includeELL}
-              onChange={(e) => setIncludeELL(e.target.checked)}
-              className="mt-0.5 h-4 w-4 shrink-0 accent-emerald-500"
-            />
-            <div>
-              <span className="text-sm text-ink-300">Include ELL accommodations</span>
-              <p className="mt-0.5 text-xs text-ink-500">
-                Adds language objectives, tiered vocabulary, sentence frames, and visual supports for English Language Learners.
-              </p>
-            </div>
-          </label>
-        </div>
 
         {error && (
           <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">
