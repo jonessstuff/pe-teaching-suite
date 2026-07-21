@@ -39,7 +39,7 @@ Deno.serve(async (req: Request) => {
     return errorResponse(`level must be one of: ${VALID_LEVELS.join(", ")} when tier is "hs"`, 400)
   }
 
-  const { system, user } = buildCteLessonPrompt(body as Record<string, unknown>)
+  const { system, user, schema } = buildCteLessonPrompt(body as Record<string, unknown>)
 
   // Token budget vs the ~150s wall: Haiku generates ~90 tok/s here, so ~13K output
   // tokens is the practical ceiling before the function time limit. A full HS lesson
@@ -69,7 +69,7 @@ Deno.serve(async (req: Request) => {
       }, 10000)
 
       try {
-        const result = await callClaudeForJson(system, user, maxTokens, CTE_MODEL)
+        const result = await callClaudeForJson(system, user, maxTokens, CTE_MODEL, schema)
         finished = true
         clearInterval(keepalive)
         controller.enqueue(encoder.encode(JSON.stringify(result)))

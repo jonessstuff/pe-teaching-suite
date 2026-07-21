@@ -222,6 +222,128 @@ function getWblGuidance(pathway) {
   return ""
 }
 
+// JSON Schema for structured outputs — forces the model to emit valid, schema-
+// conforming JSON (no preamble/commentary, no bad escaping). Mirrors the schema
+// documented in the system prompt. Every object needs additionalProperties:false
+// and all non-optional properties listed in required (structured-outputs rules).
+// Shape depends only on includeELL, so at most two schema variants exist (good for
+// the API's per-schema compile cache).
+export function buildCteLessonSchema(includeELL = false) {
+  const strArr = { type: "array", items: { type: "string" } }
+  const schema = {
+    type: "object",
+    additionalProperties: false,
+    required: [
+      "title", "subject", "pathway", "pathway_label", "tier", "level", "tier_label",
+      "unit", "duration_minutes", "class_size", "stage_label", "competencies",
+      "credential_focus", "learning_target", "success_criteria", "skill_focus",
+      "assessment_type", "teacher_prep", "equipment_needed", "equipment_alternatives",
+      "tools_and_platforms", "location", "setup_diagram", "warm_up",
+      "whole_group_instruction", "fitness_activities", "independent_practice", "closure",
+      "modifications", "known_vocabulary", "new_vocabulary", "safety_notes",
+      "work_based_learning", "career_pathway_context", "suggested_video_searches",
+    ],
+    properties: {
+      title: { type: "string" },
+      subject: { const: "CTE" },
+      pathway: { type: "string" },
+      pathway_label: { type: "string" },
+      tier: { type: "string" },
+      level: { type: "string" },
+      tier_label: { type: "string" },
+      unit: { type: "string" },
+      duration_minutes: { type: "number" },
+      class_size: { type: "number" },
+      stage_label: { type: "string" },
+      competencies: {
+        type: "array",
+        items: {
+          type: "object",
+          additionalProperties: false,
+          required: ["framework", "code", "text"],
+          properties: {
+            framework: { type: "string" },
+            code: { type: "string" },
+            text: { type: "string" },
+          },
+        },
+      },
+      credential_focus: strArr,
+      learning_target: { type: "string" },
+      success_criteria: strArr,
+      skill_focus: strArr,
+      assessment_type: { type: "string", enum: ["formative", "summative", "self-assessment"] },
+      teacher_prep: { type: "string" },
+      equipment_needed: strArr,
+      equipment_alternatives: strArr,
+      tools_and_platforms: strArr,
+      location: { type: "string" },
+      setup_diagram: { type: "string" },
+      warm_up: { type: "string" },
+      whole_group_instruction: { type: "string" },
+      fitness_activities: { type: "string" },
+      independent_practice: { type: "string" },
+      closure: { type: "string" },
+      modifications: { type: "string" },
+      known_vocabulary: strArr,
+      new_vocabulary: strArr,
+      safety_notes: strArr,
+      work_based_learning: {
+        type: "object",
+        additionalProperties: false,
+        required: ["internships", "guest_speakers", "job_shadows"],
+        properties: { internships: strArr, guest_speakers: strArr, job_shadows: strArr },
+      },
+      career_pathway_context: {
+        type: "object",
+        additionalProperties: false,
+        required: ["sequence", "note"],
+        properties: {
+          sequence: {
+            type: "array",
+            items: {
+              type: "object",
+              additionalProperties: false,
+              required: ["level", "course", "description", "is_current"],
+              properties: {
+                level: { type: "string" },
+                course: { type: "string" },
+                description: { type: "string" },
+                is_current: { type: "boolean" },
+              },
+            },
+          },
+          note: { type: "string" },
+        },
+      },
+      suggested_video_searches: strArr,
+    },
+  }
+
+  if (includeELL) {
+    schema.required.push("ell_accommodations")
+    schema.properties.ell_accommodations = {
+      type: "object",
+      additionalProperties: false,
+      required: ["language_objectives", "tiered_vocabulary", "sentence_frames", "visual_supports", "simplified_instructions"],
+      properties: {
+        language_objectives: strArr,
+        tiered_vocabulary: {
+          type: "object",
+          additionalProperties: false,
+          required: ["tier_1", "tier_2", "tier_3"],
+          properties: { tier_1: strArr, tier_2: strArr, tier_3: strArr },
+        },
+        sentence_frames: strArr,
+        visual_supports: strArr,
+        simplified_instructions: { type: "string" },
+      },
+    }
+  }
+
+  return schema
+}
+
 /**
  * @param {Object} input
  * @param {'hospitality'|'finance'|'marketing'|'human_services'} input.pathway
@@ -416,5 +538,7 @@ CRITICAL requirements for this stage:
 
 Return the JSON object now.`
 
-  return { system, user }
+  const schema = buildCteLessonSchema(includeELL)
+
+  return { system, user, schema }
 }

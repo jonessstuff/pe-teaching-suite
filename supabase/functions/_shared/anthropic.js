@@ -17,9 +17,12 @@ const MODEL = "claude-sonnet-4-6";
  * @param {number} [maxTokens]
  * @param {string} [model]  override the default model (e.g. a faster model for
  *   generations that must complete within a tight function time limit)
+ * @param {object} [schema]  JSON Schema for structured outputs. When provided, the
+ *   model is constrained to emit valid, schema-conforming JSON (no preamble, no
+ *   malformed escaping). Recommended with faster/less-strict models.
  * @returns {Promise<any>}
  */
-export async function callClaudeForJson(system, user, maxTokens = 4096, model = MODEL) {
+export async function callClaudeForJson(system, user, maxTokens = 4096, model = MODEL, schema = null) {
   const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
   if (!apiKey) {
     throw new Error("ANTHROPIC_API_KEY is not configured");
@@ -37,6 +40,9 @@ export async function callClaudeForJson(system, user, maxTokens = 4096, model = 
       max_tokens: maxTokens,
       system,
       messages: [{ role: "user", content: user }],
+      // Structured outputs (GA — no beta header). Guarantees the response text is
+      // valid JSON matching the schema.
+      ...(schema ? { output_config: { format: { type: "json_schema", schema } } } : {}),
     }),
   });
 
