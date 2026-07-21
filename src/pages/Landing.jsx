@@ -110,7 +110,7 @@ export default function Landing() {
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-lg text-ink-400 leading-relaxed">
-            You teach every kid in the building. PE, Art, Music, Library, STEM — you see them all,
+            You teach every kid in the building. PE, Art, Music, Library, STEM, Adaptive PE, CTE — you see them all,
             every week, all year long. But when it comes to planning tools, curriculum support, and
             AI? Everyone builds for the classroom teacher. PlansK12 was built for you. Real lesson
             plans in minutes, standards-aligned to your state, built around how your class actually
@@ -134,6 +134,12 @@ export default function Landing() {
             <span className="rounded-full bg-cyan-500/15 px-3 py-1 text-xs font-medium text-cyan-400">
               STEM
             </span>
+            <span className="rounded-full bg-rose-500/15 px-3 py-1 text-xs font-medium text-rose-400">
+              Adaptive PE
+            </span>
+            <span className="rounded-full bg-pink-500/15 px-3 py-1 text-xs font-medium text-pink-400">
+              CTE
+            </span>
           </div>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -154,7 +160,7 @@ export default function Landing() {
           <div className="mb-10 text-center">
             <p className="label-eyebrow mb-3">Who it's for</p>
             <h2 className="text-3xl font-display font-semibold tracking-tight text-ink-50">
-              One tool for five subjects they never had one for.
+              One tool for seven subjects they never had one for.
             </h2>
           </div>
 
@@ -183,6 +189,16 @@ export default function Landing() {
               name="STEM"
               color="cyan"
               description="Engineering challenges, coding, science investigations, and maker projects — all four in one place."
+            />
+            <ModuleCard
+              name="Adaptive PE"
+              color="rose"
+              description="Full APE lessons and accommodation plans for students with disabilities — built for real IEP goals, not generic advice."
+            />
+            <ModuleCard
+              name="CTE"
+              color="pink"
+              description="Career & Technical Education across Hospitality & Tourism, Finance, and Marketing pathways — standards-aligned and industry-relevant."
             />
           </div>
         </div>
@@ -430,6 +446,8 @@ const MODULE_STYLES = {
   orange:  { border: 'border-orange-400',  name: 'text-orange-400'  },
   purple:  { border: 'border-purple-400',  name: 'text-purple-400'  },
   cyan:    { border: 'border-cyan-400',    name: 'text-cyan-400'    },
+  rose:    { border: 'border-rose-400',    name: 'text-rose-400'    },
+  pink:    { border: 'border-pink-400',    name: 'text-pink-400'    },
 }
 
 function ModuleCard({ name, color, description }) {
