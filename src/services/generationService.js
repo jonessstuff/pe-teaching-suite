@@ -215,6 +215,12 @@ export async function generateCteLesson(input) {
     } catch {}
     throw new Error(message)
   }
+  // generate-cte-lesson streams a keepalive to beat the 150s idle timeout, so a
+  // generation failure comes back as HTTP 200 with an { error } body rather than a
+  // non-2xx status. Surface it instead of rendering a broken lesson.
+  if (data?.error) {
+    throw new Error(data.error)
+  }
   return data
 }
 
