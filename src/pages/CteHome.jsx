@@ -32,13 +32,13 @@ export default function CteHome() {
       {/* Header */}
       <div>
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-500/20">
-            <Briefcase size={20} className="text-slate-300" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-pink-500/20">
+            <Briefcase size={20} className="text-pink-400" />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-semibold text-ink-50">CTE</h1>
-              <span className="rounded-full bg-slate-500/20 px-2 py-0.5 text-xs font-medium text-slate-300">
+              <span className="rounded-full bg-pink-500/20 px-2 py-0.5 text-xs font-medium text-pink-400">
                 Beta
               </span>
             </div>
@@ -53,15 +53,15 @@ export default function CteHome() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Link
           to="/cte/generate"
-          className="card group flex flex-col gap-4 p-6 transition-colors hover:border-slate-400/40"
+          className="card group flex flex-col gap-4 p-6 transition-colors hover:border-pink-400/40"
         >
           <div className="flex items-start justify-between">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-500/20">
-              <Sparkles size={22} className="text-slate-300" />
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-pink-500/20">
+              <Sparkles size={22} className="text-pink-400" />
             </div>
             <ArrowRight
               size={18}
-              className="mt-0.5 text-ink-700 transition-transform group-hover:translate-x-1 group-hover:text-slate-300"
+              className="mt-0.5 text-ink-700 transition-transform group-hover:translate-x-1 group-hover:text-pink-400"
             />
           </div>
           <div>
@@ -129,7 +129,7 @@ export default function CteHome() {
           {(lessons ?? []).length > 3 && (
             <Link
               to="/cte/lessons"
-              className="text-sm font-medium text-slate-300 hover:text-slate-100"
+              className="text-sm font-medium text-pink-400 hover:text-pink-300"
             >
               View all
             </Link>

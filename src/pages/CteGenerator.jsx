@@ -223,8 +223,8 @@ export default function CteGenerator() {
           CTE home
         </Link>
         <div className="flex items-center gap-2 mb-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-500/20">
-            <Briefcase size={18} className="text-slate-300" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-pink-500/20">
+            <Briefcase size={18} className="text-pink-400" />
           </div>
           <div>
             <h1 className="text-xl font-semibold text-ink-50">CTE Lesson Generator</h1>
@@ -253,18 +253,18 @@ export default function CteGenerator() {
                 onClick={() => handlePathwayChange(value)}
                 className={`flex flex-col gap-3 rounded-xl border p-4 text-left transition-colors ${
                   pathway === value
-                    ? 'border-slate-400/50 bg-slate-500/15'
+                    ? 'border-pink-400/50 bg-pink-500/15'
                     : 'border-ink-800 bg-ink-900 hover:border-ink-700'
                 }`}
               >
                 <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${
-                  pathway === value ? 'bg-slate-500/25' : 'bg-ink-800'
+                  pathway === value ? 'bg-pink-500/25' : 'bg-ink-800'
                 }`}>
-                  <Icon size={16} className={pathway === value ? 'text-slate-200' : 'text-ink-400'} />
+                  <Icon size={16} className={pathway === value ? 'text-pink-400' : 'text-ink-400'} />
                 </div>
                 <div>
                   <p className={`text-sm font-semibold leading-tight ${
-                    pathway === value ? 'text-slate-100' : 'text-ink-200'
+                    pathway === value ? 'text-ink-50' : 'text-ink-200'
                   }`}>
                     {label}
                   </p>
@@ -287,11 +287,11 @@ export default function CteGenerator() {
                 onClick={() => setTier('ms')}
                 className={`rounded-xl border p-4 text-left transition-colors ${
                   tier === 'ms'
-                    ? 'border-slate-400/50 bg-slate-500/15'
+                    ? 'border-pink-400/50 bg-pink-500/15'
                     : 'border-ink-800 bg-ink-900 hover:border-ink-700'
                 }`}
               >
-                <p className={`text-sm font-semibold ${tier === 'ms' ? 'text-slate-100' : 'text-ink-200'}`}>
+                <p className={`text-sm font-semibold ${tier === 'ms' ? 'text-ink-50' : 'text-ink-200'}`}>
                   Middle School
                 </p>
                 <p className="mt-0.5 text-xs text-ink-500">Exploratory — career awareness &amp; rotation</p>
@@ -301,11 +301,11 @@ export default function CteGenerator() {
                 onClick={() => setTier('hs')}
                 className={`rounded-xl border p-4 text-left transition-colors ${
                   tier === 'hs'
-                    ? 'border-slate-400/50 bg-slate-500/15'
+                    ? 'border-pink-400/50 bg-pink-500/15'
                     : 'border-ink-800 bg-ink-900 hover:border-ink-700'
                 }`}
               >
-                <p className={`text-sm font-semibold ${tier === 'hs' ? 'text-slate-100' : 'text-ink-200'}`}>
+                <p className={`text-sm font-semibold ${tier === 'hs' ? 'text-ink-50' : 'text-ink-200'}`}>
                   High School
                 </p>
                 <p className="mt-0.5 text-xs text-ink-500">Pathway — Intro → Concentrator → Completer</p>
@@ -325,11 +325,11 @@ export default function CteGenerator() {
                     onClick={() => setLevel(value)}
                     className={`rounded-lg border p-3 text-left transition-colors ${
                       level === value
-                        ? 'border-slate-400/50 bg-slate-500/15'
+                        ? 'border-pink-400/50 bg-pink-500/15'
                         : 'border-ink-800 bg-ink-900 hover:border-ink-700'
                     }`}
                   >
-                    <p className={`text-sm font-semibold ${level === value ? 'text-slate-100' : 'text-ink-200'}`}>
+                    <p className={`text-sm font-semibold ${level === value ? 'text-ink-50' : 'text-ink-200'}`}>
                       {label}
                     </p>
                     <p className="mt-0.5 text-xs text-ink-500 leading-snug">{description}</p>
@@ -442,7 +442,7 @@ export default function CteGenerator() {
               type="checkbox"
               checked={isMultiStage}
               onChange={(e) => setIsMultiStage(e.target.checked)}
-              className="h-4 w-4 rounded border-ink-600 bg-ink-800 accent-slate-500"
+              className="h-4 w-4 rounded border-ink-600 bg-ink-800 accent-pink-500"
             />
             <span className="text-sm text-ink-300">
               This lesson is part of a multi-session project

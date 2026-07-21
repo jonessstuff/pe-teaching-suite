@@ -95,14 +95,14 @@ export default function CtePlanRenderer({ lesson }) {
           <span>{lesson.period_label ?? ''}</span>
           <div className="flex items-center gap-2 flex-wrap">
             {lesson.stage_label && (
-              <span className="label-eyebrow rounded px-2 py-0.5 bg-slate-500/20 text-slate-300">
+              <span className="label-eyebrow rounded px-2 py-0.5 bg-pink-500/20 text-pink-400">
                 {lesson.stage_label}
               </span>
             )}
-            <span className="label-eyebrow rounded px-2 py-0.5 bg-slate-500/20 text-slate-300">
+            <span className="label-eyebrow rounded px-2 py-0.5 bg-pink-500/20 text-pink-400">
               {pathwayLabel}
             </span>
-            <span className="label-eyebrow rounded px-2 py-0.5 bg-slate-500/20 text-slate-300">
+            <span className="label-eyebrow rounded px-2 py-0.5 bg-pink-500/20 text-pink-400">
               CTE · {tierLabel(lesson)}
             </span>
           </div>
@@ -123,23 +123,23 @@ export default function CtePlanRenderer({ lesson }) {
       {/* Career Pathway context */}
       {pathwaySeq.length > 0 && (
         <Section title="Career Pathway" copyText={pathwayCtxText}>
-          <div className="rounded-xl border border-slate-500/25 bg-slate-500/5 p-4 space-y-2">
+          <div className="rounded-xl border border-pink-500/25 bg-pink-500/5 p-4 space-y-2">
             <p className="text-xs text-ink-500">Where this lesson sits in the {pathwayLabel} course sequence:</p>
             <ol className="space-y-2">
               {pathwaySeq.map((s, i) => (
                 <li
                   key={i}
                   className={`flex items-start gap-2 rounded-lg px-3 py-2 ${
-                    s.is_current ? 'bg-slate-500/20 ring-1 ring-slate-400/40' : 'bg-ink-900'
+                    s.is_current ? 'bg-pink-500/20 ring-1 ring-pink-400/40' : 'bg-ink-900'
                   }`}
                 >
-                  <span className={`mt-0.5 text-xs font-semibold ${s.is_current ? 'text-slate-200' : 'text-ink-500'}`}>
+                  <span className={`mt-0.5 text-xs font-semibold ${s.is_current ? 'text-ink-50' : 'text-ink-500'}`}>
                     {i + 1}
                   </span>
                   <div>
-                    <p className={`text-sm font-semibold ${s.is_current ? 'text-slate-200' : 'text-ink-300'}`}>
+                    <p className={`text-sm font-semibold ${s.is_current ? 'text-ink-50' : 'text-ink-300'}`}>
                       {LEVEL_LABELS[s.level] ?? s.level}: {s.course}
-                      {s.is_current && <span className="ml-2 text-xs font-normal text-slate-400">(this lesson)</span>}
+                      {s.is_current && <span className="ml-2 text-xs font-normal text-ink-300">(this lesson)</span>}
                     </p>
                     {s.description && <p className="mt-0.5 text-xs text-ink-500">{s.description}</p>}
                   </div>
@@ -148,7 +148,7 @@ export default function CtePlanRenderer({ lesson }) {
             </ol>
             {pathwayCtx.note && (
               <p className="pt-1 text-sm text-ink-300">
-                <span className="font-semibold text-slate-300">Where this leads: </span>
+                <span className="font-semibold text-pink-400">Where this leads: </span>
                 {pathwayCtx.note}
               </p>
             )}
@@ -171,7 +171,7 @@ export default function CtePlanRenderer({ lesson }) {
           <ul className="list-disc list-inside space-y-1">
             {competencies.map((c, i) => (
               <li key={i}>
-                {c.code && <span className="font-semibold text-slate-300">{c.code}</span>}
+                {c.code && <span className="font-semibold text-pink-400">{c.code}</span>}
                 {c.framework && (
                   <span className={`${c.code ? 'ml-1 ' : ''}text-xs text-ink-500`}>({c.framework})</span>
                 )}
@@ -182,8 +182,8 @@ export default function CtePlanRenderer({ lesson }) {
           </ul>
         )}
         {(lesson.credential_focus ?? []).length > 0 && (
-          <div className="mt-3 rounded-lg border border-slate-500/20 bg-slate-500/5 p-3">
-            <p className="text-xs font-semibold text-slate-300 mb-1">Industry credentials this pathway builds toward</p>
+          <div className="mt-3 rounded-lg border border-pink-500/20 bg-pink-500/5 p-3">
+            <p className="text-xs font-semibold text-pink-400 mb-1">Industry credentials this pathway builds toward</p>
             <ul className="list-disc list-inside space-y-0.5 text-xs text-ink-400">
               {(lesson.credential_focus ?? []).map((c, i) => (
                 <li key={i}>{c}</li>
@@ -230,7 +230,7 @@ export default function CtePlanRenderer({ lesson }) {
           <div className="space-y-4">
             {(wbl.internships ?? []).length > 0 && (
               <div>
-                <p className="text-sm font-semibold text-slate-300 mb-1">Internships & Practicums</p>
+                <p className="text-sm font-semibold text-pink-400 mb-1">Internships & Practicums</p>
                 <ul className="list-disc list-inside space-y-1 text-ink-300">
                   {(wbl.internships ?? []).map((item, i) => <li key={i}>{item}</li>)}
                 </ul>
@@ -238,7 +238,7 @@ export default function CtePlanRenderer({ lesson }) {
             )}
             {(wbl.guest_speakers ?? []).length > 0 && (
               <div>
-                <p className="text-sm font-semibold text-slate-300 mb-1">Guest Speakers</p>
+                <p className="text-sm font-semibold text-pink-400 mb-1">Guest Speakers</p>
                 <ul className="list-disc list-inside space-y-1 text-ink-300">
                   {(wbl.guest_speakers ?? []).map((item, i) => <li key={i}>{item}</li>)}
                 </ul>
@@ -246,7 +246,7 @@ export default function CtePlanRenderer({ lesson }) {
             )}
             {(wbl.job_shadows ?? []).length > 0 && (
               <div>
-                <p className="text-sm font-semibold text-slate-300 mb-1">Job Shadows</p>
+                <p className="text-sm font-semibold text-pink-400 mb-1">Job Shadows</p>
                 <ul className="list-disc list-inside space-y-1 text-ink-300">
                   {(wbl.job_shadows ?? []).map((item, i) => <li key={i}>{item}</li>)}
                 </ul>
@@ -394,7 +394,7 @@ export default function CtePlanRenderer({ lesson }) {
                   href={`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-slate-300 hover:text-slate-100 underline underline-offset-2"
+                  className="text-pink-400 hover:text-pink-300 underline underline-offset-2"
                 >
                   {query}
                 </a>
@@ -428,7 +428,7 @@ function Section({ title, copyText, children }) {
           <button
             type="button"
             onClick={handleCopy}
-            className="flex items-center gap-1 text-xs text-ink-400 hover:text-slate-300 transition-colors print:hidden"
+            className="flex items-center gap-1 text-xs text-ink-400 hover:text-pink-400 transition-colors print:hidden"
             title="Copy this section to clipboard"
           >
             {copied ? <Check size={14} /> : <Copy size={14} />}

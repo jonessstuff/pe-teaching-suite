@@ -23,6 +23,7 @@ const SUBJECT_STYLES = {
   Health: 'bg-subject-health/15 text-subject-health',
   'Family Life': 'bg-subject-family/15 text-subject-family',
   "Driver's Ed": 'bg-subject-drivers/15 text-subject-drivers',
+  CTE: 'bg-pink-500/15 text-pink-400',
 }
 
 function formatGrade(g) {
