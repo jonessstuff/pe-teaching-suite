@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
+import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
 import { generateCteLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
@@ -32,6 +32,12 @@ const PATHWAYS = [
     description: 'Family & Consumer Sciences, independent living & workplace readiness',
     icon: HeartHandshake,
   },
+  {
+    value: 'health_science',
+    label: 'Health Science',
+    description: 'Anatomy & physiology, clinical skills, medical terminology & careers',
+    icon: Stethoscope,
+  },
 ]
 
 const LEVELS = [
@@ -45,6 +51,7 @@ const TOPIC_PLACEHOLDERS = {
   finance:     'e.g. Building a monthly budget, Comparing two credit-card offers, Simple vs. compound interest, Reading a pay stub',
   marketing:   'e.g. Identify a target market, Build the marketing mix for a product, Analyze a real ad campaign, DECA role-play prep',
   human_services: 'e.g. Reading a nutrition label, Building a personal budget, Age-appropriate child activities, Mock job interview & workplace readiness',
+  health_science: 'e.g. Taking vital signs, The cardiovascular system, Medical terminology word parts, Infection control & PPE, Patient positioning',
 }
 
 const MATERIAL_PLACEHOLDERS = {
@@ -87,6 +94,16 @@ const MATERIAL_PLACEHOLDERS = {
     'e.g. Sample consumer contracts / ads',
     'e.g. FCCLA STAR Event guidelines',
     'e.g. Laptops for research — 1 per pair',
+  ],
+  health_science: [
+    'e.g. Blood pressure cuffs — 1 per pair',
+    'e.g. Stethoscopes — 1 per pair',
+    'e.g. Digital thermometers',
+    'e.g. Anatomical models / torso',
+    'e.g. PPE — gloves & masks',
+    'e.g. CPR manikins',
+    'e.g. Medical terminology reference sheet',
+    'e.g. Patient charting templates',
   ],
 }
 
@@ -263,7 +280,7 @@ export default function CteGenerator() {
         {/* Pathway selector */}
         <div className="space-y-3">
           <h2 className="text-sm font-semibold text-ink-200">Pathway</h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             {PATHWAYS.map(({ value, label, description, icon: Icon }) => (
               <button
                 key={value}
@@ -440,10 +457,11 @@ export default function CteGenerator() {
               id="cte-competency"
               type="text"
               placeholder={
-                pathway === 'hospitality'    ? 'e.g. Demonstrate proper handwashing (ServSafe)' :
-                pathway === 'finance'        ? 'e.g. Calculate compound interest (Jump$tart)' :
-                pathway === 'human_services' ? 'e.g. Plan a balanced meal (AAFCS Nutrition & Wellness)' :
-                                               'e.g. Identify a target market (DECA PI)'
+                pathway === 'hospitality'     ? 'e.g. Demonstrate proper handwashing (ServSafe)' :
+                pathway === 'finance'         ? 'e.g. Calculate compound interest (Jump$tart)' :
+                pathway === 'human_services'  ? 'e.g. Plan a balanced meal (AAFCS Nutrition & Wellness)' :
+                pathway === 'health_science'  ? 'e.g. Measure and record blood pressure (NCHSE)' :
+                                                'e.g. Identify a target market (DECA PI)'
               }
               value={targetCompetency}
               onChange={(e) => setTargetCompetency(e.target.value)}

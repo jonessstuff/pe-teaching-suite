@@ -10,6 +10,7 @@ const PATHWAY_FILTERS = [
   { value: 'finance', label: 'Finance' },
   { value: 'marketing', label: 'Marketing' },
   { value: 'human_services', label: 'Human Services / FCS' },
+  { value: 'health_science', label: 'Health Science' },
 ]
 
 export default function CteLessonLibrary() {

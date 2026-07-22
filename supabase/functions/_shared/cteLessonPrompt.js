@@ -20,6 +20,7 @@ const PATHWAY_LABELS = {
   finance: "Finance",
   marketing: "Marketing",
   human_services: "Human Services / Family & Consumer Sciences",
+  health_science: "Health Science",
 }
 
 function tierLevelLabel(tier, level) {
@@ -63,6 +64,13 @@ Then include entries from these where the lesson content maps to them:
 - AAFCS Pre-PAC (Pre-Professional Assessment and Certification) — the industry-credential assessments this pathway builds toward (e.g., Leadership Essentials, Nutrition/Food/Wellness Consultant, Food Science Fundamentals, Culinary Arts). Framework field: "Pre-PAC". Especially relevant for nutrition, food, wellness, and leadership content.
 - FCCLA (Family, Career and Community Leaders of America) — the pathway CTSO (national, parallel to DECA/FBLA). Align applied tasks and projects to relevant FCCLA competitive events and national programs (e.g., STAR Events, FCCLA national programs like Families First, Career Connection). Framework field: "FCCLA".
 Content areas to prioritize: Family & Consumer Sciences core plus Independent Living / Workplace Readiness — these map to the Virginia FCS-Development and "Career, Community and Family Connections" courses.`,
+    health_science: `Primary national framework for Health Science — lead the competency list with entries from this, and treat the state CTE task list above as the state verification layer for it:
+- National Health Science Standards (NCHSE — National Consortium for Health Science Education) — the primary content framework for this pathway (foundation standards such as Academic Foundation / anatomy & physiology, Communications, Systems, Employability Skills, Legal Responsibilities, Ethics, Safety Practices, Teamwork, Health Maintenance Practices, Technical Skills, and Information Technology). Framework field: "NCHSE". Use the NCHSE standard / accountability-criterion numbering only when confident; otherwise describe the competency and omit the code.
+Then include entries from these where the lesson content maps to them:
+- NHA (National Healthcareer Association) — the industry-credential assessments this pathway builds toward (e.g., CCMA Certified Clinical Medical Assistant, CPT Certified Phlebotomy Technician, CET EKG Technician, CBCS Billing & Coding). Framework field: "NHA". Especially relevant for clinical, patient-care, and diagnostic content.
+- CPR / First Aid (AHA or American Red Cross) — a common entry-level credential; align safety and medical-emergency content to it. Framework field: "CPR/First Aid".
+- HOSA — Future Health Professionals — the pathway CTSO (national, parallel to DECA / FBLA / FCCLA). Align applied tasks and projects to relevant HOSA competitive events and programs. Framework field: "HOSA".
+Content areas to prioritize: the Health Science I: Careers and Body Systems foundation — anatomy & physiology by body system, healthcare / medical terminology, common pathologies, diagnostic and clinical procedures, therapeutic interventions, and medical-emergency care fundamentals.`,
   }[pathway] ?? ""
 
   const rigorNote =
@@ -88,6 +96,7 @@ function getCredentialFocus(pathway) {
     finance: ["W!SE Financial Literacy Certification", "FBLA competitive event recognition", "Jump$tart-aligned personal finance certificates"],
     marketing: ["DECA competitive event certifications", "NBEA Marketing-aligned recognition", "A*S*K / Marketing industry micro-credentials"],
     human_services: ["AAFCS Pre-PAC certifications (e.g., Leadership Essentials, Nutrition/Food/Wellness, Food Science Fundamentals)", "FCCLA competitive event & national program recognition", "ServSafe Food Handler (for foods/nutrition content)"],
+    health_science: ["NHA certifications (e.g., CCMA Clinical Medical Assistant, CPT Phlebotomy Technician)", "CPR / First Aid certification (AHA or American Red Cross)", "HOSA competitive event & program recognition"],
   }[pathway] ?? []
 }
 
@@ -181,6 +190,28 @@ function getPhaseDescriptions(pathway) {
         desc: "Students reflect on how today's skill applies to their own independent living, family, or future workplace, and name one thing they would do with it outside class. Connect the skill to a real human-services or FCS career and to the credential/competition it supports (AAFCS Pre-PAC / FCCLA). End with a brief exit ticket. 5–8 minutes.",
       },
     },
+    health_science: {
+      warm_up: {
+        name: "Clinical Hook",
+        desc: "Open with a concrete healthcare scenario — a patient presenting a symptom, an abnormal vital sign, a diagnostic image, a medical case or headline. Students react to a real situation a healthcare worker faces. Connect to a named role, body system, or setting. 5–8 minutes.",
+      },
+      whole_group_instruction: {
+        name: "Concept Instruction",
+        desc: "Teach the core health-science concept directly using correct medical terminology (anatomy & physiology by body system, pathology, procedure names, root/prefix/suffix word parts). Ground it in the relevant NCHSE standard. Address a common misconception and check understanding before hands-on work. 8–12 minutes.",
+      },
+      fitness_activities: {
+        name: "Skill Demonstration",
+        desc: "Model the clinical skill or procedure step by step the way it is performed in a healthcare setting — proper handwashing and PPE, taking a blood pressure or pulse, patient positioning, a terminology breakdown, a charting entry. Name each step and the safety/infection-control point. Students watch, then walk through it once with teacher support. 5–10 minutes.",
+      },
+      independent_practice: {
+        name: "Hands-On Clinical Application",
+        desc: "Students apply the skill in a realistic lab or simulation: take and record vital signs on a partner, practice a procedure on a manikin, work a patient case study, chart findings, or complete a HOSA-style task. Describe exactly what students do, what a competent clinical result looks like, and what the teacher observes and coaches. Include a checklist or rubric aligned to how the task is evaluated (NCHSE competency, NHA skill, or CPR/First Aid standard). 15–20 minutes.",
+      },
+      closure: {
+        name: "Reflection & Career Connection",
+        desc: "Students reflect on how today's skill fits into patient care and a real healthcare career, and name one professional habit they would carry forward. Connect the skill to the credential/competition it supports (NHA / CPR-First Aid / HOSA). End with a brief exit ticket. 5–8 minutes.",
+      },
+    },
   }
   return map[pathway] ?? map.hospitality
 }
@@ -209,15 +240,24 @@ function getPathwaySequence(pathway) {
       { level: "concentrator", course: "Independent Living / Workplace Readiness (FCS-Development)", description: "Applied independent-living and employability skills — personal finance, foods & nutrition, consumer decisions, professional communication, aligned to AAFCS competencies." },
       { level: "completer", course: "Career, Community and Family Connections / Capstone, FCCLA & Work-Based Learning", description: "Capstone connecting FCS skills to careers and community, FCCLA leadership & competitive events, AAFCS Pre-PAC credential attainment, and work-based learning placement." },
     ],
+    health_science: [
+      { level: "introductory", course: "Health Science I: Careers and Body Systems", description: "Foundations — anatomy & physiology by body system, medical terminology, common pathologies, healthcare careers, safety and infection control, and introductory diagnostic/clinical procedures." },
+      { level: "concentrator", course: "Health Science II / Clinical & Diagnostic Procedures", description: "Applied clinical skills — patient care, vital signs, infection control to standard, therapeutic and diagnostic procedures, CPR/First Aid, and medical-emergency fundamentals." },
+      { level: "completer", course: "Advanced Health Science / Clinical Practicum, HOSA & Work-Based Learning", description: "Capstone with clinical practicum, NHA industry-credential attainment (e.g., CCMA/CPT), HOSA competitive events, and work-based learning placement in a healthcare setting." },
+    ],
   }[pathway] ?? []
 }
 
 // Optional pathway-specific work-based learning guidance, appended to the WBL block.
-// Human Services uses Virginia's High-Quality Work-Based Learning (HQWBL) model, which
-// recognizes a broader set of 12 methods than the internship/shadow/speaker default.
+// Human Services and Health Science use Virginia's High-Quality Work-Based Learning
+// (HQWBL) model, which recognizes a broader set of 12 methods than the
+// internship/shadow/speaker default.
 function getWblGuidance(pathway) {
-  if (pathway === "human_services") {
-    return `\nThis pathway follows Virginia's High-Quality Work-Based Learning (HQWBL) model, which recognizes 12 methods: job shadowing, service learning, mentorship, externship, school-based enterprise, internship, entrepreneurship, clinical experience, cooperative education, youth registered apprenticeship, registered apprenticeship, and supervised agricultural experience. When filling the fields below, draw the most lesson-appropriate ideas from this broader set (not only internships/shadows) — e.g., service learning with a community agency, a school-based enterprise, a clinical/childcare experience, or a mentorship — and fold them into the internships and job_shadows arrays as fits this lesson's content and tier.`
+  if (pathway === "human_services" || pathway === "health_science") {
+    const emphasis = pathway === "health_science"
+      ? " Clinical experience is especially relevant for this pathway — prioritize clinical/hospital placements, patient-care rotations, and health-agency service learning where appropriate."
+      : ""
+    return `\nThis pathway follows Virginia's High-Quality Work-Based Learning (HQWBL) model, which recognizes 12 methods: job shadowing, service learning, mentorship, externship, school-based enterprise, internship, entrepreneurship, clinical experience, cooperative education, youth registered apprenticeship, registered apprenticeship, and supervised agricultural experience. When filling the fields below, draw the most lesson-appropriate ideas from this broader set (not only internships/shadows) — e.g., service learning with a community agency, a clinical experience, a school-based enterprise, or a mentorship — and fold them into the internships and job_shadows arrays as fits this lesson's content and tier.${emphasis}`
   }
   return ""
 }
@@ -346,7 +386,7 @@ export function buildCteLessonSchema(includeELL = false) {
 
 /**
  * @param {Object} input
- * @param {'hospitality'|'finance'|'marketing'|'human_services'} input.pathway
+ * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'} input.pathway
  * @param {'ms'|'hs'} input.tier
  * @param {'introductory'|'concentrator'|'completer'|''} [input.level]  required when tier === 'hs'
  * @param {string}  input.topic
@@ -491,7 +531,7 @@ Field notes:
 - tier: always exactly "${tier}"; level: always exactly "${effectiveLevel}"
 - unit: the broader CTE unit this lesson belongs to (e.g., "Guest Service & Front Office", "Credit & Borrowing", "The Marketing Mix")
 - stage_label: ${isMultiStage ? `"${stageLabel}" — required exactly as shown` : `"" (empty string — standalone lesson)`}
-- competencies: framework field must match the framework name exactly ("VA CTE" / "State CTE", "ServSafe", "AHLEI", "Jump$tart", "CEE", "FBLA", "DECA", "NBEA Marketing", "AAFCS", "Pre-PAC", "FCCLA"). If unsure of a code, leave code as "" and describe the competency in text.
+- competencies: framework field must match the framework name exactly ("VA CTE" / "State CTE", "ServSafe", "AHLEI", "Jump$tart", "CEE", "FBLA", "DECA", "NBEA Marketing", "AAFCS", "Pre-PAC", "FCCLA", "NCHSE", "NHA", "CPR/First Aid", "HOSA"). If unsure of a code, leave code as "" and describe the competency in text.
 - credential_focus: the industry-recognized credentials this pathway prepares students toward. Suggested for ${pathwayLabel}: ${credentialFocus.join("; ")}. Adjust to the lesson.
 - learning_target: a single "Today I will…" statement for this tier/level (NOT keyed by grade).
 - success_criteria: exactly 3 "I can…" statements for this tier/level.

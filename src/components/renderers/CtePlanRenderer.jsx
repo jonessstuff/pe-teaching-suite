@@ -6,6 +6,7 @@ const PHASE_LABELS = {
   finance:     ['Financial Bell-Ringer', 'Concept Instruction', 'Guided Worked Example', 'Applied Finance Task', 'Reflection & Real-World Connection'],
   marketing:   ['Marketing Hook', 'Concept Instruction', 'Example Analysis', 'Applied Marketing Task', 'Present & Debrief'],
   human_services: ['Real-Life Hook', 'Concept Instruction', 'Skill Demonstration', 'Hands-On Application', 'Reflection & Life/Career Connection'],
+  health_science: ['Clinical Hook', 'Concept Instruction', 'Skill Demonstration', 'Hands-On Clinical Application', 'Reflection & Career Connection'],
 }
 
 const PATHWAY_LABELS = {
@@ -13,6 +14,7 @@ const PATHWAY_LABELS = {
   finance:     'Finance',
   marketing:   'Marketing',
   human_services: 'Human Services / Family & Consumer Sciences',
+  health_science: 'Health Science',
 }
 
 const LEVEL_LABELS = {
