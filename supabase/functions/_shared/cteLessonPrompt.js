@@ -477,6 +477,8 @@ CAREER PATHWAY CONTEXT (career_pathway_context field): Show teachers where this 
 ${sequenceForPrompt}
 This lesson is in the ${currentLevelName} course. Populate career_pathway_context.sequence with one object per level ({ level, course, description, is_current }) marking the current course, and career_pathway_context.note with one sentence on what students who complete this pathway are prepared to do next (next course, credential, postsecondary, or entry-level role).
 
+LENGTH DISCIPLINE — IMPORTANT: Producing a COMPLETE lesson (every field present, JSON closed) matters more than exhaustive detail in any one field. Be specific and practical, but concise — do not pad or repeat content across fields. Aim for each of the five phase fields to be one to two focused paragraphs (roughly 120–180 words each), teacher_prep to be a tight numbered checklist, and list fields to hold the counts requested (no more). A response that runs long and gets cut off before the closing brace is a FAILED response — keep the entire lesson within budget.
+
 You must return ONLY a single JSON object — no markdown fences, no commentary, no preamble — matching this exact schema:
 
 {
