@@ -51,6 +51,8 @@ import MyPacingGuides from './pages/MyPacingGuides'
 import FieldDayPlanner from './pages/FieldDayPlanner'
 import PortfolioBuilder from './pages/PortfolioBuilder'
 import DistrictReport from './pages/DistrictReport'
+import ClassroomManagementGenerator from './pages/ClassroomManagementGenerator'
+import MyClassroomCards from './pages/MyClassroomCards'
 
 // Module-level promise reference. When a genuine new login triggers claimSession(),
 // this holds the in-flight Promise so that any concurrent SIGNED_IN events (e.g.
@@ -234,6 +236,8 @@ function App() {
           <Route path="cte" element={<CteHome />} />
           <Route path="cte/generate" element={<CteGenerator />} />
           <Route path="cte/lessons" element={<CteLessonLibrary />} />
+          <Route path="classroom-management" element={<ClassroomManagementGenerator />} />
+          <Route path="my-classroom-cards" element={<MyClassroomCards />} />
           <Route path="sub-binder" element={<SubBinderGenerator />} />
           <Route path="my-binders" element={<MyBinders />} />
           <Route path="assessments" element={<AssessmentBank />} />

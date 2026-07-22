@@ -131,6 +131,35 @@
     background-color: #f9fafb !important;
   }
 
+  /* Classroom Management card — print in full color with the teacher's chosen
+     accent. These class-scoped selectors out-specify the universal reset above,
+     and print-color-adjust:exact forces Chrome to actually render the colors. */
+  .cm-print-root,
+  .cm-print-root * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .cm-print-root {
+    background-color: #ffffff !important;
+    border-color: #e2e8f0 !important;
+  }
+  .cm-print-root .cm-accent-bar {
+    background-color: var(--cm-accent) !important;
+  }
+  .cm-print-root .cm-accent-bar,
+  .cm-print-root .cm-accent-bar * {
+    color: #ffffff !important;
+  }
+  .cm-print-root .cm-accent-text {
+    color: var(--cm-accent) !important;
+  }
+  .cm-print-root .cm-accent-bg {
+    background-color: var(--cm-accent) !important;
+  }
+  .cm-print-root .cm-accent-border {
+    border-color: var(--cm-accent) !important;
+  }
+
   main {
     padding: 0 !important;
   }

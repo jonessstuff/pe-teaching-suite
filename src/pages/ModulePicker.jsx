@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Library, Palette, Music, FlaskConical, Briefcase, ArrowRight } from 'lucide-react'
+import { Library, Palette, Music, FlaskConical, Briefcase, ClipboardCheck, ArrowRight } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
 
 function getGreeting() {
@@ -179,6 +179,30 @@ export default function ModulePicker() {
             </p>
           </div>
           <div className="flex items-center gap-1.5 text-sm font-medium text-pink-400 transition-[gap] group-hover:gap-2.5">
+            Open module <ArrowRight size={15} />
+          </div>
+        </Link>
+
+        {/* Classroom Management */}
+        <Link
+          to="/classroom-management"
+          className="card group flex flex-col gap-6 p-8 transition-colors hover:border-indigo-400/40"
+        >
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-500/20">
+            <ClipboardCheck size={28} className="text-indigo-400" />
+          </div>
+          <div className="flex-1 space-y-1.5">
+            <div className="flex items-center gap-2.5">
+              <h2 className="text-xl font-semibold text-ink-50">Classroom Management</h2>
+              <span className="rounded-full bg-indigo-500/20 px-2 py-0.5 text-xs font-medium text-indigo-400">
+                New
+              </span>
+            </div>
+            <p className="text-sm text-ink-400 leading-relaxed">
+              Printable quick-reference cards for large-group specials classes — routines, attention signals, and behavior expectations (Grades 6–8)
+            </p>
+          </div>
+          <div className="flex items-center gap-1.5 text-sm font-medium text-indigo-400 transition-[gap] group-hover:gap-2.5">
             Open module <ArrowRight size={15} />
           </div>
         </Link>
