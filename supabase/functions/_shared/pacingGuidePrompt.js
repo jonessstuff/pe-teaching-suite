@@ -1,3 +1,13 @@
+// Coerce a free-text field to a trimmed string, tolerating non-string inputs
+// (e.g. an array of holidays, null, or a number) so a bad type can't crash the
+// function with "x?.trim is not a function".
+function asText(value) {
+  if (typeof value === 'string') return value.trim();
+  if (Array.isArray(value)) return value.filter(Boolean).join(', ').trim();
+  if (value == null) return '';
+  return String(value).trim();
+}
+
 export function buildPacingGuidePrompt({ subject, grade, state, quarterIndex, totalQuarters, schoolYearStart, schoolYearEnd, daysPerWeek, breaks, topics, previousQuarters }) {
   const gradeLabel = grade === 0 ? 'K' : String(grade);
   const quarterLabel = `Q${quarterIndex + 1}`;
@@ -49,10 +59,10 @@ Grade: ${gradeLabel}
 State: ${state ?? 'Not specified'}
 ${datesText}
 Days per week: ${daysPerWeek ?? 5}
-Known breaks/holidays in this quarter: ${breaks?.trim() || 'None specified'}
+Known breaks/holidays in this quarter: ${asText(breaks) || 'None specified'}
 
 Teacher's requested topics/units for this quarter (incorporate if relevant):
-${topics?.trim() || 'Not specified — use your curriculum expertise for this grade/subject.'}
+${asText(topics) || 'Not specified — use your curriculum expertise for this grade/subject.'}
 ${priorContext}
 
 Return the JSON object now.`;
