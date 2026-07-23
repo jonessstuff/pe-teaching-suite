@@ -117,3 +117,129 @@ Across the WHOLE card, use concrete, observable, subject-specific language — n
 
   return { system, user, schema }
 }
+
+// ── Behavior Chart (traffic-light) ─────────────────────────────────────────────
+
+export function buildBehaviorChartSchema() {
+  const strArr = { type: "array", items: { type: "string" } }
+  return {
+    type: "object",
+    additionalProperties: false,
+    required: ["heading", "tiers", "move_up_steps"],
+    properties: {
+      heading: { type: "string" },
+      tiers: {
+        type: "array",
+        items: {
+          type: "object",
+          additionalProperties: false,
+          required: ["color", "label", "descriptors"],
+          properties: {
+            color: { type: "string", enum: ["green", "yellow", "red"] },
+            label: { type: "string" },
+            descriptors: strArr,
+          },
+        },
+      },
+      move_up_steps: strArr,
+    },
+  }
+}
+
+export function buildBehaviorChartPrompt({ gradeBand = "6-8", classContext = "" } = {}) {
+  const band = getGradeBandGuidance(gradeBand)
+  const context = (classContext || "").trim()
+  const contextLine = context
+    ? `Class/subject context: ${context}. Make every tier descriptor a real, observable behavior in THIS setting.`
+    : `General "specials" class (PE, art, music, library, STEM). Keep descriptors broadly applicable.`
+
+  const system = `You are an expert classroom-management coach creating a COLOR-CODED, traffic-light BEHAVIOR CHART for grades ${band.display}, to be printed and posted where students can see it. Green = on track, Yellow = warning / time to reset, Red = stop and reset. It is a SELF-MONITORING and reset tool, NOT a punitive shame chart.
+
+You are writing for ${band.audience}.
+${band.calibration}
+The tone, complexity, and framing MUST fit this grade band — do not just relabel generic content. Grades 9–12 must read as a self-monitoring tool, not a childish or punitive chart; K–2 should be highly visual and simple (very short phrases that could pair with a face/emoji-style descriptor).
+
+${contextLine}
+
+Fill:
+- heading: short chart title fitting the grade band.
+- tiers: EXACTLY 3 tiers, in this order — green, then yellow, then red. Each is { color, label, descriptors }:
+    • color: "green" | "yellow" | "red" (in that order).
+    • label: a short tier name in this grade band's voice (e.g., green "Ready & Focused", yellow "Slow Down / Reset", red "Stop & Reset").
+    • descriptors: 3–4 CONCRETE, OBSERVABLE behaviors a teacher or the student can actually see at that tier, specific to the subject and age. Green = what "on track" looks like right now; yellow = the early-warning behaviors; red = the behaviors that mean stop-and-reset.
+- move_up_steps: 3–4 concrete, NON-PUNITIVE actions a student can take to move back toward green, specific to this class/age. This is the reset path, not a punishment.
+
+CRITICAL — concreteness: every descriptor and step names a specific, observable action or moment in THIS subject/grade. NO generic or motivational-poster language ("be respectful", "try your best", "make good choices", "have a growth mindset", "be your best self").
+Good vs. generic:
+  • GOOD (PE, yellow): "Wandering off your spot or play-fighting during instructions."
+  • GOOD (art, red): "Using tools unsafely, or paint/clay thrown or smeared on purpose."
+  • GENERIC — never write these: "Making bad choices." / "Not being your best self."
+Match wording and length to the grade band (very short for K–2, more adult for 9–12).`
+
+  const user = `Generate the grades ${band.display} traffic-light behavior chart now${context ? ` for this class context: ${context}` : ""}. Return the JSON object only.`
+
+  return { system, user, schema: buildBehaviorChartSchema() }
+}
+
+// ── Reflection / Reset Form ────────────────────────────────────────────────────
+
+export function buildReflectionFormSchema() {
+  const strArr = { type: "array", items: { type: "string" } }
+  const section = {
+    type: "object",
+    additionalProperties: false,
+    required: ["prompt", "options"],
+    properties: { prompt: { type: "string" }, options: strArr },
+  }
+  return {
+    type: "object",
+    additionalProperties: false,
+    required: ["heading", "intro", "what_happened", "do_differently", "need_now", "closing"],
+    properties: {
+      heading: { type: "string" },
+      intro: { type: "string" },
+      what_happened: section,
+      do_differently: section,
+      need_now: section,
+      closing: { type: "string" },
+    },
+  }
+}
+
+export function buildReflectionFormPrompt({ gradeBand = "6-8", classContext = "" } = {}) {
+  const band = getGradeBandGuidance(gradeBand)
+  const context = (classContext || "").trim()
+  const contextLine = context
+    ? `Class/subject context: ${context}. Make prompts and options concrete to THIS setting.`
+    : `General "specials" class. Keep prompts broadly applicable.`
+
+  const system = `You are an expert classroom-management coach creating a short REFLECTION / RESET FORM for grades ${band.display} — a form a student fills out after a behavior incident or during a cool-down. It must feel like a genuine reset and reflection tool, NOT a punishment worksheet. Never a "write it 100 times" exercise; never shaming.
+
+You are writing for ${band.audience}.
+${band.calibration}
+Calibrate the reading level, sentence length, and answer format to this grade band: for K–2, prompts must be very simple and the options should be circle-/check-style picture-friendly choices (a few words each) since young children can't write much; for 9–12, prompts can be more open-ended self-reflection with fewer canned options.
+
+${contextLine}
+
+Fill:
+- heading: short form title (e.g., "Take a Reset").
+- intro: ONE short, warm, non-punitive sentence framing this as a reset, not a punishment.
+- what_happened: { prompt, options } — prompt asks, at this grade band's level, what happened in the student's own words. options: 3–6 concrete, observable "what happened" choices the student can circle/check, specific to the subject and age (e.g. PE: "I ran when we were told to walk", "I argued about a call"). For 9–12, fewer, more neutral options plus room to write.
+- do_differently: { prompt, options } — prompt asks what they could do next time. options: 3–6 concrete alternative actions specific to this class/age.
+- need_now: { prompt, options } — prompt asks the ONE thing they need right now to reset. options: 3–6 concrete needs (e.g. "a minute of quiet", "a drink of water", "talk to the teacher", "space from my group", "help understanding the task").
+- closing: ONE short, encouraging, non-punitive line about rejoining when ready.
+
+CRITICAL — concreteness: every prompt and option names a real, observable action or need in THIS subject/grade. NO generic or motivational-poster language. Match reading level and tone to the grade band (simple and pictureable for K–2; open and respectful for 9–12).`
+
+  const user = `Generate the grades ${band.display} reflection/reset form now${context ? ` for this class context: ${context}` : ""}. Return the JSON object only.`
+
+  return { system, user, schema: buildReflectionFormSchema() }
+}
+
+// ── Dispatch by output type ────────────────────────────────────────────────────
+
+export function buildClassroomOutputPrompt(outputType, input) {
+  if (outputType === "behavior-chart") return buildBehaviorChartPrompt(input)
+  if (outputType === "reflection-form") return buildReflectionFormPrompt(input)
+  return buildClassroomManagementPrompt(input) // 'card' (default)
+}

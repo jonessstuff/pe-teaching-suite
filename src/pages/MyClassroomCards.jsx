@@ -5,6 +5,8 @@ import { useTrial } from '../context/TrialContext'
 import UpgradeBanner from '../components/UpgradeBanner'
 import { listCards, getCard, deleteCard } from '../services/classroomManagementService'
 import ClassroomCardRenderer from '../components/renderers/ClassroomCardRenderer'
+import BehaviorChartRenderer from '../components/renderers/BehaviorChartRenderer'
+import ReflectionFormRenderer from '../components/renderers/ReflectionFormRenderer'
 
 export default function MyClassroomCards() {
   const { isTrial, isExpired } = useTrial()
@@ -77,12 +79,13 @@ export default function MyClassroomCards() {
               <Printer size={16} /> Print / Save as PDF
             </button>
           </div>
-          <ClassroomCardRenderer
-            card={data.card}
-            teacherName={data.teacherName}
-            gradeBand={data.gradeBand ?? '6-8'}
-            accentHex={data.theme?.hex ?? '#1e3a8a'}
-          />
+          {data.outputType === 'behavior-chart' ? (
+            <BehaviorChartRenderer chart={data.card} teacherName={data.teacherName} gradeBand={data.gradeBand ?? '6-8'} classContext={data.classContext} accentHex={data.theme?.hex ?? '#1e3a8a'} />
+          ) : data.outputType === 'reflection-form' ? (
+            <ReflectionFormRenderer form={data.card} teacherName={data.teacherName} gradeBand={data.gradeBand ?? '6-8'} classContext={data.classContext} accentHex={data.theme?.hex ?? '#1e3a8a'} />
+          ) : (
+            <ClassroomCardRenderer card={data.card} teacherName={data.teacherName} gradeBand={data.gradeBand ?? '6-8'} accentHex={data.theme?.hex ?? '#1e3a8a'} />
+          )}
         </div>
       ) : (
         <div className="no-print">

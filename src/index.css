@@ -159,6 +159,21 @@
   .cm-print-root .cm-accent-border {
     border-color: var(--cm-accent) !important;
   }
+  /* Behavior-chart tier colors (green/yellow/red) — each element carries its own
+     --tier-color inline; print it in full color. */
+  .cm-print-root .cm-tier-bar {
+    background-color: var(--tier-color) !important;
+  }
+  .cm-print-root .cm-tier-bar,
+  .cm-print-root .cm-tier-bar * {
+    color: #ffffff !important;
+  }
+  .cm-print-root .cm-tier-text {
+    background-color: var(--tier-color) !important;
+  }
+  .cm-print-root .cm-tier-border {
+    border-color: var(--tier-color) !important;
+  }
 
   main {
     padding: 0 !important;

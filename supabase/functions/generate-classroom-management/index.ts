@@ -1,8 +1,9 @@
 import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js"
-import { buildClassroomManagementPrompt } from "../_shared/classroomManagementPrompt.js"
+import { buildClassroomOutputPrompt } from "../_shared/classroomManagementPrompt.js"
 import { callClaudeForJson } from "../_shared/anthropic.js"
 
 const VALID_GRADE_BANDS = ["K-2", "3-5", "6-8", "9-12"]
+const VALID_OUTPUT_TYPES = ["card", "behavior-chart", "reflection-form"]
 
 // Haiku for cost/timeout reasons on the Supabase free plan, matching the CTE
 // approach. The card is small, so no keepalive stream is needed (fast generation).
@@ -20,14 +21,17 @@ Deno.serve(async (req: Request) => {
     return errorResponse("Invalid JSON body", 400)
   }
 
-  const { gradeBand = "6-8", classContext } = body ?? {}
+  const { outputType = "card", gradeBand = "6-8", classContext } = body ?? {}
 
+  if (!VALID_OUTPUT_TYPES.includes(outputType as string)) {
+    return errorResponse(`outputType must be one of: ${VALID_OUTPUT_TYPES.join(", ")}`, 400)
+  }
   if (!VALID_GRADE_BANDS.includes(gradeBand as string)) {
     return errorResponse(`gradeBand must be one of: ${VALID_GRADE_BANDS.join(", ")}`, 400)
   }
 
   try {
-    const { system, user, schema } = buildClassroomManagementPrompt({
+    const { system, user, schema } = buildClassroomOutputPrompt(outputType as string, {
       gradeBand: gradeBand as string,
       classContext: (classContext as string) ?? "",
     })

@@ -5,6 +5,8 @@ import { useTrial } from '../context/TrialContext'
 import UpgradeBanner from '../components/UpgradeBanner'
 import { generateClassroomCard, createCard } from '../services/classroomManagementService'
 import ClassroomCardRenderer from '../components/renderers/ClassroomCardRenderer'
+import BehaviorChartRenderer from '../components/renderers/BehaviorChartRenderer'
+import ReflectionFormRenderer from '../components/renderers/ReflectionFormRenderer'
 
 // Card accent themes — deliberately distinct from the module's own indigo UI accent.
 const THEMES = [
@@ -23,10 +25,23 @@ const GRADE_BANDS = [
   { id: '9-12', label: '9–12' },
 ]
 
+const OUTPUT_TYPES = [
+  { id: 'card', label: 'Quick-Reference Card' },
+  { id: 'behavior-chart', label: 'Behavior Chart' },
+  { id: 'reflection-form', label: 'Reflection Form' },
+]
+
+const OUTPUT_LABEL = {
+  card: 'Quick-Reference Card',
+  'behavior-chart': 'Behavior Chart',
+  'reflection-form': 'Reflection Form',
+}
+
 export default function ClassroomManagementGenerator() {
   const { isTrial, isExpired } = useTrial()
   const gated = isTrial || isExpired
 
+  const [outputType, setOutputType] = useState('card')
   const [teacherName, setTeacherName] = useState('')
   const [gradeBand, setGradeBand] = useState('6-8')
   const [classContext, setClassContext] = useState('')
@@ -45,7 +60,7 @@ export default function ClassroomManagementGenerator() {
     setCard(null)
     setSaveStatus('idle')
     try {
-      const result = await generateClassroomCard({ gradeBand, classContext: classContext.trim() })
+      const result = await generateClassroomCard({ outputType, gradeBand, classContext: classContext.trim() })
       setCard(result)
     } catch (err) {
       setError(err.message ?? 'Generation failed')
@@ -58,8 +73,8 @@ export default function ClassroomManagementGenerator() {
     setSaveStatus('saving')
     try {
       await createCard({
-        name: `${teacherName.trim() || 'My Classroom'} — Grades ${gradeBand} Management Card`,
-        cardData: { card, teacherName: teacherName.trim(), gradeBand, theme },
+        name: `${teacherName.trim() || 'My Classroom'} — Grades ${gradeBand} ${OUTPUT_LABEL[outputType]}`,
+        cardData: { outputType, card, teacherName: teacherName.trim(), gradeBand, classContext: classContext.trim(), theme },
       })
       setSaveStatus('saved')
     } catch (err) {
@@ -109,10 +124,29 @@ export default function ClassroomManagementGenerator() {
         <>
           {/* Form */}
           <form onSubmit={handleGenerate} className="no-print card space-y-5 p-6">
+            {/* Output type */}
+            <div>
+              <label className="mb-2 block text-sm font-medium text-ink-200">Output type</label>
+              <div className="flex flex-wrap gap-2">
+                {OUTPUT_TYPES.map((o) => (
+                  <button
+                    key={o.id}
+                    type="button"
+                    onClick={() => { setOutputType(o.id); setCard(null); setSaveStatus('idle') }}
+                    className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${
+                      outputType === o.id ? 'border-indigo-400 bg-indigo-500/15 text-indigo-300' : 'border-ink-800 text-ink-400 hover:border-ink-600'
+                    }`}
+                  >
+                    {o.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label htmlFor="cm-name" className="mb-1.5 block text-sm font-medium text-ink-200">
-                  Teacher name <span className="text-ink-500">(printed on the card)</span>
+                  Teacher name <span className="text-ink-500">(printed on the output)</span>
                 </label>
                 <input
                   id="cm-name"
@@ -158,7 +192,7 @@ export default function ClassroomManagementGenerator() {
 
             {/* Color theme picker */}
             <div>
-              <label className="mb-2 block text-sm font-medium text-ink-200">Card color theme</label>
+              <label className="mb-2 block text-sm font-medium text-ink-200">Color theme</label>
               <div className="flex flex-wrap gap-2">
                 {THEMES.map((t) => (
                   <button
@@ -185,14 +219,20 @@ export default function ClassroomManagementGenerator() {
               disabled={loading}
               className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:opacity-60"
             >
-              {loading ? <><Loader2 size={16} className="animate-spin" /> Generating…</> : <><Sparkles size={16} /> Generate card</>}
+              {loading ? <><Loader2 size={16} className="animate-spin" /> Generating…</> : <><Sparkles size={16} /> Generate {OUTPUT_LABEL[outputType].toLowerCase()}</>}
             </button>
           </form>
 
-          {/* Generated card */}
+          {/* Generated output */}
           {card && (
             <div className="space-y-5">
-              <ClassroomCardRenderer card={card} teacherName={teacherName} gradeBand={gradeBand} accentHex={theme.hex} />
+              {outputType === 'behavior-chart' ? (
+                <BehaviorChartRenderer chart={card} teacherName={teacherName} gradeBand={gradeBand} classContext={classContext} accentHex={theme.hex} />
+              ) : outputType === 'reflection-form' ? (
+                <ReflectionFormRenderer form={card} teacherName={teacherName} gradeBand={gradeBand} classContext={classContext} accentHex={theme.hex} />
+              ) : (
+                <ClassroomCardRenderer card={card} teacherName={teacherName} gradeBand={gradeBand} accentHex={theme.hex} />
+              )}
 
               <div className="no-print flex flex-wrap items-center gap-3">
                 <button

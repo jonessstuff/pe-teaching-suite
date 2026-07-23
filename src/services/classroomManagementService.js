@@ -1,9 +1,10 @@
 import { supabase } from '../lib/supabaseClient'
 
-// Generate a classroom-management quick-reference card via the edge function.
-export async function generateClassroomCard({ gradeBand = '6-8', classContext = '' }) {
+// Generate a classroom-management output (card | behavior-chart | reflection-form)
+// via the edge function.
+export async function generateClassroomCard({ outputType = 'card', gradeBand = '6-8', classContext = '' }) {
   const { data, error } = await supabase.functions.invoke('generate-classroom-management', {
-    body: { gradeBand, classContext },
+    body: { outputType, gradeBand, classContext },
   })
   if (error) {
     let message = error.message ?? 'Generation failed'
