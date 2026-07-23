@@ -7,6 +7,7 @@ import { listCards, getCard, deleteCard } from '../services/classroomManagementS
 import ClassroomCardRenderer from '../components/renderers/ClassroomCardRenderer'
 import BehaviorChartRenderer from '../components/renderers/BehaviorChartRenderer'
 import ReflectionFormRenderer from '../components/renderers/ReflectionFormRenderer'
+import TroubleshootRenderer from '../components/renderers/TroubleshootRenderer'
 
 export default function MyClassroomCards() {
   const { isTrial, isExpired } = useTrial()
@@ -83,6 +84,8 @@ export default function MyClassroomCards() {
             <BehaviorChartRenderer chart={data.card} teacherName={data.teacherName} gradeBand={data.gradeBand ?? '6-8'} classContext={data.classContext} accentHex={data.theme?.hex ?? '#1e3a8a'} />
           ) : data.outputType === 'reflection-form' ? (
             <ReflectionFormRenderer form={data.card} teacherName={data.teacherName} gradeBand={data.gradeBand ?? '6-8'} classContext={data.classContext} accentHex={data.theme?.hex ?? '#1e3a8a'} />
+          ) : data.outputType === 'troubleshoot' ? (
+            <TroubleshootRenderer result={data.card} challenge={data.challenge} teacherName={data.teacherName} gradeBand={data.gradeBand ?? '6-8'} classContext={data.classContext} accentHex={data.theme?.hex ?? '#1e3a8a'} />
           ) : (
             <ClassroomCardRenderer card={data.card} teacherName={data.teacherName} gradeBand={data.gradeBand ?? '6-8'} accentHex={data.theme?.hex ?? '#1e3a8a'} />
           )}

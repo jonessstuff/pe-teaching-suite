@@ -7,6 +7,7 @@ import { generateClassroomCard, createCard } from '../services/classroomManageme
 import ClassroomCardRenderer from '../components/renderers/ClassroomCardRenderer'
 import BehaviorChartRenderer from '../components/renderers/BehaviorChartRenderer'
 import ReflectionFormRenderer from '../components/renderers/ReflectionFormRenderer'
+import TroubleshootRenderer from '../components/renderers/TroubleshootRenderer'
 
 // Card accent themes — deliberately distinct from the module's own indigo UI accent.
 const THEMES = [
@@ -29,12 +30,14 @@ const OUTPUT_TYPES = [
   { id: 'card', label: 'Quick-Reference Card' },
   { id: 'behavior-chart', label: 'Behavior Chart' },
   { id: 'reflection-form', label: 'Reflection Form' },
+  { id: 'troubleshoot', label: 'Troubleshoot a Behavior' },
 ]
 
 const OUTPUT_LABEL = {
   card: 'Quick-Reference Card',
   'behavior-chart': 'Behavior Chart',
   'reflection-form': 'Reflection Form',
+  troubleshoot: 'Behavior Troubleshooter',
 }
 
 export default function ClassroomManagementGenerator() {
@@ -45,6 +48,8 @@ export default function ClassroomManagementGenerator() {
   const [teacherName, setTeacherName] = useState('')
   const [gradeBand, setGradeBand] = useState('6-8')
   const [classContext, setClassContext] = useState('')
+  const [challenge, setChallenge] = useState('')
+  const [classSize, setClassSize] = useState('')
   const [themeId, setThemeId] = useState('navy')
   const [card, setCard] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -55,12 +60,22 @@ export default function ClassroomManagementGenerator() {
 
   async function handleGenerate(e) {
     e.preventDefault()
+    if (outputType === 'troubleshoot' && !challenge.trim()) {
+      setError('Describe the behavior challenge in your own words first.')
+      return
+    }
     setLoading(true)
     setError(null)
     setCard(null)
     setSaveStatus('idle')
     try {
-      const result = await generateClassroomCard({ outputType, gradeBand, classContext: classContext.trim() })
+      const result = await generateClassroomCard({
+        outputType,
+        gradeBand,
+        classContext: classContext.trim(),
+        challenge: challenge.trim(),
+        classSize: classSize.trim(),
+      })
       setCard(result)
     } catch (err) {
       setError(err.message ?? 'Generation failed')
@@ -74,7 +89,7 @@ export default function ClassroomManagementGenerator() {
     try {
       await createCard({
         name: `${teacherName.trim() || 'My Classroom'} — Grades ${gradeBand} ${OUTPUT_LABEL[outputType]}`,
-        cardData: { outputType, card, teacherName: teacherName.trim(), gradeBand, classContext: classContext.trim(), theme },
+        cardData: { outputType, card, teacherName: teacherName.trim(), gradeBand, classContext: classContext.trim(), challenge: challenge.trim(), classSize: classSize.trim(), theme },
       })
       setSaveStatus('saved')
     } catch (err) {
@@ -143,6 +158,23 @@ export default function ClassroomManagementGenerator() {
               </div>
             </div>
 
+            {/* Troubleshoot: free-text behavior challenge */}
+            {outputType === 'troubleshoot' && (
+              <div>
+                <label htmlFor="cm-challenge" className="mb-1.5 block text-sm font-medium text-ink-200">
+                  Describe the behavior challenge <span className="text-ink-500">(in your own words)</span>
+                </label>
+                <textarea
+                  id="cm-challenge"
+                  value={challenge}
+                  onChange={(e) => setChallenge(e.target.value)}
+                  rows={3}
+                  placeholder="e.g. 8th-grade transitions are chaotic and take forever, or one student keeps grabbing equipment from others during stations"
+                  className="input-field"
+                />
+              </div>
+            )}
+
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label htmlFor="cm-name" className="mb-1.5 block text-sm font-medium text-ink-200">
@@ -178,7 +210,7 @@ export default function ClassroomManagementGenerator() {
 
             <div>
               <label htmlFor="cm-context" className="mb-1.5 block text-sm font-medium text-ink-200">
-                Class / subject <span className="text-ink-500">(optional — tailors the signals & routines)</span>
+                Class / subject <span className="text-ink-500">(optional — tailors the output)</span>
               </label>
               <input
                 id="cm-context"
@@ -189,6 +221,22 @@ export default function ClassroomManagementGenerator() {
                 className="input-field"
               />
             </div>
+
+            {outputType === 'troubleshoot' && (
+              <div className="sm:max-w-[200px]">
+                <label htmlFor="cm-size" className="mb-1.5 block text-sm font-medium text-ink-200">
+                  Class size <span className="text-ink-500">(optional)</span>
+                </label>
+                <input
+                  id="cm-size"
+                  type="text"
+                  value={classSize}
+                  onChange={(e) => setClassSize(e.target.value)}
+                  placeholder="e.g. 32"
+                  className="input-field"
+                />
+              </div>
+            )}
 
             {/* Color theme picker */}
             <div>
@@ -219,7 +267,7 @@ export default function ClassroomManagementGenerator() {
               disabled={loading}
               className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:opacity-60"
             >
-              {loading ? <><Loader2 size={16} className="animate-spin" /> Generating…</> : <><Sparkles size={16} /> Generate {OUTPUT_LABEL[outputType].toLowerCase()}</>}
+              {loading ? <><Loader2 size={16} className="animate-spin" /> Generating…</> : <><Sparkles size={16} /> {outputType === 'troubleshoot' ? 'Get strategies' : `Generate ${OUTPUT_LABEL[outputType].toLowerCase()}`}</>}
             </button>
           </form>
 
@@ -230,6 +278,8 @@ export default function ClassroomManagementGenerator() {
                 <BehaviorChartRenderer chart={card} teacherName={teacherName} gradeBand={gradeBand} classContext={classContext} accentHex={theme.hex} />
               ) : outputType === 'reflection-form' ? (
                 <ReflectionFormRenderer form={card} teacherName={teacherName} gradeBand={gradeBand} classContext={classContext} accentHex={theme.hex} />
+              ) : outputType === 'troubleshoot' ? (
+                <TroubleshootRenderer result={card} challenge={challenge} teacherName={teacherName} gradeBand={gradeBand} classContext={classContext} accentHex={theme.hex} />
               ) : (
                 <ClassroomCardRenderer card={card} teacherName={teacherName} gradeBand={gradeBand} accentHex={theme.hex} />
               )}
