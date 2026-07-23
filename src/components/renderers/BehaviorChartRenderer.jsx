@@ -10,9 +10,16 @@
  */
 const TIER_HEX = { green: '#16a34a', yellow: '#d97706', red: '#dc2626' }
 
+const TIER_ORDER = ['green', 'yellow', 'red']
+
 export default function BehaviorChartRenderer({ chart, teacherName, gradeBand = '6-8', classContext, accentHex }) {
   if (!chart) return null
-  const { heading = 'Behavior Chart', tiers = [], move_up_steps = [] } = chart
+  const { heading = 'Behavior Chart', move_up_steps = [] } = chart
+  // Normalize to exactly one green/yellow/red tier in order — the model can
+  // occasionally duplicate or misorder tiers (structured outputs can't enforce
+  // array length).
+  const rawTiers = chart.tiers ?? []
+  const tiers = TIER_ORDER.map((c) => rawTiers.find((t) => t?.color === c)).filter(Boolean)
 
   return (
     <div
