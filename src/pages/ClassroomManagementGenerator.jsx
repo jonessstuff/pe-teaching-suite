@@ -270,6 +270,9 @@ export default function ClassroomManagementGenerator() {
                   <label className="mb-1.5 block text-sm font-medium text-ink-200">
                     Goals / behaviors to track <span className="text-ink-500">(1–4, positively phrased)</span>
                   </label>
+                  <p className="mb-2 text-xs text-ink-500">
+                    Phrase goals as what to <span className="italic">do</span> — e.g. “Used a quiet voice in line” rather than “Didn’t talk in line.” Giving students something to aim for works better than something to avoid.
+                  </p>
                   <div className="space-y-2">
                     {goals.map((g, i) => (
                       <div key={i} className="flex items-center gap-2">
