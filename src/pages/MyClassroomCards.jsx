@@ -15,10 +15,13 @@ export default function MyClassroomCards() {
   const [selected, setSelected] = useState(null)
   const [loadingDetail, setLoadingDetail] = useState(false)
 
+  // Fetch unconditionally on mount (matches the working MyPacingGuides pattern).
+  // RLS already scopes rows to the current user; the `gated` check below only
+  // controls whether the list vs. the upgrade banner renders. Gating the fetch
+  // itself risked skipping it during the trial-state load sequence.
   useEffect(() => {
-    if (gated) return
     listCards().then(setCards).catch((e) => setError(e.message))
-  }, [gated])
+  }, [])
 
   async function openCard(row) {
     setLoadingDetail(true)
