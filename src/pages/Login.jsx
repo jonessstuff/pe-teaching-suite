@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
+import TeachingAreasField from '../components/TeachingAreasField'
 
 function PlansK12Logo() {
   return (
@@ -27,6 +28,7 @@ export default function Login({ authError, onClearAuthError }) {
   const [status, setStatus] = useState('idle')
   const [message, setMessage] = useState(null)
   const [forgotSent, setForgotSent] = useState(false)
+  const [teaching, setTeaching] = useState({ areas: [], ctePathways: [], other: '' })
 
   // authError comes from App.jsx state (set by the onAuthStateChange handler)
   // and takes priority over local message state. Local message is for
@@ -51,7 +53,18 @@ export default function Login({ authError, onClearAuthError }) {
     const { error } =
       mode === 'sign_in'
         ? await supabase.auth.signInWithPassword({ email, password })
-        : await supabase.auth.signUp({ email, password })
+        : await supabase.auth.signUp({
+            email,
+            password,
+            // Captured into the profile by the handle_new_user() trigger (migration 0024).
+            options: {
+              data: {
+                teaching_areas: teaching.areas,
+                cte_pathways: teaching.ctePathways,
+                teaching_other: teaching.other.trim() || null,
+              },
+            },
+          })
 
     if (error) {
       setStatus('idle')
@@ -178,6 +191,15 @@ export default function Login({ authError, onClearAuthError }) {
                     placeholder="••••••••"
                   />
                 </div>
+
+                {mode === 'sign_up' && (
+                  <div>
+                    <label className="mb-1.5 block text-sm font-medium text-ink-200">
+                      What do you teach? <span className="font-normal text-ink-500">(select all that apply)</span>
+                    </label>
+                    <TeachingAreasField value={teaching} onChange={setTeaching} />
+                  </div>
+                )}
 
                 {displayMessage && <p className="text-sm text-red-400">{displayMessage}</p>}
 

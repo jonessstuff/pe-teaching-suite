@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Library, Palette, Music, FlaskConical, Briefcase, ClipboardCheck, ArrowRight } from 'lucide-react'
+import { Library, Palette, Music, FlaskConical, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, ArrowRight } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
 
 function getGreeting() {
@@ -72,12 +72,7 @@ export default function ModulePicker() {
             <Library size={28} className="text-blue-400" />
           </div>
           <div className="flex-1 space-y-1.5">
-            <div className="flex items-center gap-2.5">
-              <h2 className="text-xl font-semibold text-ink-50">Library &amp; Media</h2>
-              <span className="rounded-full bg-blue-500/15 px-2 py-0.5 text-xs font-medium text-blue-400">
-                Beta
-              </span>
-            </div>
+            <h2 className="text-xl font-semibold text-ink-50">Library &amp; Media</h2>
             <p className="text-sm text-ink-400 leading-relaxed">
               Elementary K–5 library lesson planning — genre study, research skills, digital citizenship
             </p>
@@ -96,12 +91,7 @@ export default function ModulePicker() {
             <Palette size={28} className="text-orange-400" />
           </div>
           <div className="flex-1 space-y-1.5">
-            <div className="flex items-center gap-2.5">
-              <h2 className="text-xl font-semibold text-ink-50">Art</h2>
-              <span className="rounded-full bg-orange-500/15 px-2 py-0.5 text-xs font-medium text-orange-400">
-                Beta
-              </span>
-            </div>
+            <h2 className="text-xl font-semibold text-ink-50">Art</h2>
             <p className="text-sm text-ink-400 leading-relaxed">
               Elementary K–5 art lessons — NCAS-aligned, studio-ready with full teacher prep
             </p>
@@ -120,12 +110,7 @@ export default function ModulePicker() {
             <Music size={28} className="text-purple-400" />
           </div>
           <div className="flex-1 space-y-1.5">
-            <div className="flex items-center gap-2.5">
-              <h2 className="text-xl font-semibold text-ink-50">Music</h2>
-              <span className="rounded-full bg-purple-500/15 px-2 py-0.5 text-xs font-medium text-purple-400">
-                Beta
-              </span>
-            </div>
+            <h2 className="text-xl font-semibold text-ink-50">Music</h2>
             <p className="text-sm text-ink-400 leading-relaxed">
               Elementary K–5 general music lessons — NCAS-aligned with listening examples and active music making
             </p>
@@ -144,12 +129,7 @@ export default function ModulePicker() {
             <FlaskConical size={28} className="text-cyan-400" />
           </div>
           <div className="flex-1 space-y-1.5">
-            <div className="flex items-center gap-2.5">
-              <h2 className="text-xl font-semibold text-ink-50">STEM</h2>
-              <span className="rounded-full bg-cyan-500/15 px-2 py-0.5 text-xs font-medium text-cyan-400">
-                Beta
-              </span>
-            </div>
+            <h2 className="text-xl font-semibold text-ink-50">STEM</h2>
             <p className="text-sm text-ink-400 leading-relaxed">
               Elementary K–5 STEM lessons — engineering design, coding, science investigation, and maker projects
             </p>
@@ -175,7 +155,7 @@ export default function ModulePicker() {
               </span>
             </div>
             <p className="text-sm text-ink-400 leading-relaxed">
-              Career &amp; Technical Education for MS–HS — Hospitality &amp; Tourism, Finance, Marketing, Human Services / FCS, and Health Science pathways
+              Career &amp; Technical Education for MS–HS — Hospitality &amp; Tourism, Finance, Marketing, Human Services / FCS, Health Science, and Education &amp; Training pathways
             </p>
           </div>
           <div className="flex items-center gap-1.5 text-sm font-medium text-pink-400 transition-[gap] group-hover:gap-2.5">
@@ -199,10 +179,106 @@ export default function ModulePicker() {
               </span>
             </div>
             <p className="text-sm text-ink-400 leading-relaxed">
-              Printable quick-reference cards for large-group specials classes — routines, attention signals, and behavior expectations (Grades 6–8)
+              All grade bands K–12 — printable cards, behavior charts, troubleshooting, data sheets, and parent communication tools
             </p>
           </div>
           <div className="flex items-center gap-1.5 text-sm font-medium text-indigo-400 transition-[gap] group-hover:gap-2.5">
+            Open module <ArrowRight size={15} />
+          </div>
+        </Link>
+
+        {/* Gifted & Talented */}
+        <Link
+          to="/gifted-talented"
+          className="card group flex flex-col gap-6 p-8 transition-colors hover:border-amber-400/40"
+        >
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500/15">
+            <Sparkles size={28} className="text-amber-400" />
+          </div>
+          <div className="flex-1 space-y-1.5">
+            <div className="flex items-center gap-2.5">
+              <h2 className="text-xl font-semibold text-ink-50">Gifted &amp; Talented</h2>
+              <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-xs font-medium text-amber-400">
+                New
+              </span>
+            </div>
+            <p className="text-sm text-ink-400 leading-relaxed">
+              Differentiate any topic with Depth &amp; Complexity, plan enrichment vs. acceleration, and support 2e &amp; underachieving gifted learners (K–12)
+            </p>
+          </div>
+          <div className="flex items-center gap-1.5 text-sm font-medium text-amber-400 transition-[gap] group-hover:gap-2.5">
+            Open module <ArrowRight size={15} />
+          </div>
+        </Link>
+
+        {/* Reading Specialists */}
+        <Link
+          to="/reading-specialists"
+          className="card group flex flex-col gap-6 p-8 transition-colors hover:border-sky-400/40"
+        >
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-500/15">
+            <BookOpen size={28} className="text-sky-400" />
+          </div>
+          <div className="flex-1 space-y-1.5">
+            <div className="flex items-center gap-2.5">
+              <h2 className="text-xl font-semibold text-ink-50">Reading Specialists</h2>
+              <span className="rounded-full bg-sky-500/15 px-2 py-0.5 text-xs font-medium text-sky-400">
+                New
+              </span>
+            </div>
+            <p className="text-sm text-ink-400 leading-relaxed">
+              Explicit, systematic Structured Literacy interventions — phonics, fluency, comprehension &amp; more, IDA-aligned with dyslexia-indicator flagging (K–12)
+            </p>
+          </div>
+          <div className="flex items-center gap-1.5 text-sm font-medium text-sky-400 transition-[gap] group-hover:gap-2.5">
+            Open module <ArrowRight size={15} />
+          </div>
+        </Link>
+
+        {/* Math Specialists */}
+        <Link
+          to="/math-specialists"
+          className="card group flex flex-col gap-6 p-8 transition-colors hover:border-lime-400/40"
+        >
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-lime-500/15">
+            <Calculator size={28} className="text-lime-400" />
+          </div>
+          <div className="flex-1 space-y-1.5">
+            <div className="flex items-center gap-2.5">
+              <h2 className="text-xl font-semibold text-ink-50">Math Specialists</h2>
+              <span className="rounded-full bg-lime-500/15 px-2 py-0.5 text-xs font-medium text-lime-400">
+                New
+              </span>
+            </div>
+            <p className="text-sm text-ink-400 leading-relaxed">
+              Concept-first math interventions &amp; differentiation — CRA sequencing, Number Talks &amp; NCTM process standards for pull-out and co-teaching (K–12)
+            </p>
+          </div>
+          <div className="flex items-center gap-1.5 text-sm font-medium text-lime-400 transition-[gap] group-hover:gap-2.5">
+            Open module <ArrowRight size={15} />
+          </div>
+        </Link>
+
+        {/* Special Education */}
+        <Link
+          to="/special-education"
+          className="card group flex flex-col gap-6 p-8 transition-colors hover:border-violet-400/40"
+        >
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-500/15">
+            <HeartHandshake size={28} className="text-violet-400" />
+          </div>
+          <div className="flex-1 space-y-1.5">
+            <div className="flex items-center gap-2.5">
+              <h2 className="text-xl font-semibold text-ink-50">Special Education</h2>
+              <span className="rounded-full bg-violet-500/15 px-2 py-0.5 text-xs font-medium text-violet-400">
+                New
+              </span>
+            </div>
+            <p className="text-sm text-ink-400 leading-relaxed">
+              Resource &amp; self-contained instructional support — multi-tier differentiation, functional/life-skills, and push-in co-teaching ideas to adapt to your students (K–12)
+            </p>
+          </div>
+          <div className="flex items-center gap-1.5 text-sm font-medium text-violet-400 transition-[gap] group-hover:gap-2.5">
             Open module <ArrowRight size={15} />
           </div>
         </Link>

@@ -191,7 +191,7 @@ export default function MusicGenerator() {
           <div>
             <h1 className="text-xl font-semibold text-ink-50">Music Lesson Generator</h1>
             <p className="text-xs text-ink-500">
-              Beta — elementary K–5 · NCAS Music-aligned
+              Elementary K–5 · NCAS Music-aligned
             </p>
           </div>
         </div>

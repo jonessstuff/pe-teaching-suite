@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
+import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
 import { generateCteLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
@@ -38,6 +38,12 @@ const PATHWAYS = [
     description: 'Anatomy & physiology, clinical skills, medical terminology & careers',
     icon: Stethoscope,
   },
+  {
+    value: 'education',
+    label: 'Education & Training',
+    description: 'Teaching profession, lesson planning, classroom management & child development',
+    icon: GraduationCap,
+  },
 ]
 
 const LEVELS = [
@@ -52,6 +58,7 @@ const TOPIC_PLACEHOLDERS = {
   marketing:   'e.g. Identify a target market, Build the marketing mix for a product, Analyze a real ad campaign, DECA role-play prep',
   human_services: 'e.g. Reading a nutrition label, Building a personal budget, Age-appropriate child activities, Mock job interview & workplace readiness',
   health_science: 'e.g. Taking vital signs, The cardiovascular system, Medical terminology word parts, Infection control & PPE, Patient positioning',
+  education: 'e.g. Writing a measurable learning objective, Classroom management routines & procedures, Stages of child development, Delivering clear directions, Planning a read-aloud',
 }
 
 const MATERIAL_PLACEHOLDERS = {
@@ -104,6 +111,16 @@ const MATERIAL_PLACEHOLDERS = {
     'e.g. CPR manikins',
     'e.g. Medical terminology reference sheet',
     'e.g. Patient charting templates',
+  ],
+  education: [
+    'e.g. Whiteboard & markers for modeling',
+    'e.g. Lesson-plan templates (printed)',
+    "e.g. Children's books for read-aloud practice",
+    'e.g. Chart paper & sticky notes',
+    'e.g. Document camera / projector',
+    'e.g. Classroom-management scenario cards',
+    'e.g. Clipboards for field-observation notes',
+    'e.g. Laptops for lesson research — 1 per pair',
   ],
 }
 
@@ -269,9 +286,9 @@ export default function CteGenerator() {
           </div>
         </div>
         <p className="text-sm text-ink-400 mt-3">
-          Generate a complete Career &amp; Technical Education lesson across three pathways:
-          Hospitality &amp; Tourism, Finance, or Marketing — with work-based learning and career
-          pathway context built in.
+          Generate a complete Career &amp; Technical Education lesson across six pathways:
+          Hospitality &amp; Tourism, Finance, Marketing, Human Services / FCS, Health Science, or
+          Education &amp; Training — with work-based learning and career pathway context built in.
         </p>
       </div>
 
@@ -461,6 +478,7 @@ export default function CteGenerator() {
                 pathway === 'finance'         ? 'e.g. Calculate compound interest (Jump$tart)' :
                 pathway === 'human_services'  ? 'e.g. Plan a balanced meal (AAFCS Nutrition & Wellness)' :
                 pathway === 'health_science'  ? 'e.g. Measure and record blood pressure (NCHSE)' :
+                pathway === 'education'       ? 'e.g. Write a measurable learning objective (InTASC Standard 7)' :
                                                 'e.g. Identify a target market (DECA PI)'
               }
               value={targetCompetency}

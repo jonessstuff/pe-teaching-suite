@@ -266,7 +266,7 @@ export default function LibraryUnitBuilder() {
           </div>
           <div>
             <h1 className="text-xl font-semibold text-ink-50">Library Unit Builder</h1>
-            <p className="text-xs text-ink-500">Beta — 2–3 connected library sessions · AASL-aligned</p>
+            <p className="text-xs text-ink-500">2–3 connected library sessions · AASL-aligned</p>
           </div>
         </div>
         <p className="text-sm text-ink-400 mt-3">

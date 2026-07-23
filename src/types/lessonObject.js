@@ -177,7 +177,7 @@ export function createEmptyLessonObject() {
   };
 }
 
-export const SUBJECT_AREAS = ["PE", "Health", "Family Life", "Driver's Ed", "Strength & Conditioning", "Library/Media", "Art", "Music", "Adaptive PE", "STEM", "CTE"];
+export const SUBJECT_AREAS = ["PE", "Health", "Family Life", "Driver's Ed", "Strength & Conditioning", "Library/Media", "Art", "Music", "Adaptive PE", "STEM", "CTE", "Gifted & Talented", "Reading Specialists", "Math Specialists", "Makerspace", "Special Education"];
 export const ASSESSMENT_TYPES = ["formative", "summative", "self-assessment"];
 export function gradeLabel(grade) {
   return grade === 0 ? "K" : String(grade);

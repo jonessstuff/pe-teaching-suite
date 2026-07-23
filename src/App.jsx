@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import { supabase } from './lib/supabaseClient'
 import { claimSession, heartbeat, releaseSession, getStoredToken, clearStoredToken } from './services/sessionService'
+import { isInactive, recordActivity, clearActivity } from './services/inactivityService'
 import { useTheme } from './hooks/useTheme'
 import { TrialProvider } from './context/TrialContext'
 import AppShell from './components/layout/AppShell'
@@ -53,6 +54,11 @@ import PortfolioBuilder from './pages/PortfolioBuilder'
 import DistrictReport from './pages/DistrictReport'
 import ClassroomManagementGenerator from './pages/ClassroomManagementGenerator'
 import MyClassroomCards from './pages/MyClassroomCards'
+import GiftedTalentedGenerator from './pages/GiftedTalentedGenerator'
+import ReadingSpecialistGenerator from './pages/ReadingSpecialistGenerator'
+import MathSpecialistGenerator from './pages/MathSpecialistGenerator'
+import MakerProjectGenerator from './pages/MakerProjectGenerator'
+import SpecialEducationGenerator from './pages/SpecialEducationGenerator'
 
 // Module-level promise reference. When a genuine new login triggers claimSession(),
 // this holds the in-flight Promise so that any concurrent SIGNED_IN events (e.g.
@@ -69,7 +75,23 @@ function App() {
     // getSession() handles the initial load (page refresh with an existing session).
     // It does NOT fire onAuthStateChange, so it bypasses the SIGNED_IN gate below —
     // which is correct: we only enforce single-session at login time, not on refresh.
-    supabase.auth.getSession().then(({ data }) => setSession(data.session))
+    supabase.auth.getSession().then(({ data }) => {
+      const existing = data.session
+
+      // Inactivity gate: if this device hasn't been active within the window,
+      // force a fresh login instead of silently restoring a stale session.
+      // scope: 'local' so we never revoke the account's other devices.
+      if (existing && isInactive()) {
+        clearActivity()
+        releaseSession()
+        supabase.auth.signOut({ scope: 'local' })
+        setSession(null)
+        return
+      }
+
+      if (existing) recordActivity()
+      setSession(existing)
+    })
 
     const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN') {
@@ -133,7 +155,14 @@ function App() {
           // Sign the new login back out. This fires SIGNED_OUT → the else
           // branch below runs setSession(null), which is a no-op since session
           // is already null. Login stays mounted and authError prop is shown.
-          await supabase.auth.signOut()
+          //
+          // scope: 'local' is critical. The default 'global' scope revokes the
+          // refresh tokens for EVERY device on this account server-side, kicking
+          // the other live sessions offline. Each of those devices then silently
+          // re-authenticates, re-inserts an active_sessions row, and trips this
+          // same limit again — a login → logout → token-refresh loop firing every
+          // 30–90s (Supabase's refresh backoff). Only sign out THIS browser.
+          await supabase.auth.signOut({ scope: 'local' })
         } finally {
           activeClaimPromise = null
         }
@@ -157,9 +186,15 @@ function App() {
     const token = getStoredToken()
     if (!token) return
 
+    // We have a live session on this device — stamp activity now (covers login,
+    // token refresh, and session restore) so the inactivity gate only fires
+    // after a genuine stretch away from the app.
+    recordActivity()
+
     const HEARTBEAT_MS = 5 * 60 * 1000
 
     async function tick() {
+      recordActivity()
       const result = await heartbeat(token)
       if (result !== 'displaced') return
 
@@ -171,7 +206,9 @@ function App() {
         // Re-claimed successfully; user stays logged in with a fresh row.
       } catch {
         // Can't re-claim (ALREADY_ACTIVE or DB error) — genuine displacement.
-        supabase.auth.signOut()
+        // scope: 'local' so we don't revoke the other devices' tokens and
+        // trigger the account-wide re-login cascade (see the login handler above).
+        supabase.auth.signOut({ scope: 'local' })
       }
     }
 
@@ -220,6 +257,7 @@ function App() {
           <Route path="library/generate" element={<LibraryGenerator />} />
           <Route path="library/lessons" element={<LibraryLessonLibrary />} />
           <Route path="library/units/new" element={<LibraryUnitBuilder />} />
+          <Route path="library/makerspace" element={<MakerProjectGenerator origin="library" />} />
           <Route path="art" element={<ArtHome />} />
           <Route path="art/generate" element={<ArtGenerator />} />
           <Route path="art/lessons" element={<ArtLessonLibrary />} />
@@ -233,10 +271,15 @@ function App() {
           <Route path="stem/generate" element={<StemGenerator />} />
           <Route path="stem/lessons" element={<StemLessonLibrary />} />
           <Route path="stem/units/new" element={<StemUnitBuilder />} />
+          <Route path="stem/makerspace" element={<MakerProjectGenerator origin="stem" />} />
           <Route path="cte" element={<CteHome />} />
           <Route path="cte/generate" element={<CteGenerator />} />
           <Route path="cte/lessons" element={<CteLessonLibrary />} />
           <Route path="classroom-management" element={<ClassroomManagementGenerator />} />
+          <Route path="gifted-talented" element={<GiftedTalentedGenerator />} />
+          <Route path="reading-specialists" element={<ReadingSpecialistGenerator />} />
+          <Route path="math-specialists" element={<MathSpecialistGenerator />} />
+          <Route path="special-education" element={<SpecialEducationGenerator />} />
           <Route path="my-classroom-cards" element={<MyClassroomCards />} />
           <Route path="sub-binder" element={<SubBinderGenerator />} />
           <Route path="my-binders" element={<MyBinders />} />

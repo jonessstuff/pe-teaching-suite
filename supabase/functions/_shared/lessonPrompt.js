@@ -41,7 +41,7 @@ FIELD USAGE FOR STRENGTH & CONDITIONING:
 - standards: Align to NSCA Youth Resistance Training Position Statement principles and, where applicable, ${stateName} physical education standards for fitness/strength content. Use NSCA citation format for NSCA standards (e.g. "NSCA YRT 2009 — Principle 3: Technique before load").`;
     default: // PE
       return isVirginia
-        ? "Focus on motor skill development, game play, fitness, and SOL-aligned physical education standards (Virginia SOL PE.x.y format, e.g. 6.2.a)."
+        ? "Focus on motor skill development, game play, fitness, and SOL-aligned physical education standards (Virginia PE SOL format — grade.standard.substrand, e.g. 6.2.a)."
         : `Focus on motor skill development, game play, fitness, and ${stateName} physical education standards. Use the correct standard code format for ${stateName}.`;
   }
 }

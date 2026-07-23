@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { FlaskConical, Sparkles, BookOpen, BookMarked, CalendarDays, ClipboardList, Layers, ArrowRight, ArrowLeft, Loader2, BarChart3, CalendarRange, FileInput, ScrollText, PartyPopper, BookCheck } from 'lucide-react'
+import { FlaskConical, Sparkles, BookOpen, BookMarked, CalendarDays, ClipboardList, Layers, ArrowRight, ArrowLeft, Loader2, BarChart3, CalendarRange, FileInput, ScrollText, PartyPopper, BookCheck, Wrench } from 'lucide-react'
 import { listLessons } from '../services/lessonsService'
 import LessonCard from '../components/lesson/LessonCard'
 
@@ -38,9 +38,6 @@ export default function StemHome() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-semibold text-ink-50">STEM</h1>
-              <span className="rounded-full bg-cyan-500/15 px-2 py-0.5 text-xs font-medium text-cyan-400">
-                Beta
-              </span>
             </div>
             <p className="text-sm text-ink-500">
               Elementary K–5 lesson planning for STEM specialists and classroom teachers
@@ -112,6 +109,27 @@ export default function StemHome() {
             <p className="font-semibold text-ink-50">Build a unit</p>
             <p className="mt-0.5 text-sm text-ink-500">
               2–3 connected stages for one STEM project or investigation
+            </p>
+          </div>
+        </Link>
+
+        <Link
+          to="/stem/makerspace"
+          className="card group flex flex-col gap-4 p-6 transition-colors hover:border-slate-500/40"
+        >
+          <div className="flex items-start justify-between">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-500/15">
+              <Wrench size={22} className="text-slate-400" />
+            </div>
+            <ArrowRight
+              size={18}
+              className="mt-0.5 text-ink-700 transition-transform group-hover:translate-x-1 group-hover:text-slate-400"
+            />
+          </div>
+          <div>
+            <p className="font-semibold text-ink-50">Makerspace project</p>
+            <p className="mt-0.5 text-sm text-ink-500">
+              Tool-specific builds, safety &amp; station logistics, cross-curricular making
             </p>
           </div>
         </Link>

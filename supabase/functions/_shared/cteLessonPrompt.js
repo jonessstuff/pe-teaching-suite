@@ -21,6 +21,7 @@ const PATHWAY_LABELS = {
   marketing: "Marketing",
   human_services: "Human Services / Family & Consumer Sciences",
   health_science: "Health Science",
+  education: "Education & Training",
 }
 
 function tierLevelLabel(tier, level) {
@@ -71,6 +72,12 @@ Then include entries from these where the lesson content maps to them:
 - CPR / First Aid (AHA or American Red Cross) — a common entry-level credential; align safety and medical-emergency content to it. Framework field: "CPR/First Aid".
 - HOSA — Future Health Professionals — the pathway CTSO (national, parallel to DECA / FBLA / FCCLA). Align applied tasks and projects to relevant HOSA competitive events and programs. Framework field: "HOSA".
 Content areas to prioritize: the Health Science I: Careers and Body Systems foundation — anatomy & physiology by body system, healthcare / medical terminology, common pathologies, diagnostic and clinical procedures, therapeutic interventions, and medical-emergency care fundamentals.`,
+    education: `Primary national frameworks for Education & Training (the national 16-cluster framework's Education & Training cluster; Advance CTE's 2024 refresh labels it simply "Education," but the content is the same) — lead the competency list with entries from these, and treat the state CTE task list above as the state verification layer for them:
+- InTASC Model Core Teaching Standards (Interstate Teacher Assessment and Support Consortium, CCSSO) — the primary framework for what new teachers should know and be able to do (the 10 standards across The Learner and Learning, Content Knowledge, Instructional Practice, and Professional Responsibility). Framework field: "InTASC". Use the standard number (e.g., "InTASC Standard 3: Learning Environments") only when confident; otherwise describe the competency and omit the code.
+- NBPTS Five Core Propositions (National Board for Professional Teaching Standards) — the vision of accomplished teaching this pathway orients toward (e.g., "Teachers are committed to students and their learning," "Teachers think systematically about their practice and learn from experience"). Framework field: "NBPTS".
+Then include entries from these where the lesson content maps to them:
+- Educators Rising Standards — the standards of Educators Rising, the dedicated national CTSO for future-educator students (not a repurposed general-business club), developed in partnership with the National Education Association (NEA) and aligned to the NBPTS and InTASC frameworks. Align applied tasks, portfolios, and projects to relevant Educators Rising competitive events and programs (e.g., Lesson Planning, Children's Literature, Ethical Dilemma, Public Speaking). Framework field: "Educators Rising". (Educators Rising is national; some states run their own affiliate — e.g., Texas's TAFE, the Texas Association of Future Educators — but keep this lesson national-first and point teachers to their own state's affiliate rather than building to any one state.)
+Content areas to prioritize: the Introduction to the Teaching Profession / Education & Training I foundation — lesson-planning basics, classroom-management fundamentals, an introduction to educational psychology and child/adolescent development, and early clinical/field experience (structured classroom observation and practicum in a real school setting).`,
   }[pathway] ?? ""
 
   const rigorNote =
@@ -97,6 +104,7 @@ function getCredentialFocus(pathway) {
     marketing: ["DECA competitive event certifications", "NBEA Marketing-aligned recognition", "A*S*K / Marketing industry micro-credentials"],
     human_services: ["AAFCS Pre-PAC certifications (e.g., Leadership Essentials, Nutrition/Food/Wellness, Food Science Fundamentals)", "FCCLA competitive event & national program recognition", "ServSafe Food Handler (for foods/nutrition content)"],
     health_science: ["NHA certifications (e.g., CCMA Clinical Medical Assistant, CPT Phlebotomy Technician)", "CPR / First Aid certification (AHA or American Red Cross)", "HOSA competitive event & program recognition"],
+    education: ["Educators Rising Micro-credentials & competitive event recognition", "ETS ParaPro Assessment (entry-level paraeducator credential)", "Child Development Associate (CDA) credential — for early-childhood / education field placements"],
   }[pathway] ?? []
 }
 
@@ -212,6 +220,28 @@ function getPhaseDescriptions(pathway) {
         desc: "Students reflect on how today's skill fits into patient care and a real healthcare career, and name one professional habit they would carry forward. Connect the skill to the credential/competition it supports (NHA / CPR-First Aid / HOSA). End with a brief exit ticket. 5–8 minutes.",
       },
     },
+    education: {
+      warm_up: {
+        name: "Classroom Scenario Hook",
+        desc: "Open with a concrete teaching scenario — a classroom-management moment, a common student misconception, a lesson that went sideways, or a short clip of a real teacher. Students react as the teacher would: what would you do next? Connect to a real grade level, subject, or school setting. 5–8 minutes.",
+      },
+      whole_group_instruction: {
+        name: "Concept Instruction",
+        desc: "Teach the core education / pedagogy concept directly using correct professional vocabulary (learning objective, scaffolding, formative assessment, differentiation, classroom management, developmentally appropriate practice, wait time). Ground it in the relevant InTASC standard. Address a common misconception about teaching and check understanding before the demonstration. 8–12 minutes.",
+      },
+      fitness_activities: {
+        name: "Teaching Skill Demonstration",
+        desc: "Model the teaching skill step by step the way it is done in a real classroom — writing a measurable objective, delivering a clear set of directions, using an attention signal, a think-aloud, or a questioning technique. Name each step and the pedagogical reason for it. Students watch, then walk through it once with teacher support. 5–10 minutes.",
+      },
+      independent_practice: {
+        name: "Hands-On Teaching Application",
+        desc: "Students apply the skill in a realistic micro-teaching or field task: write and deliver a short mini-lesson segment to peers, practice a classroom routine, design a formative check, script higher-order questions, or complete an Educators Rising-style task. Describe exactly what students do, what a strong result looks like, and what the teacher observes and coaches. Include a checklist or rubric aligned to how teaching is evaluated (InTASC competency or Educators Rising event criteria). 15–20 minutes.",
+      },
+      closure: {
+        name: "Reflection & Profession Connection",
+        desc: "Students reflect on how today's skill fits real teaching and a career in education, and name one professional habit they would carry into a field placement. Connect the skill to the credential/competition it supports (Educators Rising / ParaPro / clinical field experience). End with a brief exit ticket. 5–8 minutes.",
+      },
+    },
   }
   return map[pathway] ?? map.hospitality
 }
@@ -245,18 +275,25 @@ function getPathwaySequence(pathway) {
       { level: "concentrator", course: "Health Science II / Clinical & Diagnostic Procedures", description: "Applied clinical skills — patient care, vital signs, infection control to standard, therapeutic and diagnostic procedures, CPR/First Aid, and medical-emergency fundamentals." },
       { level: "completer", course: "Advanced Health Science / Clinical Practicum, HOSA & Work-Based Learning", description: "Capstone with clinical practicum, NHA industry-credential attainment (e.g., CCMA/CPT), HOSA competitive events, and work-based learning placement in a healthcare setting." },
     ],
+    education: [
+      { level: "introductory", course: "Introduction to the Teaching Profession / Education & Training I", description: "Foundations — the teaching profession and careers in education, lesson-planning basics, classroom-management fundamentals, an introduction to educational psychology and child/adolescent development, and early structured classroom observation." },
+      { level: "concentrator", course: "Education & Training II / Instructional Practices & Human Growth and Development", description: "Applied pedagogy — writing objectives and lessons, differentiation and formative assessment, developmentally appropriate practice, and supervised field observation and practicum in a real classroom." },
+      { level: "completer", course: "Practicum in Education & Training / Capstone, Educators Rising & Work-Based Learning", description: "Capstone with a clinical field placement (student-teaching-style experience), a professional teaching portfolio, Educators Rising competitive events, entry-level credential attainment (ParaPro / CDA), and work-based learning in a school setting." },
+    ],
   }[pathway] ?? []
 }
 
 // Optional pathway-specific work-based learning guidance, appended to the WBL block.
-// Human Services and Health Science use Virginia's High-Quality Work-Based Learning
-// (HQWBL) model, which recognizes a broader set of 12 methods than the
-// internship/shadow/speaker default.
+// Human Services, Health Science, and Education & Training use Virginia's High-Quality
+// Work-Based Learning (HQWBL) model, which recognizes a broader set of 12 methods than
+// the internship/shadow/speaker default.
 function getWblGuidance(pathway) {
-  if (pathway === "human_services" || pathway === "health_science") {
+  if (pathway === "human_services" || pathway === "health_science" || pathway === "education") {
     const emphasis = pathway === "health_science"
       ? " Clinical experience is especially relevant for this pathway — prioritize clinical/hospital placements, patient-care rotations, and health-agency service learning where appropriate."
-      : ""
+      : pathway === "education"
+        ? " Clinical/field experience is especially relevant for this pathway — prioritize structured classroom observation, tutoring and cross-age mentoring placements, and student-teaching-style field experiences in a real school, plus service learning with younger students."
+        : ""
     return `\nThis pathway follows Virginia's High-Quality Work-Based Learning (HQWBL) model, which recognizes 12 methods: job shadowing, service learning, mentorship, externship, school-based enterprise, internship, entrepreneurship, clinical experience, cooperative education, youth registered apprenticeship, registered apprenticeship, and supervised agricultural experience. When filling the fields below, draw the most lesson-appropriate ideas from this broader set (not only internships/shadows) — e.g., service learning with a community agency, a clinical experience, a school-based enterprise, or a mentorship — and fold them into the internships and job_shadows arrays as fits this lesson's content and tier.${emphasis}`
   }
   return ""
@@ -386,7 +423,7 @@ export function buildCteLessonSchema(includeELL = false) {
 
 /**
  * @param {Object} input
- * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'} input.pathway
+ * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'} input.pathway
  * @param {'ms'|'hs'} input.tier
  * @param {'introductory'|'concentrator'|'completer'|''} [input.level]  required when tier === 'hs'
  * @param {string}  input.topic

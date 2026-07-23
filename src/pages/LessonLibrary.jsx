@@ -3,13 +3,13 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Sparkles, Loader2, Search, Star } from 'lucide-react'
 import { listLessons } from '../services/lessonsService'
-import { SUBJECT_AREAS } from '../types/lessonObject'
+import { MODULES, subjectInModule } from '../constants/modules'
 import LessonCard from '../components/lesson/LessonCard'
 
 export default function LessonLibrary() {
   const [lessons, setLessons] = useState(null)
   const [error, setError] = useState(null)
-  const [subjectFilter, setSubjectFilter] = useState('All')
+  const [moduleFilter, setModuleFilter] = useState('All')
   const [search, setSearch] = useState('')
   const [sortOrder, setSortOrder] = useState('newest') // 'newest' | 'oldest' | 'az'
   const [favoritesOnly, setFavoritesOnly] = useState(false)
@@ -38,7 +38,7 @@ export default function LessonLibrary() {
 
   const filtered = (lessons ?? []).filter(
     (l) =>
-      (subjectFilter === 'All' || getSubject(l) === subjectFilter) &&
+      (moduleFilter === 'All' || subjectInModule(getSubject(l), moduleFilter)) &&
       matchesSearch(l) &&
       (!favoritesOnly || l.is_favorite)
   )
@@ -115,12 +115,12 @@ export default function LessonLibrary() {
       {/* Subject filters + sort */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap gap-2">
-          {['All', ...SUBJECT_AREAS.filter((s) => s !== 'Library/Media' && s !== 'Art' && s !== 'Music' && s !== 'Adaptive PE' && s !== 'STEM' && s !== 'CTE')].map((s) => (
+          {['All', ...MODULES.map((m) => m.label)].map((s) => (
             <button
               key={s}
-              onClick={() => setSubjectFilter(s)}
+              onClick={() => setModuleFilter(s)}
               className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-                subjectFilter === s
+                moduleFilter === s
                   ? 'bg-accent-500 text-white'
                   : 'bg-ink-900 text-ink-200 hover:bg-ink-800'
               }`}

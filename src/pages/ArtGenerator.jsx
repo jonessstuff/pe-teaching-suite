@@ -200,7 +200,7 @@ export default function ArtGenerator() {
           <div>
             <h1 className="text-xl font-semibold text-ink-50">Art Lesson Generator</h1>
             <p className="text-xs text-ink-500">
-              Beta — elementary K–5 · NCAS-aligned
+              Elementary K–5 · NCAS-aligned
             </p>
           </div>
         </div>

@@ -191,7 +191,7 @@ export default function LibraryGenerator() {
           <div>
             <h1 className="text-xl font-semibold text-ink-50">Library & Media Lesson Generator</h1>
             <p className="text-xs text-ink-500">
-              Beta — elementary K–5 · AASL-aligned
+              Elementary K–5 · AASL-aligned
             </p>
           </div>
         </div>

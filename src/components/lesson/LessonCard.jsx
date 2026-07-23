@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Star } from 'lucide-react'
 import { toggleFavorite } from '../../services/lessonsService'
+import { subjectTabStyle } from '../../constants/modules'
 
 function timeAgo(dateString) {
   if (!dateString) return null
@@ -16,13 +17,6 @@ function timeAgo(dateString) {
   const months = Math.floor(days / 30)
   if (months < 12) return `${months}mo ago`
   return `${Math.floor(months / 12)}y ago`
-}
-
-const SUBJECT_STYLES = {
-  PE: 'bg-subject-pe/15 text-subject-pe',
-  Health: 'bg-subject-health/15 text-subject-health',
-  'Family Life': 'bg-subject-family/15 text-subject-family',
-  "Driver's Ed": 'bg-subject-drivers/15 text-subject-drivers',
 }
 
 function formatGrade(g) {
@@ -55,7 +49,7 @@ export default function LessonCard({ lesson, onFavoriteToggle }) {
     <Link to={`/lessons/${lesson.id}`} className="card flex flex-col gap-3 p-4 transition-colors hover:border-accent-500/40">
       <div className="flex items-center justify-between">
         <span
-          className={`label-eyebrow rounded px-2 py-0.5 ${SUBJECT_STYLES[subject] ?? 'bg-ink-700 text-ink-300'}`}
+          className={`label-eyebrow rounded px-2 py-0.5 ${subjectTabStyle(subject)}`}
         >
           {subject}
         </span>

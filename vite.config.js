@@ -7,6 +7,11 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      // We register + drive update checks manually in src/main.jsx so a
+      // standalone mobile PWA that stays open (or resumes from background)
+      // still picks up new releases. Disable the plugin's auto-injected
+      // registration to avoid registering the service worker twice.
+      injectRegister: null,
       includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
         name: 'PlansK12 — Lesson Planning for Specialists',
@@ -24,6 +29,12 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff,woff2}'],
+        // Take control immediately and purge precache entries from prior
+        // releases, so a new build's module list replaces the old one instead
+        // of being served from a stale cache.
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,

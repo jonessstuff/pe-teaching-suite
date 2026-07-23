@@ -186,6 +186,102 @@ export async function generateAdaptivePE(input) {
   return data
 }
 
+export async function generateGiftedTalented(input) {
+  const { data, error } = await supabase.functions.invoke('generate-gifted-talented', {
+    body: input,
+  })
+
+  if (error) {
+    let message = error.message ?? 'Generation failed'
+    try {
+      const body = await error.context?.json?.()
+      if (body?.error) message = body.error
+    } catch {}
+    throw new Error(message)
+  }
+  return data
+}
+
+export async function generateSpecialEducation(input) {
+  const { data, error } = await supabase.functions.invoke('generate-special-education', {
+    body: input,
+  })
+
+  if (error) {
+    let message = error.message ?? 'Generation failed'
+    try {
+      const body = await error.context?.json?.()
+      if (body?.error) message = body.error
+    } catch {}
+    throw new Error(message)
+  }
+  return data
+}
+
+export async function generateMakerProject(input) {
+  const { data, error } = await supabase.functions.invoke('generate-maker-project', {
+    body: input,
+  })
+
+  if (error) {
+    let message = error.message ?? 'Generation failed'
+    try {
+      const body = await error.context?.json?.()
+      if (body?.error) message = body.error
+    } catch {}
+    throw new Error(message)
+  }
+  return data
+}
+
+export async function generateMathSpecialist(input) {
+  const { data, error } = await supabase.functions.invoke('generate-math-specialist', {
+    body: input,
+  })
+
+  if (error) {
+    let message = error.message ?? 'Generation failed'
+    try {
+      const body = await error.context?.json?.()
+      if (body?.error) message = body.error
+    } catch {}
+    throw new Error(message)
+  }
+  return data
+}
+
+export async function generateTutoringSession(input) {
+  const { data, error } = await supabase.functions.invoke('generate-tutoring-session', {
+    body: input,
+  })
+
+  if (error) {
+    let message = error.message ?? 'Generation failed'
+    try {
+      const body = await error.context?.json?.()
+      if (body?.error) message = body.error
+    } catch {}
+    throw new Error(message)
+  }
+  return data
+}
+
+export async function generateReadingSpecialist(input) {
+  const { data, error } = await supabase.functions.invoke('generate-reading-specialist', {
+    body: input,
+  })
+
+  if (error) {
+    let message = error.message ?? 'Generation failed'
+    try {
+      const body = await error.context?.json?.()
+      if (body?.error) message = body.error
+    } catch {}
+    throw new Error(message)
+  }
+  return data
+}
+
 export async function generateStemLesson(input) {
   const { data, error } = await supabase.functions.invoke('generate-stem-lesson', {
     body: input,

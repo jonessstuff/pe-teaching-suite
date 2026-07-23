@@ -38,9 +38,6 @@ export default function MusicHome() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-semibold text-ink-50">Music</h1>
-              <span className="rounded-full bg-purple-500/15 px-2 py-0.5 text-xs font-medium text-purple-400">
-                Beta
-              </span>
             </div>
             <p className="text-sm text-ink-500">Elementary K–5 lesson planning for music specialists</p>
           </div>

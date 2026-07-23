@@ -4,7 +4,9 @@ import { Loader2, Copy, Check, BarChart3, ExternalLink, RefreshCw, Sparkles } fr
 import { supabase } from '../lib/supabaseClient'
 import { getProfile, updateProfile } from '../services/profilesService'
 import { releaseSession } from '../services/sessionService'
+import { clearActivity } from '../services/inactivityService'
 import { US_STATES } from '../constants/usStates'
+import TeachingAreasField from '../components/TeachingAreasField'
 import { getMyCode } from '../services/referralService'
 import { useTrial } from '../context/TrialContext'
 import { EXPORT_CAP, CHECKOUT_URL } from '../services/trialService'
@@ -19,6 +21,9 @@ export default function Settings() {
     district_name: '',
     default_subject: 'PE',
     state: '',
+    teaching_areas: [],
+    cte_pathways: [],
+    teaching_other: '',
   })
   const [loadStatus, setLoadStatus] = useState('loading')
   const [saveStatus, setSaveStatus] = useState('idle') // idle | saving | saved | error
@@ -58,6 +63,9 @@ export default function Settings() {
           district_name: profile.district_name ?? '',
           default_subject: profile.default_subject ?? 'PE',
           state: profile.state ?? '',
+          teaching_areas: profile.teaching_areas ?? [],
+          cte_pathways: profile.cte_pathways ?? [],
+          teaching_other: profile.teaching_other ?? '',
         })
         setLoadStatus('ready')
       })
@@ -123,7 +131,11 @@ export default function Settings() {
 
   async function handleSignOut() {
     await releaseSession()
-    await supabase.auth.signOut()
+    clearActivity()
+    // scope: 'local' — log out only this device. The account supports multiple
+    // concurrent sessions, so a global sign-out here would revoke the user's
+    // other devices' refresh tokens and force them all to re-authenticate.
+    await supabase.auth.signOut({ scope: 'local' })
   }
 
   async function handleOpenBillingPortal() {
@@ -285,6 +297,15 @@ export default function Settings() {
                   <option key={s} value={s}>{s}</option>
                 ))}
               </select>
+            </Field>
+
+            <Field label="What do you teach?" hint="Select all that apply — helps us tailor what we surface to you.">
+              <TeachingAreasField
+                value={{ areas: form.teaching_areas, ctePathways: form.cte_pathways, other: form.teaching_other }}
+                onChange={(v) =>
+                  setForm((prev) => ({ ...prev, teaching_areas: v.areas, cte_pathways: v.ctePathways, teaching_other: v.other }))
+                }
+              />
             </Field>
 
             {saveError && (

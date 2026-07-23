@@ -110,11 +110,11 @@ export default function Landing() {
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-lg text-ink-400 leading-relaxed">
-            You teach every kid in the building. PE, Art, Music, Library, STEM, Adaptive PE, CTE — you see them all,
-            every week, all year long. But when it comes to planning tools, curriculum support, and
-            AI? Everyone builds for the classroom teacher. PlansK12 was built for you. Real lesson
-            plans in minutes, standards-aligned to your state, built around how your class actually
-            runs.
+            You teach every kid in the building — PE, Art, Music, Library, STEM, Adaptive PE, CTE, gifted,
+            reading and math intervention, and special education. You see them all, every week, all year
+            long. But when it comes to planning tools, curriculum support, and AI? Everyone builds for the
+            classroom teacher. PlansK12 was built for you. Real lesson plans in minutes, standards-aligned
+            to your state, built around how your class actually runs.
           </p>
 
           {/* Module chips */}
@@ -140,6 +140,21 @@ export default function Landing() {
             <span className="rounded-full bg-pink-500/15 px-3 py-1 text-xs font-medium text-pink-400">
               CTE
             </span>
+            <span className="rounded-full bg-indigo-500/15 px-3 py-1 text-xs font-medium text-indigo-400">
+              Classroom Management
+            </span>
+            <span className="rounded-full bg-amber-500/15 px-3 py-1 text-xs font-medium text-amber-400">
+              Gifted &amp; Talented
+            </span>
+            <span className="rounded-full bg-sky-500/15 px-3 py-1 text-xs font-medium text-sky-400">
+              Reading Specialists
+            </span>
+            <span className="rounded-full bg-lime-500/15 px-3 py-1 text-xs font-medium text-lime-400">
+              Math Specialists
+            </span>
+            <span className="rounded-full bg-violet-500/15 px-3 py-1 text-xs font-medium text-violet-400">
+              Special Education
+            </span>
           </div>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -160,7 +175,7 @@ export default function Landing() {
           <div className="mb-10 text-center">
             <p className="label-eyebrow mb-3">Who it's for</p>
             <h2 className="text-3xl font-display font-semibold tracking-tight text-ink-50">
-              One tool for seven subjects they never had one for.
+              One tool for every subject they never had one for.
             </h2>
           </div>
 
@@ -173,7 +188,7 @@ export default function Landing() {
             <ModuleCard
               name="Library & Media"
               color="blue"
-              description="Genre study, research skills, and AASL-aligned lessons for K–5 library classes."
+              description="Genre study, research skills, and AASL-aligned lessons for K–5 library classes — plus the shared Makerspace project generator (also in STEM)."
             />
             <ModuleCard
               name="Art"
@@ -188,7 +203,7 @@ export default function Landing() {
             <ModuleCard
               name="STEM"
               color="cyan"
-              description="Engineering challenges, coding, science investigations, and maker projects — all four in one place."
+              description="Engineering challenges, coding, science investigations, and maker projects — all four in one place, plus the shared Makerspace project generator (tool-specific builds, also in Library & Media)."
             />
             <ModuleCard
               name="Adaptive PE"
@@ -198,7 +213,32 @@ export default function Landing() {
             <ModuleCard
               name="CTE"
               color="pink"
-              description="Career & Technical Education across Hospitality & Tourism, Finance, Marketing, Human Services / Family & Consumer Sciences, and Health Science pathways — standards-aligned and industry-relevant."
+              description="Career & Technical Education across Hospitality & Tourism, Finance, Marketing, Human Services / Family & Consumer Sciences, Health Science, and Education & Training pathways — standards-aligned and industry-relevant."
+            />
+            <ModuleCard
+              name="Classroom Management"
+              color="indigo"
+              description="All grade bands K–12 — printable quick-reference cards, behavior charts, reflection forms, behavior troubleshooting, ABC data sheets, CICO trackers, and parent communication tools."
+            />
+            <ModuleCard
+              name="Gifted & Talented"
+              color="amber"
+              description="Depth & Complexity differentiation, enrichment vs. acceleration options, and 2e / underachievement support — grounded in the NAGC framework, K–12."
+            />
+            <ModuleCard
+              name="Reading Specialists"
+              color="sky"
+              description="Explicit, systematic Structured Literacy interventions for phonics, fluency, and comprehension — IDA-aligned, with dyslexia-indicator flagging, K–12."
+            />
+            <ModuleCard
+              name="Math Specialists"
+              color="lime"
+              description="Concept-first math interventions & differentiation — CRA sequencing, Number Talks, and NCTM process standards for pull-out and co-teaching, K–12."
+            />
+            <ModuleCard
+              name="Special Education"
+              color="violet"
+              description="Resource & self-contained instructional support — multi-tier differentiation, functional/life-skills, and push-in co-teaching ideas to adapt to your students, K–12."
             />
           </div>
         </div>
@@ -448,6 +488,15 @@ const MODULE_STYLES = {
   cyan:    { border: 'border-cyan-400',    name: 'text-cyan-400'    },
   rose:    { border: 'border-rose-400',    name: 'text-rose-400'    },
   pink:    { border: 'border-pink-400',    name: 'text-pink-400'    },
+  indigo:  { border: 'border-indigo-400',  name: 'text-indigo-400'  },
+  amber:   { border: 'border-amber-400',   name: 'text-amber-400'   },
+  sky:     { border: 'border-sky-400',     name: 'text-sky-400'     },
+  // Available for future modules — see AVAILABLE_MODULE_ACCENTS in constants/modules.js
+  violet:  { border: 'border-violet-400',  name: 'text-violet-400'  },
+  fuchsia: { border: 'border-fuchsia-400', name: 'text-fuchsia-400' },
+  lime:    { border: 'border-lime-400',    name: 'text-lime-400'    },
+  slate:   { border: 'border-slate-400',   name: 'text-slate-400'   },
+  stone:   { border: 'border-stone-400',   name: 'text-stone-400'   },
 }
 
 function ModuleCard({ name, color, description }) {

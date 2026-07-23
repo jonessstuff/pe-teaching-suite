@@ -7,6 +7,7 @@ const PHASE_LABELS = {
   marketing:   ['Marketing Hook', 'Concept Instruction', 'Example Analysis', 'Applied Marketing Task', 'Present & Debrief'],
   human_services: ['Real-Life Hook', 'Concept Instruction', 'Skill Demonstration', 'Hands-On Application', 'Reflection & Life/Career Connection'],
   health_science: ['Clinical Hook', 'Concept Instruction', 'Skill Demonstration', 'Hands-On Clinical Application', 'Reflection & Career Connection'],
+  education: ['Classroom Scenario Hook', 'Concept Instruction', 'Teaching Skill Demonstration', 'Hands-On Teaching Application', 'Reflection & Profession Connection'],
 }
 
 const PATHWAY_LABELS = {
@@ -15,6 +16,7 @@ const PATHWAY_LABELS = {
   marketing:   'Marketing',
   human_services: 'Human Services / Family & Consumer Sciences',
   health_science: 'Health Science',
+  education: 'Education & Training',
 }
 
 const LEVEL_LABELS = {

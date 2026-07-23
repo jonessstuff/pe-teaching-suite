@@ -242,7 +242,7 @@ export default function MusicUnitBuilder() {
           </div>
           <div>
             <h1 className="text-xl font-semibold text-ink-50">Music Unit Builder</h1>
-            <p className="text-xs text-ink-500">Beta — 2–3 connected music sessions · NCAS-aligned</p>
+            <p className="text-xs text-ink-500">2–3 connected music sessions · NCAS-aligned</p>
           </div>
         </div>
         <p className="text-sm text-ink-400 mt-3">

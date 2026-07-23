@@ -278,7 +278,7 @@ export default function StemGenerator() {
           <div>
             <h1 className="text-xl font-semibold text-ink-50">STEM Lesson Generator</h1>
             <p className="text-xs text-ink-500">
-              Beta — elementary K–5 · NGSS · CSTA · ISTE-aligned
+              Elementary K–5 · NGSS · CSTA · ISTE-aligned
             </p>
           </div>
         </div>
