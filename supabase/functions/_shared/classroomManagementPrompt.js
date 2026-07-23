@@ -68,9 +68,15 @@ Fill these sections:
 - exit_routine: 3–5 steps for how students pack up and exit cleanly.
 - equipment_distribution: 3–5 tips/steps for handing out and collecting equipment or materials efficiently with a big group (minimize crowding and lost time).
 - large_group_strategies: 4–6 specific strategies for managing 25–60+ students without prior rapport (proximity, sightlines, grouping, pacing, positive framing, quick reset).
-- behavior_expectations: 3–5 core behavior expectations, positively framed and age-appropriate for middle school specials.
+- behavior_expectations: 3–5 core behavior expectations. CRITICAL: every expectation MUST name a concrete, observable action tied to a real moment that happens in THIS specific class/subject and grade band — something a teacher could literally watch a student do or not do. NO generic motivational or abstract language, and NO growth-mindset / poster-slogan phrasing. Ban words/phrases like "be respectful", "be responsible", "try your best", "be kind", "embrace mistakes", "growth mindset", "give 100%". Instead, anchor each expectation to a specific classroom event for the given subject (what to do when a cut is crooked, a paint spill happens, an instrument squeaks, a ball rolls away, equipment breaks, you finish early, a partner disagrees).
+  Good vs. generic — match the GOOD bar:
+    • GOOD (PE): "When a ball rolls into another group, walk to get it — never sprint across the gym."
+    • GOOD (art): "If paint or water spills, tell the teacher and grab paper towels before it spreads."
+    • GOOD (music): "When your instrument squeaks or a note cracks, keep playing — don't stop or laugh."
+    • GENERIC — never write these: "Be respectful and responsible." / "Mistakes are stepping stones — keep a growth mindset." / "Always try your best."
+  If a class/subject context was given, make every expectation obviously specific to it.
 
-Keep the whole card tight enough to fit on a single printed page. Prefer specificity over completeness — a few sharp, usable items beat long lists.`
+Across the WHOLE card, use concrete, observable, subject-specific language — no motivational-poster lines anywhere. Keep it tight enough to fit on a single printed page. Prefer specificity over completeness — a few sharp, usable items beat long lists.`
 
   const user = `Generate the grades ${gradeBand} classroom-management quick-reference card now${context ? ` for this class context: ${context}` : ""}. Return the JSON object only.`
 
