@@ -80,6 +80,7 @@ export default function ClassroomManagementGenerator() {
   const [noteDetails, setNoteDetails] = useState('')
   const [noteResponse, setNoteResponse] = useState('')
   const [noteTone, setNoteTone] = useState('balanced')
+  const [signatureName, setSignatureName] = useState('')
   const [themeId, setThemeId] = useState('navy')
   const [card, setCard] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -159,7 +160,7 @@ export default function ClassroomManagementGenerator() {
         : `${teacherName.trim() || 'My Classroom'} — Grades ${gradeBand} ${OUTPUT_LABEL[outputType]}`
       await createCard({
         name: savedName,
-        cardData: { outputType, card, noteType, teacherName: teacherName.trim(), gradeBand, classContext: classContext.trim(), challenge: challenge.trim(), classSize: classSize.trim(), theme },
+        cardData: { outputType, card, noteType, signatureName: signatureName.trim(), teacherName: teacherName.trim(), gradeBand, classContext: classContext.trim(), challenge: challenge.trim(), classSize: classSize.trim(), theme },
       })
       setSaveStatus('saved')
     } catch (err) {
@@ -437,6 +438,20 @@ export default function ClassroomManagementGenerator() {
                 )}
 
                 <div>
+                  <label htmlFor="cm-pn-signature" className="mb-1.5 block text-sm font-medium text-ink-200">
+                    Sign the note as <span className="text-ink-500">(your name as it should appear at the bottom)</span>
+                  </label>
+                  <input
+                    id="cm-pn-signature"
+                    type="text"
+                    value={signatureName}
+                    onChange={(e) => setSignatureName(e.target.value)}
+                    placeholder="e.g. Ms. Garcia"
+                    className="input-field sm:max-w-[320px]"
+                  />
+                </div>
+
+                <div>
                   <label className="mb-2 block text-sm font-medium text-ink-200">Tone</label>
                   <div className="flex flex-wrap gap-2">
                     {PARENT_TONES.map((t) => (
@@ -566,7 +581,7 @@ export default function ClassroomManagementGenerator() {
               ) : outputType === 'cico-tracker' ? (
                 <CICOTrackerRenderer config={card} teacherName={teacherName} gradeBand={gradeBand} classContext={classContext} accentHex={theme.hex} />
               ) : outputType === 'parent-note' ? (
-                <ParentCommunicationRenderer note={card} teacherName={teacherName} classContext={classContext} accentHex={theme.hex} />
+                <ParentCommunicationRenderer note={card} signatureName={signatureName} teacherName={teacherName} classContext={classContext} accentHex={theme.hex} />
               ) : (
                 <ClassroomCardRenderer card={card} teacherName={teacherName} gradeBand={gradeBand} accentHex={theme.hex} />
               )}

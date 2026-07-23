@@ -7,9 +7,9 @@
  *
  * Distinct from the lesson-planning ParentNoteRenderer (different module/shape).
  *
- * @param {{ note: object, teacherName?: string, classContext?: string, accentHex: string }} props
+ * @param {{ note: object, signatureName?: string, teacherName?: string, classContext?: string, accentHex: string }} props
  */
-export default function ParentCommunicationRenderer({ note, teacherName, classContext, accentHex }) {
+export default function ParentCommunicationRenderer({ note, signatureName, teacherName, classContext, accentHex }) {
   if (!note) return null
   const { usable = true, message = '', title = '', greeting = '', paragraphs = [], closing = '' } = note
 
@@ -22,8 +22,10 @@ export default function ParentCommunicationRenderer({ note, teacherName, classCo
     )
   }
 
-  const signature = teacherName?.trim() || 'Your child’s teacher'
-  const fromLine = classContext?.trim() ? `${signature} · ${classContext.trim()}` : signature
+  // Sign-off is the teacher's actual name; the class/subject appears as a small
+  // secondary line beneath it (a real signature block, not "name · subject").
+  const signature = signatureName?.trim() || teacherName?.trim() || 'Your child’s teacher'
+  const subjectLine = classContext?.trim()
 
   return (
     <div
@@ -45,7 +47,8 @@ export default function ParentCommunicationRenderer({ note, teacherName, classCo
 
         <div className="pt-2">
           {closing && <p>{closing}</p>}
-          <p className="cm-accent-text font-semibold" style={{ color: accentHex }}>{fromLine}</p>
+          <p className="cm-accent-text font-semibold" style={{ color: accentHex }}>{signature}</p>
+          {subjectLine && <p className="text-sm text-slate-500">{subjectLine}</p>}
         </div>
       </div>
     </div>

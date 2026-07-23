@@ -378,6 +378,8 @@ QUALITY BAR — same as the rest of this module: specific and concrete, usable a
 
   const incidentBody = `This is an INCIDENT NOTE — something happened at school and the family should know. The single most important thing: it must feel COLLABORATIVE, never accusatory or alarming. Frame it as "let's team up," not "your child did something wrong." A parent should finish it feeling informed and invited to partner — not attacked — and the child should never feel labeled ("disruptive", "a problem", "defiant", "bad").
 
+DO NOT editorialize about how serious or minor the incident was. Never insert a severity judgment such as "nothing serious happened", "this isn't a big deal", "just a small thing", or conversely "this is very serious". State the facts the teacher gave and let them convey the weight on their own — the parent will judge severity from the actual description. The collaborative framing should come from the invitation to partner, not from downplaying (or inflating) what happened.
+
 Fill the JSON:
 - usable: true if the teacher described a real classroom incident; false if blank, off-topic, or nonsensical.
 - message: "" when usable is true. When usable is false, a short polite note asking the teacher to describe what happened, and leave the letter fields as empty strings / empty array.

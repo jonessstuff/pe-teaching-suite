@@ -94,7 +94,7 @@ export default function MyClassroomCards() {
           ) : data.outputType === 'cico-tracker' ? (
             <CICOTrackerRenderer config={data.card} teacherName={data.teacherName} gradeBand={data.gradeBand ?? '6-8'} classContext={data.classContext} accentHex={data.theme?.hex ?? '#1e3a8a'} />
           ) : data.outputType === 'parent-note' ? (
-            <ParentCommunicationRenderer note={data.card} teacherName={data.teacherName} classContext={data.classContext} accentHex={data.theme?.hex ?? '#1e3a8a'} />
+            <ParentCommunicationRenderer note={data.card} signatureName={data.signatureName} teacherName={data.teacherName} classContext={data.classContext} accentHex={data.theme?.hex ?? '#1e3a8a'} />
           ) : (
             <ClassroomCardRenderer card={data.card} teacherName={data.teacherName} gradeBand={data.gradeBand ?? '6-8'} accentHex={data.theme?.hex ?? '#1e3a8a'} />
           )}
