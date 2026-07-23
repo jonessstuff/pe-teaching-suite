@@ -8,6 +8,8 @@ import ClassroomCardRenderer from '../components/renderers/ClassroomCardRenderer
 import BehaviorChartRenderer from '../components/renderers/BehaviorChartRenderer'
 import ReflectionFormRenderer from '../components/renderers/ReflectionFormRenderer'
 import TroubleshootRenderer from '../components/renderers/TroubleshootRenderer'
+import ABCSheetRenderer from '../components/renderers/ABCSheetRenderer'
+import CICOTrackerRenderer from '../components/renderers/CICOTrackerRenderer'
 
 // Card accent themes — deliberately distinct from the module's own indigo UI accent.
 const THEMES = [
@@ -31,6 +33,8 @@ const OUTPUT_TYPES = [
   { id: 'behavior-chart', label: 'Behavior Chart' },
   { id: 'reflection-form', label: 'Reflection Form' },
   { id: 'troubleshoot', label: 'Troubleshoot a Behavior' },
+  { id: 'abc-sheet', label: 'ABC Sheet' },
+  { id: 'cico-tracker', label: 'CICO Tracker' },
 ]
 
 const OUTPUT_LABEL = {
@@ -38,7 +42,12 @@ const OUTPUT_LABEL = {
   'behavior-chart': 'Behavior Chart',
   'reflection-form': 'Reflection Form',
   troubleshoot: 'Behavior Troubleshooter',
+  'abc-sheet': 'ABC Data Sheet',
+  'cico-tracker': 'CICO Tracker',
 }
+
+// ABC Sheet and CICO Tracker are static teacher-filled templates — no AI call.
+const STATIC_TYPES = new Set(['abc-sheet', 'cico-tracker'])
 
 export default function ClassroomManagementGenerator() {
   const { isTrial, isExpired } = useTrial()
@@ -50,6 +59,12 @@ export default function ClassroomManagementGenerator() {
   const [classContext, setClassContext] = useState('')
   const [challenge, setChallenge] = useState('')
   const [classSize, setClassSize] = useState('')
+  // ABC Sheet / CICO Tracker inputs
+  const [studentName, setStudentName] = useState('')
+  const [dateRange, setDateRange] = useState('')
+  const [cicoDate, setCicoDate] = useState('')
+  const [goals, setGoals] = useState(['', '', ''])
+  const [intervals, setIntervals] = useState('Check-In, Block 1, Block 2, Block 3, Check-Out')
   const [themeId, setThemeId] = useState('navy')
   const [card, setCard] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -58,16 +73,41 @@ export default function ClassroomManagementGenerator() {
 
   const theme = THEMES.find((t) => t.id === themeId) ?? THEMES[0]
 
+  const setGoal = (i, val) => setGoals((prev) => prev.map((g, idx) => (idx === i ? val : g)))
+  const addGoal = () => setGoals((prev) => (prev.length >= 4 ? prev : [...prev, '']))
+  const removeGoal = (i) => setGoals((prev) => (prev.length <= 1 ? prev : prev.filter((_, idx) => idx !== i)))
+
   async function handleGenerate(e) {
     e.preventDefault()
+    setError(null)
+    setSaveStatus('idle')
+
+    // Static templates (ABC Sheet, CICO Tracker) — assemble locally, no edge function.
+    if (outputType === 'abc-sheet') {
+      setCard({ studentName: studentName.trim(), dateRange: dateRange.trim() })
+      return
+    }
+    if (outputType === 'cico-tracker') {
+      const goalList = goals.map((g) => g.trim()).filter(Boolean)
+      if (goalList.length === 0) { setError('Add at least one goal or behavior to track.'); return }
+      const intervalList = intervals.split(',').map((s) => s.trim()).filter(Boolean)
+      if (intervalList.length === 0) { setError('Add at least one time block (comma-separated).'); return }
+      setCard({
+        studentName: studentName.trim(),
+        date: cicoDate.trim(),
+        goals: goalList,
+        intervals: intervalList,
+        scale: gradeBand === 'K-2' ? 'faces' : 'points',
+      })
+      return
+    }
+
     if (outputType === 'troubleshoot' && !challenge.trim()) {
       setError('Describe the behavior challenge in your own words first.')
       return
     }
     setLoading(true)
-    setError(null)
     setCard(null)
-    setSaveStatus('idle')
     try {
       const result = await generateClassroomCard({
         outputType,
@@ -175,6 +215,104 @@ export default function ClassroomManagementGenerator() {
               </div>
             )}
 
+            {/* ABC Sheet / CICO Tracker: student name (or blank for privacy) */}
+            {STATIC_TYPES.has(outputType) && (
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="cm-student" className="mb-1.5 block text-sm font-medium text-ink-200">
+                    Student name <span className="text-ink-500">(optional — leave blank for privacy)</span>
+                  </label>
+                  <input
+                    id="cm-student"
+                    type="text"
+                    value={studentName}
+                    onChange={(e) => setStudentName(e.target.value)}
+                    placeholder="Leave blank to print “Student”"
+                    className="input-field"
+                  />
+                </div>
+                {outputType === 'abc-sheet' ? (
+                  <div>
+                    <label htmlFor="cm-daterange" className="mb-1.5 block text-sm font-medium text-ink-200">
+                      Date range <span className="text-ink-500">(optional)</span>
+                    </label>
+                    <input
+                      id="cm-daterange"
+                      type="text"
+                      value={dateRange}
+                      onChange={(e) => setDateRange(e.target.value)}
+                      placeholder="e.g. Week of Sept 8"
+                      className="input-field"
+                    />
+                  </div>
+                ) : (
+                  <div>
+                    <label htmlFor="cm-cicodate" className="mb-1.5 block text-sm font-medium text-ink-200">
+                      Date <span className="text-ink-500">(optional)</span>
+                    </label>
+                    <input
+                      id="cm-cicodate"
+                      type="text"
+                      value={cicoDate}
+                      onChange={(e) => setCicoDate(e.target.value)}
+                      placeholder="e.g. Mon, Sept 8"
+                      className="input-field"
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* CICO Tracker: customizable goals + time blocks */}
+            {outputType === 'cico-tracker' && (
+              <>
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-ink-200">
+                    Goals / behaviors to track <span className="text-ink-500">(1–4, positively phrased)</span>
+                  </label>
+                  <div className="space-y-2">
+                    {goals.map((g, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          value={g}
+                          onChange={(e) => setGoal(i, e.target.value)}
+                          placeholder={['e.g. Stayed in my space', 'e.g. Used kind words', 'e.g. Followed directions', 'e.g. Kept a safe body'][i] ?? 'Goal'}
+                          className="input-field flex-1"
+                        />
+                        {goals.length > 1 && (
+                          <button type="button" onClick={() => removeGoal(i)} className="rounded-lg border border-ink-800 px-2.5 py-1.5 text-sm text-ink-400 hover:border-ink-600" aria-label="Remove goal">
+                            ×
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  {goals.length < 4 && (
+                    <button type="button" onClick={addGoal} className="mt-2 text-sm font-medium text-indigo-300 hover:text-indigo-200">
+                      + Add goal
+                    </button>
+                  )}
+                </div>
+                <div>
+                  <label htmlFor="cm-intervals" className="mb-1.5 block text-sm font-medium text-ink-200">
+                    Check-in points <span className="text-ink-500">(comma-separated columns)</span>
+                  </label>
+                  <input
+                    id="cm-intervals"
+                    type="text"
+                    value={intervals}
+                    onChange={(e) => setIntervals(e.target.value)}
+                    placeholder="Check-In, Block 1, Block 2, Block 3, Check-Out"
+                    className="input-field"
+                  />
+                  <p className="mt-1 text-xs text-ink-500">
+                    {gradeBand === 'K-2' ? 'K–2 prints emoji faces 🙁 😐 🙂 for rating.' : 'Rating scale 0 · 1 · 2 per check-in.'}
+                  </p>
+                </div>
+              </>
+            )}
+
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label htmlFor="cm-name" className="mb-1.5 block text-sm font-medium text-ink-200">
@@ -267,7 +405,7 @@ export default function ClassroomManagementGenerator() {
               disabled={loading}
               className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:opacity-60"
             >
-              {loading ? <><Loader2 size={16} className="animate-spin" /> Generating…</> : <><Sparkles size={16} /> {outputType === 'troubleshoot' ? 'Get strategies' : `Generate ${OUTPUT_LABEL[outputType].toLowerCase()}`}</>}
+              {loading ? <><Loader2 size={16} className="animate-spin" /> Generating…</> : <><Sparkles size={16} /> {outputType === 'troubleshoot' ? 'Get strategies' : outputType === 'abc-sheet' ? 'Build ABC sheet' : outputType === 'cico-tracker' ? 'Build CICO tracker' : `Generate ${OUTPUT_LABEL[outputType].toLowerCase()}`}</>}
             </button>
           </form>
 
@@ -280,6 +418,10 @@ export default function ClassroomManagementGenerator() {
                 <ReflectionFormRenderer form={card} teacherName={teacherName} gradeBand={gradeBand} classContext={classContext} accentHex={theme.hex} />
               ) : outputType === 'troubleshoot' ? (
                 <TroubleshootRenderer result={card} challenge={challenge} teacherName={teacherName} gradeBand={gradeBand} classContext={classContext} accentHex={theme.hex} />
+              ) : outputType === 'abc-sheet' ? (
+                <ABCSheetRenderer config={card} teacherName={teacherName} classContext={classContext} accentHex={theme.hex} />
+              ) : outputType === 'cico-tracker' ? (
+                <CICOTrackerRenderer config={card} teacherName={teacherName} gradeBand={gradeBand} classContext={classContext} accentHex={theme.hex} />
               ) : (
                 <ClassroomCardRenderer card={card} teacherName={teacherName} gradeBand={gradeBand} accentHex={theme.hex} />
               )}
