@@ -3,7 +3,7 @@ import { buildClassroomOutputPrompt } from "../_shared/classroomManagementPrompt
 import { callClaudeForJson } from "../_shared/anthropic.js"
 
 const VALID_GRADE_BANDS = ["K-2", "3-5", "6-8", "9-12"]
-const VALID_OUTPUT_TYPES = ["card", "behavior-chart", "reflection-form", "troubleshoot"]
+const VALID_OUTPUT_TYPES = ["card", "behavior-chart", "reflection-form", "troubleshoot", "parent-note"]
 
 // Haiku for cost/timeout reasons on the Supabase free plan, matching the CTE
 // approach. The card is small, so no keepalive stream is needed (fast generation).
@@ -21,7 +21,20 @@ Deno.serve(async (req: Request) => {
     return errorResponse("Invalid JSON body", 400)
   }
 
-  const { outputType = "card", gradeBand = "6-8", classContext, challenge, classSize } = body ?? {}
+  const {
+    outputType = "card",
+    gradeBand = "6-8",
+    classContext,
+    challenge,
+    classSize,
+    // parent-note fields
+    noteType,
+    studentName,
+    noteDate,
+    details,
+    response,
+    tone,
+  } = body ?? {}
 
   if (!VALID_OUTPUT_TYPES.includes(outputType as string)) {
     return errorResponse(`outputType must be one of: ${VALID_OUTPUT_TYPES.join(", ")}`, 400)
@@ -36,6 +49,12 @@ Deno.serve(async (req: Request) => {
       classContext: (classContext as string) ?? "",
       challenge: (challenge as string) ?? "",
       classSize: (classSize as string) ?? "",
+      noteType: (noteType as string) ?? "incident",
+      studentName: (studentName as string) ?? "",
+      noteDate: (noteDate as string) ?? "",
+      details: (details as string) ?? "",
+      response: (response as string) ?? "",
+      tone: (tone as string) ?? "balanced",
     })
     // Structured outputs guarantees valid JSON; 4000 tokens is ample for a card.
     const result = await callClaudeForJson(system, user, 4000, MODEL, schema)

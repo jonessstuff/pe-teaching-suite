@@ -10,6 +10,7 @@ import ReflectionFormRenderer from '../components/renderers/ReflectionFormRender
 import TroubleshootRenderer from '../components/renderers/TroubleshootRenderer'
 import ABCSheetRenderer from '../components/renderers/ABCSheetRenderer'
 import CICOTrackerRenderer from '../components/renderers/CICOTrackerRenderer'
+import ParentCommunicationRenderer from '../components/renderers/ParentCommunicationRenderer'
 
 export default function MyClassroomCards() {
   const { isTrial, isExpired } = useTrial()
@@ -92,6 +93,8 @@ export default function MyClassroomCards() {
             <ABCSheetRenderer config={data.card} teacherName={data.teacherName} classContext={data.classContext} accentHex={data.theme?.hex ?? '#1e3a8a'} />
           ) : data.outputType === 'cico-tracker' ? (
             <CICOTrackerRenderer config={data.card} teacherName={data.teacherName} gradeBand={data.gradeBand ?? '6-8'} classContext={data.classContext} accentHex={data.theme?.hex ?? '#1e3a8a'} />
+          ) : data.outputType === 'parent-note' ? (
+            <ParentCommunicationRenderer note={data.card} teacherName={data.teacherName} classContext={data.classContext} accentHex={data.theme?.hex ?? '#1e3a8a'} />
           ) : (
             <ClassroomCardRenderer card={data.card} teacherName={data.teacherName} gradeBand={data.gradeBand ?? '6-8'} accentHex={data.theme?.hex ?? '#1e3a8a'} />
           )}

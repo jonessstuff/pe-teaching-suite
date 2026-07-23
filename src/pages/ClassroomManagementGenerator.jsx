@@ -10,6 +10,7 @@ import ReflectionFormRenderer from '../components/renderers/ReflectionFormRender
 import TroubleshootRenderer from '../components/renderers/TroubleshootRenderer'
 import ABCSheetRenderer from '../components/renderers/ABCSheetRenderer'
 import CICOTrackerRenderer from '../components/renderers/CICOTrackerRenderer'
+import ParentCommunicationRenderer from '../components/renderers/ParentCommunicationRenderer'
 
 // Card accent themes — deliberately distinct from the module's own indigo UI accent.
 const THEMES = [
@@ -35,6 +36,7 @@ const OUTPUT_TYPES = [
   { id: 'troubleshoot', label: 'Troubleshoot a Behavior' },
   { id: 'abc-sheet', label: 'ABC Sheet' },
   { id: 'cico-tracker', label: 'CICO Tracker' },
+  { id: 'parent-note', label: 'Parent Note' },
 ]
 
 const OUTPUT_LABEL = {
@@ -44,7 +46,14 @@ const OUTPUT_LABEL = {
   troubleshoot: 'Behavior Troubleshooter',
   'abc-sheet': 'ABC Data Sheet',
   'cico-tracker': 'CICO Tracker',
+  'parent-note': 'Parent Note',
 }
+
+const PARENT_TONES = [
+  { id: 'warm-casual', label: 'Warm & casual' },
+  { id: 'balanced', label: 'Warm & professional' },
+  { id: 'formal-professional', label: 'Formal' },
+]
 
 // ABC Sheet and CICO Tracker are static teacher-filled templates — no AI call.
 const STATIC_TYPES = new Set(['abc-sheet', 'cico-tracker'])
@@ -65,6 +74,12 @@ export default function ClassroomManagementGenerator() {
   const [cicoDate, setCicoDate] = useState('')
   const [goals, setGoals] = useState(['', '', ''])
   const [intervals, setIntervals] = useState('Check-In, Block 1, Block 2, Block 3, Check-Out')
+  // Parent Note inputs
+  const [noteType, setNoteType] = useState('incident')
+  const [noteDate, setNoteDate] = useState('')
+  const [noteDetails, setNoteDetails] = useState('')
+  const [noteResponse, setNoteResponse] = useState('')
+  const [noteTone, setNoteTone] = useState('balanced')
   const [themeId, setThemeId] = useState('navy')
   const [card, setCard] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -106,6 +121,12 @@ export default function ClassroomManagementGenerator() {
       setError('Describe the behavior challenge in your own words first.')
       return
     }
+    if (outputType === 'parent-note' && !noteDetails.trim()) {
+      setError(noteType === 'positive'
+        ? 'Add the specific positive thing you noticed.'
+        : 'Add a brief factual description of what happened.')
+      return
+    }
     setLoading(true)
     setCard(null)
     try {
@@ -115,6 +136,12 @@ export default function ClassroomManagementGenerator() {
         classContext: classContext.trim(),
         challenge: challenge.trim(),
         classSize: classSize.trim(),
+        noteType,
+        studentName: studentName.trim(),
+        noteDate: noteDate.trim(),
+        details: noteDetails.trim(),
+        response: noteResponse.trim(),
+        tone: noteTone,
       })
       setCard(result)
     } catch (err) {
@@ -127,9 +154,12 @@ export default function ClassroomManagementGenerator() {
   async function handleSave() {
     setSaveStatus('saving')
     try {
+      const savedName = outputType === 'parent-note'
+        ? `${studentName.trim() || 'Student'} — ${noteType === 'positive' ? 'Positive Note' : 'Incident Note'}`
+        : `${teacherName.trim() || 'My Classroom'} — Grades ${gradeBand} ${OUTPUT_LABEL[outputType]}`
       await createCard({
-        name: `${teacherName.trim() || 'My Classroom'} — Grades ${gradeBand} ${OUTPUT_LABEL[outputType]}`,
-        cardData: { outputType, card, teacherName: teacherName.trim(), gradeBand, classContext: classContext.trim(), challenge: challenge.trim(), classSize: classSize.trim(), theme },
+        name: savedName,
+        cardData: { outputType, card, noteType, teacherName: teacherName.trim(), gradeBand, classContext: classContext.trim(), challenge: challenge.trim(), classSize: classSize.trim(), theme },
       })
       setSaveStatus('saved')
     } catch (err) {
@@ -316,6 +346,116 @@ export default function ClassroomManagementGenerator() {
               </>
             )}
 
+            {/* Parent Note: incident vs positive + specifics + tone */}
+            {outputType === 'parent-note' && (
+              <>
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-ink-200">Note type</label>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { id: 'incident', label: 'Incident note', hint: 'Something happened — going home' },
+                      { id: 'positive', label: 'Positive note', hint: '“Caught being good”' },
+                    ].map((n) => (
+                      <button
+                        key={n.id}
+                        type="button"
+                        onClick={() => { setNoteType(n.id); setCard(null); setSaveStatus('idle') }}
+                        className={`flex flex-col items-start rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${
+                          noteType === n.id ? 'border-indigo-400 bg-indigo-500/15 text-indigo-300' : 'border-ink-800 text-ink-400 hover:border-ink-600'
+                        }`}
+                      >
+                        <span>{n.label}</span>
+                        <span className="text-[11px] font-normal text-ink-500">{n.hint}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="cm-pn-student" className="mb-1.5 block text-sm font-medium text-ink-200">
+                      Student name <span className="text-ink-500">(optional — blank uses “your child”)</span>
+                    </label>
+                    <input
+                      id="cm-pn-student"
+                      type="text"
+                      value={studentName}
+                      onChange={(e) => setStudentName(e.target.value)}
+                      placeholder="e.g. Jordan"
+                      className="input-field"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="cm-pn-date" className="mb-1.5 block text-sm font-medium text-ink-200">
+                      Date <span className="text-ink-500">(optional)</span>
+                    </label>
+                    <input
+                      id="cm-pn-date"
+                      type="text"
+                      value={noteDate}
+                      onChange={(e) => setNoteDate(e.target.value)}
+                      placeholder="e.g. today, Tuesday, Sept 9"
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="cm-pn-details" className="mb-1.5 block text-sm font-medium text-ink-200">
+                    {noteType === 'positive'
+                      ? 'What did you notice?'
+                      : 'What happened?'}{' '}
+                    <span className="text-ink-500">(your specifics — the note is built from these)</span>
+                  </label>
+                  <textarea
+                    id="cm-pn-details"
+                    value={noteDetails}
+                    onChange={(e) => setNoteDetails(e.target.value)}
+                    rows={3}
+                    placeholder={noteType === 'positive'
+                      ? 'e.g. waited patiently for her turn during the relay and cheered on the other team while she waited'
+                      : 'e.g. got frustrated during a group game, said some unkind words to a teammate, and left the activity'}
+                    className="input-field"
+                  />
+                  <p className="mt-1 text-xs text-ink-500">Just the facts — I’ll shape them into a note. I won’t invent details you didn’t give.</p>
+                </div>
+
+                {noteType === 'incident' && (
+                  <div>
+                    <label htmlFor="cm-pn-response" className="mb-1.5 block text-sm font-medium text-ink-200">
+                      What was done in response at school? <span className="text-ink-500">(optional)</span>
+                    </label>
+                    <textarea
+                      id="cm-pn-response"
+                      value={noteResponse}
+                      onChange={(e) => setNoteResponse(e.target.value)}
+                      rows={2}
+                      placeholder="e.g. we took a short break, talked it through, and she rejoined the group and apologized"
+                      className="input-field"
+                    />
+                  </div>
+                )}
+
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-ink-200">Tone</label>
+                  <div className="flex flex-wrap gap-2">
+                    {PARENT_TONES.map((t) => (
+                      <button
+                        key={t.id}
+                        type="button"
+                        onClick={() => setNoteTone(t.id)}
+                        className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${
+                          noteTone === t.id ? 'border-indigo-400 bg-indigo-500/15 text-indigo-300' : 'border-ink-800 text-ink-400 hover:border-ink-600'
+                        }`}
+                      >
+                        {t.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label htmlFor="cm-name" className="mb-1.5 block text-sm font-medium text-ink-200">
@@ -408,7 +548,7 @@ export default function ClassroomManagementGenerator() {
               disabled={loading}
               className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:opacity-60"
             >
-              {loading ? <><Loader2 size={16} className="animate-spin" /> Generating…</> : <><Sparkles size={16} /> {outputType === 'troubleshoot' ? 'Get strategies' : outputType === 'abc-sheet' ? 'Build ABC sheet' : outputType === 'cico-tracker' ? 'Build CICO tracker' : `Generate ${OUTPUT_LABEL[outputType].toLowerCase()}`}</>}
+              {loading ? <><Loader2 size={16} className="animate-spin" /> Generating…</> : <><Sparkles size={16} /> {outputType === 'troubleshoot' ? 'Get strategies' : outputType === 'abc-sheet' ? 'Build ABC sheet' : outputType === 'cico-tracker' ? 'Build CICO tracker' : outputType === 'parent-note' ? 'Write note' : `Generate ${OUTPUT_LABEL[outputType].toLowerCase()}`}</>}
             </button>
           </form>
 
@@ -425,6 +565,8 @@ export default function ClassroomManagementGenerator() {
                 <ABCSheetRenderer config={card} teacherName={teacherName} classContext={classContext} accentHex={theme.hex} />
               ) : outputType === 'cico-tracker' ? (
                 <CICOTrackerRenderer config={card} teacherName={teacherName} gradeBand={gradeBand} classContext={classContext} accentHex={theme.hex} />
+              ) : outputType === 'parent-note' ? (
+                <ParentCommunicationRenderer note={card} teacherName={teacherName} classContext={classContext} accentHex={theme.hex} />
               ) : (
                 <ClassroomCardRenderer card={card} teacherName={teacherName} gradeBand={gradeBand} accentHex={theme.hex} />
               )}
