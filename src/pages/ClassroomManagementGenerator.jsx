@@ -16,13 +16,19 @@ const THEMES = [
   { id: 'slate', name: 'Slate', hex: '#334155' },
 ]
 
-const GRADE_BAND = '6-8'
+const GRADE_BANDS = [
+  { id: 'K-2', label: 'K–2' },
+  { id: '3-5', label: '3–5' },
+  { id: '6-8', label: '6–8' },
+  { id: '9-12', label: '9–12' },
+]
 
 export default function ClassroomManagementGenerator() {
   const { isTrial, isExpired } = useTrial()
   const gated = isTrial || isExpired
 
   const [teacherName, setTeacherName] = useState('')
+  const [gradeBand, setGradeBand] = useState('6-8')
   const [classContext, setClassContext] = useState('')
   const [themeId, setThemeId] = useState('navy')
   const [card, setCard] = useState(null)
@@ -39,7 +45,7 @@ export default function ClassroomManagementGenerator() {
     setCard(null)
     setSaveStatus('idle')
     try {
-      const result = await generateClassroomCard({ gradeBand: GRADE_BAND, classContext: classContext.trim() })
+      const result = await generateClassroomCard({ gradeBand, classContext: classContext.trim() })
       setCard(result)
     } catch (err) {
       setError(err.message ?? 'Generation failed')
@@ -52,8 +58,8 @@ export default function ClassroomManagementGenerator() {
     setSaveStatus('saving')
     try {
       await createCard({
-        name: `${teacherName.trim() || 'My Classroom'} — Grades ${GRADE_BAND} Management Card`,
-        cardData: { card, teacherName: teacherName.trim(), gradeBand: GRADE_BAND, theme },
+        name: `${teacherName.trim() || 'My Classroom'} — Grades ${gradeBand} Management Card`,
+        cardData: { card, teacherName: teacherName.trim(), gradeBand, theme },
       })
       setSaveStatus('saved')
     } catch (err) {
@@ -119,9 +125,19 @@ export default function ClassroomManagementGenerator() {
               </div>
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-ink-200">Grade band</label>
-                <div className="flex h-[42px] items-center rounded-lg border border-ink-800 bg-ink-900 px-3 text-sm text-ink-300">
-                  Grades 6–8
-                  <span className="ml-2 rounded-full bg-indigo-500/15 px-2 py-0.5 text-xs font-medium text-indigo-400">MVP</span>
+                <div className="flex flex-wrap gap-2">
+                  {GRADE_BANDS.map((g) => (
+                    <button
+                      key={g.id}
+                      type="button"
+                      onClick={() => setGradeBand(g.id)}
+                      className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${
+                        gradeBand === g.id ? 'border-indigo-400 bg-indigo-500/15 text-indigo-300' : 'border-ink-800 text-ink-400 hover:border-ink-600'
+                      }`}
+                    >
+                      {g.label}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
@@ -176,7 +192,7 @@ export default function ClassroomManagementGenerator() {
           {/* Generated card */}
           {card && (
             <div className="space-y-5">
-              <ClassroomCardRenderer card={card} teacherName={teacherName} gradeBand={GRADE_BAND} accentHex={theme.hex} />
+              <ClassroomCardRenderer card={card} teacherName={teacherName} gradeBand={gradeBand} accentHex={theme.hex} />
 
               <div className="no-print flex flex-wrap items-center gap-3">
                 <button

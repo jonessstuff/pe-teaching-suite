@@ -2,9 +2,7 @@ import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js"
 import { buildClassroomManagementPrompt } from "../_shared/classroomManagementPrompt.js"
 import { callClaudeForJson } from "../_shared/anthropic.js"
 
-// MVP slice supports grades 6-8 only. Kept as a list so follow-up grade bands
-// (K-2, 3-5, 9-12) can be added here without other changes.
-const VALID_GRADE_BANDS = ["6-8"]
+const VALID_GRADE_BANDS = ["K-2", "3-5", "6-8", "9-12"]
 
 // Haiku for cost/timeout reasons on the Supabase free plan, matching the CTE
 // approach. The card is small, so no keepalive stream is needed (fast generation).
