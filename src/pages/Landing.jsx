@@ -187,6 +187,11 @@ export default function Landing() {
             </a>
           </div>
           <p className="mt-3 text-xs text-ink-600">7 days free, cancel anytime</p>
+          <p className="mt-4 text-sm">
+            <Link to="/try" className="font-semibold text-accent-600 hover:text-accent-500">
+              Or try one free lesson — no signup required →
+            </Link>
+          </p>
         </div>
       </section>
 

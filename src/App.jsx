@@ -44,6 +44,8 @@ import MyBinders from './pages/MyBinders'
 import AssessmentBank from './pages/AssessmentBank'
 import StandardsTracker from './pages/StandardsTracker'
 import SharedLesson from './pages/SharedLesson'
+import TryFreeLesson from './pages/TryFreeLesson'
+import FreeLessonView from './pages/FreeLessonView'
 import ImportLesson from './pages/ImportLesson'
 import EOYNarrativeGenerator from './pages/EOYNarrativeGenerator'
 import ActivityBank from './pages/ActivityBank'
@@ -238,6 +240,8 @@ function App() {
           <Route path="/login" element={<Login authError={authError} onClearAuthError={() => setAuthError(null)} />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/shared/:token" element={<SharedLesson />} />
+          <Route path="/try" element={<TryFreeLesson />} />
+          <Route path="/free-lesson/:token" element={<FreeLessonView />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
@@ -296,6 +300,7 @@ function App() {
           <Route path="assessments" element={<AssessmentBank />} />
           <Route path="standards-tracker" element={<StandardsTracker />} />
           <Route path="shared/:token" element={<SharedLesson />} />
+          <Route path="free-lesson/:token" element={<FreeLessonView />} />
           <Route path="import" element={<ImportLesson />} />
           <Route path="eoy-narrative" element={<EOYNarrativeGenerator />} />
           <Route path="activity-bank" element={<ActivityBank />} />
