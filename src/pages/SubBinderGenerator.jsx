@@ -12,7 +12,6 @@ import { createBinder } from '../services/subBinderService'
 import { US_STATES } from '../constants/usStates'
 import SubBinderRenderer from '../components/renderers/SubBinderRenderer'
 import { useTrial } from '../context/TrialContext'
-import { TRIAL_HORIZON_WEEKS } from '../services/trialService'
 import UpgradeBanner from '../components/UpgradeBanner'
 
 // ── Constants ──────────────────────────────────────────────────────────────
@@ -129,8 +128,10 @@ async function callDayGenerator(subject, stemFocusArea, payload) {
 
 export default function SubBinderGenerator() {
   const { isTrial, isExpired, openPaywall } = useTrial()
-  const gated = isTrial || isExpired // trial/expired users: paid-only preview + 4-week cap
-  const weekOptions = gated ? WEEK_OPTIONS.filter((w) => w <= TRIAL_HORIZON_WEEKS) : WEEK_OPTIONS
+  // Trial/expired users: generate only the first day as a preview, then paywall.
+  // (Independent of the 5-export cap; replaces the old 4-week generation window.)
+  const gated = isTrial || isExpired
+  const weekOptions = WEEK_OPTIONS
 
   const [searchParams] = useSearchParams()
   const urlSlug = searchParams.get('subject')
@@ -180,11 +181,15 @@ export default function SubBinderGenerator() {
 
     const allDays = []
     const weeks = []
+    // Free trial / expired: cap generation to a single day (Week 1, Monday),
+    // then the upgrade paywall covers the rest.
+    const dayCap = gated ? 1 : weekCount * 5
 
     try {
       for (let week = 0; week < weekCount; week++) {
         const weekDays = []
         for (let day = 0; day < 5; day++) {
+          if (allDays.length >= dayCap) break
           const weekNum = week + 1
           const dayName = DAY_NAMES[day]
           setProgress({ week: weekNum, day: day + 1, totalWeeks: weekCount })
@@ -223,10 +228,12 @@ export default function SubBinderGenerator() {
           allDays.push(lesson)
           weekDays.push(lesson)
         }
-        weeks.push(weekDays)
+        if (weekDays.length > 0) weeks.push(weekDays)
+        if (allDays.length >= dayCap) break
       }
 
-      setBinderMeta({ subject, weekCount, classSize, duration, state, routines, emergencyNotes })
+      // weekCount reflects what was actually generated (1 for the gated 1-day preview).
+      setBinderMeta({ subject, weekCount: weeks.length, classSize, duration, state, routines, emergencyNotes })
       setBinder(weeks)
       setView('result')
     } catch (err) {
@@ -321,9 +328,13 @@ export default function SubBinderGenerator() {
               prev.map((wk, w) => w !== wi ? wk : wk.map((d, dd) => dd !== di ? d : updated))
             )
           }
-          previewWeeks={gated ? 2 : null}
-          previewBanner={<UpgradeBanner label="the full substitute binder" />}
         />
+
+        {gated && (
+          <div className="print:hidden mt-8">
+            <UpgradeBanner label="the full substitute binder" />
+          </div>
+        )}
       </div>
     )
   }
@@ -438,7 +449,7 @@ export default function SubBinderGenerator() {
             </p>
             {gated && (
               <p className="mt-1.5 text-xs text-amber-500">
-                Free trial is limited to {TRIAL_HORIZON_WEEKS} weeks. Upgrade to plan a full year.
+                Free trial generates the first day only. Upgrade to generate all {totalDays} lessons for your absence.
               </p>
             )}
           </div>
@@ -593,7 +604,9 @@ export default function SubBinderGenerator() {
           ) : (
             <>
               <Sparkles size={18} />
-              Generate {weekCount}-week sub binder ({totalDays} lessons)
+              {gated
+                ? 'Generate 1-day preview'
+                : `Generate ${weekCount}-week sub binder (${totalDays} lessons)`}
             </>
           )}
         </button>
