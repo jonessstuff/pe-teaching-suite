@@ -20,11 +20,16 @@ Deno.serve(async (req) => {
 
     const { data: share, error } = await supabase
       .from("shared_lessons")
-      .select("id, view_count, lesson_id, lessons(lesson_object, title, subject, grade_bands)")
+      .select("id, view_count, expires_at, lesson_id, lessons(lesson_object, title, subject, grade_bands)")
       .eq("share_token", token)
       .single();
 
     if (error || !share) return errorResponse("Shared lesson not found", 404);
+
+    // Enforce link expiry (default 30 days from creation, see migration 0025).
+    if (share.expires_at && new Date(share.expires_at).getTime() < Date.now()) {
+      return errorResponse("This shared link has expired", 410);
+    }
 
     // Increment view count (fire-and-forget, ignore failure)
     supabase

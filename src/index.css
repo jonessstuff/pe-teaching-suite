@@ -193,9 +193,23 @@
     letter-spacing: 0.02em;
     color: #6b7280 !important;
   }
+
+  /* Shared public lesson view: no pristine print/PDF export. Hide the lesson
+     body and show a watermarked notice in its place instead. */
+  .shared-lesson-body {
+    display: none !important;
+  }
+  .shared-print-notice {
+    display: flex !important;
+  }
 }
 
 /* Hidden on screen; only shown in the @media print block above. */
 .trial-watermark {
+  display: none;
+}
+
+/* Shared public lesson: print-only notice, hidden on screen. */
+.shared-print-notice {
   display: none;
 }

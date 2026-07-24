@@ -310,7 +310,7 @@ export default function LessonDetail() {
       {showShare && shareToken && (
         <div className="no-print card px-5 py-4 space-y-3">
           <h3 className="text-sm font-semibold text-ink-200 flex items-center gap-2"><Share2 size={14} /> Share this lesson</h3>
-          <p className="text-xs text-ink-500">Anyone with the link can view this lesson — no account required.</p>
+          <p className="text-xs text-ink-500">Anyone with the link can view this lesson — no account required. The link expires 30 days after it's created.</p>
           <div className="flex items-center gap-2">
             <code className="flex-1 rounded-lg border border-ink-700 bg-ink-900 px-3 py-2 text-xs text-ink-300 truncate">
               {window.location.origin}/shared/{shareToken}
