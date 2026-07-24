@@ -314,6 +314,22 @@ export async function generateSchoolCounselor(input) {
   return data
 }
 
+export async function generateEarlyChildhood(input) {
+  const { data, error } = await supabase.functions.invoke('generate-early-childhood', {
+    body: input,
+  })
+
+  if (error) {
+    let message = error.message ?? 'Generation failed'
+    try {
+      const body = await error.context?.json?.()
+      if (body?.error) message = body.error
+    } catch {}
+    throw new Error(message)
+  }
+  return data
+}
+
 export async function generateEslSpecialist(input) {
   const { data, error } = await supabase.functions.invoke('generate-esl-specialist', {
     body: input,

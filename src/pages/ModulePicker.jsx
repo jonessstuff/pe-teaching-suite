@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Library, Palette, Music, FlaskConical, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Users, ArrowRight } from 'lucide-react'
+import { Library, Palette, Music, FlaskConical, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Users, Blocks, ArrowRight } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
 
 function getGreeting() {
@@ -375,6 +375,30 @@ export default function ModulePicker() {
             </p>
           </div>
           <div className="flex items-center gap-1.5 text-sm font-medium text-plum-400 transition-[gap] group-hover:gap-2.5">
+            Open module <ArrowRight size={15} />
+          </div>
+        </Link>
+
+        {/* Early Childhood / Pre-K */}
+        <Link
+          to="/early-childhood"
+          className="card group flex flex-col gap-6 p-8 transition-colors hover:border-grass-400/40"
+        >
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-grass-500/15">
+            <Blocks size={28} className="text-grass-400" />
+          </div>
+          <div className="flex-1 space-y-1.5">
+            <div className="flex items-center gap-2.5">
+              <h2 className="text-xl font-semibold text-ink-50">Early Childhood / Pre-K</h2>
+              <span className="rounded-full bg-grass-500/15 px-2 py-0.5 text-xs font-medium text-grass-400">
+                New
+              </span>
+            </div>
+            <p className="text-sm text-ink-400 leading-relaxed">
+              Play-based learning centers &amp; guided-play invitations for the whole child — NAEYC DAP, NAEYC Professional Standards &amp; Head Start ELOF (toddlers–TK)
+            </p>
+          </div>
+          <div className="flex items-center gap-1.5 text-sm font-medium text-grass-400 transition-[gap] group-hover:gap-2.5">
             Open module <ArrowRight size={15} />
           </div>
         </Link>

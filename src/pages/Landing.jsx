@@ -167,6 +167,9 @@ export default function Landing() {
             <span className="rounded-full bg-plum-500/15 px-3 py-1 text-xs font-medium text-plum-400">
               Student Support Team
             </span>
+            <span className="rounded-full bg-grass-500/15 px-3 py-1 text-xs font-medium text-grass-400">
+              Early Childhood / Pre-K
+            </span>
           </div>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -271,6 +274,11 @@ export default function Landing() {
               name="Student Support Team"
               color="plum"
               description="Ready-to-run small-group SEL & behavioral activities for social workers, school psychologists, MFLCs & behavior specialists — role-tailored, activity structure only, K–12."
+            />
+            <ModuleCard
+              name="Early Childhood / Pre-K"
+              color="grass"
+              description="Play-based learning centers & guided-play invitations for the whole child — NAEYC Developmentally Appropriate Practice, NAEYC Professional Standards & Head Start ELOF, toddlers through TK."
             />
           </div>
         </div>

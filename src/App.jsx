@@ -60,6 +60,7 @@ import MathSpecialistGenerator from './pages/MathSpecialistGenerator'
 import MakerProjectGenerator from './pages/MakerProjectGenerator'
 import SpecialEducationGenerator from './pages/SpecialEducationGenerator'
 import EslSpecialistGenerator from './pages/EslSpecialistGenerator'
+import EarlyChildhoodGenerator from './pages/EarlyChildhoodGenerator'
 import SchoolCounselorGenerator from './pages/SchoolCounselorGenerator'
 import SlpGenerator from './pages/SlpGenerator'
 import SstActivityGenerator from './pages/SstActivityGenerator'
@@ -285,6 +286,7 @@ function App() {
           <Route path="math-specialists" element={<MathSpecialistGenerator />} />
           <Route path="special-education" element={<SpecialEducationGenerator />} />
           <Route path="esl-specialist" element={<EslSpecialistGenerator />} />
+          <Route path="early-childhood" element={<EarlyChildhoodGenerator />} />
           <Route path="school-counselors" element={<SchoolCounselorGenerator />} />
           <Route path="slp" element={<SlpGenerator />} />
           <Route path="student-support-activities" element={<SstActivityGenerator />} />

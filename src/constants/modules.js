@@ -36,6 +36,7 @@ export const SUBJECT_TAB_STYLES = {
   'School Counselors': 'bg-crimson-500/15 text-crimson-400',
   'Speech-Language Pathologists': 'bg-bronze-500/15 text-bronze-400',
   'Student Support Team Activities': 'bg-plum-500/15 text-plum-400',
+  'Early Childhood': 'bg-grass-500/15 text-grass-400',
 }
 
 // Neutral last-resort style for a genuinely unknown subject only.
@@ -73,6 +74,7 @@ export const MODULES = [
   { label: 'School Counselors', subjects: ['School Counselors'] },
   { label: 'Speech-Language Pathologists', subjects: ['Speech-Language Pathologists'] },
   { label: 'Student Support Team Activities', subjects: ['Student Support Team Activities'] },
+  { label: 'Early Childhood / Pre-K', subjects: ['Early Childhood'] },
 ]
 
 /** True when `subject` belongs to the module identified by `moduleLabel`. */
@@ -107,7 +109,8 @@ export function subjectInModule(subject, moduleLabel) {
 //   slate (Makerspace — shared STEM + Library category) ·
 //   violet (Special Education) · fuchsia (ESL/ELL Specialist) ·
 //   crimson (School Counselors) · bronze (Speech-Language Pathologists) ·
-//   plum (Student Support Team Activities) · teal (Adaptive PE lesson tabs)
+//   plum (Student Support Team Activities) · grass (Early Childhood / Pre-K) ·
+//   teal (Adaptive PE lesson tabs)
 //
 // AVAILABLE for future modules (School Counselors is next, then more). Each
 // entry's strings are full/literal so Tailwind's JIT compiles them and a new
@@ -128,12 +131,6 @@ export const AVAILABLE_MODULE_ACCENTS = [
     tab: 'bg-stone-500/15 text-stone-400', iconTint: 'bg-stone-500/15',
     accentText: 'text-stone-400', hoverBorder: 'hover:border-stone-400/40',
     cardBorder: 'border-stone-400', callout: 'border-stone-500/30 bg-stone-500/10',
-  },
-  {
-    key: 'grass', label: 'Grass / leaf green',
-    tab: 'bg-grass-500/15 text-grass-400', iconTint: 'bg-grass-500/15',
-    accentText: 'text-grass-400', hoverBorder: 'hover:border-grass-400/40',
-    cardBorder: 'border-grass-400', callout: 'border-grass-500/30 bg-grass-500/10',
   },
   {
     key: 'zinc', label: 'Zinc (cool neutral gray)',
