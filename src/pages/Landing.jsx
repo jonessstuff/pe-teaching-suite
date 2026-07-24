@@ -150,6 +150,9 @@ export default function Landing() {
             <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Gifted &amp; Talented
             </span>
+            <span className="rounded-full bg-stone-500/20 px-3 py-1 text-xs font-medium text-ink-50">
+              Intervention Planning
+            </span>
             <span className="rounded-full bg-lime-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Math Specialists
             </span>
@@ -257,6 +260,11 @@ export default function Landing() {
                 name="Gifted & Talented"
                 color="amber"
                 description="Depth & Complexity differentiation, enrichment vs. acceleration options, and 2e / underachievement support — grounded in the NAGC framework, K–12."
+              />
+              <ModuleCard
+                name="Intervention Planning"
+                color="stone"
+                description="Describe a concern and get a tiered MTSS/RTI intervention — routed to Reading (IDA), Math (NCTM/CRA), or Behavior support, with Tier framing and progress-monitoring, K–12."
               />
               <ModuleCard
                 name="Math Specialists"

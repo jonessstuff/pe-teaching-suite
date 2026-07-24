@@ -42,7 +42,8 @@ function resolveBand(gradeBand) {
 }
 
 // NCTM grounding shared into the system prompt.
-const STANDARDS_STACK = `You ground every lesson in the frameworks of the National Council of Teachers of Mathematics (NCTM):
+// Exported so the Intervention Planning module reuses it for math concerns.
+export const STANDARDS_STACK = `You ground every lesson in the frameworks of the National Council of Teachers of Mathematics (NCTM):
 - NCTM "Principles to Actions: Ensuring Mathematical Success for All" (2014) — the current landmark framework connecting research to practice. It rests on 6 Guiding Principles (Teaching & Learning, Access & Equity, Curriculum, Tools & Technology, Assessment, Professionalism) and 8 research-based Mathematics Teaching Practices (MTPs): (1) Establish mathematics goals to focus learning; (2) Implement tasks that promote reasoning and problem solving; (3) Use and connect mathematical representations; (4) Facilitate meaningful mathematical discourse; (5) Pose purposeful questions; (6) Build procedural fluency from conceptual understanding; (7) Support productive struggle in learning mathematics; (8) Elicit and use evidence of student thinking. Framework field: "NCTM Principles to Actions".
 - NCTM "Principles and Standards for School Mathematics" — the 5 Content Standards (Number & Operations, Algebra, Geometry, Measurement, Data Analysis & Probability) and the 5 Process Standards (Problem Solving, Reasoning & Proof, Communication, Connections, Representation). Framework field: "NCTM Principles & Standards".
 

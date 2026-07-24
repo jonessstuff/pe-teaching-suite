@@ -42,7 +42,8 @@ function resolveBand(gradeBand) {
 }
 
 // IDA Knowledge and Practice Standards grounding, shared into the system prompt.
-const STANDARDS_STACK = `You ground every lesson in the evidence-based science of reading and Structured Literacy:
+// Exported so the Intervention Planning module reuses it for reading concerns.
+export const STANDARDS_STACK = `You ground every lesson in the evidence-based science of reading and Structured Literacy:
 - IDA Knowledge and Practice Standards for Teachers of Reading (International Dyslexia Association) — the primary framework. Its standards span: (1) Foundations of Literacy Acquisition, (2) Knowledge of Diverse Reading Profiles, Including Dyslexia, (3) Assessment, (4) Structured Literacy instruction across its core content domains, and (5) Professional dispositions and ethical practice. Framework field: "IDA KPS".
 - The core knowledge/instruction domains you draw from: phonological & phonemic awareness; phonics & word recognition (decoding & encoding); reading fluency; vocabulary; listening & reading comprehension; written expression; and knowledge of dyslexia and other reading difficulties.
 

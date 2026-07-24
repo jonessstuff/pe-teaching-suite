@@ -39,6 +39,7 @@ export const SUBJECT_TAB_STYLES = {
   'Speech-Language Pathologists': 'bg-bronze-500/20 text-ink-50',
   'Student Support Team Activities': 'bg-plum-500/20 text-ink-50',
   'Early Childhood': 'bg-grass-500/20 text-ink-50',
+  'Intervention Planning': 'bg-stone-500/20 text-ink-50',
 }
 
 // Neutral last-resort style for a genuinely unknown subject only.
@@ -77,6 +78,7 @@ export const MODULES = [
   { label: 'Speech-Language Pathologists', subjects: ['Speech-Language Pathologists'] },
   { label: 'Student Support Team Activities', subjects: ['Student Support Team Activities'] },
   { label: 'Early Childhood / Pre-K', subjects: ['Early Childhood'] },
+  { label: 'Intervention Planning', subjects: ['Intervention Planning'] },
 ]
 
 /** True when `subject` belongs to the module identified by `moduleLabel`. */
@@ -112,7 +114,7 @@ export function subjectInModule(subject, moduleLabel) {
 //   violet (Special Education) · fuchsia (ESL/ELL Specialist) ·
 //   crimson (School Counselors) · bronze (Speech-Language Pathologists) ·
 //   plum (Student Support Team Activities) · grass (Early Childhood / Pre-K) ·
-//   teal (Adaptive PE lesson tabs)
+//   stone (Intervention Planning) · teal (Adaptive PE lesson tabs)
 //
 // AVAILABLE for future modules (School Counselors is next, then more). Each
 // entry's strings are full/literal so Tailwind's JIT compiles them and a new
@@ -128,12 +130,6 @@ export function subjectInModule(subject, moduleLabel) {
 // The saturated wheel is essentially full — future additions will trend toward
 // muted/neutral tones or need a distinct icon to disambiguate a near-hue.
 export const AVAILABLE_MODULE_ACCENTS = [
-  {
-    key: 'stone', label: 'Stone / taupe (warm neutral)',
-    tab: 'bg-stone-500/15 text-stone-400', iconTint: 'bg-stone-500/15',
-    accentText: 'text-stone-400', hoverBorder: 'hover:border-stone-400/40',
-    cardBorder: 'border-stone-400', callout: 'border-stone-500/30 bg-stone-500/10',
-  },
   {
     key: 'zinc', label: 'Zinc (cool neutral gray)',
     tab: 'bg-zinc-500/15 text-zinc-400', iconTint: 'bg-zinc-500/15',

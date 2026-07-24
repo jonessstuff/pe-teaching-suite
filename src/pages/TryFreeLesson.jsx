@@ -139,7 +139,7 @@ export default function TryFreeLesson() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@school.org"
-                  className="w-full rounded-lg border border-ink-300 bg-white px-9 py-3 text-ink-950 placeholder-ink-400 focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/30"
+                  className="input-field pl-9 py-3 text-base"
                 />
               </div>
               <button type="submit" disabled={busy} className="btn-primary justify-center px-6 py-3 disabled:opacity-50">
@@ -160,13 +160,13 @@ export default function TryFreeLesson() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="mb-1 block text-sm font-medium text-ink-700">Subject</label>
-                  <select value={subject} onChange={(e) => setSubject(e.target.value)} className="w-full rounded-lg border border-ink-300 bg-white px-3 py-2 text-ink-950 focus:border-accent-500 focus:outline-none">
+                  <select value={subject} onChange={(e) => setSubject(e.target.value)} className="input-field">
                     {SUBJECTS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="mb-1 block text-sm font-medium text-ink-700">Grade</label>
-                  <select value={grade} onChange={(e) => setGrade(Number(e.target.value))} className="w-full rounded-lg border border-ink-300 bg-white px-3 py-2 text-ink-950 focus:border-accent-500 focus:outline-none">
+                  <select value={grade} onChange={(e) => setGrade(Number(e.target.value))} className="input-field">
                     {GRADES.map((g) => <option key={g.value} value={g.value}>{g.label}</option>)}
                   </select>
                 </div>
@@ -175,7 +175,7 @@ export default function TryFreeLesson() {
               {isStem && (
                 <div>
                   <label className="mb-1 block text-sm font-medium text-ink-700">STEM focus</label>
-                  <select value={stemFocus} onChange={(e) => setStemFocus(e.target.value)} className="w-full rounded-lg border border-ink-300 bg-white px-3 py-2 text-ink-950 focus:border-accent-500 focus:outline-none">
+                  <select value={stemFocus} onChange={(e) => setStemFocus(e.target.value)} className="input-field">
                     {STEM_FOCUS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
                   </select>
                 </div>
@@ -189,7 +189,7 @@ export default function TryFreeLesson() {
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
                   placeholder="e.g. Underhand throwing, Watercolor resist, Rhythm patterns, Simple machines, Digital citizenship"
-                  className="w-full rounded-lg border border-ink-300 bg-white px-3 py-2 text-ink-950 placeholder-ink-400 focus:border-accent-500 focus:outline-none"
+                  className="input-field"
                 />
               </div>
 
@@ -214,11 +214,11 @@ export default function TryFreeLesson() {
         {/* ── Step: result ────────────────────────────────────────────── */}
         {step === 'result' && lesson && (
           <div>
-            <div className="mb-6 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-5 print:hidden">
-              <p className="flex items-center gap-2 font-semibold text-emerald-700">
+            <div className="mb-6 rounded-xl border border-emerald-300 bg-emerald-50 p-5 print:hidden">
+              <p className="flex items-center gap-2 font-semibold text-emerald-800">
                 <Check size={18} /> Your free lesson is ready
               </p>
-              <p className="mt-1 text-sm text-emerald-800/90">
+              <p className="mt-1 text-sm text-emerald-800">
                 We emailed a link to <b>{email}</b> so you can always find it. This is the complete lesson — the same
                 thing PlansK12 builds across 20+ modules.
               </p>
@@ -235,15 +235,15 @@ export default function TryFreeLesson() {
 
         {/* ── Step: already claimed ───────────────────────────────────── */}
         {step === 'claimed' && (
-          <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-6 print:hidden">
-            <h1 className="text-xl font-semibold text-amber-800">You've already used your free lesson</h1>
-            <p className="mt-1.5 text-sm text-amber-800/90">
+          <div className="rounded-xl border border-amber-300 bg-amber-50 p-6 print:hidden">
+            <h1 className="text-xl font-semibold text-amber-900">You've already used your free lesson</h1>
+            <p className="mt-1.5 text-sm text-amber-800">
               Each email gets one free lesson. You can re-open the one you generated, or start a 7-day free trial
               to unlock unlimited lessons across every module.
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
               {claimedToken && (
-                <Link to={`/free-lesson/${claimedToken}`} className="rounded-lg border border-amber-500/40 px-4 py-2 text-sm font-semibold text-amber-800 hover:bg-amber-500/10">
+                <Link to={`/free-lesson/${claimedToken}`} className="rounded-lg border border-amber-400 px-4 py-2 text-sm font-semibold text-amber-900 hover:bg-amber-100">
                   View my free lesson
                 </Link>
               )}
