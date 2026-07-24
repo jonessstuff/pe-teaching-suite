@@ -281,7 +281,7 @@ export default function CteGenerator() {
           <div>
             <h1 className="text-xl font-semibold text-ink-50">CTE Lesson Generator</h1>
             <p className="text-xs text-ink-500">
-              Beta — Middle School &amp; High School · competency &amp; credential-aligned
+              Middle School &amp; High School · competency &amp; credential-aligned
             </p>
           </div>
         </div>

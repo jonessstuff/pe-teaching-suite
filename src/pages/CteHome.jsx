@@ -36,12 +36,7 @@ export default function CteHome() {
             <Briefcase size={20} className="text-pink-400" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-semibold text-ink-50">CTE</h1>
-              <span className="rounded-full bg-pink-500/20 px-2 py-0.5 text-xs font-medium text-pink-400">
-                Beta
-              </span>
-            </div>
+            <h1 className="text-2xl font-semibold text-ink-50">CTE</h1>
             <p className="text-sm text-ink-500">
               Career &amp; Technical Education lesson planning — Middle School &amp; High School pathways
             </p>

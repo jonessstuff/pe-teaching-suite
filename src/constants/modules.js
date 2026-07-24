@@ -88,7 +88,7 @@ export function subjectInModule(subject, moduleLabel) {
 // ─────────────────────────────────────────────────────────────────────────────
 //
 // Every module has one accent color, applied with a consistent shade pattern:
-//   • tint background:  bg-{c}-500/15   (icon wells, subject tabs, New/Beta pills)
+//   • tint background:  bg-{c}-500/15   (icon wells, subject tabs, status pills)
 //   • accent text/icon: text-{c}-400
 //   • borders:          border-{c}-400  and  hover:border-{c}-400/40
 //   • callout box:      border-{c}-500/30 bg-{c}-500/10
