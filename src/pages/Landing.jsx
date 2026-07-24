@@ -179,6 +179,10 @@ export default function Landing() {
             <span className="rounded-full bg-grass-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Early Childhood / Pre-K
             </span>
+            {/* School leadership */}
+            <span className="rounded-full bg-gold-500/20 px-3 py-1 text-xs font-medium text-ink-50">
+              Staff PD &amp; Meeting Planning
+            </span>
           </div>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -311,6 +315,14 @@ export default function Landing() {
                 name="Early Childhood / Pre-K"
                 color="grass"
                 description="Play-based learning centers & guided-play invitations for the whole child — NAEYC Developmentally Appropriate Practice, NAEYC Professional Standards & Head Start ELOF, toddlers through TK."
+              />
+            </ModuleGroup>
+
+            <ModuleGroup label="School Leadership">
+              <ModuleCard
+                name="Staff PD & Meeting Planning"
+                color="gold"
+                description="For principals & coaches — Learning Forward-aligned PD sessions, new-teacher mentoring, walkthrough look-fors, PLC/data-team protocols, and building communication templates for adult, job-embedded professional learning."
               />
             </ModuleGroup>
           </div>

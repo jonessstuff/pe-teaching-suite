@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Library, Palette, Music, FlaskConical, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Users, Blocks, Layers, ArrowRight } from 'lucide-react'
+import { Library, Palette, Music, FlaskConical, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Users, Blocks, Layers, Presentation, ArrowRight } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
 
 function getGreeting() {
@@ -372,6 +372,27 @@ export default function ModulePicker() {
               </p>
             </div>
             <div className="flex items-center gap-1.5 text-sm font-medium text-grass-400 transition-[gap] group-hover:gap-2.5">
+              Open module <ArrowRight size={15} />
+            </div>
+          </Link>
+        </ModuleSection>
+
+        <ModuleSection label="School Leadership">
+          {/* Staff PD & Meeting Planning */}
+          <Link
+            to="/staff-pd"
+            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-gold-400/40"
+          >
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gold-500/15">
+              <Presentation size={28} className="text-gold-400" />
+            </div>
+            <div className="flex-1 space-y-1.5">
+              <h2 className="text-xl font-semibold text-ink-50">Staff PD &amp; Meeting Planning</h2>
+              <p className="text-sm text-ink-400 leading-relaxed">
+                For principals &amp; coaches — Learning Forward-aligned PD sessions, new-teacher mentoring, walkthrough look-fors, PLC/data-team protocols, and building communication templates
+              </p>
+            </div>
+            <div className="flex items-center gap-1.5 text-sm font-medium text-gold-400 transition-[gap] group-hover:gap-2.5">
               Open module <ArrowRight size={15} />
             </div>
           </Link>

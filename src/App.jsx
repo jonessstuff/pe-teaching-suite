@@ -64,6 +64,7 @@ import SpecialEducationGenerator from './pages/SpecialEducationGenerator'
 import EslSpecialistGenerator from './pages/EslSpecialistGenerator'
 import EarlyChildhoodGenerator from './pages/EarlyChildhoodGenerator'
 import InterventionGenerator from './pages/InterventionGenerator'
+import StaffPdGenerator from './pages/StaffPdGenerator'
 import SchoolCounselorGenerator from './pages/SchoolCounselorGenerator'
 import SlpGenerator from './pages/SlpGenerator'
 import SstActivityGenerator from './pages/SstActivityGenerator'
@@ -293,6 +294,7 @@ function App() {
           <Route path="esl-specialist" element={<EslSpecialistGenerator />} />
           <Route path="early-childhood" element={<EarlyChildhoodGenerator />} />
           <Route path="intervention" element={<InterventionGenerator />} />
+          <Route path="staff-pd" element={<StaffPdGenerator />} />
           <Route path="school-counselors" element={<SchoolCounselorGenerator />} />
           <Route path="slp" element={<SlpGenerator />} />
           <Route path="student-support-activities" element={<SstActivityGenerator />} />

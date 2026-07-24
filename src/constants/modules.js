@@ -40,6 +40,7 @@ export const SUBJECT_TAB_STYLES = {
   'Student Support Team Activities': 'bg-plum-500/20 text-ink-50',
   'Early Childhood': 'bg-grass-500/20 text-ink-50',
   'Intervention Planning': 'bg-stone-500/20 text-ink-50',
+  'Staff PD & Meeting Planning': 'bg-gold-500/20 text-ink-50',
 }
 
 // Neutral last-resort style for a genuinely unknown subject only.
@@ -79,6 +80,7 @@ export const MODULES = [
   { label: 'Student Support Team Activities', subjects: ['Student Support Team Activities'] },
   { label: 'Early Childhood / Pre-K', subjects: ['Early Childhood'] },
   { label: 'Intervention Planning', subjects: ['Intervention Planning'] },
+  { label: 'Staff PD & Meeting Planning', subjects: ['Staff PD & Meeting Planning'] },
 ]
 
 /** True when `subject` belongs to the module identified by `moduleLabel`. */
@@ -114,7 +116,8 @@ export function subjectInModule(subject, moduleLabel) {
 //   violet (Special Education) · fuchsia (ESL/ELL Specialist) ·
 //   crimson (School Counselors) · bronze (Speech-Language Pathologists) ·
 //   plum (Student Support Team Activities) · grass (Early Childhood / Pre-K) ·
-//   stone (Intervention Planning) · teal (Adaptive PE lesson tabs)
+//   stone (Intervention Planning) · gold (Staff PD & Meeting Planning) ·
+//   teal (Adaptive PE lesson tabs)
 //
 // AVAILABLE for future modules (School Counselors is next, then more). Each
 // entry's strings are full/literal so Tailwind's JIT compiles them and a new
@@ -139,12 +142,6 @@ export const AVAILABLE_MODULE_ACCENTS = [
     tab: 'bg-zinc-500/20 text-ink-50', iconTint: 'bg-zinc-500/15',
     accentText: 'text-zinc-400', hoverBorder: 'hover:border-zinc-400/40',
     cardBorder: 'border-zinc-400', callout: 'border-zinc-500/30 bg-zinc-500/10',
-  },
-  {
-    key: 'gold', label: 'Gold / mustard ochre',
-    tab: 'bg-gold-500/20 text-ink-50', iconTint: 'bg-gold-500/15',
-    accentText: 'text-gold-400', hoverBorder: 'hover:border-gold-400/40',
-    cardBorder: 'border-gold-400', callout: 'border-gold-500/30 bg-gold-500/10',
   },
   {
     key: 'coral', label: 'Coral (warm salmon)',
