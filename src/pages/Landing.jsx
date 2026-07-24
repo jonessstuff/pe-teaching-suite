@@ -155,6 +155,18 @@ export default function Landing() {
             <span className="rounded-full bg-violet-500/15 px-3 py-1 text-xs font-medium text-violet-400">
               Special Education
             </span>
+            <span className="rounded-full bg-fuchsia-500/15 px-3 py-1 text-xs font-medium text-fuchsia-400">
+              ESL/ELL Specialist
+            </span>
+            <span className="rounded-full bg-crimson-500/15 px-3 py-1 text-xs font-medium text-crimson-400">
+              School Counselors
+            </span>
+            <span className="rounded-full bg-bronze-500/15 px-3 py-1 text-xs font-medium text-bronze-400">
+              Speech-Language (SLP)
+            </span>
+            <span className="rounded-full bg-plum-500/15 px-3 py-1 text-xs font-medium text-plum-400">
+              Student Support Team
+            </span>
           </div>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -165,7 +177,7 @@ export default function Landing() {
               See how it works
             </a>
           </div>
-          <p className="mt-3 text-xs text-ink-600">14 days free, cancel anytime</p>
+          <p className="mt-3 text-xs text-ink-600">7 days free, cancel anytime</p>
         </div>
       </section>
 
@@ -239,6 +251,26 @@ export default function Landing() {
               name="Special Education"
               color="violet"
               description="Resource & self-contained instructional support — multi-tier differentiation, functional/life-skills, and push-in co-teaching ideas to adapt to your students, K–12."
+            />
+            <ModuleCard
+              name="ESL/ELL Specialist"
+              color="fuchsia"
+              description="Language-development lessons for ESL/ELL teachers — WIDA proficiency levels, SIOP content & language objectives, and all four language domains, K–12."
+            />
+            <ModuleCard
+              name="School Counselors"
+              color="crimson"
+              description="Whole-class classroom guidance curriculum — ASCA-aligned lessons across academic, career, and social/emotional development, K–12."
+            />
+            <ModuleCard
+              name="Speech-Language (SLP)"
+              color="bronze"
+              description="SLP session activity ideas — articulation, language, fluency, social communication & AAC, ASHA-aligned; activity planning, not clinical protocol."
+            />
+            <ModuleCard
+              name="Student Support Team"
+              color="plum"
+              description="Ready-to-run small-group SEL & behavioral activities for social workers, school psychologists, MFLCs & behavior specialists — role-tailored, activity structure only, K–12."
             />
           </div>
         </div>
@@ -427,7 +459,7 @@ export default function Landing() {
             Start planning in minutes.
           </h2>
           <p className="mx-auto mt-3 max-w-sm text-ink-400">
-            14-day free trial, cancel anytime.
+            7-day free trial, cancel anytime.
           </p>
 
           <div className="mx-auto mt-10 max-w-xs">
@@ -449,7 +481,7 @@ export default function Landing() {
               <ul className="mt-6 space-y-3 text-left">
                 <CheckItem>Unlimited lessons, units, and quizzes</CheckItem>
                 <CheckItem>Locked in for as long as you stay subscribed</CheckItem>
-                <CheckItem>14-day free trial, cancel anytime</CheckItem>
+                <CheckItem>7-day free trial, cancel anytime</CheckItem>
               </ul>
 
               <a
@@ -497,6 +529,11 @@ const MODULE_STYLES = {
   lime:    { border: 'border-lime-400',    name: 'text-lime-400'    },
   slate:   { border: 'border-slate-400',   name: 'text-slate-400'   },
   stone:   { border: 'border-stone-400',   name: 'text-stone-400'   },
+  crimson: { border: 'border-crimson-400', name: 'text-crimson-400' },
+  grass:   { border: 'border-grass-400',   name: 'text-grass-400'   },
+  bronze:  { border: 'border-bronze-400',  name: 'text-bronze-400'  },
+  plum:    { border: 'border-plum-400',    name: 'text-plum-400'    },
+  zinc:    { border: 'border-zinc-400',    name: 'text-zinc-400'    },
 }
 
 function ModuleCard({ name, color, description }) {

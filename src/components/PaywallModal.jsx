@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Lock, Sparkles, X } from 'lucide-react'
 import { useTrial } from '../context/TrialContext'
-import { CHECKOUT_URL, EXPORT_CAP } from '../services/trialService'
+import { UPGRADE_URL, EXPORT_CAP } from '../services/trialService'
 
 const COPY = {
   'export-cap': {
@@ -14,7 +14,7 @@ const COPY = {
   },
   'trial-expired': {
     title: 'Your free trial has ended',
-    body: 'Your 14-day free trial is over. Upgrade to PlansK12 to keep generating, exporting, and printing.',
+    body: 'Your 7-day free trial is over. Upgrade to PlansK12 to keep generating, exporting, and printing.',
   },
 }
 
@@ -55,7 +55,7 @@ export default function PaywallModal() {
 
         <div className="mt-6 flex flex-col gap-2">
           <a
-            href={CHECKOUT_URL}
+            href={UPGRADE_URL}
             className="inline-flex items-center justify-center gap-2 rounded-lg bg-accent-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-accent-700"
           >
             <Sparkles size={16} />

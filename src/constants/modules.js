@@ -32,6 +32,10 @@ export const SUBJECT_TAB_STYLES = {
   'Math Specialists': 'bg-lime-500/15 text-lime-400',
   Makerspace: 'bg-slate-500/15 text-slate-400',
   'Special Education': 'bg-violet-500/15 text-violet-400',
+  'ESL/ELL Specialist': 'bg-fuchsia-500/15 text-fuchsia-400',
+  'School Counselors': 'bg-crimson-500/15 text-crimson-400',
+  'Speech-Language Pathologists': 'bg-bronze-500/15 text-bronze-400',
+  'Student Support Team Activities': 'bg-plum-500/15 text-plum-400',
 }
 
 // Neutral last-resort style for a genuinely unknown subject only.
@@ -65,6 +69,10 @@ export const MODULES = [
   { label: 'Math Specialists', subjects: ['Math Specialists'] },
   { label: 'Makerspace', subjects: ['Makerspace'] },
   { label: 'Special Education', subjects: ['Special Education'] },
+  { label: 'ESL/ELL Specialist', subjects: ['ESL/ELL Specialist'] },
+  { label: 'School Counselors', subjects: ['School Counselors'] },
+  { label: 'Speech-Language Pathologists', subjects: ['Speech-Language Pathologists'] },
+  { label: 'Student Support Team Activities', subjects: ['Student Support Team Activities'] },
 ]
 
 /** True when `subject` belongs to the module identified by `moduleLabel`. */
@@ -97,27 +105,40 @@ export function subjectInModule(subject, moduleLabel) {
 //   indigo (Classroom Management) · amber (Gifted & Talented) ·
 //   sky (Reading Specialists) · lime (Math Specialists) ·
 //   slate (Makerspace — shared STEM + Library category) ·
-//   violet (Special Education) · teal (Adaptive PE lesson tabs)
+//   violet (Special Education) · fuchsia (ESL/ELL Specialist) ·
+//   crimson (School Counselors) · bronze (Speech-Language Pathologists) ·
+//   plum (Student Support Team Activities) · teal (Adaptive PE lesson tabs)
 //
-// AVAILABLE for future modules (Math Specialists, Makerspace, and beyond).
-// Each entry's strings are full/literal so Tailwind's JIT compiles them and a
-// new module can copy them verbatim. These five are the remaining hues that
-// stay clearly distinct from everything above AND read well on the dark UI.
-// (Genuinely dark tones like navy or deep-brown, and near-duplicates like
-// burnt-orange≈Art, deep-teal≈STEM/Reading, or true-red≈Adaptive-PE's rose,
-// were deliberately left out — a color can't be both very dark and readable on
-// a dark background, and near-duplicates defeat the point of the palette.)
+// AVAILABLE for future modules (School Counselors is next, then more). Each
+// entry's strings are full/literal so Tailwind's JIT compiles them and a new
+// module can copy them verbatim. Pattern is always bg-{c}-500/15 + text-{c}-400
+// + border-{c}-400, same as every accent above.
+//
+// The standard Tailwind hues are now all in use, so crimson/grass/bronze/plum
+// are CUSTOM scales defined in tailwind.config.js (zinc is built in). Each was
+// chosen to fill a real gap on the wheel and read AA on the dark UI at -400:
+// crimson = true red (vs pink-ish rose), grass = leaf green (vs mint emerald /
+// yellow lime), bronze = copper/brown (no brown existed), plum = muted wine (vs
+// bright fuchsia/pink), zinc = cool neutral gray (vs blue-ish slate / warm stone).
+// The saturated wheel is essentially full — future additions will trend toward
+// muted/neutral tones or need a distinct icon to disambiguate a near-hue.
 export const AVAILABLE_MODULE_ACCENTS = [
-  {
-    key: 'fuchsia', label: 'Fuchsia / magenta',
-    tab: 'bg-fuchsia-500/15 text-fuchsia-400', iconTint: 'bg-fuchsia-500/15',
-    accentText: 'text-fuchsia-400', hoverBorder: 'hover:border-fuchsia-400/40',
-    cardBorder: 'border-fuchsia-400', callout: 'border-fuchsia-500/30 bg-fuchsia-500/10',
-  },
   {
     key: 'stone', label: 'Stone / taupe (warm neutral)',
     tab: 'bg-stone-500/15 text-stone-400', iconTint: 'bg-stone-500/15',
     accentText: 'text-stone-400', hoverBorder: 'hover:border-stone-400/40',
     cardBorder: 'border-stone-400', callout: 'border-stone-500/30 bg-stone-500/10',
+  },
+  {
+    key: 'grass', label: 'Grass / leaf green',
+    tab: 'bg-grass-500/15 text-grass-400', iconTint: 'bg-grass-500/15',
+    accentText: 'text-grass-400', hoverBorder: 'hover:border-grass-400/40',
+    cardBorder: 'border-grass-400', callout: 'border-grass-500/30 bg-grass-500/10',
+  },
+  {
+    key: 'zinc', label: 'Zinc (cool neutral gray)',
+    tab: 'bg-zinc-500/15 text-zinc-400', iconTint: 'bg-zinc-500/15',
+    accentText: 'text-zinc-400', hoverBorder: 'hover:border-zinc-400/40',
+    cardBorder: 'border-zinc-400', callout: 'border-zinc-500/30 bg-zinc-500/10',
   },
 ]

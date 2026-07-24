@@ -9,7 +9,7 @@ import { US_STATES } from '../constants/usStates'
 import TeachingAreasField from '../components/TeachingAreasField'
 import { getMyCode } from '../services/referralService'
 import { useTrial } from '../context/TrialContext'
-import { EXPORT_CAP, CHECKOUT_URL } from '../services/trialService'
+import { EXPORT_CAP, UPGRADE_URL } from '../services/trialService'
 
 const SUBJECTS = ['PE', 'Health', 'Family Life', "Driver's Ed"]
 
@@ -466,7 +466,7 @@ function PlanStatus({ trial }) {
       </div>
 
       {!isPaid && (
-        <a href={CHECKOUT_URL} className="btn-primary shrink-0">
+        <a href={UPGRADE_URL} className="btn-primary shrink-0">
           <Sparkles size={14} /> Upgrade
         </a>
       )}

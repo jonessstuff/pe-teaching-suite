@@ -59,6 +59,10 @@ import ReadingSpecialistGenerator from './pages/ReadingSpecialistGenerator'
 import MathSpecialistGenerator from './pages/MathSpecialistGenerator'
 import MakerProjectGenerator from './pages/MakerProjectGenerator'
 import SpecialEducationGenerator from './pages/SpecialEducationGenerator'
+import EslSpecialistGenerator from './pages/EslSpecialistGenerator'
+import SchoolCounselorGenerator from './pages/SchoolCounselorGenerator'
+import SlpGenerator from './pages/SlpGenerator'
+import SstActivityGenerator from './pages/SstActivityGenerator'
 
 // Module-level promise reference. When a genuine new login triggers claimSession(),
 // this holds the in-flight Promise so that any concurrent SIGNED_IN events (e.g.
@@ -280,6 +284,10 @@ function App() {
           <Route path="reading-specialists" element={<ReadingSpecialistGenerator />} />
           <Route path="math-specialists" element={<MathSpecialistGenerator />} />
           <Route path="special-education" element={<SpecialEducationGenerator />} />
+          <Route path="esl-specialist" element={<EslSpecialistGenerator />} />
+          <Route path="school-counselors" element={<SchoolCounselorGenerator />} />
+          <Route path="slp" element={<SlpGenerator />} />
+          <Route path="student-support-activities" element={<SstActivityGenerator />} />
           <Route path="my-classroom-cards" element={<MyClassroomCards />} />
           <Route path="sub-binder" element={<SubBinderGenerator />} />
           <Route path="my-binders" element={<MyBinders />} />

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Library, Palette, Music, FlaskConical, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, ArrowRight } from 'lucide-react'
+import { Library, Palette, Music, FlaskConical, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Users, ArrowRight } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
 
 function getGreeting() {
@@ -279,6 +279,102 @@ export default function ModulePicker() {
             </p>
           </div>
           <div className="flex items-center gap-1.5 text-sm font-medium text-violet-400 transition-[gap] group-hover:gap-2.5">
+            Open module <ArrowRight size={15} />
+          </div>
+        </Link>
+
+        {/* ESL/ELL Specialist */}
+        <Link
+          to="/esl-specialist"
+          className="card group flex flex-col gap-6 p-8 transition-colors hover:border-fuchsia-400/40"
+        >
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-fuchsia-500/15">
+            <Languages size={28} className="text-fuchsia-400" />
+          </div>
+          <div className="flex-1 space-y-1.5">
+            <div className="flex items-center gap-2.5">
+              <h2 className="text-xl font-semibold text-ink-50">ESL/ELL Specialist</h2>
+              <span className="rounded-full bg-fuchsia-500/15 px-2 py-0.5 text-xs font-medium text-fuchsia-400">
+                New
+              </span>
+            </div>
+            <p className="text-sm text-ink-400 leading-relaxed">
+              Language-development lessons for ESL/ELL teachers — WIDA proficiency levels, SIOP content &amp; language objectives, all four language domains (K–12)
+            </p>
+          </div>
+          <div className="flex items-center gap-1.5 text-sm font-medium text-fuchsia-400 transition-[gap] group-hover:gap-2.5">
+            Open module <ArrowRight size={15} />
+          </div>
+        </Link>
+
+        {/* School Counselors */}
+        <Link
+          to="/school-counselors"
+          className="card group flex flex-col gap-6 p-8 transition-colors hover:border-crimson-400/40"
+        >
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-crimson-500/15">
+            <Compass size={28} className="text-crimson-400" />
+          </div>
+          <div className="flex-1 space-y-1.5">
+            <div className="flex items-center gap-2.5">
+              <h2 className="text-xl font-semibold text-ink-50">School Counselors</h2>
+              <span className="rounded-full bg-crimson-500/15 px-2 py-0.5 text-xs font-medium text-crimson-400">
+                New
+              </span>
+            </div>
+            <p className="text-sm text-ink-400 leading-relaxed">
+              Whole-class classroom guidance curriculum — ASCA-aligned lessons across academic, career, and social/emotional development (K–12)
+            </p>
+          </div>
+          <div className="flex items-center gap-1.5 text-sm font-medium text-crimson-400 transition-[gap] group-hover:gap-2.5">
+            Open module <ArrowRight size={15} />
+          </div>
+        </Link>
+
+        {/* Speech-Language Pathologists */}
+        <Link
+          to="/slp"
+          className="card group flex flex-col gap-6 p-8 transition-colors hover:border-bronze-400/40"
+        >
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-bronze-500/15">
+            <Speech size={28} className="text-bronze-400" />
+          </div>
+          <div className="flex-1 space-y-1.5">
+            <div className="flex items-center gap-2.5">
+              <h2 className="text-xl font-semibold text-ink-50">Speech-Language Pathologists</h2>
+              <span className="rounded-full bg-bronze-500/15 px-2 py-0.5 text-xs font-medium text-bronze-400">
+                New
+              </span>
+            </div>
+            <p className="text-sm text-ink-400 leading-relaxed">
+              SLP session activity ideas — articulation, language, fluency, social communication &amp; AAC, ASHA-aligned (K–12, plus an experimental adult-rehab tier)
+            </p>
+          </div>
+          <div className="flex items-center gap-1.5 text-sm font-medium text-bronze-400 transition-[gap] group-hover:gap-2.5">
+            Open module <ArrowRight size={15} />
+          </div>
+        </Link>
+
+        {/* Student Support Team Activities */}
+        <Link
+          to="/student-support-activities"
+          className="card group flex flex-col gap-6 p-8 transition-colors hover:border-plum-400/40"
+        >
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-plum-500/15">
+            <Users size={28} className="text-plum-400" />
+          </div>
+          <div className="flex-1 space-y-1.5">
+            <div className="flex items-center gap-2.5">
+              <h2 className="text-xl font-semibold text-ink-50">Student Support Team Activities</h2>
+              <span className="rounded-full bg-plum-500/15 px-2 py-0.5 text-xs font-medium text-plum-400">
+                New
+              </span>
+            </div>
+            <p className="text-sm text-ink-400 leading-relaxed">
+              Ready-to-run small-group SEL &amp; behavioral activities for social workers, school psychologists, MFLCs &amp; behavior specialists — role-tailored, activity structure only (K–12)
+            </p>
+          </div>
+          <div className="flex items-center gap-1.5 text-sm font-medium text-plum-400 transition-[gap] group-hover:gap-2.5">
             Open module <ArrowRight size={15} />
           </div>
         </Link>

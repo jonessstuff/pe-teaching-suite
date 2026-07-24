@@ -4,11 +4,18 @@ import { supabase } from '../lib/supabaseClient'
 // Trial constants. Keep EXPORT_CAP in sync with the cap hardcoded in
 // supabase/migrations/0020_trial_export_limits.sql (increment_export_count).
 // ---------------------------------------------------------------------
-export const TRIAL_DAYS = 14
+export const TRIAL_DAYS = 7
 export const EXPORT_CAP = 5
 export const TRIAL_HORIZON_WEEKS = 4
 export const WATERMARK_TEXT = 'Created with PlansK12 Free Trial — plansk12.com'
+// New-user signup / free-trial checkout — Stripe payment link WITH the 7-day
+// trial. Used by the Landing "Start free trial" flow (pre-auth, new users).
 export const CHECKOUT_URL = 'https://buy.stripe.com/5kQ5kveUR2xWh0tcoi0kE05'
+// Existing-user upgrade — Stripe payment link with NO trial (charges immediately).
+// Used by the in-app "Upgrade" CTAs (preview paywall banner, PaywallModal,
+// Settings) so a user already in trial/preview isn't sent back through another
+// free-trial checkout.
+export const UPGRADE_URL = 'https://buy.stripe.com/9B6aEP2858WkbG98820kE06'
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000
 
@@ -27,8 +34,9 @@ const PAID_STATUSES = new Set(['active', 'past_due']) // past_due = grace period
 //   expired = subscription_status in canceled/unpaid/incomplete_expired/paused
 //             OR (no synced status AND created_at older than TRIAL_DAYS)
 // The `trialing` case is critical: our Stripe Checkout takes a card up front
-// and starts a 14-day Stripe trial, so those users have a subscription row but
-// must STILL be gated until it converts to `active`.
+// and starts a Stripe trial (its length is configured on the Stripe payment
+// link, not here), so those users have a subscription row but must STILL be
+// gated until it converts to `active`.
 // ---------------------------------------------------------------------
 export function deriveTrialState(profile) {
   const status = profile?.subscription_status ?? null
@@ -48,12 +56,12 @@ export function deriveTrialState(profile) {
   const isPaid = isOwner || PAID_STATUSES.has(status)
 
   // Trial: an active Stripe trial, or an unsynced/no-subscription user still
-  // inside the 14-day window (fallback for accounts with no Stripe record).
+  // inside the TRIAL_DAYS window (fallback for accounts with no Stripe record).
   const stripeTrialing = status === 'trialing'
   const fallbackTrial = status === null && daysSinceCreated < TRIAL_DAYS
   const isTrial = !isPaid && (stripeTrialing || fallbackTrial)
 
-  const isExpired = !isPaid && !isTrial // canceled/etc, or no sub past 14 days
+  const isExpired = !isPaid && !isTrial // canceled/etc, or no sub past the trial window
 
   // Days left: prefer Stripe's trial_end; otherwise the created_at fallback.
   let daysLeft = 0

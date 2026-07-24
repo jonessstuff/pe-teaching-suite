@@ -266,6 +266,70 @@ export async function generateTutoringSession(input) {
   return data
 }
 
+export async function generateSstActivity(input) {
+  const { data, error } = await supabase.functions.invoke('generate-sst-activity', {
+    body: input,
+  })
+
+  if (error) {
+    let message = error.message ?? 'Generation failed'
+    try {
+      const body = await error.context?.json?.()
+      if (body?.error) message = body.error
+    } catch {}
+    throw new Error(message)
+  }
+  return data
+}
+
+export async function generateSlp(input) {
+  const { data, error } = await supabase.functions.invoke('generate-slp', {
+    body: input,
+  })
+
+  if (error) {
+    let message = error.message ?? 'Generation failed'
+    try {
+      const body = await error.context?.json?.()
+      if (body?.error) message = body.error
+    } catch {}
+    throw new Error(message)
+  }
+  return data
+}
+
+export async function generateSchoolCounselor(input) {
+  const { data, error } = await supabase.functions.invoke('generate-school-counselor', {
+    body: input,
+  })
+
+  if (error) {
+    let message = error.message ?? 'Generation failed'
+    try {
+      const body = await error.context?.json?.()
+      if (body?.error) message = body.error
+    } catch {}
+    throw new Error(message)
+  }
+  return data
+}
+
+export async function generateEslSpecialist(input) {
+  const { data, error } = await supabase.functions.invoke('generate-esl-specialist', {
+    body: input,
+  })
+
+  if (error) {
+    let message = error.message ?? 'Generation failed'
+    try {
+      const body = await error.context?.json?.()
+      if (body?.error) message = body.error
+    } catch {}
+    throw new Error(message)
+  }
+  return data
+}
+
 export async function generateReadingSpecialist(input) {
   const { data, error } = await supabase.functions.invoke('generate-reading-specialist', {
     body: input,
