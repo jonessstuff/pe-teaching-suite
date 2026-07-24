@@ -129,11 +129,45 @@ export function subjectInModule(subject, moduleLabel) {
 // bright fuchsia/pink), zinc = cool neutral gray (vs blue-ish slate / warm stone).
 // The saturated wheel is essentially full — future additions will trend toward
 // muted/neutral tones or need a distinct icon to disambiguate a near-hue.
+// When you consume one, move it out of this list (into the in-use comment above),
+// add it to MODULE_STYLES in Landing.jsx, and write its SUBJECT_TAB_STYLES entry
+// as `bg-{c}-500/20 text-ink-50` (the readable badge pattern). The 2026-07 pass-2
+// hues (gold/coral/periwinkle/steel/mocha) are custom scales in tailwind.config.js.
 export const AVAILABLE_MODULE_ACCENTS = [
   {
     key: 'zinc', label: 'Zinc (cool neutral gray)',
-    tab: 'bg-zinc-500/15 text-zinc-400', iconTint: 'bg-zinc-500/15',
+    tab: 'bg-zinc-500/20 text-ink-50', iconTint: 'bg-zinc-500/15',
     accentText: 'text-zinc-400', hoverBorder: 'hover:border-zinc-400/40',
     cardBorder: 'border-zinc-400', callout: 'border-zinc-500/30 bg-zinc-500/10',
+  },
+  {
+    key: 'gold', label: 'Gold / mustard ochre',
+    tab: 'bg-gold-500/20 text-ink-50', iconTint: 'bg-gold-500/15',
+    accentText: 'text-gold-400', hoverBorder: 'hover:border-gold-400/40',
+    cardBorder: 'border-gold-400', callout: 'border-gold-500/30 bg-gold-500/10',
+  },
+  {
+    key: 'coral', label: 'Coral (warm salmon)',
+    tab: 'bg-coral-500/20 text-ink-50', iconTint: 'bg-coral-500/15',
+    accentText: 'text-coral-400', hoverBorder: 'hover:border-coral-400/40',
+    cardBorder: 'border-coral-400', callout: 'border-coral-500/30 bg-coral-500/10',
+  },
+  {
+    key: 'periwinkle', label: 'Periwinkle (blue-violet)',
+    tab: 'bg-periwinkle-500/20 text-ink-50', iconTint: 'bg-periwinkle-500/15',
+    accentText: 'text-periwinkle-400', hoverBorder: 'hover:border-periwinkle-400/40',
+    cardBorder: 'border-periwinkle-400', callout: 'border-periwinkle-500/30 bg-periwinkle-500/10',
+  },
+  {
+    key: 'steel', label: 'Steel (muted slate-blue)',
+    tab: 'bg-steel-500/20 text-ink-50', iconTint: 'bg-steel-500/15',
+    accentText: 'text-steel-400', hoverBorder: 'hover:border-steel-400/40',
+    cardBorder: 'border-steel-400', callout: 'border-steel-500/30 bg-steel-500/10',
+  },
+  {
+    key: 'mocha', label: 'Mocha (warm brown neutral)',
+    tab: 'bg-mocha-500/20 text-ink-50', iconTint: 'bg-mocha-500/15',
+    accentText: 'text-mocha-400', hoverBorder: 'hover:border-mocha-400/40',
+    cardBorder: 'border-mocha-400', callout: 'border-mocha-500/30 bg-mocha-500/10',
   },
 ]

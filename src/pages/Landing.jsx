@@ -578,6 +578,11 @@ const MODULE_STYLES = {
   bronze:  { border: 'border-bronze-400',  pill: 'bg-bronze-500/20'  },
   plum:    { border: 'border-plum-400',    pill: 'bg-plum-500/20'    },
   zinc:    { border: 'border-zinc-400',    pill: 'bg-zinc-500/20'    },
+  gold:       { border: 'border-gold-400',       pill: 'bg-gold-500/20'       },
+  coral:      { border: 'border-coral-400',      pill: 'bg-coral-500/20'      },
+  periwinkle: { border: 'border-periwinkle-400', pill: 'bg-periwinkle-500/20' },
+  steel:      { border: 'border-steel-400',      pill: 'bg-steel-500/20'      },
+  mocha:      { border: 'border-mocha-400',      pill: 'bg-mocha-500/20'      },
 }
 
 function ModuleGroup({ label, children }) {

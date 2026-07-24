@@ -51,6 +51,13 @@ export default {
         grass:   { 300: '#86dd97', 400: '#46c860', 500: '#2ba347' }, // leaf green (vs mint emerald / yellow lime)
         bronze:  { 300: '#dcaf78', 400: '#c98a3f', 500: '#a66f2c' }, // copper/brown (no brown in palette)
         plum:    { 300: '#dc9fc0', 400: '#c56b9a', 500: '#a34e7c' }, // muted wine (vs bright fuchsia/pink)
+        // 2026-07 palette expansion pass 2 (saturated wheel nearly full — these
+        // sit in the remaining gaps; pair near-hues with distinct module icons).
+        gold:      { 300: '#e6c85e', 400: '#d4a72c', 500: '#ad841c' }, // mustard/ochre (vs orange amber / green-yellow lime)
+        coral:     { 300: '#f6a892', 400: '#f27a5c', 500: '#dd5a3c' }, // warm coral (vs pink rose / orange)
+        periwinkle:{ 300: '#b3b6f6', 400: '#8b90ee', 500: '#6a70e0' }, // blue-violet (between blue and violet)
+        steel:     { 300: '#9fb3c8', 400: '#6b8db0', 500: '#4e6f92' }, // muted slate-blue (vs grayer slate)
+        mocha:     { 300: '#c4a893', 400: '#a07d63', 500: '#7f6049' }, // warm mid-brown neutral (vs taupe stone / copper bronze)
       },
       boxShadow: {
         card: '0 1px 2px 0 rgb(15 23 42 / 0.04), 0 1px 1px 0 rgb(15 23 42 / 0.03)',
