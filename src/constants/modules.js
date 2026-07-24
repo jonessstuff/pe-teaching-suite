@@ -11,32 +11,34 @@
  * never fall back to the neutral grey style.
  */
 
-// Subject → tab badge classes. Mirrors each module's assigned accent color.
+// Subject → tab badge classes. Each module's accent is the badge BACKGROUND
+// (a tint pill); the label text is high-contrast ink (readable on light and
+// dark surfaces alike) rather than the accent color itself.
 export const SUBJECT_TAB_STYLES = {
-  // PE & Health family (the colors that were already correct)
-  PE: 'bg-subject-pe/15 text-subject-pe',
-  Health: 'bg-subject-health/15 text-subject-health',
-  'Family Life': 'bg-subject-family/15 text-subject-family',
-  "Driver's Ed": 'bg-subject-drivers/15 text-subject-drivers',
-  'Strength & Conditioning': 'bg-accent-500/15 text-accent-400',
-  'Adaptive PE': 'bg-teal-500/15 text-teal-400',
+  // PE & Health family
+  PE: 'bg-subject-pe/20 text-ink-50',
+  Health: 'bg-subject-health/20 text-ink-50',
+  'Family Life': 'bg-subject-family/20 text-ink-50',
+  "Driver's Ed": 'bg-subject-drivers/20 text-ink-50',
+  'Strength & Conditioning': 'bg-accent-500/20 text-ink-50',
+  'Adaptive PE': 'bg-teal-500/20 text-ink-50',
   // Other specialist modules — match their module-card accent colors
-  'Library/Media': 'bg-blue-500/15 text-blue-400',
-  Art: 'bg-orange-500/15 text-orange-400',
-  Music: 'bg-purple-500/15 text-purple-400',
-  STEM: 'bg-cyan-500/15 text-cyan-400',
-  CTE: 'bg-pink-500/20 text-pink-400',
-  'Classroom Management': 'bg-indigo-500/20 text-indigo-400',
-  'Gifted & Talented': 'bg-amber-500/15 text-amber-400',
-  'Reading Specialists': 'bg-sky-500/15 text-sky-400',
-  'Math Specialists': 'bg-lime-500/15 text-lime-400',
-  Makerspace: 'bg-slate-500/15 text-slate-400',
-  'Special Education': 'bg-violet-500/15 text-violet-400',
-  'ESL/ELL Specialist': 'bg-fuchsia-500/15 text-fuchsia-400',
-  'School Counselors': 'bg-crimson-500/15 text-crimson-400',
-  'Speech-Language Pathologists': 'bg-bronze-500/15 text-bronze-400',
-  'Student Support Team Activities': 'bg-plum-500/15 text-plum-400',
-  'Early Childhood': 'bg-grass-500/15 text-grass-400',
+  'Library/Media': 'bg-blue-500/20 text-ink-50',
+  Art: 'bg-orange-500/20 text-ink-50',
+  Music: 'bg-purple-500/20 text-ink-50',
+  STEM: 'bg-cyan-500/20 text-ink-50',
+  CTE: 'bg-pink-500/20 text-ink-50',
+  'Classroom Management': 'bg-indigo-500/20 text-ink-50',
+  'Gifted & Talented': 'bg-amber-500/20 text-ink-50',
+  'Reading Specialists': 'bg-sky-500/20 text-ink-50',
+  'Math Specialists': 'bg-lime-500/20 text-ink-50',
+  Makerspace: 'bg-slate-500/20 text-ink-50',
+  'Special Education': 'bg-violet-500/20 text-ink-50',
+  'ESL/ELL Specialist': 'bg-fuchsia-500/20 text-ink-50',
+  'School Counselors': 'bg-crimson-500/20 text-ink-50',
+  'Speech-Language Pathologists': 'bg-bronze-500/20 text-ink-50',
+  'Student Support Team Activities': 'bg-plum-500/20 text-ink-50',
+  'Early Childhood': 'bg-grass-500/20 text-ink-50',
 }
 
 // Neutral last-resort style for a genuinely unknown subject only.

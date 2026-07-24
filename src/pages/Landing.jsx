@@ -121,59 +121,59 @@ export default function Landing() {
           {/* Module chips — grouped by category, alphabetical within each group */}
           <div className="mt-7 flex flex-wrap items-center justify-center gap-2">
             {/* Core specials & encore subjects — PE & Health (flagship) first, then alphabetical */}
-            <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-medium text-emerald-400">
+            <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               PE &amp; Health
             </span>
-            <span className="rounded-full bg-rose-500/15 px-3 py-1 text-xs font-medium text-rose-400">
+            <span className="rounded-full bg-rose-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Adaptive PE
             </span>
-            <span className="rounded-full bg-orange-500/15 px-3 py-1 text-xs font-medium text-orange-400">
+            <span className="rounded-full bg-orange-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Art
             </span>
-            <span className="rounded-full bg-blue-500/15 px-3 py-1 text-xs font-medium text-blue-400">
+            <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Library &amp; Media
             </span>
-            <span className="rounded-full bg-purple-500/15 px-3 py-1 text-xs font-medium text-purple-400">
+            <span className="rounded-full bg-purple-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Music
             </span>
-            <span className="rounded-full bg-cyan-500/15 px-3 py-1 text-xs font-medium text-cyan-400">
+            <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               STEM
             </span>
             {/* Career & technical education */}
-            <span className="rounded-full bg-pink-500/15 px-3 py-1 text-xs font-medium text-pink-400">
+            <span className="rounded-full bg-pink-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               CTE
             </span>
             {/* Academic intervention & support */}
-            <span className="rounded-full bg-fuchsia-500/15 px-3 py-1 text-xs font-medium text-fuchsia-400">
+            <span className="rounded-full bg-fuchsia-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               ESL/ELL Specialist
             </span>
-            <span className="rounded-full bg-amber-500/15 px-3 py-1 text-xs font-medium text-amber-400">
+            <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Gifted &amp; Talented
             </span>
-            <span className="rounded-full bg-lime-500/15 px-3 py-1 text-xs font-medium text-lime-400">
+            <span className="rounded-full bg-lime-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Math Specialists
             </span>
-            <span className="rounded-full bg-sky-500/15 px-3 py-1 text-xs font-medium text-sky-400">
+            <span className="rounded-full bg-sky-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Reading Specialists
             </span>
-            <span className="rounded-full bg-violet-500/15 px-3 py-1 text-xs font-medium text-violet-400">
+            <span className="rounded-full bg-violet-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Special Education
             </span>
             {/* Student wellbeing & behavior */}
-            <span className="rounded-full bg-indigo-500/15 px-3 py-1 text-xs font-medium text-indigo-400">
+            <span className="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Classroom Management
             </span>
-            <span className="rounded-full bg-crimson-500/15 px-3 py-1 text-xs font-medium text-crimson-400">
+            <span className="rounded-full bg-crimson-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               School Counselors
             </span>
-            <span className="rounded-full bg-bronze-500/15 px-3 py-1 text-xs font-medium text-bronze-400">
+            <span className="rounded-full bg-bronze-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Speech-Language (SLP)
             </span>
-            <span className="rounded-full bg-plum-500/15 px-3 py-1 text-xs font-medium text-plum-400">
+            <span className="rounded-full bg-plum-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Student Support Team
             </span>
             {/* Early childhood */}
-            <span className="rounded-full bg-grass-500/15 px-3 py-1 text-xs font-medium text-grass-400">
+            <span className="rounded-full bg-grass-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Early Childhood / Pre-K
             </span>
           </div>
@@ -540,28 +540,31 @@ export default function Landing() {
 
 // ─── Module card ──────────────────────────────────────────────────────────────
 
+// Each module's accent is applied as a background PILL behind the name (with
+// high-contrast ink text on top), not as the name's text color — keeps names
+// readable on the light landing background. `border` is the card's accent top rule.
 const MODULE_STYLES = {
-  emerald: { border: 'border-emerald-500', name: 'text-emerald-400' },
-  blue:    { border: 'border-blue-400',    name: 'text-blue-400'    },
-  orange:  { border: 'border-orange-400',  name: 'text-orange-400'  },
-  purple:  { border: 'border-purple-400',  name: 'text-purple-400'  },
-  cyan:    { border: 'border-cyan-400',    name: 'text-cyan-400'    },
-  rose:    { border: 'border-rose-400',    name: 'text-rose-400'    },
-  pink:    { border: 'border-pink-400',    name: 'text-pink-400'    },
-  indigo:  { border: 'border-indigo-400',  name: 'text-indigo-400'  },
-  amber:   { border: 'border-amber-400',   name: 'text-amber-400'   },
-  sky:     { border: 'border-sky-400',     name: 'text-sky-400'     },
+  emerald: { border: 'border-emerald-500', pill: 'bg-emerald-500/20' },
+  blue:    { border: 'border-blue-400',    pill: 'bg-blue-500/20'    },
+  orange:  { border: 'border-orange-400',  pill: 'bg-orange-500/20'  },
+  purple:  { border: 'border-purple-400',  pill: 'bg-purple-500/20'  },
+  cyan:    { border: 'border-cyan-400',    pill: 'bg-cyan-500/20'    },
+  rose:    { border: 'border-rose-400',    pill: 'bg-rose-500/20'    },
+  pink:    { border: 'border-pink-400',    pill: 'bg-pink-500/20'    },
+  indigo:  { border: 'border-indigo-400',  pill: 'bg-indigo-500/20'  },
+  amber:   { border: 'border-amber-400',   pill: 'bg-amber-500/20'   },
+  sky:     { border: 'border-sky-400',     pill: 'bg-sky-500/20'     },
   // Available for future modules — see AVAILABLE_MODULE_ACCENTS in constants/modules.js
-  violet:  { border: 'border-violet-400',  name: 'text-violet-400'  },
-  fuchsia: { border: 'border-fuchsia-400', name: 'text-fuchsia-400' },
-  lime:    { border: 'border-lime-400',    name: 'text-lime-400'    },
-  slate:   { border: 'border-slate-400',   name: 'text-slate-400'   },
-  stone:   { border: 'border-stone-400',   name: 'text-stone-400'   },
-  crimson: { border: 'border-crimson-400', name: 'text-crimson-400' },
-  grass:   { border: 'border-grass-400',   name: 'text-grass-400'   },
-  bronze:  { border: 'border-bronze-400',  name: 'text-bronze-400'  },
-  plum:    { border: 'border-plum-400',    name: 'text-plum-400'    },
-  zinc:    { border: 'border-zinc-400',    name: 'text-zinc-400'    },
+  violet:  { border: 'border-violet-400',  pill: 'bg-violet-500/20'  },
+  fuchsia: { border: 'border-fuchsia-400', pill: 'bg-fuchsia-500/20' },
+  lime:    { border: 'border-lime-400',    pill: 'bg-lime-500/20'    },
+  slate:   { border: 'border-slate-400',   pill: 'bg-slate-500/20'   },
+  stone:   { border: 'border-stone-400',   pill: 'bg-stone-500/20'   },
+  crimson: { border: 'border-crimson-400', pill: 'bg-crimson-500/20' },
+  grass:   { border: 'border-grass-400',   pill: 'bg-grass-500/20'   },
+  bronze:  { border: 'border-bronze-400',  pill: 'bg-bronze-500/20'  },
+  plum:    { border: 'border-plum-400',    pill: 'bg-plum-500/20'    },
+  zinc:    { border: 'border-zinc-400',    pill: 'bg-zinc-500/20'    },
 }
 
 function ModuleGroup({ label, children }) {
@@ -576,10 +579,12 @@ function ModuleGroup({ label, children }) {
 }
 
 function ModuleCard({ name, color, description }) {
-  const { border, name: nameColor } = MODULE_STYLES[color]
+  const { border, pill } = MODULE_STYLES[color]
   return (
-    <div className={`card flex flex-col gap-2 border-t-2 p-5 ${border}`}>
-      <p className={`text-sm font-semibold ${nameColor}`}>{name}</p>
+    <div className={`card flex flex-col items-start gap-2 border-t-2 p-5 ${border}`}>
+      <span className={`inline-block rounded-md px-2 py-0.5 text-sm font-semibold text-ink-50 ${pill}`}>
+        {name}
+      </span>
       <p className="text-sm text-ink-400 leading-snug">{description}</p>
     </div>
   )
