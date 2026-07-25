@@ -26,6 +26,7 @@ const PATHWAY_LABELS = {
   information_technology: "Information Technology",
   transportation: "Transportation, Distribution & Logistics",
   manufacturing: "Manufacturing",
+  engineering_tech: "STEM / Engineering & Technology",
 }
 
 function tierLevelLabel(tier, level) {
@@ -105,6 +106,13 @@ Then include entries from these where the lesson content maps to them:
 - MSSC (Manufacturing Skill Standards Council) Certified Production Technician (CPT) — a common production/technician credential; and SkillsUSA — the CTSO most associated with this cluster (align applied tasks and professionalism to relevant events, e.g., Precision Machining, Automated Manufacturing Technology, Additive Manufacturing / 3D printing). Framework field: "MSSC" or "SkillsUSA".
 - OSHA — general-industry workplace-safety standards are directly relevant given machine-tool and industrial-equipment risk; align safety content to OSHA expectations (machine guarding, PPE, lockout/tagout, material handling). Framework field: "OSHA". (See the SAFETY directive in this prompt for how to handle shop safety.)
 Content areas to prioritize: (a) manufacturing fundamentals — production processes, materials (metal, wood, plastics), and hand tools progressing to more complex equipment, at a tier-appropriate depth; (b) SMART MANUFACTURING / INDUSTRY 4.0 — automation, robotics, IIoT, data analytics, and CNC/computer-controlled machining (the specifically requested modern focus — ensure STRONG coverage, not an afterthought); (c) quality assurance & precision — blueprint/print reading, precision measurement, and quality-control processes; and (d) shop safety — machine-tool safety, PPE, lockout/tagout basics, and safe material handling (treat with the same seriousness as clinical safety — see the SAFETY directive).`,
+    engineering_tech: `Primary framework for STEM / Engineering & Technology Education (a formal CTE CAREER-PREPARATION engineering pathway — distinct from a general-science STEM class) — lead the competency list with entries from these, and treat the state CTE task list above as the state verification layer for them:
+- Project Lead The Way (PLTW) — the leading national STEM/Engineering CTE curriculum provider (PLTW Gateway at the middle level; the Engineering pathway at the high-school level, e.g., Introduction to Engineering Design, Principles of Engineering, Computer Science). Framework field: "PLTW". Name the PLTW course/unit when confident; otherwise describe the competency. PLTW is the primary anchor for this pathway's career-prep framing.
+- Engineering Design Process (EDP) — the core problem-solving framework: Ask → Imagine → Plan → Create → Improve (the SAME cycle used in the Makerspace module). Framework field: "Engineering Design Process". Structure applied problems around this cycle and name the phase(s) a task targets.
+Then include entries from these where the lesson content maps to them:
+- FIRST (For Inspiration and Recognition of Science and Technology) and RECF (Robotics Education & Competition Foundation) — the major national robotics competition/curriculum bodies. For robotics content, align build/program tasks and project structure to FIRST (e.g., FIRST LEGO League, FIRST Tech Challenge) and/or RECF (VEX) programs and their competition and engineering-notebook structure. Framework field: "FIRST" or "RECF".
+- Computing / computational-thinking foundations — GENERAL, foundational programming and computational-thinking concepts (algorithms, sequencing, loops, conditionals, decomposition, debugging). Keep this general/foundational computing, DISTINCT from the Information Technology pathway's web-design focus. Framework field: "Computational Thinking" (or cite CSTA where a specific CS standard clearly applies).
+Content areas to prioritize: (a) Exploration of Engineering & Technology (especially at the MS Exploratory level) — a broad survey of engineering fields/disciplines, design-thinking basics, and hands-on exploratory projects; (b) Computing Foundations — programming basics, computational thinking, and intro coding concepts (foundational/general, NOT web design); (c) Robotics — building and programming robotics platforms, sensor/actuator basics, and competition-style project structure (FIRST/RECF-aligned); and (d) Engineering Design & Problem-Solving — the full Engineering Design Process applied to real problems, prototyping, and iteration. KEEP THIS PATHWAY'S IDENTITY on formal CTE career preparation — industry connections, PLTW/FIRST alignment, engineering careers and postsecondary pathways, and the engineering-notebook/portfolio habit — rather than duplicating a general classroom maker project.`,
   }[pathway] ?? ""
 
   const rigorNote =
@@ -136,6 +144,7 @@ function getCredentialFocus(pathway) {
     information_technology: ["CompTIA IT Fundamentals+ (ITF+) — entry-level IT credential (with A+ / Network+ / Security+ as later goals)", "Web-design / development certificates & micro-credentials (e.g., Responsive Web Design, HTML & CSS)", "FBLA Website Design / Introduction to Programming competitive event recognition"],
     transportation: ["ASE Student Certification (ASE Education Foundation) — the recognized entry credential", "ASE Maintenance & Light Repair (MLR) certification track — the professional-technician goal", "SkillsUSA competitive-event recognition (e.g., Automotive Service Technology); OSHA-10 / shop-safety credential where offered"],
     manufacturing: ["NIMS credentials (e.g., Measurement, Materials & Safety; Machining Level I) — the recognized entry credentials", "MSSC Certified Production Technician (CPT); SACA Smart Automation / Industry 4.0 credentials", "SkillsUSA competitive-event recognition (e.g., Precision Machining, Automated Manufacturing); OSHA-10 general-industry safety"],
+    engineering_tech: ["PLTW course credentials / end-of-course assessments (e.g., Introduction to Engineering Design, Principles of Engineering)", "FIRST / RECF (VEX) robotics competition recognition & engineering-notebook awards", "SkillsUSA (e.g., Robotics & Automation, Engineering Technology); articulated college credit where offered"],
   }[pathway] ?? []
 }
 
@@ -361,6 +370,28 @@ function getPhaseDescriptions(pathway) {
         desc: "Students reflect on how today's skill fits real production work and a modern (smart) manufacturing career, and name one safe-work habit and one quality/precision practice they'd carry forward. Connect the skill to the credential it builds toward (NIMS / MSSC CPT) and a SkillsUSA event or apprenticeship. End with a brief exit ticket. 5–8 minutes.",
       },
     },
+    engineering_tech: {
+      warm_up: {
+        name: "Engineering Challenge Hook",
+        desc: "Open with a concrete engineering/technology moment — a real design problem ('how would you design…?'), a robotics or engineering-fail clip, a named engineering discipline or product, or a quick design-thinking prompt. Students react as an engineer would: what's the problem, and what constraints and criteria matter? Connect to a real engineering field, employer, or role. 5–8 minutes.",
+      },
+      whole_group_instruction: {
+        name: "Concept Instruction",
+        desc: "Teach the core engineering, computing, or robotics concept directly using correct vocabulary (engineering design process, constraints/criteria, prototype, iteration, algorithm, loop/conditional, sensor/actuator, subsystem). Ground it in PLTW and the Engineering Design Process (Ask → Imagine → Plan → Create → Improve), and in FIRST/RECF for robotics. Address a common misconception (e.g., 'the first design should be perfect') and check understanding. 8–12 minutes.",
+      },
+      fitness_activities: {
+        name: "Guided Design / Build Demonstration",
+        desc: "Model the engineering skill step by step the way it's done in practice — sketching and planning a design against constraints, wiring or programming a robot subsystem, writing and testing a short algorithm, or documenting a decision in an engineering notebook. Name each step and which EDP phase it targets. Students watch, then walk through it once with teacher support. 5–10 minutes.",
+      },
+      independent_practice: {
+        name: "Hands-On Engineering Application",
+        desc: "Students apply the skill in a realistic, tier-appropriate task: run an EDP cycle on a real design/robotics/computing challenge, build and program a robot behavior, code and debug a short program, or prototype and test against defined criteria — or, at the MS Exploratory level, an engineering-field or design-thinking exploration station. State exactly what students do, what a strong result looks like, and what the teacher observes/coaches. Include a checklist or rubric aligned to the EDP and PLTW/FIRST expectations, and have students document their decisions (engineering-notebook style). 15–20 minutes.",
+      },
+      closure: {
+        name: "Reflection & Career Connection",
+        desc: "Students reflect on how today's work maps to the engineering design process and a real engineering/technology career, share or peer-review a design/build, and name one improvement for the next iteration. Connect the skill to PLTW/FIRST pathways, an engineering discipline, and postsecondary/industry options. End with a brief exit ticket. 5–8 minutes.",
+      },
+    },
   }
   return map[pathway] ?? map.hospitality
 }
@@ -422,6 +453,11 @@ function getPathwaySequence(pathway) {
       { level: "concentrator", course: "Precision Machining / Advanced (Smart) Manufacturing", description: "Applied machining and production to NIMS standards, CNC / computer-controlled machining, automation and robotics, IIoT and manufacturing data, quality control, and shop safety to OSHA standard, with SkillsUSA alignment." },
       { level: "completer", course: "Manufacturing Capstone / NIMS, Smart Manufacturing & Work-Based Learning", description: "Capstone production project, NIMS (and MSSC CPT / SACA Industry 4.0) credential attainment, SkillsUSA competitive events, a registered (pre-)apprenticeship or co-op, and supervised work-based learning in a real manufacturing facility." },
     ],
+    engineering_tech: [
+      { level: "introductory", course: "Exploration of Engineering & Technology (MS/PLTW Gateway) / Introduction to Engineering Design (HS Intro)", description: "Foundations — a broad survey of engineering fields, design-thinking and the engineering design process, computing/computational-thinking basics, intro robotics, and hands-on exploratory projects." },
+      { level: "concentrator", course: "Principles of Engineering / Robotics & Computing (PLTW pathway)", description: "Applied engineering — deeper engineering design and problem-solving, robotics build-and-program to FIRST/RECF structure, computing foundations, prototyping and iteration, and engineering-notebook documentation." },
+      { level: "completer", course: "Engineering Design & Development / Capstone, Competition & Work-Based Learning", description: "Capstone engineering project (student-directed design or a competition robot), a professional engineering portfolio/notebook, FIRST/RECF competition, PLTW end-of-course credential, and an internship or mentorship with an engineering employer or program." },
+    ],
   }[pathway] ?? []
 }
 
@@ -430,7 +466,7 @@ function getPathwaySequence(pathway) {
 // Work-Based Learning (HQWBL) model, which recognizes a broader set of 12 methods than
 // the internship/shadow/speaker default.
 function getWblGuidance(pathway) {
-  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing") {
+  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing" || pathway === "engineering_tech") {
     const emphasis = pathway === "health_science"
       ? " Clinical experience is especially relevant for this pathway — prioritize clinical/hospital placements, patient-care rotations, and health-agency service learning where appropriate."
       : pathway === "education"
@@ -443,7 +479,9 @@ function getWblGuidance(pathway) {
               ? " Internship, cooperative education, and registered apprenticeship are especially relevant for this pathway — the automotive/transportation trades are apprenticeship-heavy, so prioritize co-op placements in real service facilities, youth/registered (pre-)apprenticeships, and internships at dealerships, independent shops, or fleet/transit operations, alongside mentorship with a certified (e.g., ASE) technician. Any hands-on placement must be properly supervised and follow the site's safety requirements."
               : pathway === "manufacturing"
                 ? " Apprenticeship, internship, and cooperative education are especially relevant for this pathway — modern manufacturing is apprenticeship-heavy, so prioritize registered (pre-)apprenticeships and co-op placements in real production facilities, internships at manufacturers or machine shops, and mentorship with a NIMS-credentialed technician or manufacturing engineer. Any hands-on placement must be properly supervised and follow the site's OSHA safety requirements."
-                : ""
+                : pathway === "engineering_tech"
+                  ? " Internship, mentorship, and entrepreneurship are especially relevant for this pathway — engineering/robotics work is project- and competition-driven, so prioritize internships with engineering employers or maker/robotics organizations, mentorship from practicing engineers and FIRST/RECF team mentors/coaches, and entrepreneurship (student design teams building and pitching a real prototype or product), alongside a school-based enterprise or robotics-team structure."
+                  : ""
     return `\nThis pathway follows Virginia's High-Quality Work-Based Learning (HQWBL) model, which recognizes 12 methods: job shadowing, service learning, mentorship, externship, school-based enterprise, internship, entrepreneurship, clinical experience, cooperative education, youth registered apprenticeship, registered apprenticeship, and supervised agricultural experience. When filling the fields below, draw the most lesson-appropriate ideas from this broader set (not only internships/shadows) — e.g., service learning with a community agency, a clinical experience, a school-based enterprise, or a mentorship — and fold them into the internships and job_shadows arrays as fits this lesson's content and tier.${emphasis}`
   }
   return ""
@@ -592,7 +630,7 @@ export function buildCteLessonSchema(includeELL = false) {
 
 /**
  * @param {Object} input
- * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'} input.pathway
+ * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'|'engineering_tech'} input.pathway
  * @param {'ms'|'hs'} input.tier
  * @param {'introductory'|'concentrator'|'completer'|''} [input.level]  required when tier === 'hs'
  * @param {string}  input.topic

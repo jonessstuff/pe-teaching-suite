@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Wrench, Factory, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
+import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Wrench, Factory, Cpu, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
 import { generateCteLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
@@ -68,6 +68,12 @@ const PATHWAYS = [
     description: 'Production & machining, Smart Manufacturing / Industry 4.0 (automation, robotics, IIoT), QA & shop safety',
     icon: Factory,
   },
+  {
+    value: 'engineering_tech',
+    label: 'STEM / Engineering & Technology',
+    description: 'Career-prep engineering — design process, robotics (FIRST/RECF), computing foundations & PLTW alignment',
+    icon: Cpu,
+  },
 ]
 
 const LEVELS = [
@@ -87,6 +93,7 @@ const TOPIC_PLACEHOLDERS = {
   information_technology: 'e.g. HTML page structure, Styling with CSS, Responsive design basics, Wireframing a web page, How the internet works, Cybersecurity & strong passwords, Building a portfolio site',
   transportation: 'e.g. Brake system inspection, How a 4-stroke engine works, Suspension & steering check, Reading a service manual, Shop safety & vehicle-lift operation, Intro to the transportation & logistics cluster',
   manufacturing: 'e.g. Precision measurement with calipers, Blueprint/print reading, Intro to CNC machining, Robotics & automation basics, IIoT & smart sensors, Lockout/tagout & machine safety, Materials & production processes',
+  engineering_tech: 'e.g. The engineering design process, Exploring engineering fields, Build & program a robot (FIRST/VEX), Sensors & actuators, Intro to coding & computational thinking, Prototype & iterate a design',
 }
 
 const MATERIAL_PLACEHOLDERS = {
@@ -189,6 +196,16 @@ const MATERIAL_PLACEHOLDERS = {
     'e.g. CNC simulator / robotics kit (where available)',
     'e.g. Go/no-go gauges or QC check sheets',
     'e.g. Bench vise & basic hand tools',
+  ],
+  engineering_tech: [
+    'e.g. Robotics kits (VEX / LEGO / micro:bit) — 1 per team',
+    'e.g. Laptops/Chromebooks for coding — 1 per pair',
+    'e.g. Engineering notebooks — 1 per student',
+    'e.g. Prototyping materials (cardboard, tape, connectors)',
+    'e.g. Sensors & actuators (motors, distance/light)',
+    'e.g. Design-challenge constraint cards',
+    'e.g. Measuring tools (rulers, calipers)',
+    'e.g. Projector for design/build demos',
   ],
 }
 
@@ -354,11 +371,11 @@ export default function CteGenerator() {
           </div>
         </div>
         <p className="text-sm text-ink-400 mt-3">
-          Generate a complete Career &amp; Technical Education lesson across ten pathways:
+          Generate a complete Career &amp; Technical Education lesson across eleven pathways:
           Hospitality &amp; Tourism, Finance, Marketing, Human Services / FCS, Health Science,
           Education &amp; Training, Career Readiness (MS foundations), Information Technology,
-          Transportation, Distribution &amp; Logistics, or Manufacturing — with work-based
-          learning and career pathway context built in.
+          Transportation, Distribution &amp; Logistics, Manufacturing, or STEM / Engineering &amp;
+          Technology — with work-based learning and career pathway context built in.
         </p>
       </div>
 
@@ -553,6 +570,7 @@ export default function CteGenerator() {
                 pathway === 'information_technology' ? 'e.g. Build a responsive page layout with HTML/CSS (ISTE 4: Innovative Designer)' :
                 pathway === 'transportation'  ? 'e.g. Inspect and measure brake pad wear (ASE MLR — Brakes)' :
                 pathway === 'manufacturing'   ? 'e.g. Measure a part to tolerance with a caliper (NIMS — Measurement, Materials & Safety)' :
+                pathway === 'engineering_tech'? 'e.g. Apply the engineering design process to a constraint-based challenge (PLTW / EDP)' :
                                                 'e.g. Identify a target market (DECA PI)'
               }
               value={targetCompetency}

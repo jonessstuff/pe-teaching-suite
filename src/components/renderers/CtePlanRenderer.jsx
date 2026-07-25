@@ -12,6 +12,7 @@ const PHASE_LABELS = {
   information_technology: ['Tech Hook', 'Concept Instruction', 'Guided Build / Demonstration', 'Hands-On Build', 'Reflection & Career Connection'],
   transportation: ['Shop Hook', 'Concept Instruction', 'Skill Demonstration', 'Hands-On Shop Application', 'Reflection & Career Connection'],
   manufacturing: ['Shop-Floor Hook', 'Concept Instruction', 'Skill Demonstration', 'Hands-On Production Application', 'Reflection & Career Connection'],
+  engineering_tech: ['Engineering Challenge Hook', 'Concept Instruction', 'Guided Design / Build Demonstration', 'Hands-On Engineering Application', 'Reflection & Career Connection'],
 }
 
 const PATHWAY_LABELS = {
@@ -25,6 +26,7 @@ const PATHWAY_LABELS = {
   information_technology: 'Information Technology',
   transportation: 'Transportation, Distribution & Logistics',
   manufacturing: 'Manufacturing',
+  engineering_tech: 'STEM / Engineering & Technology',
 }
 
 const LEVEL_LABELS = {
