@@ -28,6 +28,7 @@ const PATHWAY_LABELS = {
   manufacturing: "Manufacturing",
   engineering_tech: "STEM / Engineering & Technology",
   business_mgmt: "Business Management & Administration",
+  agriculture: "Agriculture, Food & Natural Resources",
 }
 
 function tierLevelLabel(tier, level) {
@@ -121,6 +122,12 @@ Then include entries from these where the lesson content maps to them:
 - FBLA-PBL (Future Business Leaders of America–Phi Beta Lambda) — the recognized national CTSO for this cluster (parallel to DECA for Marketing, FCCLA for FCS, HOSA for Health Science). Align applied tasks, projects, and leadership/professionalism content to relevant FBLA competitive events (e.g., Business Management, Organizational Leadership, Human Resource Management, Entrepreneurship, Introduction to Business). Framework field: "FBLA".
 - Common Career Technical Core (CCTC) — Advance CTE's cross-cluster standards; use the Career Ready Practices and the Business Management & Administration cluster/pathway standards as a supporting reference. Framework field: "CCTC".
 Content areas to prioritize: (a) business fundamentals — economics basics, how businesses operate, and business structures/types (sole proprietorship, partnership, corporation, LLC); (b) management principles — planning, organizing, directing/leading, decision-making, and leadership basics; (c) human resources & operations — basic HR concepts (hiring, roles, workplace culture), workplace operations, and administrative/organizational systems; and (d) entrepreneurship & financial decision-making — budgeting basics, financial decision-making in a BUSINESS context (not personal finance), and introductory entrepreneurship concepts. Keep this pathway's identity on OPERATIONS, MANAGEMENT, and LEADERSHIP of an organization — NOT personal financial literacy (that's Finance) and NOT promotion/selling (that's Marketing).`,
+    agriculture: `Primary framework for Agriculture, Food & Natural Resources (AFNR) — one of the largest, most widely-offered CTE clusters nationally (especially in rural districts) — lead the competency list with entries from these, and treat the state CTE task list above as the state verification layer for them:
+- AFNR Career Cluster Content Standards (developed by the National Council for Agricultural Education, "The Council") — the primary national content framework, organized around career pathways: Agribusiness Systems; Animal Systems; Plant Systems; Environmental Service Systems; Natural Resource Systems; Power, Structural & Technical Systems; Food Products & Processing Systems; and Biotechnology Systems. Framework field: "AFNR". Name the AFNR pathway and standard/performance-indicator (e.g., "AFNR — Plant Systems (PS)") when confident; otherwise describe the competency and omit the code.
+- Career Ready Practices (CRP) — the 12 transferable career-ready skills that form the FOUNDATIONAL layer of the AFNR standards structure (e.g., act as a responsible and contributing citizen, apply appropriate academic and technical skills, communicate clearly and effectively, work productively in teams). Framework field: "Career Ready Practices". Anchor employability/professionalism content here.
+Then include entries from these where the lesson content maps to them:
+- National FFA Organization — the national CTSO for agricultural education, and a CORE, intracurricular program component of ag ed (NOT merely an extracurricular add-on): align applied tasks, leadership/professionalism, Career Development Events (CDEs) and Leadership Development Events (LDEs), degrees, and proficiency awards. Framework field: "FFA". Also note MANRRS (Minorities in Agriculture, Natural Resources, and Related Sciences) as a relevant related organization for career and collegiate connections.
+Content areas to prioritize: (a) Plant Science — crop production, horticulture basics, and plant systems; (b) Animal Science — large- and small-animal industries and animal care/production basics; (c) Natural Resources — environmental stewardship, conservation, and human interaction with natural resources and wildlife; and (d) Agribusiness — basic business and economic principles applied to agricultural products and services. Where relevant, frame the pathway around the three-circle agricultural-education model: classroom/lab instruction + FFA + Supervised Agricultural Experience (SAE).`,
   }[pathway] ?? ""
 
   const rigorNote =
@@ -154,6 +161,7 @@ function getCredentialFocus(pathway) {
     manufacturing: ["NIMS credentials (e.g., Measurement, Materials & Safety; Machining Level I) — the recognized entry credentials", "MSSC Certified Production Technician (CPT); SACA Smart Automation / Industry 4.0 credentials", "SkillsUSA competitive-event recognition (e.g., Precision Machining, Automated Manufacturing); OSHA-10 general-industry safety"],
     engineering_tech: ["PLTW course credentials / end-of-course assessments (e.g., Introduction to Engineering Design, Principles of Engineering)", "FIRST / RECF (VEX) robotics competition recognition & engineering-notebook awards", "SkillsUSA (e.g., Robotics & Automation, Engineering Technology); articulated college credit where offered"],
     business_mgmt: ["FBLA competitive-event recognition (e.g., Business Management, Organizational Leadership, Entrepreneurship)", "MBAResearch / NBEA-aligned business administration assessments & certificates", "Entrepreneurship & Small Business (ESB) or Microsoft Office Specialist (administrative skills) certifications where offered"],
+    agriculture: ["FFA degrees, proficiency awards & Career Development Event (CDE) recognition", "Supervised Agricultural Experience (SAE) records & National FFA SAE recognition", "AFNR industry certifications where offered (e.g., Certified Veterinary Assistant, pesticide applicator, ServSafe for food products, welding)"],
   }[pathway] ?? []
 }
 
@@ -423,6 +431,28 @@ function getPhaseDescriptions(pathway) {
         desc: "Students reflect on how today's skill fits running a real organization and a business-management or entrepreneurship career, share a decision or plan, and name one management principle they'd apply. Connect the skill to an FBLA event and a business/management career pathway. End with a brief exit ticket. 5–8 minutes.",
       },
     },
+    agriculture: {
+      warm_up: {
+        name: "Ag Hook",
+        desc: "Open with a concrete agriculture / food / natural-resources scenario — a real farm, ranch, or food-system moment, a plant/animal/conservation problem ('why is this crop failing?'), a local ag product, or a short clip. Students react as an ag professional would: what's going on, and what would you check first? Connect to a real AFNR role, employer, or a possible SAE opportunity. 5–8 minutes.",
+      },
+      whole_group_instruction: {
+        name: "Concept Instruction",
+        desc: "Teach the core AFNR concept directly using correct vocabulary (plant/animal systems terms, soil, nutrients, husbandry, conservation, agribusiness/supply-chain terms). Ground it in the relevant AFNR pathway standard (Plant, Animal, Natural Resource, or Agribusiness Systems). Address a common misconception and check understanding before hands-on work. 8–12 minutes.",
+      },
+      fitness_activities: {
+        name: "Skill Demonstration",
+        desc: "Model the agricultural skill or procedure step by step the way it's done in the field, lab, or shop — a plant or soil test, an animal-handling or husbandry technique, a conservation / water-quality measurement, or an agribusiness calculation — naming each step and any safety or animal-welfare point. Students watch, then walk through it once with teacher support. 5–10 minutes.",
+      },
+      independent_practice: {
+        name: "Hands-On Ag Application",
+        desc: "Students apply the skill in a realistic, tier-appropriate lab/field task: run a plant/soil/water investigation, practice an animal-care or husbandry task (or simulation), analyze a natural-resource/conservation scenario, or work an agribusiness / marketing-of-ag-products problem. Where it fits, connect the task to a possible Supervised Agricultural Experience (SAE) project. Describe exactly what students do, what a strong result looks like, and what the teacher observes/coaches. Include a checklist or rubric aligned to an AFNR competency or an FFA CDE. 15–20 minutes.",
+      },
+      closure: {
+        name: "Reflection & Career Connection",
+        desc: "Students reflect on how today's skill fits real agriculture / natural-resources work and a career in the cluster, and name one idea they could turn into a Supervised Agricultural Experience (SAE) or explore through FFA. Connect the skill to an FFA CDE/degree and an AFNR career pathway. End with a brief exit ticket. 5–8 minutes.",
+      },
+    },
   }
   return map[pathway] ?? map.hospitality
 }
@@ -494,6 +524,11 @@ function getPathwaySequence(pathway) {
       { level: "concentrator", course: "Business Management / Principles of Management & Administration", description: "Applied management — planning, organizing, leading and decision-making, human resources and operations, administrative/organizational systems, and business financial decision-making, aligned to NBEA / MBA Research and FBLA events." },
       { level: "completer", course: "Advanced Business Management / Capstone, Entrepreneurship & Work-Based Learning", description: "Capstone business/management project or venture plan, entrepreneurship, FBLA competitive events, an industry-aligned business certification, and work-based learning in a business/administrative setting." },
     ],
+    agriculture: [
+      { level: "introductory", course: "Introduction to Agriculture, Food & Natural Resources / Agriscience I", description: "Foundations — a survey of the AFNR pathways (plant, animal, natural resources, agribusiness), agriscience basics, an introduction to FFA and Supervised Agricultural Experience (SAE), and career awareness across the cluster." },
+      { level: "concentrator", course: "Plant / Animal / Natural Resource / Agribusiness Systems (AFNR pathway course)", description: "Applied pathway coursework to AFNR standards — deeper plant, animal, natural-resource, or agribusiness science and skills, FFA Career Development Events, and an ongoing SAE project." },
+      { level: "completer", course: "Advanced AFNR / Capstone, SAE, FFA & Work-Based Learning", description: "Capstone project, an expanded Supervised Agricultural Experience (entrepreneurship / placement / research), FFA degrees and proficiency awards, industry-credential attainment, and work-based learning in an agriculture / natural-resources setting." },
+    ],
   }[pathway] ?? []
 }
 
@@ -502,7 +537,7 @@ function getPathwaySequence(pathway) {
 // Work-Based Learning (HQWBL) model, which recognizes a broader set of 12 methods than
 // the internship/shadow/speaker default.
 function getWblGuidance(pathway) {
-  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing" || pathway === "engineering_tech" || pathway === "business_mgmt") {
+  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing" || pathway === "engineering_tech" || pathway === "business_mgmt" || pathway === "agriculture") {
     const emphasis = pathway === "health_science"
       ? " Clinical experience is especially relevant for this pathway — prioritize clinical/hospital placements, patient-care rotations, and health-agency service learning where appropriate."
       : pathway === "education"
@@ -517,7 +552,9 @@ function getWblGuidance(pathway) {
                 ? " Apprenticeship, internship, and cooperative education are especially relevant for this pathway — modern manufacturing is apprenticeship-heavy, so prioritize registered (pre-)apprenticeships and co-op placements in real production facilities, internships at manufacturers or machine shops, and mentorship with a NIMS-credentialed technician or manufacturing engineer. Any hands-on placement must be properly supervised and follow the site's OSHA safety requirements."
                 : pathway === "engineering_tech"
                   ? " Internship, mentorship, and entrepreneurship are especially relevant for this pathway — engineering/robotics work is project- and competition-driven, so prioritize internships with engineering employers or maker/robotics organizations, mentorship from practicing engineers and FIRST/RECF team mentors/coaches, and entrepreneurship (student design teams building and pitching a real prototype or product), alongside a school-based enterprise or robotics-team structure."
-                  : ""
+                  : pathway === "agriculture"
+                    ? " Supervised Agricultural Experience (SAE) is the SIGNATURE work-based-learning component of this cluster — give it particular emphasis. An SAE is a required, ongoing, student-led project (entrepreneurship, placement/internship, research/experimental, or school-based enterprise) that ag students maintain and document in records; build ideas that connect to or launch an SAE. Treat FFA as a CORE, intracurricular program component (not just an extracurricular add-on) — its Career Development Events (CDEs), Leadership Development Events (LDEs), degrees, and proficiency awards are part of how this cluster's WBL works. Frame WBL around the three-circle model (classroom/lab + FFA + SAE), and also draw on cooperative education, job shadowing, and mentorship with agricultural producers, agencies, and agribusinesses."
+                    : ""
     return `\nThis pathway follows Virginia's High-Quality Work-Based Learning (HQWBL) model, which recognizes 12 methods: job shadowing, service learning, mentorship, externship, school-based enterprise, internship, entrepreneurship, clinical experience, cooperative education, youth registered apprenticeship, registered apprenticeship, and supervised agricultural experience. When filling the fields below, draw the most lesson-appropriate ideas from this broader set (not only internships/shadows) — e.g., service learning with a community agency, a clinical experience, a school-based enterprise, or a mentorship — and fold them into the internships and job_shadows arrays as fits this lesson's content and tier.${emphasis}`
   }
   return ""
@@ -666,7 +703,7 @@ export function buildCteLessonSchema(includeELL = false) {
 
 /**
  * @param {Object} input
- * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'|'engineering_tech'|'business_mgmt'} input.pathway
+ * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'|'engineering_tech'|'business_mgmt'|'agriculture'} input.pathway
  * @param {'ms'|'hs'} input.tier
  * @param {'introductory'|'concentrator'|'completer'|''} [input.level]  required when tier === 'hs'
  * @param {string}  input.topic
