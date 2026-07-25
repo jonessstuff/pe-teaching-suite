@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Library, Palette, Music, FlaskConical, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, Users, Blocks, Layers, Presentation, ArrowRight } from 'lucide-react'
+import { Library, Palette, Music, FlaskConical, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, PartyPopper, Users, Blocks, Layers, Presentation, ArrowRight } from 'lucide-react'
 import { useDisplayName, getTimeGreeting } from '../hooks/useDisplayName'
 
 export default function ModulePicker() {
@@ -118,6 +118,25 @@ export default function ModulePicker() {
               </p>
             </div>
             <div className="flex items-center gap-1.5 text-sm font-medium text-cyan-400 transition-[gap] group-hover:gap-2.5">
+              Open module <ArrowRight size={15} />
+            </div>
+          </Link>
+
+          {/* After-School Clubs */}
+          <Link
+            to="/after-school-clubs"
+            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-coral-400/40"
+          >
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-coral-500/15">
+              <PartyPopper size={28} className="text-coral-400" />
+            </div>
+            <div className="flex-1 space-y-1.5">
+              <h2 className="text-xl font-semibold text-ink-50">After-School Clubs</h2>
+              <p className="text-sm text-ink-400 leading-relaxed">
+                Ready-to-run club session plans across 40+ club types — sports, academic, creative, wellness, leadership &amp; interest clubs, scaled K–12 by grade band
+              </p>
+            </div>
+            <div className="flex items-center gap-1.5 text-sm font-medium text-coral-400 transition-[gap] group-hover:gap-2.5">
               Open module <ArrowRight size={15} />
             </div>
           </Link>

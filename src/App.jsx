@@ -70,6 +70,7 @@ import StaffPdGenerator from './pages/StaffPdGenerator'
 import SchoolCounselorGenerator from './pages/SchoolCounselorGenerator'
 import SlpGenerator from './pages/SlpGenerator'
 import OtGenerator from './pages/OtGenerator'
+import AfterSchoolClubsGenerator from './pages/AfterSchoolClubsGenerator'
 import SstActivityGenerator from './pages/SstActivityGenerator'
 
 // Module-level promise reference. When a genuine new login triggers claimSession(),
@@ -316,6 +317,7 @@ function App() {
           <Route path="school-counselors" element={<SchoolCounselorGenerator />} />
           <Route path="slp" element={<SlpGenerator />} />
           <Route path="ot" element={<OtGenerator />} />
+          <Route path="after-school-clubs" element={<AfterSchoolClubsGenerator />} />
           <Route path="student-support-activities" element={<SstActivityGenerator />} />
           <Route path="my-classroom-cards" element={<MyClassroomCards />} />
           <Route path="sub-binder" element={<SubBinderGenerator />} />

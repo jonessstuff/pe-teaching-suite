@@ -27,6 +27,7 @@ export const SUBJECT_TAB_STYLES = {
   Art: 'bg-orange-500/20 text-ink-50',
   Music: 'bg-purple-500/20 text-ink-50',
   STEM: 'bg-cyan-500/20 text-ink-50',
+  'After-School Clubs': 'bg-coral-500/20 text-ink-50',
   CTE: 'bg-pink-500/20 text-ink-50',
   'Classroom Management': 'bg-indigo-500/20 text-ink-50',
   'Gifted & Talented': 'bg-amber-500/20 text-ink-50',
@@ -67,6 +68,7 @@ export const MODULES = [
   { label: 'Art', subjects: ['Art'] },
   { label: 'Music', subjects: ['Music'] },
   { label: 'STEM', subjects: ['STEM'] },
+  { label: 'After-School Clubs', subjects: ['After-School Clubs'] },
   { label: 'Adaptive PE', subjects: ['Adaptive PE'] },
   { label: 'CTE', subjects: ['CTE'] },
   { label: 'Classroom Management', subjects: ['Classroom Management'] },
@@ -132,7 +134,8 @@ export const PE_HEALTH_SUBJECTS = subjectsForModule('PE & Health')
 //   crimson (School Counselors) · bronze (Speech-Language Pathologists) ·
 //   plum (Student Support Team Activities) · grass (Early Childhood / Pre-K) ·
 //   stone (Intervention Planning) · gold (Staff PD & Meeting Planning) ·
-//   periwinkle (Occupational Therapists) · teal (Adaptive PE lesson tabs)
+//   periwinkle (Occupational Therapists) · coral (After-School Clubs) ·
+//   teal (Adaptive PE lesson tabs)
 //
 // AVAILABLE for future modules (School Counselors is next, then more). Each
 // entry's strings are full/literal so Tailwind's JIT compiles them and a new
@@ -157,12 +160,6 @@ export const AVAILABLE_MODULE_ACCENTS = [
     tab: 'bg-zinc-500/20 text-ink-50', iconTint: 'bg-zinc-500/15',
     accentText: 'text-zinc-400', hoverBorder: 'hover:border-zinc-400/40',
     cardBorder: 'border-zinc-400', callout: 'border-zinc-500/30 bg-zinc-500/10',
-  },
-  {
-    key: 'coral', label: 'Coral (warm salmon)',
-    tab: 'bg-coral-500/20 text-ink-50', iconTint: 'bg-coral-500/15',
-    accentText: 'text-coral-400', hoverBorder: 'hover:border-coral-400/40',
-    cardBorder: 'border-coral-400', callout: 'border-coral-500/30 bg-coral-500/10',
   },
   {
     key: 'steel', label: 'Steel (muted slate-blue)',

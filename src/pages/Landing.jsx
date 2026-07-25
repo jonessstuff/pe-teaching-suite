@@ -139,6 +139,9 @@ export default function Landing() {
             <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               STEM
             </span>
+            <span className="rounded-full bg-coral-500/20 px-3 py-1 text-xs font-medium text-ink-50">
+              After-School Clubs
+            </span>
             {/* Career & technical education */}
             <span className="rounded-full bg-pink-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               CTE
@@ -313,6 +316,11 @@ export default function Landing() {
                 name="STEM"
                 color="cyan"
                 description="Engineering challenges, coding, science investigations, and maker projects — all four in one place, plus the shared Makerspace project generator (tool-specific builds, also in Library & Media)."
+              />
+              <ModuleCard
+                name="After-School Clubs"
+                color="coral"
+                description="Ready-to-run club session plans across 40+ club types — sports, academic, creative, wellness, leadership & interest clubs — scaled K–12 by grade band, low-prep and runnable by a first-time sponsor."
               />
             </ModuleGroup>
 
