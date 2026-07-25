@@ -69,6 +69,9 @@ function schemaBlock() {
   "path": string,
   "assessment_label": string,
   "title": string,
+  "quiz_header": string,
+  "time_limit_minutes": number,
+  "pacing_note": string,
   "focus": string,
   "emphasis": string,
   "session_format": string,
@@ -90,6 +93,9 @@ function fieldNotes(emphasisGuide, sessionLength) {
   return `Field notes:
 - subject: always exactly "Test Prep".
 - assessment_label: a concise label for what this preps (e.g., "Digital SAT — Math" or "Virginia SOL Grade 5 Reading").
+- quiz_header: a clean quiz-style title in the form "Practice Quiz: <short test/section> — <focus topic>, Set 1" (e.g., "Practice Quiz: SAT Math — Systems of Equations, Set 1"). Default the set number to "Set 1".
+- time_limit_minutes: a suggested time limit that mirrors REAL test pacing — multiply the number of practice_questions by a realistic per-question time for THIS test/section, rounded to a sensible whole number. Reference pacing: Digital SAT Reading & Writing ≈ 1.3 min/question, Digital SAT Math ≈ 1.6 min/question; Enhanced ACT ≈ English 0.75, Math 1.5, Reading 1.25, Science 1.25 min/question; state tests ≈ 1–1.5 min/question (an estimate, since official timing varies).
+- pacing_note: one short sentence explaining the basis (e.g., "About 1.6 minutes per question, matching Digital SAT Math pacing."); for state, note it's an estimate to adjust to the official test's timing.
 - focus: the specific skill/topic this session targets.
 - emphasis: ${emphasisGuide}
 - session_format / session_length_minutes: echo the chosen tutoring format and ${sessionLength} minutes; pace the session for that format.
@@ -115,7 +121,8 @@ export function buildTestPrepSchema() {
     type: "object",
     additionalProperties: false,
     required: [
-      "subject", "path", "assessment_label", "title", "focus", "emphasis",
+      "subject", "path", "assessment_label", "title", "quiz_header",
+      "time_limit_minutes", "pacing_note", "focus", "emphasis",
       "session_format", "session_length_minutes", "format_snapshot", "overview",
       "content_review", "strategies", "practice_questions", "test_day_logistics",
       "session_flow", "next_steps", "originality_note", "state_verification_note",
@@ -125,6 +132,9 @@ export function buildTestPrepSchema() {
       path: { type: "string", enum: ["sat_act", "state"] },
       assessment_label: { type: "string" },
       title: { type: "string" },
+      quiz_header: { type: "string" },
+      time_limit_minutes: { type: "number" },
+      pacing_note: { type: "string" },
       focus: { type: "string" },
       emphasis: { type: "string" },
       session_format: { type: "string" },
