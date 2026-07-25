@@ -48,6 +48,10 @@ export function isInactive() {
 export function clearActivity() {
   try {
     localStorage.removeItem(LAST_ACTIVE_KEY)
+    // Also drop the cached greeting name so the next user on this browser
+    // doesn't briefly see the previous user's name. Keep key in sync with
+    // hooks/useDisplayName.js.
+    localStorage.removeItem('pk12_first_name')
   } catch {
     // ignore
   }

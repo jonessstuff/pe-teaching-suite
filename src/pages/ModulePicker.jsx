@@ -1,34 +1,16 @@
-import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Library, Palette, Music, FlaskConical, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Users, Blocks, Layers, Presentation, ArrowRight } from 'lucide-react'
-import { supabase } from '../lib/supabaseClient'
-
-function getGreeting() {
-  const hour = new Date().getHours()
-  if (hour >= 5 && hour < 12) return 'Good morning'
-  if (hour >= 12 && hour < 17) return 'Good afternoon'
-  return 'Good evening'
-}
-
-function getFirstName(user) {
-  const meta = user?.user_metadata ?? {}
-  const full = (meta.full_name ?? meta.name ?? '').trim()
-  return full.split(/\s+/)[0] || 'there'
-}
+import { useDisplayName, getTimeGreeting } from '../hooks/useDisplayName'
 
 export default function ModulePicker() {
-  const [user, setUser] = useState(null)
-
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data.user))
-  }, [])
+  const firstName = useDisplayName()
 
   return (
     <div className="space-y-10">
       {/* Greeting */}
       <div>
         <h1 className="text-3xl font-semibold text-ink-50">
-          {getGreeting()}{user ? `, ${getFirstName(user)}` : ''}!
+          {getTimeGreeting()}{firstName ? `, ${firstName}` : ''}!
         </h1>
         <p className="mt-2 text-lg text-ink-400">Which module would you like to work in?</p>
       </div>
