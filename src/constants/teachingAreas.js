@@ -55,4 +55,5 @@ export const CTE_PATHWAYS = [
   { key: 'construction', label: 'Architecture & Construction' },
   { key: 'arts_av', label: 'Arts, A/V Technology & Communications' },
   { key: 'government', label: 'Government & Public Administration' },
+  { key: 'law_safety', label: 'Law, Public Safety, Corrections & Security' },
 ]

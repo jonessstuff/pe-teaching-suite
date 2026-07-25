@@ -32,6 +32,7 @@ const PATHWAY_LABELS = {
   construction: "Architecture & Construction",
   arts_av: "Arts, A/V Technology & Communications",
   government: "Government & Public Administration",
+  law_safety: "Law, Public Safety, Corrections & Security",
 }
 
 function tierLevelLabel(tier, level) {
@@ -147,6 +148,10 @@ Content areas to prioritize: (a) graphic design fundamentals — visual design p
 - Common Career Technical Core (CCTC) — Government & Public Administration (GV) performance elements (Advance CTE), the PRIMARY content framework, spanning the cluster pathways: Governance; National Security; Foreign Service; Planning; Revenue & Taxation; Regulation; and Public Management & Administration. Framework field: "CCTC". Use the GV pathway code and performance-element numbering when confident (e.g., "GV-GOV" for governance, "GV-MGT" for public management); otherwise describe the standard and omit the code.
 - Employability Skills for Career Readiness Standards — the FOUNDATIONAL employability layer for this pathway (the same foundational layer used in Business Management & Administration): communication, teamwork, problem-solving and critical thinking, professionalism, and civic/ethical responsibility. Framework field: "Employability Skills". Anchor employability/professionalism and civic-responsibility content here.
 Content areas to prioritize: (a) governance — how government works, policy-making basics, and civic structures at the local, state, and federal levels; (b) public administration & management — how public agencies and services are administered and managed; (c) national security & foreign service — a broad, AWARENESS-level, age-appropriate overview of these career areas (keep it introductory, not operational); and (d) planning, revenue & regulation — a basic overview of public planning, taxation concepts, and regulatory functions. Keep the pathway's identity on public service, civic structures, and how the public sector operates.`,
+    law_safety: `Primary framework for Law, Public Safety, Corrections & Security. IMPORTANT — keep ALL content in CAREER-EXPLORATION and general-educational territory (how the systems work, career paths and requirements, ethics/professionalism). Do NOT give legal advice, and do NOT include operational or tactical law-enforcement, corrections, or security procedures, techniques, or anything resembling operational training (see the SAFETY & PROFESSIONAL-BOUNDARY directive in this prompt). Lead the competency list with entries from this, and treat the state CTE task list above as the state verification layer for it:
+- Common Career Technical Core (CCTC) — Law, Public Safety, Corrections & Security (LW) performance elements (Advance CTE), the primary content framework, including the corrections-specific pathway (LW-COR) as well as Emergency & Fire Management Services, Security & Protective Services, Legal Services, and Law Enforcement Services pathways. Framework field: "CCTC". Use the LW pathway code and performance-element numbering when confident (e.g., "LW-COR" for corrections); otherwise describe the standard and omit the code.
+This cluster's high-school programs of study typically fall into three areas — draw content from whichever fits the lesson: (1) Criminal Justice & Correction Services — how the justice system works, law-enforcement career paths, a corrections overview, and ethics & professionalism; (2) Pre-Law — American legal-system basics, a court-procedures overview, legal careers (paralegal and attorney paths), and juvenile-justice awareness; and (3) Fire Management Services — the firefighter career path, fire-behavior basics, and safety awareness (this area involves REAL physical risk — see the SAFETY directive).
+Content areas to prioritize across these programs of study: (a) criminal justice & corrections; (b) pre-law / the legal system; (c) fire management services; and (d) career exploration & professionalism — ethics, chain-of-command concepts, and the workplace skills specific to this field (integrity, stress tolerance, sound decision-making). Keep the identity on career exploration, how public-service/justice systems operate, and professional standards — never operational tactics or legal advice.`,
   }[pathway] ?? ""
 
   const rigorNote =
@@ -184,6 +189,7 @@ function getCredentialFocus(pathway) {
     construction: ["NCCER Core & craft-area credentials (NCCER Registry) — the recognized entry credentials", "OSHA-10 (Construction) safety card", "SkillsUSA competitive-event recognition (e.g., Carpentry, Electrical, Plumbing, HVAC-R); pre-apprenticeship certificates (NCCER / trade-council programs)"],
     arts_av: ["A portfolio / demo reel of finished creative work — the primary currency of this field", "Adobe Certified Professional (e.g., Photoshop, Illustrator, Premiere Pro) where the program teaches those tools", "SkillsUSA competitive-event recognition (e.g., Graphic Communications, Television/Video Production, Photography)"],
     government: ["A public-service / civics portfolio and projects (this cluster has no single dominant credential — content and demonstrated civic skill carry it)", "Recognition through civics & youth-government programs (e.g., YMCA Youth & Government, We the People, Model UN)", "General workplace/administrative certificates where offered (e.g., Microsoft Office Specialist)"],
+    law_safety: ["A career-exploration & professionalism/ethics portfolio (this cluster's HS programs of study vary; no single dominant student credential)", "General/entry credentials tied to a program of study where offered (e.g., CPR/First Aid for fire-service exploration; OSHA general awareness)", "Recognition through related programs — exploration only (e.g., mock trial, Explorers/cadet or fire-cadet programs)"],
   }[pathway] ?? []
 }
 
@@ -541,6 +547,28 @@ function getPhaseDescriptions(pathway) {
         desc: "Students reflect on how today's work fits real public service and a government / public-administration career, share a decision or proposal, and name one way government affects their community. Connect the skill to a public-service career pathway (governance, public management, planning, or a public-service role) and a civic program or internship. End with a brief exit ticket. 5–8 minutes.",
       },
     },
+    law_safety: {
+      warm_up: {
+        name: "Case / Scenario Hook",
+        desc: "Open with a concrete, age-appropriate scenario from the justice, legal, corrections, or fire-service world — a 'what happens next in the system?' question, a career moment, an ethics dilemma, or a short clip. Students react as a professional or informed citizen would: what's the situation, who's involved, and what does the SYSTEM do? Keep it exploratory and educational — no operational tactics. Connect to a real role or agency. 5–8 minutes.",
+      },
+      whole_group_instruction: {
+        name: "Concept Instruction",
+        desc: "Teach the core concept directly using correct vocabulary (branches of the justice system, due process, jurisdiction, corrections, court roles, legal terms, fire behavior/prevention terms, chain of command, ethics). Ground it in the relevant CCTC LW performance element. Keep content to how systems work, careers, and professionalism — NOT operational procedures or legal advice. Address a common misconception and check understanding. 8–12 minutes.",
+      },
+      fitness_activities: {
+        name: "Applied Example / Guided Practice",
+        desc: "Model the skill step by step in an educational, exploration-appropriate way — tracing a case through the court process, mapping a career path and its requirements, analyzing an ethics scenario against a code of conduct, or reviewing fire-safety/prevention concepts. Name each step and the professional principle behind it. For fire-service content, keep it awareness-level and safe. Students watch, then walk through it once with teacher support. 5–10 minutes.",
+      },
+      independent_practice: {
+        name: "Hands-On Exploration Application",
+        desc: "Students apply the skill in a realistic, EDUCATIONAL task: trace a case through the justice system, research and map a public-safety/legal career path and its requirements, run a mock-trial or mock-hearing role (exploration), analyze an ethics/professionalism scenario, or complete a fire-service career/safety-awareness activity. Keep everything exploratory — no operational tactics, no legal advice. Describe exactly what students do, what a strong result looks like, and what the teacher observes/coaches. Include a checklist or rubric aligned to a CCTC LW performance element. 15–20 minutes.",
+      },
+      closure: {
+        name: "Reflection & Career Connection",
+        desc: "Students reflect on how today's work fits a real career in law, public safety, corrections, or fire service, share a decision or finding, and name one professional value (integrity, fairness, service) that matters in this field. Connect the skill to a specific career path and its education/training requirements, and to a job-shadow, ride-along, or mentorship opportunity. End with a brief exit ticket. 5–8 minutes.",
+      },
+    },
   }
   return map[pathway] ?? map.hospitality
 }
@@ -632,6 +660,11 @@ function getPathwaySequence(pathway) {
       { level: "concentrator", course: "Public Administration & Policy / Government Systems", description: "Applied study of how public agencies and services are administered and managed, policy-making and analysis, public planning, revenue/taxation and regulation basics, and an awareness-level overview of national security and foreign service, aligned to CCTC GV standards." },
       { level: "completer", course: "Advanced Public Administration / Capstone, Civic Project & Work-Based Learning", description: "Capstone civic or policy project, a public-service portfolio, participation in civics / youth-government programs, and work-based learning through a government/civic internship, service learning, or mentorship with a public official or agency." },
     ],
+    law_safety: [
+      { level: "introductory", course: "Introduction to Law, Public Safety, Corrections & Security", description: "Foundations — an overview of the justice, legal, corrections, and public-safety/fire systems, career paths and requirements across the three programs of study, ethics and professionalism, and career awareness (exploration only)." },
+      { level: "concentrator", course: "Criminal Justice & Corrections / Pre-Law / Fire Management Services (program of study)", description: "Applied study within a chosen program of study — how the justice system, legal system, corrections, or fire service works; court/agency roles and processes; fire-behavior and safety awareness; and field ethics and professionalism, aligned to CCTC LW standards. Educational/exploratory, not operational." },
+      { level: "completer", course: "Advanced / Capstone, Career Portfolio & Work-Based Learning", description: "Capstone career-exploration or systems project, a professionalism/ethics portfolio, participation in related programs (mock trial, Explorers/cadet or fire-cadet), and work-based learning through job shadowing, ride-alongs where available, mentorship, or an internship with a court, agency, fire department, or law office." },
+    ],
   }[pathway] ?? []
 }
 
@@ -640,7 +673,7 @@ function getPathwaySequence(pathway) {
 // Work-Based Learning (HQWBL) model, which recognizes a broader set of 12 methods than
 // the internship/shadow/speaker default.
 function getWblGuidance(pathway) {
-  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing" || pathway === "engineering_tech" || pathway === "business_mgmt" || pathway === "agriculture" || pathway === "construction" || pathway === "arts_av" || pathway === "government") {
+  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing" || pathway === "engineering_tech" || pathway === "business_mgmt" || pathway === "agriculture" || pathway === "construction" || pathway === "arts_av" || pathway === "government" || pathway === "law_safety") {
     const emphasis = pathway === "health_science"
       ? " Clinical experience is especially relevant for this pathway — prioritize clinical/hospital placements, patient-care rotations, and health-agency service learning where appropriate."
       : pathway === "education"
@@ -663,7 +696,9 @@ function getWblGuidance(pathway) {
                         ? " Internship, entrepreneurship, and mentorship are especially relevant for this pathway — creative/communications careers are portfolio- and project-driven, so prioritize internships at studios, agencies, newsrooms, or media/marketing teams; entrepreneurship (freelance/commission work and building a client portfolio or personal brand); and mentorship from working designers, videographers, or journalists. Also draw on school-based enterprise (producing the yearbook, morning announcements, school news, or design work for real clients) as authentic WBL, and emphasize building a professional portfolio/demo reel throughout."
                         : pathway === "government"
                           ? " Internship, mentorship, and service learning are especially relevant for this pathway — public service is civic and community-based, so prioritize government/civic internships (a local council, mayor's or agency office, or legislative page/intern program), mentorship from public officials and administrators, and service learning that addresses a real community need, alongside job shadowing in a public agency. Youth-government and civic programs (e.g., YMCA Youth & Government, Model UN) also serve as authentic, program-based WBL for this cluster."
-                          : ""
+                          : pathway === "law_safety"
+                            ? " Job shadowing, mentorship, and internship are especially relevant for this pathway — prioritize job shadowing and, where appropriate and available, supervised ride-alongs; mentorship from professionals (officers, attorneys, corrections/probation staff, firefighters); and internships with courts, fire departments, law offices, or public-safety agencies, alongside service learning. Every placement must be age-appropriate, supervised, and OBSERVATIONAL (career exploration only — never operational participation); ride-alongs and any fire-service activity follow the agency's policies, waivers, and safety requirements."
+                            : ""
     return `\nThis pathway follows Virginia's High-Quality Work-Based Learning (HQWBL) model, which recognizes 12 methods: job shadowing, service learning, mentorship, externship, school-based enterprise, internship, entrepreneurship, clinical experience, cooperative education, youth registered apprenticeship, registered apprenticeship, and supervised agricultural experience. When filling the fields below, draw the most lesson-appropriate ideas from this broader set (not only internships/shadows) — e.g., service learning with a community agency, a clinical experience, a school-based enterprise, or a mentorship — and fold them into the internships and job_shadows arrays as fits this lesson's content and tier.${emphasis}`
   }
   return ""
@@ -689,6 +724,11 @@ SAFETY (safety_notes field) — CRITICAL FOR THIS PATHWAY: Manufacturing shop-fl
     return `
 
 SAFETY (safety_notes field) — CRITICAL FOR THIS PATHWAY: Construction and construction-shop work involves REAL physical risk — falls from ladders, scaffolds, and heights (the leading cause of construction fatalities); power and hand tools (saws, nail guns, drills); electrical hazards; struck-by and caught-in/between hazards; heavy and awkward lifting and material handling; and dust, noise, and eye hazards. Treat safety with the SAME seriousness as a health-science clinical lesson — never generic "be careful." Populate the safety_notes array with SPECIFIC, lesson-relevant hazards and their controls (e.g., fall protection and correct ladder/scaffold setup and use; PPE — hard hat, safety glasses/face shield, hearing protection, gloves, and closed-toe/steel-toe boots, with NO loose clothing or jewelry near power tools; power-tool guards, inspection, and safe operation; electrical safety and lockout/tagout where relevant; proper lifting and team lifts; and keeping the work area clear of cords, tripping hazards, and debris), and foreground the relevant safety point inside the Concept Instruction, Skill Demonstration, and Hands-On phases. The FIRST item in safety_notes MUST be this boundary statement, verbatim: "This lesson plan supports classroom and lab PLANNING only. It is not a substitute for your program's required shop-safety training, certification, supervision, and equipment/PPE. Follow your school's and district's safety policies and any applicable OSHA / NCCER shop-safety requirements before any hands-on work."`
+  }
+  if (pathway === "law_safety") {
+    return `
+
+SAFETY & PROFESSIONAL BOUNDARY (safety_notes field) — CRITICAL FOR THIS PATHWAY: Keep ALL content in career-exploration and general-educational territory — how the justice, legal, corrections, and public-safety/fire SYSTEMS work; career paths and requirements; and ethics/professionalism. Do NOT provide legal advice; do NOT provide operational or tactical law-enforcement, corrections, or security procedures, techniques, or anything resembling operational training; and do NOT include content that could be misused. For any FIRE MANAGEMENT SERVICES content specifically, there is REAL physical risk (fire behavior, live fire/heat, hazmat, and physical-training demands) — treat that with the SAME seriousness as a health-science clinical lesson and populate safety_notes with SPECIFIC controls: never conduct live-fire, smoke, or hazmat activities in a classroom; turnout gear / SCBA and any firefighting skill are used ONLY under certified fire-service instruction; physical training must be supervised, voluntary, medically cleared, and paced with hydration/rest; and hazmat is recognize-and-report only (never handle). Keep any hands-on activity to demonstration/simulation/awareness. The FIRST item in safety_notes MUST be this boundary statement, verbatim: "This lesson plan supports classroom career exploration and general educational understanding only. It is not legal advice and does not provide operational law-enforcement, corrections, security, or firefighting tactics, procedures, or training. Any hands-on public-safety or fire-service activity requires proper certification, equipment, and supervision — follow your program's and district's policies."`
   }
   return ""
 }
@@ -817,7 +857,7 @@ export function buildCteLessonSchema(includeELL = false) {
 
 /**
  * @param {Object} input
- * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'|'engineering_tech'|'business_mgmt'|'agriculture'|'construction'|'arts_av'|'government'} input.pathway
+ * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'|'engineering_tech'|'business_mgmt'|'agriculture'|'construction'|'arts_av'|'government'|'law_safety'} input.pathway
  * @param {'ms'|'hs'} input.tier
  * @param {'introductory'|'concentrator'|'completer'|''} [input.level]  required when tier === 'hs'
  * @param {string}  input.topic

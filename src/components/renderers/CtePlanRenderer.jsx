@@ -18,6 +18,7 @@ const PHASE_LABELS = {
   construction: ['Jobsite Hook', 'Concept Instruction', 'Skill Demonstration', 'Hands-On Construction Application', 'Reflection & Career Connection'],
   arts_av: ['Creative Hook', 'Concept Instruction', 'Guided Create / Demonstration', 'Hands-On Production', 'Reflection & Career Connection'],
   government: ['Civic Hook', 'Concept Instruction', 'Applied Example / Guided Practice', 'Hands-On Civic Application', 'Reflection & Career Connection'],
+  law_safety: ['Case / Scenario Hook', 'Concept Instruction', 'Applied Example / Guided Practice', 'Hands-On Exploration Application', 'Reflection & Career Connection'],
 }
 
 const PATHWAY_LABELS = {
@@ -37,6 +38,7 @@ const PATHWAY_LABELS = {
   construction: 'Architecture & Construction',
   arts_av: 'Arts, A/V Technology & Communications',
   government: 'Government & Public Administration',
+  law_safety: 'Law, Public Safety, Corrections & Security',
 }
 
 const LEVEL_LABELS = {

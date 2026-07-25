@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Wrench, Factory, Cpu, Building2, Sprout, HardHat, Clapperboard, Scale, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
+import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Wrench, Factory, Cpu, Building2, Sprout, HardHat, Clapperboard, Scale, Shield, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
 import { generateCteLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
@@ -104,6 +104,12 @@ const PATHWAYS = [
     description: 'How government works — governance & policy, public administration, planning/revenue/regulation & public service',
     icon: Scale,
   },
+  {
+    value: 'law_safety',
+    label: 'Law, Public Safety, Corrections & Security',
+    description: 'Criminal justice & corrections, pre-law & the legal system, fire management, ethics & careers (exploration only)',
+    icon: Shield,
+  },
 ]
 
 const LEVELS = [
@@ -129,6 +135,7 @@ const TOPIC_PLACEHOLDERS = {
   construction: 'e.g. Blueprint & construction-drawing reading, Building systems & materials, Framing basics, Measurement & layout, Intro to the trades (electrical/plumbing/HVAC/carpentry), Ladder & fall-protection safety',
   arts_av: 'e.g. Design principles & typography, Designing a poster or logo, Shooting & editing a short video, Broadcast journalism & interviewing, Digital/interactive media basics, Print production & quality control',
   government: 'e.g. How a bill becomes law, Levels of government (local/state/federal), How public agencies are managed, Public budgeting & taxation basics, Analyzing a local policy issue, Intro to public-service careers',
+  law_safety: 'e.g. How the justice system works, Law-enforcement career paths, Court procedures overview, Legal careers (paralegal/attorney), Corrections overview, Firefighter career path & fire behavior, Ethics & professionalism',
 }
 
 const MATERIAL_PLACEHOLDERS = {
@@ -291,6 +298,16 @@ const MATERIAL_PLACEHOLDERS = {
     'e.g. Sticky notes & chart paper',
     'e.g. Policy-proposal / PSA template',
     'e.g. Projector for discussion & examples',
+  ],
+  law_safety: [
+    'e.g. Case-study / scenario handouts',
+    'e.g. Justice-system flow chart (arrest → court → corrections)',
+    'e.g. Career-path & requirements reference cards',
+    'e.g. Mock-trial role cards & script',
+    'e.g. Code-of-ethics / professionalism handout',
+    'e.g. Laptops/Chromebooks for career research',
+    'e.g. Fire-safety / fire-behavior reference (awareness)',
+    'e.g. Chart paper & markers',
   ],
 }
 
@@ -456,13 +473,14 @@ export default function CteGenerator() {
           </div>
         </div>
         <p className="text-sm text-ink-400 mt-3">
-          Generate a complete Career &amp; Technical Education lesson across sixteen pathways:
-          Hospitality &amp; Tourism, Finance, Marketing, Human Services / FCS, Health Science,
-          Education &amp; Training, Career Readiness (MS foundations), Information Technology,
-          Transportation, Distribution &amp; Logistics, Manufacturing, STEM / Engineering &amp;
-          Technology, Business Management &amp; Administration, Agriculture, Food &amp; Natural
-          Resources, Architecture &amp; Construction, Arts, A/V Technology &amp; Communications, or
-          Government &amp; Public Administration — with work-based learning and career pathway
+          Generate a complete Career &amp; Technical Education lesson across seventeen pathways —
+          all 16 national CTE clusters: Hospitality &amp; Tourism, Finance, Marketing, Human
+          Services / FCS, Health Science, Education &amp; Training, Career Readiness (MS
+          foundations), Information Technology, Transportation, Distribution &amp; Logistics,
+          Manufacturing, STEM / Engineering &amp; Technology, Business Management &amp;
+          Administration, Agriculture, Food &amp; Natural Resources, Architecture &amp; Construction,
+          Arts, A/V Technology &amp; Communications, Government &amp; Public Administration, or Law,
+          Public Safety, Corrections &amp; Security — with work-based learning and career pathway
           context built in.
         </p>
       </div>
@@ -664,6 +682,7 @@ export default function CteGenerator() {
                 pathway === 'construction'    ? 'e.g. Read and interpret a floor plan and its scale (NCCER Core — Construction Drawings)' :
                 pathway === 'arts_av'         ? 'e.g. Apply design principles to a layout (CCTC AR-VIS / Visual Arts)' :
                 pathway === 'government'      ? 'e.g. Explain how a local government makes a policy decision (CCTC GV — Governance)' :
+                pathway === 'law_safety'      ? 'e.g. Trace how a case moves through the court system (CCTC LW — exploration)' :
                                                 'e.g. Identify a target market (DECA PI)'
               }
               value={targetCompetency}
