@@ -10,6 +10,7 @@ const PHASE_LABELS = {
   education: ['Classroom Scenario Hook', 'Concept Instruction', 'Teaching Skill Demonstration', 'Hands-On Teaching Application', 'Reflection & Profession Connection'],
   career_readiness: ['Career Hook', 'Direct Instruction', 'Skill Model / Guided Practice', 'Hands-On Career Application', 'Reflection & Next-Steps Connection'],
   information_technology: ['Tech Hook', 'Concept Instruction', 'Guided Build / Demonstration', 'Hands-On Build', 'Reflection & Career Connection'],
+  transportation: ['Shop Hook', 'Concept Instruction', 'Skill Demonstration', 'Hands-On Shop Application', 'Reflection & Career Connection'],
 }
 
 const PATHWAY_LABELS = {
@@ -21,6 +22,7 @@ const PATHWAY_LABELS = {
   education: 'Education & Training',
   career_readiness: 'Career Readiness',
   information_technology: 'Information Technology',
+  transportation: 'Transportation, Distribution & Logistics',
 }
 
 const LEVEL_LABELS = {

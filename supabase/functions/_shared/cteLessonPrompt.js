@@ -24,6 +24,7 @@ const PATHWAY_LABELS = {
   education: "Education & Training",
   career_readiness: "Career Readiness",
   information_technology: "Information Technology",
+  transportation: "Transportation, Distribution & Logistics",
 }
 
 function tierLevelLabel(tier, level) {
@@ -91,6 +92,11 @@ Content areas to prioritize (this pathway consolidates the common MS "Foundation
 Then include entries from this where the lesson content maps to it:
 - CompTIA — the recognized industry-standard IT credentialing body this pathway builds toward (IT Fundamentals+ / ITF+ at the entry level, then A+, Network+, Security+). Framework field: "CompTIA". Especially relevant for the broader IT-foundations, computing-systems, networking, and cybersecurity content. (This body is parallel to how HOSA/NHA function for Health Science and ServSafe for Hospitality & Tourism.)
 Content areas to prioritize: (a) Web Design fundamentals — HTML/CSS basics, website structure & layout, user-experience/design principles, and responsive-design concepts; (b) Web Design tools & workflow — introduce design/development tools in an age-appropriate, TOOL-AGNOSTIC way wherever possible (specific software varies by school), and the plan → build → test → revise project workflow; (c) at the Introductory / MS Exploratory level, broader IT foundations — basic computing concepts, digital literacy, how the internet and web work, and cybersecurity basics; and (d) career connections — IT/web-design career paths, portfolio-building concepts, and the industry certifications students might pursue (CompTIA). Keep tool references generalizable across schools rather than tied to one product.`,
+    transportation: `Primary industry framework for Transportation, Distribution & Logistics — ANCHORED on the Automotive Maintenance & Light Repair (MLR) sub-area (the most common course), but keep the pathway broad enough to represent the wider cluster — lead the competency list with entries from this, and treat the state CTE task list above as the state verification layer for it:
+- ASE Education Foundation Standards — Maintenance & Light Repair (MLR) — the recognized NATIONAL industry standards for automotive-technician training, organized by vehicle system (Engine Repair; Automatic Transmission/Transaxle; Manual Drivetrain & Axles; Suspension & Steering; Brakes; Electrical/Electronic Systems; Heating & Air Conditioning; Engine Performance). Framework field: "ASE MLR". Name the MLR area/task when confident (e.g., "ASE MLR — Brakes"); otherwise describe the competency clearly and omit the code. ASE is parallel to how HOSA/NHA function for Health Science and CompTIA for IT. The recognized entry credential students can pursue is the ASE Student Certification (via the ASE Education Foundation) — reference it as a credential goal, not as attained mid-lesson.
+Then include entries from this where the lesson content maps to it:
+- SkillsUSA — the CTSO most closely associated with this cluster (national, parallel to DECA/FBLA/HOSA/FCCLA). Align applied tasks, projects, and professionalism/employability content to relevant SkillsUSA competitive events (e.g., Automotive Service Technology, Diesel Equipment Technology) and the SkillsUSA Framework (personal, workplace, and technical skills grounded in academics). Framework field: "SkillsUSA".
+Content areas to prioritize: (a) automotive systems fundamentals — engine repair basics, brakes, suspension/steering, and electrical systems, at a depth appropriate to the tier; (b) SHOP SAFETY as a first-class, non-negotiable focus — safe handling of tools/equipment, vehicle-lift and jack/jack-stand operation, and hazard awareness (treat with the same seriousness as clinical safety — see the SAFETY directive in this prompt); (c) diagnostic & service-information skills — reading service manuals / service information, systematic problem identification, and the basic diagnostic process; and (d) at the Introductory / MS Exploratory level, a brief overview of the WIDER Transportation, Distribution & Logistics cluster beyond automotive (aviation/aircraft maintenance, logistics & supply chain, warehousing/distribution, rail, transit) so the foundational framing is not automotive-only.`,
   }[pathway] ?? ""
 
   const rigorNote =
@@ -120,6 +126,7 @@ function getCredentialFocus(pathway) {
     education: ["Educators Rising Micro-credentials & competitive event recognition", "ETS ParaPro Assessment (entry-level paraeducator credential)", "Child Development Associate (CDA) credential — for early-childhood / education field placements"],
     career_readiness: ["Employability-skills badges / digital-literacy micro-credentials appropriate for middle school (e.g., typing proficiency, Google/Microsoft basics)", "FBLA-Middle Level or SkillsUSA recognition (career-readiness competitive events)", "ACT WorkKeys National Career Readiness Certificate (NCRC) — introduced as a longer-term high-school/adult goal, not attained in middle school"],
     information_technology: ["CompTIA IT Fundamentals+ (ITF+) — entry-level IT credential (with A+ / Network+ / Security+ as later goals)", "Web-design / development certificates & micro-credentials (e.g., Responsive Web Design, HTML & CSS)", "FBLA Website Design / Introduction to Programming competitive event recognition"],
+    transportation: ["ASE Student Certification (ASE Education Foundation) — the recognized entry credential", "ASE Maintenance & Light Repair (MLR) certification track — the professional-technician goal", "SkillsUSA competitive-event recognition (e.g., Automotive Service Technology); OSHA-10 / shop-safety credential where offered"],
   }[pathway] ?? []
 }
 
@@ -301,6 +308,28 @@ function getPhaseDescriptions(pathway) {
         desc: "Students reflect on how today's skill fits real web/IT work and a technology career, share or peer-review a build, and name one thing they'd add to a portfolio or improve next time. Connect the skill to the credential it builds toward (CompTIA ITF+) and a career path. End with a brief exit ticket. 5–8 minutes.",
       },
     },
+    transportation: {
+      warm_up: {
+        name: "Shop Hook",
+        desc: "Open with a concrete automotive/transportation scenario — a real symptom ('the car pulls to one side when braking'), a viral car-repair moment, a named vehicle system, or a short clip from a real shop. Students react as a technician would: what could cause this, and what's the first SAFE thing to do? Connect to a real role or employer. 5–8 minutes.",
+      },
+      whole_group_instruction: {
+        name: "Concept Instruction",
+        desc: "Teach the core automotive/transportation concept or procedure directly using correct technician vocabulary (system/component names, tool names, service terms). Ground it in the relevant ASE MLR area. ALWAYS teach the safety point for this content to standard BEFORE any demonstration (proper lift points and jack/jack-stand use, PPE, tool inspection, disconnecting power/battery, ventilation). Address a common misconception and check understanding. 8–12 minutes.",
+      },
+      fitness_activities: {
+        name: "Skill Demonstration",
+        desc: "Model the service skill step by step the way a technician does it in a real shop — raising a vehicle to the correct lift points, inspecting brakes, checking suspension/steering play, using a meter, or reading a service procedure — narrating EACH step AND its safety control (chock the wheels, set the lift/jack stands, wear eye protection, keep the area clear). Students watch, then walk through it once with close teacher support. 5–10 minutes.",
+      },
+      independent_practice: {
+        name: "Hands-On Shop Application",
+        desc: "Students apply the skill in a realistic, tier-appropriate lab/simulation: perform or simulate an inspection or service task, use a service manual to identify a procedure, work a diagnostic case, or (at the MS Exploratory level) a hands-on component-ID or cluster-exploration station. State exactly what students do, what a competent result looks like, and what the teacher SUPERVISES. Include a checklist/rubric aligned to the ASE MLR task, and require the relevant safety steps to be checked off before and during work. Emphasize direct supervision. 15–20 minutes.",
+      },
+      closure: {
+        name: "Reflection & Career Connection",
+        desc: "Students reflect on how today's skill fits real service work and an automotive/transportation career, and name one safe-work habit and one thing they'd verify next time. Connect the skill to the credential it builds toward (ASE Student Certification) and a SkillsUSA event or apprenticeship. End with a brief exit ticket. 5–8 minutes.",
+      },
+    },
   }
   return map[pathway] ?? map.hospitality
 }
@@ -352,6 +381,11 @@ function getPathwaySequence(pathway) {
       { level: "concentrator", course: "Web Design & Development / IT Concentration", description: "Applied web design & development — deeper HTML/CSS, responsive and user-centered design, the plan→build→test→revise workflow and design tools, plus CompTIA ITF+-level IT foundations (systems, networks, security)." },
       { level: "completer", course: "Advanced Web Design / IT Capstone, Portfolio & Work-Based Learning", description: "Capstone build and professional portfolio, industry-credential attainment (CompTIA), client/freelance-style projects, competitive events, and work-based learning in an IT / web-development setting." },
     ],
+    transportation: [
+      { level: "introductory", course: "Introduction to Transportation / Automotive Technology I (MLR foundations)", description: "Foundations — shop safety and tool use, an overview of major vehicle systems (engine, brakes, suspension/steering, electrical), basic service-information skills, and a broad look at the wider Transportation, Distribution & Logistics cluster." },
+      { level: "concentrator", course: "Automotive Service Technology II / Maintenance & Light Repair", description: "Applied MLR service and maintenance across systems to ASE MLR standards, systematic diagnosis, service-manual use, and shop safety to standard, with SkillsUSA competition alignment." },
+      { level: "completer", course: "Advanced Automotive / MLR Capstone, ASE & Work-Based Learning", description: "Capstone service work, ASE Student Certification preparation, SkillsUSA competitive events, a co-op or registered (pre-)apprenticeship, and supervised work-based learning in a real service facility." },
+    ],
   }[pathway] ?? []
 }
 
@@ -360,7 +394,7 @@ function getPathwaySequence(pathway) {
 // Work-Based Learning (HQWBL) model, which recognizes a broader set of 12 methods than
 // the internship/shadow/speaker default.
 function getWblGuidance(pathway) {
-  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology") {
+  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation") {
     const emphasis = pathway === "health_science"
       ? " Clinical experience is especially relevant for this pathway — prioritize clinical/hospital placements, patient-care rotations, and health-agency service learning where appropriate."
       : pathway === "education"
@@ -369,8 +403,24 @@ function getWblGuidance(pathway) {
           ? " Career-AWARENESS activities are especially relevant for this pathway — for many middle-schoolers this is their earliest exposure to work-based learning, so prioritize the awareness-level methods: guest speakers, career fairs, workplace tours, and informational interviews, alongside age-appropriate service learning and job shadowing. Keep placements exploratory rather than skill-mastery internships."
           : pathway === "information_technology"
             ? " Internship, entrepreneurship, and mentorship are especially relevant for this pathway — tech work lends itself to real internships, to entrepreneurship/freelance & portfolio work (building or maintaining real websites for clients, school clubs, or community organizations), and to mentorship with industry professionals. Prioritize these, plus a school-based enterprise (e.g., running the school/club website) where it fits the lesson."
-            : ""
+            : pathway === "transportation"
+              ? " Internship, cooperative education, and registered apprenticeship are especially relevant for this pathway — the automotive/transportation trades are apprenticeship-heavy, so prioritize co-op placements in real service facilities, youth/registered (pre-)apprenticeships, and internships at dealerships, independent shops, or fleet/transit operations, alongside mentorship with a certified (e.g., ASE) technician. Any hands-on placement must be properly supervised and follow the site's safety requirements."
+              : ""
     return `\nThis pathway follows Virginia's High-Quality Work-Based Learning (HQWBL) model, which recognizes 12 methods: job shadowing, service learning, mentorship, externship, school-based enterprise, internship, entrepreneurship, clinical experience, cooperative education, youth registered apprenticeship, registered apprenticeship, and supervised agricultural experience. When filling the fields below, draw the most lesson-appropriate ideas from this broader set (not only internships/shadows) — e.g., service learning with a community agency, a clinical experience, a school-based enterprise, or a mentorship — and fold them into the internships and job_shadows arrays as fits this lesson's content and tier.${emphasis}`
+  }
+  return ""
+}
+
+// Pathway-specific SAFETY directive, injected into the system prompt. Trade
+// pathways with real physical/tool risk (e.g., automotive shop work) get an
+// explicit, serious directive plus a required lesson-planning-only boundary
+// statement — in the spirit of the clinical/compliance boundaries used by the
+// health/SLP modules. Empty for pathways without meaningful physical hazard.
+function getSafetyGuidance(pathway) {
+  if (pathway === "transportation") {
+    return `
+
+SAFETY (safety_notes field) — CRITICAL FOR THIS PATHWAY: Automotive/transportation shop work involves REAL physical risk — vehicle lifts and jacks/jack stands, power and hand tools, hot components and exhaust, moving vehicles, batteries and (in hybrid/EV) high-voltage systems, chemicals and fluids, and eye/hearing/entanglement hazards. Treat safety with the SAME seriousness as a health-science clinical lesson — never generic "be careful." Populate the safety_notes array with SPECIFIC, lesson-relevant hazards and their controls (e.g., correct lift points and jack-stand use, wheel chocks, PPE — safety glasses/gloves/closed-toe shoes, tool inspection, disconnecting the battery / high-voltage precautions, ventilation for exhaust and fumes, safe fluid handling and disposal), and foreground the relevant safety point inside the Concept Instruction, Skill Demonstration, and Hands-On phases. The FIRST item in safety_notes MUST be this boundary statement, verbatim: "This lesson plan supports classroom and lab PLANNING only. It is not a substitute for your program's required shop-safety training, certification, supervision, and equipment/PPE. Follow your school's and district's safety policies and any applicable OSHA / ASE Education Foundation shop-safety requirements before any hands-on work."`
   }
   return ""
 }
@@ -499,7 +549,7 @@ export function buildCteLessonSchema(includeELL = false) {
 
 /**
  * @param {Object} input
- * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'} input.pathway
+ * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'} input.pathway
  * @param {'ms'|'hs'} input.tier
  * @param {'introductory'|'concentrator'|'completer'|''} [input.level]  required when tier === 'hs'
  * @param {string}  input.topic
@@ -539,6 +589,7 @@ export function buildCteLessonPrompt({
   const phases = getPhaseDescriptions(pathway)
   const sequence = getPathwaySequence(pathway)
   const wblGuidance = getWblGuidance(pathway)
+  const safetyGuidance = getSafetyGuidance(pathway)
 
   const isMultiStage = sessionNumber > 0
   const stageLabel = isMultiStage ? `Stage ${sessionNumber} of ${totalSessions}` : ""
@@ -579,7 +630,7 @@ Lesson structure — 5 required phases:
 
 Teacher Prep (teacher_prep field): Everything the teacher must do BEFORE students arrive. Be specific: what industry materials/props to set up, what simulation stations to arrange, what handouts/rubrics to copy, what technology or equipment to test, what industry examples to queue. Write as a practical pre-class checklist.
 
-Competencies: ${competencyGuidance}
+Competencies: ${competencyGuidance}${safetyGuidance}
 
 WORK-BASED LEARNING (work_based_learning field): CTE lessons connect to the workplace. Provide realistic, pathway- and tier-appropriate work-based learning ideas tied to THIS lesson's content:
 - internships: 2–3 internship or practicum ideas relevant to this pathway and this lesson's skill (scale to tier — MS = short job-exploration visits; Completer = semester-long placements).

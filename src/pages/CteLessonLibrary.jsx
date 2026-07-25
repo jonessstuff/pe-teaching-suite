@@ -14,6 +14,7 @@ const PATHWAY_FILTERS = [
   { value: 'education', label: 'Education & Training' },
   { value: 'career_readiness', label: 'Career Readiness' },
   { value: 'information_technology', label: 'Information Technology' },
+  { value: 'transportation', label: 'Transportation, Distribution & Logistics' },
 ]
 
 export default function CteLessonLibrary() {
