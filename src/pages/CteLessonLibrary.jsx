@@ -17,6 +17,7 @@ const PATHWAY_FILTERS = [
   { value: 'transportation', label: 'Transportation, Distribution & Logistics' },
   { value: 'manufacturing', label: 'Manufacturing' },
   { value: 'engineering_tech', label: 'STEM / Engineering & Technology' },
+  { value: 'business_mgmt', label: 'Business Management & Administration' },
 ]
 
 export default function CteLessonLibrary() {

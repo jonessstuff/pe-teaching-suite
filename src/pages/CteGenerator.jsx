@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Wrench, Factory, Cpu, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
+import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Wrench, Factory, Cpu, Building2, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
 import { generateCteLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
@@ -74,6 +74,12 @@ const PATHWAYS = [
     description: 'Career-prep engineering — design process, robotics (FIRST/RECF), computing foundations & PLTW alignment',
     icon: Cpu,
   },
+  {
+    value: 'business_mgmt',
+    label: 'Business Management & Administration',
+    description: 'Operations, management & leadership — business structures, HR, decision-making & entrepreneurship',
+    icon: Building2,
+  },
 ]
 
 const LEVELS = [
@@ -94,6 +100,7 @@ const TOPIC_PLACEHOLDERS = {
   transportation: 'e.g. Brake system inspection, How a 4-stroke engine works, Suspension & steering check, Reading a service manual, Shop safety & vehicle-lift operation, Intro to the transportation & logistics cluster',
   manufacturing: 'e.g. Precision measurement with calipers, Blueprint/print reading, Intro to CNC machining, Robotics & automation basics, IIoT & smart sensors, Lockout/tagout & machine safety, Materials & production processes',
   engineering_tech: 'e.g. The engineering design process, Exploring engineering fields, Build & program a robot (FIRST/VEX), Sensors & actuators, Intro to coding & computational thinking, Prototype & iterate a design',
+  business_mgmt: 'e.g. The four functions of management, Business structures (LLC vs. corporation), A management decision case, Building a basic operating budget, Org charts & workflow, Intro to entrepreneurship, Basic HR concepts',
 }
 
 const MATERIAL_PLACEHOLDERS = {
@@ -206,6 +213,16 @@ const MATERIAL_PLACEHOLDERS = {
     'e.g. Design-challenge constraint cards',
     'e.g. Measuring tools (rulers, calipers)',
     'e.g. Projector for design/build demos',
+  ],
+  business_mgmt: [
+    'e.g. Business case-study handouts',
+    'e.g. Laptops/Chromebooks for research — 1 per pair',
+    'e.g. Budget / spreadsheet templates',
+    'e.g. Org-chart & workflow templates',
+    'e.g. Sticky notes & chart paper',
+    'e.g. Sample job descriptions / HR forms',
+    'e.g. Business-plan template (printed)',
+    'e.g. Projector for worked examples',
   ],
 }
 
@@ -371,11 +388,12 @@ export default function CteGenerator() {
           </div>
         </div>
         <p className="text-sm text-ink-400 mt-3">
-          Generate a complete Career &amp; Technical Education lesson across eleven pathways:
+          Generate a complete Career &amp; Technical Education lesson across twelve pathways:
           Hospitality &amp; Tourism, Finance, Marketing, Human Services / FCS, Health Science,
           Education &amp; Training, Career Readiness (MS foundations), Information Technology,
-          Transportation, Distribution &amp; Logistics, Manufacturing, or STEM / Engineering &amp;
-          Technology — with work-based learning and career pathway context built in.
+          Transportation, Distribution &amp; Logistics, Manufacturing, STEM / Engineering &amp;
+          Technology, or Business Management &amp; Administration — with work-based learning and
+          career pathway context built in.
         </p>
       </div>
 
@@ -571,6 +589,7 @@ export default function CteGenerator() {
                 pathway === 'transportation'  ? 'e.g. Inspect and measure brake pad wear (ASE MLR — Brakes)' :
                 pathway === 'manufacturing'   ? 'e.g. Measure a part to tolerance with a caliper (NIMS — Measurement, Materials & Safety)' :
                 pathway === 'engineering_tech'? 'e.g. Apply the engineering design process to a constraint-based challenge (PLTW / EDP)' :
+                pathway === 'business_mgmt'    ? 'e.g. Apply the four functions of management to a business scenario (NBEA Management)' :
                                                 'e.g. Identify a target market (DECA PI)'
               }
               value={targetCompetency}

@@ -27,6 +27,7 @@ const PATHWAY_LABELS = {
   transportation: "Transportation, Distribution & Logistics",
   manufacturing: "Manufacturing",
   engineering_tech: "STEM / Engineering & Technology",
+  business_mgmt: "Business Management & Administration",
 }
 
 function tierLevelLabel(tier, level) {
@@ -113,6 +114,13 @@ Then include entries from these where the lesson content maps to them:
 - FIRST (For Inspiration and Recognition of Science and Technology) and RECF (Robotics Education & Competition Foundation) — the major national robotics competition/curriculum bodies. For robotics content, align build/program tasks and project structure to FIRST (e.g., FIRST LEGO League, FIRST Tech Challenge) and/or RECF (VEX) programs and their competition and engineering-notebook structure. Framework field: "FIRST" or "RECF".
 - Computing / computational-thinking foundations — GENERAL, foundational programming and computational-thinking concepts (algorithms, sequencing, loops, conditionals, decomposition, debugging). Keep this general/foundational computing, DISTINCT from the Information Technology pathway's web-design focus. Framework field: "Computational Thinking" (or cite CSTA where a specific CS standard clearly applies).
 Content areas to prioritize: (a) Exploration of Engineering & Technology (especially at the MS Exploratory level) — a broad survey of engineering fields/disciplines, design-thinking basics, and hands-on exploratory projects; (b) Computing Foundations — programming basics, computational thinking, and intro coding concepts (foundational/general, NOT web design); (c) Robotics — building and programming robotics platforms, sensor/actuator basics, and competition-style project structure (FIRST/RECF-aligned); and (d) Engineering Design & Problem-Solving — the full Engineering Design Process applied to real problems, prototyping, and iteration. KEEP THIS PATHWAY'S IDENTITY on formal CTE career preparation — industry connections, PLTW/FIRST alignment, engineering careers and postsecondary pathways, and the engineering-notebook/portfolio habit — rather than duplicating a general classroom maker project.`,
+    business_mgmt: `Primary frameworks for Business Management & Administration (the broad OPERATIONS / MANAGEMENT / LEADERSHIP side of running a business — DISTINCT from the Finance pathway's personal-finance / financial-services focus and the Marketing pathway's promotion / sales focus) — lead the competency list with entries from these, and treat the state CTE task list above as the state verification layer for them:
+- MBA Research & Curriculum Center (MBAResearch) — the widely used National Business Administration Standards and performance indicators for management, administration, and business operations. Framework field: "MBA Research". Use its performance-indicator format when confident; otherwise describe the competency and omit the code.
+- NBEA (National Business Education Association) National Standards for Business Education — the recognized content standards across business; lead with the Management, Economics / Business Operations, and Entrepreneurship strands for this pathway. Framework field: "NBEA".
+Then include entries from these where the lesson content maps to them:
+- FBLA-PBL (Future Business Leaders of America–Phi Beta Lambda) — the recognized national CTSO for this cluster (parallel to DECA for Marketing, FCCLA for FCS, HOSA for Health Science). Align applied tasks, projects, and leadership/professionalism content to relevant FBLA competitive events (e.g., Business Management, Organizational Leadership, Human Resource Management, Entrepreneurship, Introduction to Business). Framework field: "FBLA".
+- Common Career Technical Core (CCTC) — Advance CTE's cross-cluster standards; use the Career Ready Practices and the Business Management & Administration cluster/pathway standards as a supporting reference. Framework field: "CCTC".
+Content areas to prioritize: (a) business fundamentals — economics basics, how businesses operate, and business structures/types (sole proprietorship, partnership, corporation, LLC); (b) management principles — planning, organizing, directing/leading, decision-making, and leadership basics; (c) human resources & operations — basic HR concepts (hiring, roles, workplace culture), workplace operations, and administrative/organizational systems; and (d) entrepreneurship & financial decision-making — budgeting basics, financial decision-making in a BUSINESS context (not personal finance), and introductory entrepreneurship concepts. Keep this pathway's identity on OPERATIONS, MANAGEMENT, and LEADERSHIP of an organization — NOT personal financial literacy (that's Finance) and NOT promotion/selling (that's Marketing).`,
   }[pathway] ?? ""
 
   const rigorNote =
@@ -145,6 +153,7 @@ function getCredentialFocus(pathway) {
     transportation: ["ASE Student Certification (ASE Education Foundation) — the recognized entry credential", "ASE Maintenance & Light Repair (MLR) certification track — the professional-technician goal", "SkillsUSA competitive-event recognition (e.g., Automotive Service Technology); OSHA-10 / shop-safety credential where offered"],
     manufacturing: ["NIMS credentials (e.g., Measurement, Materials & Safety; Machining Level I) — the recognized entry credentials", "MSSC Certified Production Technician (CPT); SACA Smart Automation / Industry 4.0 credentials", "SkillsUSA competitive-event recognition (e.g., Precision Machining, Automated Manufacturing); OSHA-10 general-industry safety"],
     engineering_tech: ["PLTW course credentials / end-of-course assessments (e.g., Introduction to Engineering Design, Principles of Engineering)", "FIRST / RECF (VEX) robotics competition recognition & engineering-notebook awards", "SkillsUSA (e.g., Robotics & Automation, Engineering Technology); articulated college credit where offered"],
+    business_mgmt: ["FBLA competitive-event recognition (e.g., Business Management, Organizational Leadership, Entrepreneurship)", "MBAResearch / NBEA-aligned business administration assessments & certificates", "Entrepreneurship & Small Business (ESB) or Microsoft Office Specialist (administrative skills) certifications where offered"],
   }[pathway] ?? []
 }
 
@@ -392,6 +401,28 @@ function getPhaseDescriptions(pathway) {
         desc: "Students reflect on how today's work maps to the engineering design process and a real engineering/technology career, share or peer-review a design/build, and name one improvement for the next iteration. Connect the skill to PLTW/FIRST pathways, an engineering discipline, and postsecondary/industry options. End with a brief exit ticket. 5–8 minutes.",
       },
     },
+    business_mgmt: {
+      warm_up: {
+        name: "Business Hook",
+        desc: "Open with a concrete business/management scenario — a real company decision, a 'you're the manager, what would you do?' dilemma, a startup or leadership story, or a short clip. Students react as a manager or owner would: what's the business problem, and what are the trade-offs? Connect to a real company, role, or entrepreneur. 5–8 minutes.",
+      },
+      whole_group_instruction: {
+        name: "Concept Instruction",
+        desc: "Teach the core business-management concept directly using correct vocabulary (the management functions — planning, organizing, leading, controlling; business structures; supply & demand; HR/operations terms; profit, budget, ROI). Ground it in the relevant NBEA / MBA Research standard. Address a common misconception (e.g., 'a manager just tells people what to do') and check understanding. 8–12 minutes.",
+      },
+      fitness_activities: {
+        name: "Applied Example / Guided Practice",
+        desc: "Model the business skill step by step the way it's done in an organization — building a simple org chart or plan, working a decision-making framework, drafting a basic operating budget, writing a job description, or analyzing a short business case. Name each step and the management principle behind it. Students watch, then walk through it once with teacher support. 5–10 minutes.",
+      },
+      independent_practice: {
+        name: "Hands-On Business Application",
+        desc: "Students apply the skill in a realistic task: make and justify a management decision from a case, build a basic operating budget or plan, design an org structure or workflow, draft an HR document, or develop a mini business / entrepreneurship plan. Describe exactly what students do, what a strong result looks like, and what the teacher observes/coaches. Include a checklist or rubric aligned to an NBEA / MBA Research competency or an FBLA event, and connect it to real business operations. 15–20 minutes.",
+      },
+      closure: {
+        name: "Reflection & Career Connection",
+        desc: "Students reflect on how today's skill fits running a real organization and a business-management or entrepreneurship career, share a decision or plan, and name one management principle they'd apply. Connect the skill to an FBLA event and a business/management career pathway. End with a brief exit ticket. 5–8 minutes.",
+      },
+    },
   }
   return map[pathway] ?? map.hospitality
 }
@@ -458,6 +489,11 @@ function getPathwaySequence(pathway) {
       { level: "concentrator", course: "Principles of Engineering / Robotics & Computing (PLTW pathway)", description: "Applied engineering — deeper engineering design and problem-solving, robotics build-and-program to FIRST/RECF structure, computing foundations, prototyping and iteration, and engineering-notebook documentation." },
       { level: "completer", course: "Engineering Design & Development / Capstone, Competition & Work-Based Learning", description: "Capstone engineering project (student-directed design or a competition robot), a professional engineering portfolio/notebook, FIRST/RECF competition, PLTW end-of-course credential, and an internship or mentorship with an engineering employer or program." },
     ],
+    business_mgmt: [
+      { level: "introductory", course: "Introduction to Business / Business Management I", description: "Foundations — economics basics, how businesses operate, business structures/types, an introduction to the management functions, and business career awareness." },
+      { level: "concentrator", course: "Business Management / Principles of Management & Administration", description: "Applied management — planning, organizing, leading and decision-making, human resources and operations, administrative/organizational systems, and business financial decision-making, aligned to NBEA / MBA Research and FBLA events." },
+      { level: "completer", course: "Advanced Business Management / Capstone, Entrepreneurship & Work-Based Learning", description: "Capstone business/management project or venture plan, entrepreneurship, FBLA competitive events, an industry-aligned business certification, and work-based learning in a business/administrative setting." },
+    ],
   }[pathway] ?? []
 }
 
@@ -466,7 +502,7 @@ function getPathwaySequence(pathway) {
 // Work-Based Learning (HQWBL) model, which recognizes a broader set of 12 methods than
 // the internship/shadow/speaker default.
 function getWblGuidance(pathway) {
-  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing" || pathway === "engineering_tech") {
+  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing" || pathway === "engineering_tech" || pathway === "business_mgmt") {
     const emphasis = pathway === "health_science"
       ? " Clinical experience is especially relevant for this pathway — prioritize clinical/hospital placements, patient-care rotations, and health-agency service learning where appropriate."
       : pathway === "education"
@@ -630,7 +666,7 @@ export function buildCteLessonSchema(includeELL = false) {
 
 /**
  * @param {Object} input
- * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'|'engineering_tech'} input.pathway
+ * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'|'engineering_tech'|'business_mgmt'} input.pathway
  * @param {'ms'|'hs'} input.tier
  * @param {'introductory'|'concentrator'|'completer'|''} [input.level]  required when tier === 'hs'
  * @param {string}  input.topic
