@@ -15,7 +15,7 @@ function PlansK12Logo() {
         <path d="M16.5 26L19 28.5L23.5 23.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
       <span style={{ fontSize: 18, fontWeight: 500, lineHeight: 1, letterSpacing: '-0.01em' }}>
-        <span style={{ color: '#1a1a2e' }}>Plans</span><span style={{ color: '#4F7FFA' }}>K12</span>
+        <span className="text-ink-50">Plans</span><span style={{ color: '#4F7FFA' }}>K12</span>
       </span>
     </div>
   )

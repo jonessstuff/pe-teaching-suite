@@ -49,7 +49,7 @@ export default function AppShell() {
     <div className="flex min-h-screen bg-ink-950">
       {showSidebar && <Sidebar />}
       <div className="flex flex-1 flex-col min-w-0">
-        <Topbar />
+        <Topbar showSidebar={showSidebar} />
         <main className="flex-1 px-6 pt-8 pb-24 md:px-10 md:pb-8">
           <div className="mx-auto max-w-6xl">
             <WhatsNewBanner />
@@ -167,13 +167,16 @@ function Sidebar() {
   )
 }
 
-function Topbar() {
+function Topbar({ showSidebar }) {
   return (
     <header className="flex items-center justify-between border-b border-ink-900 bg-white dark:bg-ink-950 px-6 py-4 md:px-10">
-      <Link to="/" className="flex items-center gap-2.5 md:hidden">
+      {/* Logo shows on mobile always; on desktop only when the sidebar isn't
+          carrying it (e.g. the home launcher and non-PE module pages), so every
+          screen has a visible logo. */}
+      <Link to="/" className={`flex items-center gap-2.5 ${showSidebar ? 'md:hidden' : ''}`}>
         <PlansK12Logo />
       </Link>
-      <div className="hidden md:block" />
+      {showSidebar && <div className="hidden md:block" />}
       <div className="flex items-center gap-2">
         <TrialBadge />
         <DarkModeToggle />
@@ -241,7 +244,7 @@ function PlansK12Logo() {
 
       {/* Wordmark */}
       <span style={{ fontSize: 18, fontWeight: 500, lineHeight: 1, letterSpacing: '-0.01em' }}>
-        <span style={{ color: '#1a1a2e' }}>Plans</span><span style={{ color: '#4F7FFA' }}>K12</span>
+        <span className="text-ink-50">Plans</span><span style={{ color: '#4F7FFA' }}>K12</span>
       </span>
     </div>
   )
