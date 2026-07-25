@@ -1,4 +1,5 @@
 import { supabase } from "../lib/supabaseClient";
+import { smartTitleCase } from "../utils/titleCase";
 
 /**
  * Service layer for lesson CRUD operations.
@@ -10,15 +11,19 @@ import { supabase } from "../lib/supabaseClient";
 
 /**
  * Extract the denormalized top-level columns from a LessonObject.
+ * The title is normalized to smart title case so raw input casing
+ * (e.g. "soccer Day 1") is cleaned up consistently on both the column
+ * and inside the stored lesson_object.
  * @param {import("../types/lessonObject").LessonObject} lessonObject
  */
 function toRow(lessonObject, extra = {}) {
+  const title = smartTitleCase(lessonObject.title);
   return {
-    title: lessonObject.title,
+    title,
     subject: lessonObject.subject,
     grade_bands: lessonObject.grade_bands,
     duration_minutes: lessonObject.duration_minutes,
-    lesson_object: lessonObject,
+    lesson_object: { ...lessonObject, title },
     ...extra,
   };
 }

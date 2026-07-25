@@ -84,7 +84,7 @@ export default function ArtPlanRenderer({ lesson }) {
       {/* Header */}
       <header className="space-y-2 border-b border-ink-900 pb-4">
         <div className="flex items-center justify-between text-sm text-ink-400">
-          <span>{lesson.scheduled_date ?? 'Date TBD'}</span>
+          <span>{lesson.scheduled_date ?? 'Unscheduled'}</span>
           <span>{lesson.period_label ?? ''}</span>
           <div className="flex items-center gap-2">
             {lesson.stage_label && (

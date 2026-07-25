@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Star } from 'lucide-react'
 import { toggleFavorite } from '../../services/lessonsService'
 import { subjectTabStyle } from '../../constants/modules'
+import { smartTitleCase } from '../../utils/titleCase'
 
 function timeAgo(dateString) {
   if (!dateString) return null
@@ -68,7 +69,7 @@ export default function LessonCard({ lesson, onFavoriteToggle }) {
         </div>
       </div>
       <div>
-        <h3 className="font-semibold text-ink-50 leading-snug">{lesson.title}</h3>
+        <h3 className="font-semibold text-ink-50 leading-snug">{smartTitleCase(lesson.title)}</h3>
         {unit && <p className="text-sm text-ink-400 mt-0.5">{unit}{dayNumber ? ` · Day ${dayNumber} of ${totalDays}` : ''}</p>}
       </div>
       {tags.length > 0 && (
