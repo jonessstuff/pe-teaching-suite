@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Wrench, Factory, Cpu, Building2, Sprout, HardHat, Clapperboard, Scale, Shield, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
+import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Wrench, Factory, Cpu, Building2, Sprout, HardHat, Clapperboard, Scale, Shield, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink, ChevronDown } from 'lucide-react'
 import { generateCteLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
@@ -111,6 +111,23 @@ const PATHWAYS = [
     icon: Shield,
   },
 ]
+
+// The 17 pathways grouped into 6 logical categories for scannability. Career
+// Readiness is pinned first as the foundational entry point. Order within each
+// group is intentional. Every pathway value MUST appear in exactly one group.
+const PATHWAY_GROUPS = [
+  { label: 'Career Foundations', values: ['career_readiness'] },
+  { label: 'Business, Finance & Marketing', values: ['finance', 'marketing', 'business_mgmt', 'hospitality'] },
+  { label: 'Health & Human Services', values: ['health_science', 'human_services', 'education'] },
+  { label: 'Technology & Engineering', values: ['information_technology', 'engineering_tech'] },
+  { label: 'Skilled Trades & Industrial', values: ['transportation', 'manufacturing', 'construction', 'agriculture'] },
+  { label: 'Arts, Government & Public Service', values: ['arts_av', 'government', 'law_safety'] },
+]
+
+const PATHWAY_BY_VALUE = Object.fromEntries(PATHWAYS.map((p) => [p.value, p]))
+const GROUP_FOR_PATHWAY = Object.fromEntries(
+  PATHWAY_GROUPS.flatMap((g) => g.values.map((v) => [v, g.label]))
+)
 
 const LEVELS = [
   { value: 'introductory', label: 'Introductory', description: 'Foundational — first course in the pathway' },
@@ -316,6 +333,9 @@ export default function CteGenerator() {
 
   // Pathway
   const [pathway, setPathway] = useState('hospitality')
+  // Which category accordion sections are expanded — open the group holding the
+  // current pathway by default so the selection is always visible on load.
+  const [openGroups, setOpenGroups] = useState(() => new Set([GROUP_FOR_PATHWAY.hospitality]))
 
   // Two-tier grade model (replaces the K–5 grade toggle for CTE)
   const [tier, setTier] = useState('ms')
@@ -353,6 +373,15 @@ export default function CteGenerator() {
     setPathway(value)
     setMaterials(['', ''])
     setTopic('')
+  }
+
+  function toggleGroup(label) {
+    setOpenGroups((prev) => {
+      const next = new Set(prev)
+      if (next.has(label)) next.delete(label)
+      else next.add(label)
+      return next
+    })
   }
 
   async function handleGenerate(e) {
@@ -487,36 +516,83 @@ export default function CteGenerator() {
 
       <form onSubmit={handleGenerate} className="space-y-6">
 
-        {/* Pathway selector */}
+        {/* Pathway selector — 17 pathways grouped into 6 collapsible categories */}
         <div className="space-y-3">
           <h2 className="text-sm font-semibold text-ink-200">Pathway</h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            {PATHWAYS.map(({ value, label, description, icon: Icon }) => (
-              <button
-                key={value}
-                type="button"
-                onClick={() => handlePathwayChange(value)}
-                className={`flex flex-col gap-3 rounded-xl border p-4 text-left transition-colors ${
-                  pathway === value
-                    ? 'border-pink-400/50 bg-pink-500/15'
-                    : 'border-ink-800 bg-ink-900 hover:border-ink-700'
-                }`}
-              >
-                <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${
-                  pathway === value ? 'bg-pink-500/25' : 'bg-ink-800'
-                }`}>
-                  <Icon size={16} className={pathway === value ? 'text-pink-400' : 'text-ink-400'} />
+          <div className="space-y-2">
+            {PATHWAY_GROUPS.map((group) => {
+              const isOpen = openGroups.has(group.label)
+              const groupHasSelected = group.values.includes(pathway)
+              return (
+                <div key={group.label} className="overflow-hidden rounded-xl border border-ink-800 bg-ink-900/40">
+                  <button
+                    type="button"
+                    onClick={() => toggleGroup(group.label)}
+                    className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-ink-900"
+                  >
+                    <span className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                      <span className={`text-sm font-semibold ${groupHasSelected ? 'text-pink-400' : 'text-ink-200'}`}>
+                        {group.label}
+                      </span>
+                      <span className="text-xs text-ink-600">{group.values.length}</span>
+                      {groupHasSelected && !isOpen && (
+                        <span className="text-xs text-ink-500">· {PATHWAY_BY_VALUE[pathway].label}</span>
+                      )}
+                    </span>
+                    <ChevronDown
+                      size={16}
+                      className={`shrink-0 text-ink-500 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                    />
+                  </button>
+                  {isOpen && (
+                    <div className="grid gap-2 border-t border-ink-800 p-3 sm:grid-cols-2 lg:grid-cols-3">
+                      {group.values.map((value) => {
+                        const { label, icon: Icon } = PATHWAY_BY_VALUE[value]
+                        const selected = pathway === value
+                        return (
+                          <button
+                            key={value}
+                            type="button"
+                            onClick={() => handlePathwayChange(value)}
+                            className={`flex items-center gap-2.5 rounded-lg border p-3 text-left transition-colors ${
+                              selected
+                                ? 'border-pink-400/50 bg-pink-500/15'
+                                : 'border-ink-800 bg-ink-900 hover:border-ink-700'
+                            }`}
+                          >
+                            <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+                              selected ? 'bg-pink-500/25' : 'bg-ink-800'
+                            }`}>
+                              <Icon size={16} className={selected ? 'text-pink-400' : 'text-ink-400'} />
+                            </span>
+                            <span className={`text-sm font-semibold leading-tight ${
+                              selected ? 'text-ink-50' : 'text-ink-200'
+                            }`}>
+                              {label}
+                            </span>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  )}
                 </div>
-                <div>
-                  <p className={`text-sm font-semibold leading-tight ${
-                    pathway === value ? 'text-ink-50' : 'text-ink-200'
-                  }`}>
-                    {label}
-                  </p>
-                  <p className="mt-0.5 text-xs text-ink-500 leading-snug">{description}</p>
-                </div>
-              </button>
-            ))}
+              )
+            })}
+          </div>
+
+          {/* Full description of the currently selected pathway (shown once, here,
+              instead of on all 17 cards) */}
+          <div className="flex items-start gap-3 rounded-xl border border-pink-400/30 bg-pink-500/5 p-4">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-pink-500/20">
+              {(() => {
+                const Icon = PATHWAY_BY_VALUE[pathway].icon
+                return <Icon size={18} className="text-pink-400" />
+              })()}
+            </span>
+            <div>
+              <p className="text-sm font-semibold text-ink-50">{PATHWAY_BY_VALUE[pathway].label}</p>
+              <p className="mt-0.5 text-xs text-ink-400 leading-snug">{PATHWAY_BY_VALUE[pathway].description}</p>
+            </div>
           </div>
         </div>
 
