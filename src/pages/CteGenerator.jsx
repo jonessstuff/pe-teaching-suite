@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
+import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
 import { generateCteLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
@@ -50,6 +50,12 @@ const PATHWAYS = [
     description: 'MS foundations — career exploration, employability skills, business communication & tech',
     icon: Compass,
   },
+  {
+    value: 'information_technology',
+    label: 'Information Technology',
+    description: 'Web design (HTML/CSS, UX), IT foundations, cybersecurity basics & tech careers',
+    icon: Code2,
+  },
 ]
 
 const LEVELS = [
@@ -66,6 +72,7 @@ const TOPIC_PLACEHOLDERS = {
   health_science: 'e.g. Taking vital signs, The cardiovascular system, Medical terminology word parts, Infection control & PPE, Patient positioning',
   education: 'e.g. Writing a measurable learning objective, Classroom management routines & procedures, Stages of child development, Delivering clear directions, Planning a read-aloud',
   career_readiness: 'e.g. Interest & strengths self-assessment, Exploring the 16 career clusters, Writing a professional email, Teamwork & communication skills, Setting a career goal, Age-appropriate resume basics',
+  information_technology: 'e.g. HTML page structure, Styling with CSS, Responsive design basics, Wireframing a web page, How the internet works, Cybersecurity & strong passwords, Building a portfolio site',
 }
 
 const MATERIAL_PLACEHOLDERS = {
@@ -138,6 +145,16 @@ const MATERIAL_PLACEHOLDERS = {
     'e.g. Sticky notes & chart paper',
     'e.g. Guest-speaker / career-fair sign-up sheet',
     'e.g. Projector for presentations',
+  ],
+  information_technology: [
+    'e.g. Laptops/Chromebooks with a code editor — 1 per student',
+    'e.g. Reliable internet access',
+    'e.g. HTML/CSS reference / cheat sheet (printed)',
+    'e.g. Wireframe / grid paper for layout sketching',
+    'e.g. Sample websites (good vs. poor UX)',
+    'e.g. Build checklist / rubric',
+    'e.g. Projector for live-coding demos',
+    'e.g. USB drives or cloud folders for saving work',
   ],
 }
 
@@ -303,10 +320,10 @@ export default function CteGenerator() {
           </div>
         </div>
         <p className="text-sm text-ink-400 mt-3">
-          Generate a complete Career &amp; Technical Education lesson across seven pathways:
+          Generate a complete Career &amp; Technical Education lesson across eight pathways:
           Hospitality &amp; Tourism, Finance, Marketing, Human Services / FCS, Health Science,
-          Education &amp; Training, or Career Readiness (MS foundations) — with work-based learning
-          and career pathway context built in.
+          Education &amp; Training, Career Readiness (MS foundations), or Information Technology —
+          with work-based learning and career pathway context built in.
         </p>
       </div>
 
@@ -498,6 +515,7 @@ export default function CteGenerator() {
                 pathway === 'health_science'  ? 'e.g. Measure and record blood pressure (NCHSE)' :
                 pathway === 'education'       ? 'e.g. Write a measurable learning objective (InTASC Standard 7)' :
                 pathway === 'career_readiness'? 'e.g. Demonstrate teamwork on a group task (Employability Skills: Effective Relationships)' :
+                pathway === 'information_technology' ? 'e.g. Build a responsive page layout with HTML/CSS (ISTE 4: Innovative Designer)' :
                                                 'e.g. Identify a target market (DECA PI)'
               }
               value={targetCompetency}

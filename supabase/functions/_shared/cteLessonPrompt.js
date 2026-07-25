@@ -23,6 +23,7 @@ const PATHWAY_LABELS = {
   health_science: "Health Science",
   education: "Education & Training",
   career_readiness: "Career Readiness",
+  information_technology: "Information Technology",
 }
 
 function tierLevelLabel(tier, level) {
@@ -84,6 +85,12 @@ Content areas to prioritize: the Introduction to the Teaching Profession / Educa
 Then include entries from this where the lesson content maps to it:
 - National Career Clusters Framework — the 16 Career Clusters (Advance CTE). Framework field: "Career Clusters". Because this is a career-EXPLORATION foundations course, career-exploration and self-assessment content should introduce students to the RANGE of career clusters broadly (all 16), not just one — use this to frame students' interests, strengths, and values against the breadth of clusters and the high-school pathways they lead to.
 Content areas to prioritize (this pathway consolidates the common MS "Foundations" courses — Career Development, Exploring Careers, General Employability, and Business Communication and Technologies): (a) career exploration & self-assessment — interests, strengths, and values mapped to career clusters; (b) general employability skills — the three Employability Skills Framework categories; (c) business communication & technology basics — professional communication (email, presentations), basic workplace technology, and digital-literacy fundamentals; and (d) career-development planning — goal-setting, age-appropriate resume/application basics, and understanding pathways and next steps toward high-school CTE programs. Keep all content and rigor age-appropriate for middle school (awareness and exploration, not mastery). NOTE: several teacher requests referenced Texas TEKS-based courses by name (Career Development, Career Exploration); keep this lesson national-first and let the state CTE verification layer above cover state-specific course/standard alignment.`,
+    information_technology: `Primary national frameworks for Information Technology (Web Design focus, with broader computing at the exploratory/MS level) — lead the competency list with entries from these, and treat the state CTE task list above as the state verification layer for them:
+- ISTE Standards for Students (International Society for Technology in Education) — the primary PEDAGOGICAL framework for this pathway, especially Standard 4 (Innovative Designer — students use a deliberate design process to generate ideas, test theories, solve problems, and create original works) and Standard 5 (Computational Thinker — students develop and employ strategies for understanding and solving problems in ways that leverage technology, e.g., breaking a problem down, planning, testing). Both map directly to web design and technical problem-solving. Framework field: "ISTE". Name the standard (e.g., "ISTE Standard 4: Innovative Designer") when confident; otherwise describe the competency.
+- CSTA K-12 Computer Science Standards (Computer Science Teachers Association) — the primary COMPUTER SCIENCE CONTENT framework, used wherever the lesson blends into broader computing/coding (algorithms & programming, data & analysis, computing systems, networks & the internet, and impacts of computing). Framework field: "CSTA". Use the CSTA identifier (e.g., "CSTA 2-AP-13") only when confident; otherwise describe the concept clearly and omit the code.
+Then include entries from this where the lesson content maps to it:
+- CompTIA — the recognized industry-standard IT credentialing body this pathway builds toward (IT Fundamentals+ / ITF+ at the entry level, then A+, Network+, Security+). Framework field: "CompTIA". Especially relevant for the broader IT-foundations, computing-systems, networking, and cybersecurity content. (This body is parallel to how HOSA/NHA function for Health Science and ServSafe for Hospitality & Tourism.)
+Content areas to prioritize: (a) Web Design fundamentals — HTML/CSS basics, website structure & layout, user-experience/design principles, and responsive-design concepts; (b) Web Design tools & workflow — introduce design/development tools in an age-appropriate, TOOL-AGNOSTIC way wherever possible (specific software varies by school), and the plan → build → test → revise project workflow; (c) at the Introductory / MS Exploratory level, broader IT foundations — basic computing concepts, digital literacy, how the internet and web work, and cybersecurity basics; and (d) career connections — IT/web-design career paths, portfolio-building concepts, and the industry certifications students might pursue (CompTIA). Keep tool references generalizable across schools rather than tied to one product.`,
   }[pathway] ?? ""
 
   const rigorNote =
@@ -112,6 +119,7 @@ function getCredentialFocus(pathway) {
     health_science: ["NHA certifications (e.g., CCMA Clinical Medical Assistant, CPT Phlebotomy Technician)", "CPR / First Aid certification (AHA or American Red Cross)", "HOSA competitive event & program recognition"],
     education: ["Educators Rising Micro-credentials & competitive event recognition", "ETS ParaPro Assessment (entry-level paraeducator credential)", "Child Development Associate (CDA) credential — for early-childhood / education field placements"],
     career_readiness: ["Employability-skills badges / digital-literacy micro-credentials appropriate for middle school (e.g., typing proficiency, Google/Microsoft basics)", "FBLA-Middle Level or SkillsUSA recognition (career-readiness competitive events)", "ACT WorkKeys National Career Readiness Certificate (NCRC) — introduced as a longer-term high-school/adult goal, not attained in middle school"],
+    information_technology: ["CompTIA IT Fundamentals+ (ITF+) — entry-level IT credential (with A+ / Network+ / Security+ as later goals)", "Web-design / development certificates & micro-credentials (e.g., Responsive Web Design, HTML & CSS)", "FBLA Website Design / Introduction to Programming competitive event recognition"],
   }[pathway] ?? []
 }
 
@@ -271,6 +279,28 @@ function getPhaseDescriptions(pathway) {
         desc: "Students reflect on what today's activity means for their own future and name one career cluster or high-school CTE pathway they want to explore next, plus one employability skill they'll keep building. Reinforce that middle-school foundations set up their high-school CTE choices. End with a brief exit ticket. 5–8 minutes.",
       },
     },
+    information_technology: {
+      warm_up: {
+        name: "Tech Hook",
+        desc: "Open with a concrete web/IT moment — a real website shown good vs. broken/poor UX, a viral app or tech product, a 'how does this actually work?' question about the internet, or a short clip. Students react and connect it to a real site, tool, or technology career they can picture. Keep it accessible. 5–8 minutes.",
+      },
+      whole_group_instruction: {
+        name: "Concept Instruction",
+        desc: "Teach the core web-design or IT concept directly using correct vocabulary (HTML tag/element, CSS style/selector, layout, responsive design, UX, wireframe, algorithm, network, cybersecurity). Ground it in the relevant ISTE standard (Innovative Designer / Computational Thinker) or CSTA concept. Address a common misconception and check understanding before students build. 8–12 minutes.",
+      },
+      fitness_activities: {
+        name: "Guided Build / Demonstration",
+        desc: "Model the technical skill step by step the way it's done in practice — writing a small block of HTML/CSS, structuring a page, applying a style, sketching a wireframe, or running one plan→build→test cycle. Name each step and the reason for it. Students watch, then walk through it once with teacher support (live-coding or hands-on). Keep tools tool-agnostic where possible. 5–10 minutes.",
+      },
+      independent_practice: {
+        name: "Hands-On Build",
+        desc: "Students apply the skill in a realistic, tool-agnostic build: code or edit a simple web page, design a wireframe/layout, improve a page's UX, run test-and-revise against a checklist, or (at the MS Exploratory level) complete a computing / digital-literacy / cybersecurity task. Describe exactly what students do, what a strong result looks like, and what the teacher observes and coaches. Include a checklist or rubric tied to an ISTE or CSTA competency. 15–20 minutes.",
+      },
+      closure: {
+        name: "Reflection & Career Connection",
+        desc: "Students reflect on how today's skill fits real web/IT work and a technology career, share or peer-review a build, and name one thing they'd add to a portfolio or improve next time. Connect the skill to the credential it builds toward (CompTIA ITF+) and a career path. End with a brief exit ticket. 5–8 minutes.",
+      },
+    },
   }
   return map[pathway] ?? map.hospitality
 }
@@ -317,6 +347,11 @@ function getPathwaySequence(pathway) {
       { level: "concentrator", course: "General Employability & Business Communication and Technologies (MS Foundations)", description: "Applied employability skills across the three Employability Skills Framework categories, plus professional communication (email, presentations), workplace technology, and digital-literacy fundamentals." },
       { level: "completer", course: "Career Development & Planning → High-School CTE (Foundations on-ramp)", description: "Career-development planning — goal-setting, age-appropriate resume/application basics, and choosing a high-school CTE pathway; the transition point into a specific cluster's high-school pathway sequence." },
     ],
+    information_technology: [
+      { level: "introductory", course: "Introduction to Information Technology / Web Design I", description: "Foundations — basic computing concepts, digital literacy, how the internet and web work, cybersecurity basics, and introductory web design (HTML/CSS structure and page layout)." },
+      { level: "concentrator", course: "Web Design & Development / IT Concentration", description: "Applied web design & development — deeper HTML/CSS, responsive and user-centered design, the plan→build→test→revise workflow and design tools, plus CompTIA ITF+-level IT foundations (systems, networks, security)." },
+      { level: "completer", course: "Advanced Web Design / IT Capstone, Portfolio & Work-Based Learning", description: "Capstone build and professional portfolio, industry-credential attainment (CompTIA), client/freelance-style projects, competitive events, and work-based learning in an IT / web-development setting." },
+    ],
   }[pathway] ?? []
 }
 
@@ -325,14 +360,16 @@ function getPathwaySequence(pathway) {
 // Work-Based Learning (HQWBL) model, which recognizes a broader set of 12 methods than
 // the internship/shadow/speaker default.
 function getWblGuidance(pathway) {
-  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness") {
+  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology") {
     const emphasis = pathway === "health_science"
       ? " Clinical experience is especially relevant for this pathway — prioritize clinical/hospital placements, patient-care rotations, and health-agency service learning where appropriate."
       : pathway === "education"
         ? " Clinical/field experience is especially relevant for this pathway — prioritize structured classroom observation, tutoring and cross-age mentoring placements, and student-teaching-style field experiences in a real school, plus service learning with younger students."
         : pathway === "career_readiness"
           ? " Career-AWARENESS activities are especially relevant for this pathway — for many middle-schoolers this is their earliest exposure to work-based learning, so prioritize the awareness-level methods: guest speakers, career fairs, workplace tours, and informational interviews, alongside age-appropriate service learning and job shadowing. Keep placements exploratory rather than skill-mastery internships."
-          : ""
+          : pathway === "information_technology"
+            ? " Internship, entrepreneurship, and mentorship are especially relevant for this pathway — tech work lends itself to real internships, to entrepreneurship/freelance & portfolio work (building or maintaining real websites for clients, school clubs, or community organizations), and to mentorship with industry professionals. Prioritize these, plus a school-based enterprise (e.g., running the school/club website) where it fits the lesson."
+            : ""
     return `\nThis pathway follows Virginia's High-Quality Work-Based Learning (HQWBL) model, which recognizes 12 methods: job shadowing, service learning, mentorship, externship, school-based enterprise, internship, entrepreneurship, clinical experience, cooperative education, youth registered apprenticeship, registered apprenticeship, and supervised agricultural experience. When filling the fields below, draw the most lesson-appropriate ideas from this broader set (not only internships/shadows) — e.g., service learning with a community agency, a clinical experience, a school-based enterprise, or a mentorship — and fold them into the internships and job_shadows arrays as fits this lesson's content and tier.${emphasis}`
   }
   return ""
@@ -462,7 +499,7 @@ export function buildCteLessonSchema(includeELL = false) {
 
 /**
  * @param {Object} input
- * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'} input.pathway
+ * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'} input.pathway
  * @param {'ms'|'hs'} input.tier
  * @param {'introductory'|'concentrator'|'completer'|''} [input.level]  required when tier === 'hs'
  * @param {string}  input.topic

@@ -13,6 +13,7 @@ const PATHWAY_FILTERS = [
   { value: 'health_science', label: 'Health Science' },
   { value: 'education', label: 'Education & Training' },
   { value: 'career_readiness', label: 'Career Readiness' },
+  { value: 'information_technology', label: 'Information Technology' },
 ]
 
 export default function CteLessonLibrary() {

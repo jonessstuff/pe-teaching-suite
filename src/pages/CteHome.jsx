@@ -62,7 +62,7 @@ export default function CteHome() {
           <div>
             <p className="font-semibold text-ink-50">Generate a CTE lesson</p>
             <p className="mt-0.5 text-sm text-ink-500">
-              Hospitality, Finance, Marketing, Human Services / FCS, Health Science, Education &amp; Training, or Career Readiness (MS foundations) — 5-phase lesson with work-based learning built in
+              Hospitality, Finance, Marketing, Human Services / FCS, Health Science, Education &amp; Training, Career Readiness (MS foundations), or Information Technology — 5-phase lesson with work-based learning built in
             </p>
           </div>
         </Link>

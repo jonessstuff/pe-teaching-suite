@@ -46,4 +46,5 @@ export const CTE_PATHWAYS = [
   { key: 'health_science', label: 'Health Science' },
   { key: 'education_training', label: 'Education & Training' },
   { key: 'career_readiness', label: 'Career Readiness' },
+  { key: 'information_technology', label: 'Information Technology' },
 ]
