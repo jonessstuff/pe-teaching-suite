@@ -1,6 +1,8 @@
 import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js"
 import { buildLibraryLessonPrompt } from "../_shared/libraryLessonPrompt.js"
 import { callClaudeForJson } from "../_shared/anthropic.js"
+import { captureLessonGenerated } from "../_shared/analytics.js";
+import { reportError } from "../_shared/sentry.js";
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders })
@@ -53,9 +55,12 @@ Deno.serve(async (req: Request) => {
     // Library lessons need headroom for multi-grade-band content; unit sessions
     // carry additional prior-session context on top of that.
     const maxTokens = isUnitMode ? 8000 : 6000
+    const _t0 = Date.now();
     const result = await callClaudeForJson(system, user, maxTokens)
+    await captureLessonGenerated(req, { subject: "Library/Media", grades: gradeBands, type: "library", durationMs: Date.now() - _t0 });
     return jsonResponse(result)
   } catch (err) {
+    await reportError(err, { fn: "generate-library-lesson" });
     return errorResponse((err as Error).message ?? String(err), 500)
   }
 })

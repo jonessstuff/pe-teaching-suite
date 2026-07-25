@@ -1,6 +1,8 @@
 import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js"
 import { buildClassroomOutputPrompt } from "../_shared/classroomManagementPrompt.js"
 import { callClaudeForJson } from "../_shared/anthropic.js"
+import { captureLessonGenerated } from "../_shared/analytics.js";
+import { reportError } from "../_shared/sentry.js";
 
 const VALID_GRADE_BANDS = ["K-2", "3-5", "6-8", "9-12"]
 const VALID_OUTPUT_TYPES = ["card", "behavior-chart", "reflection-form", "troubleshoot", "parent-note"]
@@ -57,9 +59,12 @@ Deno.serve(async (req: Request) => {
       tone: (tone as string) ?? "balanced",
     })
     // Structured outputs guarantees valid JSON; 4000 tokens is ample for a card.
+    const _t0 = Date.now();
     const result = await callClaudeForJson(system, user, 4000, MODEL, schema)
+    await captureLessonGenerated(req, { subject: "Classroom Management", grades: [], type: "classroom_management", durationMs: Date.now() - _t0 });
     return jsonResponse(result)
   } catch (err) {
+    await reportError(err, { fn: "generate-classroom-management" });
     console.error("[generate-classroom-management] error:", err)
     return errorResponse((err as Error).message ?? String(err), 500)
   }

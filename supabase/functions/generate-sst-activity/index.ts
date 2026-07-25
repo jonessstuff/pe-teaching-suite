@@ -1,6 +1,8 @@
 import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js"
 import { buildSstActivityPrompt } from "../_shared/sstActivityPrompt.js"
 import { callClaudeForJson } from "../_shared/anthropic.js"
+import { captureLessonGenerated } from "../_shared/analytics.js";
+import { reportError } from "../_shared/sentry.js";
 
 const VALID_ROLES = ["social_worker", "school_psych", "mflc", "behavior_specialist"]
 const VALID_BANDS = ["k-2", "3-5", "6-8", "9-12"]
@@ -36,9 +38,12 @@ Deno.serve(async (req: Request) => {
     // facilitation tips, standards). Completes on the default model (Sonnet) under the
     // 150s limit, so no keepalive stream is needed.
     const maxTokens = 4500
+    const _t0 = Date.now();
     const result = await callClaudeForJson(system, user, maxTokens)
+    await captureLessonGenerated(req, { subject: "Student Support Team Activities", grades: gradeBand ? [gradeBand] : [], type: "sst", durationMs: Date.now() - _t0 });
     return jsonResponse(result)
   } catch (err) {
+    await reportError(err, { fn: "generate-sst-activity" });
     console.error("[generate-sst-activity] error:", err)
     return errorResponse((err as Error).message ?? String(err), 500)
   }

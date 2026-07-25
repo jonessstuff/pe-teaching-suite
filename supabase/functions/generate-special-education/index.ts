@@ -1,6 +1,8 @@
 import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js"
 import { buildSpecialEducationPrompt } from "../_shared/specialEducationPrompt.js"
 import { callClaudeForJson } from "../_shared/anthropic.js"
+import { captureLessonGenerated } from "../_shared/analytics.js";
+import { reportError } from "../_shared/sentry.js";
 
 const VALID_MODES = ["multitier", "functional", "coteaching"]
 const VALID_BANDS = ["k-2", "3-5", "6-8", "9-12"]
@@ -32,9 +34,12 @@ Deno.serve(async (req: Request) => {
     // modalities) so it gets the most headroom; all complete on the default model
     // (Sonnet) under the 150s limit, so no keepalive stream is needed.
     const maxTokens = mode === "multitier" ? 5200 : 4800
+    const _t0 = Date.now();
     const result = await callClaudeForJson(system, user, maxTokens)
+    await captureLessonGenerated(req, { subject: "Special Education", grades: gradeBand ? [gradeBand] : [], type: "special_education", durationMs: Date.now() - _t0 });
     return jsonResponse(result)
   } catch (err) {
+    await reportError(err, { fn: "generate-special-education" });
     console.error("[generate-special-education] error:", err)
     return errorResponse((err as Error).message ?? String(err), 500)
   }

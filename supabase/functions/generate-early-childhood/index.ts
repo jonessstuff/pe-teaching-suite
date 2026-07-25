@@ -1,6 +1,8 @@
 import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js"
 import { buildEarlyChildhoodPrompt } from "../_shared/earlyChildhoodPrompt.js"
 import { callClaudeForJson } from "../_shared/anthropic.js"
+import { captureLessonGenerated } from "../_shared/analytics.js";
+import { reportError } from "../_shared/sentry.js";
 
 const VALID_AGE_GROUPS = ["toddler", "preschool3", "prek4", "tk5"]
 
@@ -32,9 +34,12 @@ Deno.serve(async (req: Request) => {
     // OUTPUT so the tolerant parser never sees a truncated ("Unterminated
     // string") JSON. Completes on Sonnet within the 150s limit.
     const maxTokens = 6000
+    const _t0 = Date.now();
     const result = await callClaudeForJson(system, user, maxTokens)
+    await captureLessonGenerated(req, { subject: "Early Childhood", grades: ageGroup ? [ageGroup] : [], type: "early_childhood", durationMs: Date.now() - _t0 });
     return jsonResponse(result)
   } catch (err) {
+    await reportError(err, { fn: "generate-early-childhood" });
     console.error("[generate-early-childhood] error:", err)
     return errorResponse((err as Error).message ?? String(err), 500)
   }

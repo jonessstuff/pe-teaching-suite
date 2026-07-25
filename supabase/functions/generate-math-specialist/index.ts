@@ -1,6 +1,8 @@
 import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js"
 import { buildMathSpecialistPrompt } from "../_shared/mathSpecialistPrompt.js"
 import { callClaudeForJson } from "../_shared/anthropic.js"
+import { captureLessonGenerated } from "../_shared/analytics.js";
+import { reportError } from "../_shared/sentry.js";
 
 const VALID_BANDS = ["k-2", "3-5", "6-8", "9-12"]
 
@@ -32,9 +34,12 @@ Deno.serve(async (req: Request) => {
     // so the JSON never truncates mid-string; still completes on the default model
     // (Sonnet) under the 150s limit, so no keepalive stream is needed.
     const maxTokens = 4800
+    const _t0 = Date.now();
     const result = await callClaudeForJson(system, user, maxTokens)
+    await captureLessonGenerated(req, { subject: "Math Specialists", grades: gradeBand ? [gradeBand] : [], type: "math_specialist", durationMs: Date.now() - _t0 });
     return jsonResponse(result)
   } catch (err) {
+    await reportError(err, { fn: "generate-math-specialist" });
     console.error("[generate-math-specialist] error:", err)
     return errorResponse((err as Error).message ?? String(err), 500)
   }

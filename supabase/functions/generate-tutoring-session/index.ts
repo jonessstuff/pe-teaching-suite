@@ -1,6 +1,8 @@
 import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js"
 import { buildTutoringPrompt } from "../_shared/tutoringPrompt.js"
 import { callClaudeForJson } from "../_shared/anthropic.js"
+import { captureLessonGenerated } from "../_shared/analytics.js";
+import { reportError } from "../_shared/sentry.js";
 
 const VALID_SUBJECTS = ["reading", "math"]
 const VALID_TYPES = ["private", "in_class"]
@@ -36,9 +38,12 @@ Deno.serve(async (req: Request) => {
     // short and grab-and-go. Both complete on the default model (Sonnet) well under
     // the 150s limit, so no keepalive stream is needed.
     const maxTokens = tutoringType === "private" ? 4200 : 3000
+    const _t0 = Date.now();
     const result = await callClaudeForJson(system, user, maxTokens)
+    await captureLessonGenerated(req, { subject: subject, grades: gradeBand ? [gradeBand] : [], type: "tutoring", durationMs: Date.now() - _t0 });
     return jsonResponse(result)
   } catch (err) {
+    await reportError(err, { fn: "generate-tutoring-session" });
     console.error("[generate-tutoring-session] error:", err)
     return errorResponse((err as Error).message ?? String(err), 500)
   }

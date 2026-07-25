@@ -1,6 +1,8 @@
 import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js"
 import { buildSlpPrompt } from "../_shared/slpPrompt.js"
 import { callClaudeForJson } from "../_shared/anthropic.js"
+import { captureLessonGenerated } from "../_shared/analytics.js";
+import { reportError } from "../_shared/sentry.js";
 
 const VALID_BANDS = ["k-2", "3-5", "6-8", "9-12", "adult"]
 const K12_AREAS = ["articulation", "language", "fluency", "pragmatics", "aac"]
@@ -33,9 +35,12 @@ Deno.serve(async (req: Request) => {
     // Prose-dense: 2–3 activities (how/why), cueing, modalities, generalization, standards.
     // Completes on the default model (Sonnet) under the 150s limit — no keepalive needed.
     const maxTokens = 4500
+    const _t0 = Date.now();
     const result = await callClaudeForJson(system, user, maxTokens)
+    await captureLessonGenerated(req, { subject: "Speech-Language Pathologists", grades: gradeBand ? [gradeBand] : [], type: "slp", durationMs: Date.now() - _t0 });
     return jsonResponse(result)
   } catch (err) {
+    await reportError(err, { fn: "generate-slp" });
     console.error("[generate-slp] error:", err)
     return errorResponse((err as Error).message ?? String(err), 500)
   }

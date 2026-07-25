@@ -1,6 +1,8 @@
 import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js"
 import { buildEslSpecialistPrompt } from "../_shared/eslSpecialistPrompt.js"
 import { callClaudeForJson } from "../_shared/anthropic.js"
+import { captureLessonGenerated } from "../_shared/analytics.js";
+import { reportError } from "../_shared/sentry.js";
 
 const VALID_BANDS = ["k-2", "3-5", "6-8", "9-12"]
 const VALID_LEVELS = ["entering", "emerging", "developing", "expanding", "bridging", "reaching"]
@@ -35,9 +37,12 @@ Deno.serve(async (req: Request) => {
     // frames, SIOP flow, standards. Generous headroom so the JSON never truncates;
     // completes on the default model (Sonnet) under the 150s limit — no keepalive needed.
     const maxTokens = 4800
+    const _t0 = Date.now();
     const result = await callClaudeForJson(system, user, maxTokens)
+    await captureLessonGenerated(req, { subject: "ESL/ELL Specialist", grades: gradeBand ? [gradeBand] : [], type: "esl", durationMs: Date.now() - _t0 });
     return jsonResponse(result)
   } catch (err) {
+    await reportError(err, { fn: "generate-esl-specialist" });
     console.error("[generate-esl-specialist] error:", err)
     return errorResponse((err as Error).message ?? String(err), 500)
   }

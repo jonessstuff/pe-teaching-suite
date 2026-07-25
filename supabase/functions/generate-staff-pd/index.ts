@@ -1,6 +1,8 @@
 import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js"
 import { buildStaffPdPrompt } from "../_shared/staffPdPrompt.js"
 import { callClaudeForJson } from "../_shared/anthropic.js"
+import { captureLessonGenerated } from "../_shared/analytics.js";
+import { reportError } from "../_shared/sentry.js";
 
 const VALID_AREAS = ["staff_pd", "mentoring", "walkthrough", "plc", "communication"]
 
@@ -30,9 +32,12 @@ Deno.serve(async (req: Request) => {
     // A structured adult-PD plan (agenda, sections, standards) is prose-dense
     // but bounded; completes on Sonnet under the 150s limit.
     const maxTokens = 5000
+    const _t0 = Date.now();
     const result = await callClaudeForJson(system, user, maxTokens)
+    await captureLessonGenerated(req, { subject: "Staff PD & Meeting Planning", grades: [], type: "staff_pd", durationMs: Date.now() - _t0 });
     return jsonResponse(result)
   } catch (err) {
+    await reportError(err, { fn: "generate-staff-pd" });
     console.error("[generate-staff-pd] error:", err)
     return errorResponse((err as Error).message ?? String(err), 500)
   }

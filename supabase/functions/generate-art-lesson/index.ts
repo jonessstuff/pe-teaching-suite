@@ -1,6 +1,8 @@
 import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js"
 import { buildArtLessonPrompt } from "../_shared/artLessonPrompt.js"
 import { callClaudeForJson } from "../_shared/anthropic.js"
+import { captureLessonGenerated } from "../_shared/analytics.js";
+import { reportError } from "../_shared/sentry.js";
 
 Deno.serve(async (req: Request) => {
   console.log("[generate-art-lesson] handler entered, method:", req.method)
@@ -52,9 +54,12 @@ Deno.serve(async (req: Request) => {
     // Art lessons are verbose (Teacher Prep + 7 phases + detailed supplies list).
     // Multi-stage sessions get additional budget for the stage context block.
     const maxTokens = isMultiStage ? 10000 : 8000
+    const _t0 = Date.now();
     const result = await callClaudeForJson(system, user, maxTokens)
+    await captureLessonGenerated(req, { subject: "Art", grades: gradeBands, type: "art", durationMs: Date.now() - _t0 });
     return jsonResponse(result)
   } catch (err) {
+    await reportError(err, { fn: "generate-art-lesson" });
     console.error("[generate-art-lesson] error:", err)
     return errorResponse((err as Error).message ?? String(err), 500)
   }

@@ -2,6 +2,8 @@ import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js"
 import { buildLibraryUnitPrompt } from "../_shared/libraryUnitPrompt.js"
 import { callClaudeForJson } from "../_shared/anthropic.js"
 import { createEmptyLessonObject } from "../_shared/lessonObjectDefaults.js"
+import { captureLessonGenerated } from "../_shared/analytics.js"
+import { reportError } from "../_shared/sentry.js"
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders })
@@ -63,10 +65,12 @@ Deno.serve(async (req: Request) => {
       )
     )
 
+    const _t0 = Date.now()
     const generated = await Promise.race([
       callClaudeForJson(system, user, maxTokens),
       timeoutPromise,
     ])
+    const durationMs = Date.now() - _t0
 
     const generatedSessions = Array.isArray(generated?.sessions) ? generated.sessions : []
 
@@ -104,10 +108,13 @@ Deno.serve(async (req: Request) => {
       return obj
     })
 
+    await captureLessonGenerated(req, { subject: "Library/Media", grades: gradeBands, type: "library_unit", durationMs })
+
     return jsonResponse({ sessions: lessonObjects })
   } catch (err) {
     const msg = (err as Error)?.message ?? String(err)
     const status = /timed out/i.test(msg) ? 504 : 500
+    await reportError(err, { fn: "generate-library-unit" })
     return errorResponse(msg, status)
   }
 })

@@ -1,6 +1,8 @@
 import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js"
 import { buildGiftedTalentedPrompt } from "../_shared/giftedTalentedPrompt.js"
 import { callClaudeForJson } from "../_shared/anthropic.js"
+import { captureLessonGenerated } from "../_shared/analytics.js";
+import { reportError } from "../_shared/sentry.js";
 
 const VALID_MODES = ["differentiate", "enrich", "support"]
 const VALID_BANDS = ["k-2", "3-5", "6-8", "9-12"]
@@ -33,9 +35,12 @@ Deno.serve(async (req: Request) => {
     // JSON mid-string, so give it the most headroom. These sizes still complete on the
     // default model (Sonnet) well under the 150s limit, so no keepalive stream is needed.
     const maxTokens = mode === "support" ? 4800 : 4200
+    const _t0 = Date.now();
     const result = await callClaudeForJson(system, user, maxTokens)
+    await captureLessonGenerated(req, { subject: "Gifted & Talented", grades: gradeBand ? [gradeBand] : [], type: "gifted", durationMs: Date.now() - _t0 });
     return jsonResponse(result)
   } catch (err) {
+    await reportError(err, { fn: "generate-gifted-talented" });
     console.error("[generate-gifted-talented] error:", err)
     return errorResponse((err as Error).message ?? String(err), 500)
   }

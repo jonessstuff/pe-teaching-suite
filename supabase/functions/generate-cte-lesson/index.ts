@@ -1,6 +1,8 @@
 import { corsHeaders, errorResponse } from "../_shared/cors.js"
 import { buildCteLessonPrompt } from "../_shared/cteLessonPrompt.js"
 import { callClaudeForJson } from "../_shared/anthropic.js"
+import { captureLessonGenerated } from "../_shared/analytics.js"
+import { reportError } from "../_shared/sentry.js"
 
 const VALID_PATHWAYS = ["hospitality", "finance", "marketing", "human_services", "health_science", "education"]
 const VALID_TIERS = ["ms", "hs"]
@@ -72,13 +74,16 @@ Deno.serve(async (req: Request) => {
         // Structured outputs guarantees valid JSON, but the ELL-augmented schema
         // exceeds Anthropic's compiled-grammar size limit (400). ELL is opt-in and
         // rarer, so skip the schema there and fall back to the tolerant text parser.
+        const _t0 = Date.now()
         const result = await callClaudeForJson(system, user, maxTokens, CTE_MODEL, includeELL ? null : schema)
         finished = true
         clearInterval(keepalive)
+        await captureLessonGenerated(req, { subject: "CTE", grades: tier ? [tier] : [], type: "cte", durationMs: Date.now() - _t0 })
         controller.enqueue(encoder.encode(JSON.stringify(result)))
       } catch (err) {
         finished = true
         clearInterval(keepalive)
+        await reportError(err, { fn: "generate-cte-lesson" })
         console.error("[generate-cte-lesson] error:", err)
         controller.enqueue(
           encoder.encode(JSON.stringify({ error: (err as Error).message ?? String(err) })),

@@ -1,6 +1,8 @@
 import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js"
 import { buildMakerProjectPrompt } from "../_shared/makerProjectPrompt.js"
 import { callClaudeForJson } from "../_shared/anthropic.js"
+import { captureLessonGenerated } from "../_shared/analytics.js";
+import { reportError } from "../_shared/sentry.js";
 
 const VALID_BANDS = ["k-2", "3-5", "6-8", "9-12"]
 const VALID_TOOLS = ["3d_printer", "laser_cutter", "vinyl_cutter", "robotics", "hand_tools", "electronics", "classic_build"]
@@ -33,9 +35,12 @@ Deno.serve(async (req: Request) => {
     // truncates; completes on the default model (Sonnet) under the 150s limit, so no
     // keepalive stream is needed.
     const maxTokens = 4800
+    const _t0 = Date.now();
     const result = await callClaudeForJson(system, user, maxTokens)
+    await captureLessonGenerated(req, { subject: "Makerspace", grades: gradeBand ? [gradeBand] : [], type: "maker", durationMs: Date.now() - _t0 });
     return jsonResponse(result)
   } catch (err) {
+    await reportError(err, { fn: "generate-maker-project" });
     console.error("[generate-maker-project] error:", err)
     return errorResponse((err as Error).message ?? String(err), 500)
   }
