@@ -37,6 +37,7 @@ export const SUBJECT_TAB_STYLES = {
   'ESL/ELL Specialist': 'bg-fuchsia-500/20 text-ink-50',
   'School Counselors': 'bg-crimson-500/20 text-ink-50',
   'Speech-Language Pathologists': 'bg-bronze-500/20 text-ink-50',
+  'Occupational Therapists': 'bg-periwinkle-500/20 text-ink-50',
   'Student Support Team Activities': 'bg-plum-500/20 text-ink-50',
   'Early Childhood': 'bg-grass-500/20 text-ink-50',
   'Intervention Planning': 'bg-stone-500/20 text-ink-50',
@@ -77,6 +78,7 @@ export const MODULES = [
   { label: 'ESL/ELL Specialist', subjects: ['ESL/ELL Specialist'] },
   { label: 'School Counselors', subjects: ['School Counselors'] },
   { label: 'Speech-Language Pathologists', subjects: ['Speech-Language Pathologists'] },
+  { label: 'Occupational Therapists', subjects: ['Occupational Therapists'] },
   { label: 'Student Support Team Activities', subjects: ['Student Support Team Activities'] },
   { label: 'Early Childhood / Pre-K', subjects: ['Early Childhood'] },
   { label: 'Intervention Planning', subjects: ['Intervention Planning'] },
@@ -130,7 +132,7 @@ export const PE_HEALTH_SUBJECTS = subjectsForModule('PE & Health')
 //   crimson (School Counselors) · bronze (Speech-Language Pathologists) ·
 //   plum (Student Support Team Activities) · grass (Early Childhood / Pre-K) ·
 //   stone (Intervention Planning) · gold (Staff PD & Meeting Planning) ·
-//   teal (Adaptive PE lesson tabs)
+//   periwinkle (Occupational Therapists) · teal (Adaptive PE lesson tabs)
 //
 // AVAILABLE for future modules (School Counselors is next, then more). Each
 // entry's strings are full/literal so Tailwind's JIT compiles them and a new
@@ -161,12 +163,6 @@ export const AVAILABLE_MODULE_ACCENTS = [
     tab: 'bg-coral-500/20 text-ink-50', iconTint: 'bg-coral-500/15',
     accentText: 'text-coral-400', hoverBorder: 'hover:border-coral-400/40',
     cardBorder: 'border-coral-400', callout: 'border-coral-500/30 bg-coral-500/10',
-  },
-  {
-    key: 'periwinkle', label: 'Periwinkle (blue-violet)',
-    tab: 'bg-periwinkle-500/20 text-ink-50', iconTint: 'bg-periwinkle-500/15',
-    accentText: 'text-periwinkle-400', hoverBorder: 'hover:border-periwinkle-400/40',
-    cardBorder: 'border-periwinkle-400', callout: 'border-periwinkle-500/30 bg-periwinkle-500/10',
   },
   {
     key: 'steel', label: 'Steel (muted slate-blue)',

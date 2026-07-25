@@ -172,6 +172,9 @@ export default function Landing() {
             <span className="rounded-full bg-bronze-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Speech-Language (SLP)
             </span>
+            <span className="rounded-full bg-periwinkle-500/20 px-3 py-1 text-xs font-medium text-ink-50">
+              Occupational Therapy (OT)
+            </span>
             <span className="rounded-full bg-plum-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Student Support Team
             </span>
@@ -369,6 +372,11 @@ export default function Landing() {
                 name="Speech-Language (SLP)"
                 color="bronze"
                 description="SLP session activity ideas — articulation, language, fluency, social communication & AAC, ASHA-aligned; activity planning, not clinical protocol."
+              />
+              <ModuleCard
+                name="Occupational Therapy (OT)"
+                color="periwinkle"
+                description="School-based OT activity ideas — fine motor & handwriting, sensory & self-regulation, ADLs, visual-motor & vocational, OTPF-4 / AOTA-aligned; activity planning, not clinical protocol."
               />
               <ModuleCard
                 name="Student Support Team"
