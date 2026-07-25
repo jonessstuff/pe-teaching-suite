@@ -42,9 +42,15 @@ export default function DistrictReport() {
     </div>
   )
 
+  // Subject lives in the top-level `subject` column (denormalized from the
+  // lesson_object). There is no `meta` field on a lesson row — the old code
+  // read l.meta?.subject, which was always undefined (hence "Subjects: 0" and
+  // everything bucketed under "Unknown").
+  const subjectOf = (l) => l.subject ?? l.lesson_object?.subject ?? null
+
   const totalLessons = lessons.length
   const favCount = lessons.filter(l => l.is_favorite).length
-  const subjects = [...new Set(lessons.map(l => l.meta?.subject).filter(Boolean))]
+  const subjects = [...new Set(lessons.map(subjectOf).filter(Boolean))]
 
   // Lessons per month (last 12 months)
   const now = new Date()
@@ -59,10 +65,11 @@ export default function DistrictReport() {
   })
   const maxMonthCount = Math.max(...monthBuckets.map(b => b.count), 1)
 
-  // Grade distribution
+  // Grade distribution — grade_bands is a top-level int[] column (mirrored in
+  // lesson_object). It is a list of grade levels, NOT objects.
   const gradeMap = {}
   lessons.forEach(l => {
-    const gbs = l.meta?.grade_bands ?? l.lesson_object?.grade_bands ?? []
+    const gbs = l.grade_bands ?? l.lesson_object?.grade_bands ?? []
     gbs.forEach(gb => {
       gradeMap[gb] = (gradeMap[gb] ?? 0) + 1
     })
@@ -72,21 +79,25 @@ export default function DistrictReport() {
   // Subject distribution
   const subjectMap = {}
   lessons.forEach(l => {
-    const s = l.meta?.subject || 'Unknown'
+    const s = subjectOf(l) || 'Unknown'
     subjectMap[s] = (subjectMap[s] ?? 0) + 1
   })
   const maxSubjectCount = Math.max(...Object.values(subjectMap), 1)
 
-  // Standards heatmap (top 30 by frequency)
+  // Standards heatmap (top 30 by frequency).
+  // Standards codes live in lesson_object.standards ([{grade, code, text}] for
+  // the core PE schema) and, for the specialist modules, in
+  // lesson_object.standards_alignment ([{framework|standard|code, note}]).
+  // The old code walked grade_bands[].standards — but grade_bands are plain
+  // numbers, so it always found nothing ("Standards covered: 0").
   const stdMap = {}
   lessons.forEach(l => {
-    const gbs = l.lesson_object?.grade_bands ?? []
-    gbs.forEach(gb => {
-      const stds = gb.standards ?? []
-      stds.forEach(std => {
-        const key = std.code ?? std.standard_code ?? ''
-        if (key) stdMap[key] = (stdMap[key] ?? 0) + 1
-      })
+    const lo = l.lesson_object ?? {}
+    const core = Array.isArray(lo.standards) ? lo.standards : []
+    const aligned = Array.isArray(lo.standards_alignment) ? lo.standards_alignment : []
+    ;[...core, ...aligned].forEach(std => {
+      const key = std.code ?? std.standard_code ?? std.standard ?? std.framework ?? ''
+      if (key) stdMap[key] = (stdMap[key] ?? 0) + 1
     })
   })
   const topStandards = Object.entries(stdMap).sort((a, b) => b[1] - a[1]).slice(0, 30)
@@ -111,7 +122,7 @@ export default function DistrictReport() {
           </div>
           <div>
             <h1 className="text-2xl font-semibold text-ink-50">District Report</h1>
-            <p className="text-sm text-ink-500">Client-side analytics from your lesson library</p>
+            <p className="text-sm text-ink-500">Whole-library analytics across every module — all subjects combined</p>
           </div>
         </div>
       </div>
