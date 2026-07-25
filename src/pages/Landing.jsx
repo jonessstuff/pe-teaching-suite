@@ -1,5 +1,5 @@
 import { useSearchParams, Link } from 'react-router-dom'
-import { BookOpen, Globe, Accessibility, UserCheck, ClipboardList, ClipboardCheck, Mail, CalendarRange, Check, Users, BookMarked, PartyPopper, Newspaper, MessageCircle, Share2, Briefcase, BarChart3, ScrollText, Trophy, Dumbbell, Smartphone, SquareCheck } from 'lucide-react'
+import { BookOpen, Globe, Accessibility, UserCheck, ClipboardList, ClipboardCheck, Mail, CalendarRange, Check, Users, BookMarked, PartyPopper, Newspaper, MessageCircle, Share2, Briefcase, BarChart3, ScrollText, Trophy, Dumbbell, Smartphone, SquareCheck, Sparkles, MousePointerClick, PencilLine, BadgeCheck } from 'lucide-react'
 
 // ─── Shared sub-components ───────────────────────────────────────────────────
 
@@ -185,24 +185,91 @@ export default function Landing() {
             </span>
           </div>
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <a href="https://buy.stripe.com/5kQ5kveUR2xWh0tcoi0kE05" className="btn-primary px-6 py-3 text-base">
-              Start free trial
-            </a>
-            <a href="#features" className="btn-secondary px-6 py-3 text-base">
-              See how it works
-            </a>
-          </div>
-          <p className="mt-3 text-xs text-ink-600">7 days free, cancel anytime</p>
-          <p className="mt-4 text-sm">
-            <Link to="/try" className="font-semibold text-accent-600 hover:text-accent-500">
-              Or try one free lesson — no signup required →
+          <div className="mt-9 flex flex-col items-center gap-4">
+            <Link
+              to="/try"
+              className="btn-primary px-9 py-4 text-lg shadow-lg shadow-accent-500/25"
+            >
+              Try a free lesson — no signup required
             </Link>
+            <div className="flex items-center gap-3 text-sm text-ink-500">
+              <span aria-hidden="true" className="h-px w-8 bg-ink-800" />
+              <span>or</span>
+              <a href="https://buy.stripe.com/5kQ5kveUR2xWh0tcoi0kE05" className="btn-secondary px-5 py-2.5">
+                Start your 7-day trial
+              </a>
+              <span aria-hidden="true" className="h-px w-8 bg-ink-800" />
+            </div>
+          </div>
+          <p className="mt-4 text-xs text-ink-600">
+            Your first lesson takes about 30 seconds · Trial is 7 days free, cancel anytime
           </p>
         </div>
       </section>
 
-      {/* ── 2. WHO IT'S FOR ───────────────────────────────────────────────── */}
+      {/* ── 2. HOW IT WORKS ───────────────────────────────────────────────── */}
+      <section className="bg-ink-950 px-6 py-20">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-12 text-center">
+            <p className="label-eyebrow mb-3 text-accent-500">How it works</p>
+            <h2 className="text-3xl font-display font-semibold tracking-tight text-ink-50">
+              A ready-to-teach lesson in three steps.
+            </h2>
+            <p className="mx-auto mt-3 max-w-lg text-ink-400">
+              No training, no template wrangling, no blank page. If you can describe your class, you can build the plan.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+            <StepCard
+              n={1}
+              icon={MousePointerClick}
+              title="Pick your subject or specialty"
+              description="Choose from 19 built-in specialties — from PE and Art to reading intervention, speech-language, and staff PD."
+            />
+            <StepCard
+              n={2}
+              icon={PencilLine}
+              title="Tell us your topic and grade level"
+              description="A sentence is plenty. Add your state and a note about how your class actually runs, if you want."
+            />
+            <StepCard
+              n={3}
+              icon={Sparkles}
+              title="Get a ready-to-teach lesson in seconds"
+              description="Standards-aligned and classroom-ready — then turn it into a sub plan, quiz, rubric, or parent newsletter in one click."
+            />
+          </div>
+
+          <div className="mt-12 text-center">
+            <Link to="/try" className="btn-primary px-8 py-3.5 text-base shadow-lg shadow-accent-500/25">
+              Try it free — build a real lesson now
+            </Link>
+            <p className="mt-3 text-xs text-ink-600">No signup, no card. See it work before you decide anything.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 3. BUILT ON REAL STANDARDS ────────────────────────────────────── */}
+      <section className="border-t border-ink-900 bg-white px-6 py-16">
+        <div className="mx-auto max-w-4xl text-center">
+          <p className="label-eyebrow mb-3 text-accent-500">Built on real standards</p>
+          <h2 className="text-2xl font-display font-semibold tracking-tight text-ink-50 sm:text-3xl">
+            Not generic AI. Grounded in the frameworks your field is actually held to.
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-ink-400">
+            Every specialty is aligned to the recognized standards body for its field — so what you plan, teach, and hand in holds up.
+          </p>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-2.5">
+            {STANDARDS.map((s) => (
+              <StandardBadge key={s.abbr} abbr={s.abbr} full={s.full} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 4. WHO IT'S FOR ───────────────────────────────────────────────── */}
       <section className="bg-ink-950 px-6 py-20">
         <div className="mx-auto max-w-5xl">
           <div className="mb-10 text-center">
@@ -329,7 +396,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── 3. FEATURES ───────────────────────────────────────────────────── */}
+      {/* ── 5. FEATURES ───────────────────────────────────────────────────── */}
       <section id="features" className="bg-white px-6 py-20">
         <div className="mx-auto max-w-5xl">
           <div className="mb-12 text-center">
@@ -485,11 +552,25 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── 4. TESTIMONIAL ────────────────────────────────────────────────── */}
+      {/* ── 6. FOUNDER NOTE ───────────────────────────────────────────────── */}
+      <section className="border-t border-ink-900 bg-white px-6 py-20">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="label-eyebrow mb-5 text-accent-500">Why this exists</p>
+          <blockquote className="font-display text-xl leading-relaxed text-ink-100 sm:text-2xl">
+            &ldquo;I spent 27 years teaching. I built the first version for my own gym — then a
+            colleague wanted one for her art room, then someone needed reading intervention, then
+            counseling, then a principal asked about staff PD. I kept building because real teachers
+            kept asking. PlansK12 is every one of those requests, finally in one place.&rdquo;
+          </blockquote>
+          <p className="mt-6 text-sm text-ink-500">— The teacher who built PlansK12, after 27 years in the classroom</p>
+        </div>
+      </section>
+
+      {/* ── 7. TESTIMONIAL ────────────────────────────────────────────────── */}
       <section className="bg-ink-950 px-6 py-20">
         <div className="mx-auto max-w-5xl">
           <div className="mb-10 text-center">
-            <p className="label-eyebrow">From a founding teacher</p>
+            <p className="label-eyebrow">From the classroom</p>
           </div>
           <div className="mx-auto max-w-2xl">
             <div className="card p-8">
@@ -504,15 +585,15 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── 5. PRICING CTA ────────────────────────────────────────────────── */}
-      <section className="bg-white px-6 py-20">
+      {/* ── 8. PRICING CTA ────────────────────────────────────────────────── */}
+      <section className="border-t border-ink-900 bg-white px-6 py-20">
         <div className="mx-auto max-w-5xl text-center">
           <p className="label-eyebrow mb-3">Founding teacher pricing</p>
           <h2 className="text-3xl font-display font-semibold tracking-tight text-ink-50">
             Start planning in minutes.
           </h2>
           <p className="mx-auto mt-3 max-w-sm text-ink-400">
-            7-day free trial, cancel anytime.
+            One plan. Every specialty and every tool included. 7-day free trial, cancel anytime.
           </p>
 
           <div className="mx-auto mt-10 max-w-xs">
@@ -541,14 +622,21 @@ export default function Landing() {
                 href="https://buy.stripe.com/5kQ5kveUR2xWh0tcoi0kE05"
                 className="btn-primary mt-8 w-full justify-center"
               >
-                Start free trial
+                Start your 7-day trial
               </a>
             </div>
+
+            <p className="mt-5 text-sm text-ink-500">
+              Not ready to commit?{' '}
+              <Link to="/try" className="font-semibold text-accent-600 hover:text-accent-500">
+                Try a free lesson first — no signup →
+              </Link>
+            </p>
           </div>
         </div>
       </section>
 
-      {/* ── 6. FOOTER ─────────────────────────────────────────────────────── */}
+      {/* ── 9. FOOTER ─────────────────────────────────────────────────────── */}
       <footer className="border-t border-ink-900 bg-white px-6 py-8">
         <div className="mx-auto flex max-w-5xl flex-col items-center gap-1 text-center sm:flex-row sm:justify-between sm:text-left">
           <PlansK12Logo />
@@ -646,5 +734,56 @@ function FeatureCard({ icon: Icon, title, description }) {
         <p className="mt-1 text-sm text-ink-400 leading-snug">{description}</p>
       </div>
     </div>
+  )
+}
+
+// ─── How-it-works step card ────────────────────────────────────────────────────
+
+function StepCard({ n, icon: Icon, title, description }) {
+  return (
+    <div className="card flex flex-col items-center gap-4 p-8 text-center">
+      <div className="relative">
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-500/15">
+          <Icon size={28} className="text-accent-600" />
+        </div>
+        <span className="absolute -right-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full bg-accent-500 text-sm font-bold text-white ring-2 ring-white">
+          {n}
+        </span>
+      </div>
+      <div>
+        <p className="font-display text-lg font-semibold text-ink-50">{title}</p>
+        <p className="mt-2 text-sm text-ink-400 leading-snug">{description}</p>
+      </div>
+    </div>
+  )
+}
+
+// ─── Standards badge row ───────────────────────────────────────────────────────
+
+// The recognized standards body (or framework) each specialty is aligned to.
+// Keep in sync with the module descriptions above.
+const STANDARDS = [
+  { abbr: 'SHAPE America', full: 'PE & Health' },
+  { abbr: 'NCAS', full: 'National Core Arts — Art & Music' },
+  { abbr: 'AASL', full: 'School Libraries' },
+  { abbr: 'WIDA', full: 'English Language Development' },
+  { abbr: 'NAGC', full: 'Gifted & Talented' },
+  { abbr: 'IDA', full: 'Structured Literacy / Dyslexia' },
+  { abbr: 'NCTM', full: 'Mathematics' },
+  { abbr: 'CEC', full: 'Special Education' },
+  { abbr: 'ASCA', full: 'School Counseling' },
+  { abbr: 'ASHA', full: 'Speech-Language' },
+  { abbr: 'NAEYC', full: 'Early Childhood' },
+  { abbr: 'Head Start ELOF', full: 'Early Learning Outcomes' },
+  { abbr: 'Learning Forward', full: 'Professional Learning' },
+]
+
+function StandardBadge({ abbr, full }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-ink-800 bg-white px-3 py-1.5 shadow-sm">
+      <BadgeCheck size={14} className="shrink-0 text-accent-500" />
+      <span className="text-sm font-semibold text-ink-100">{abbr}</span>
+      <span className="hidden text-xs text-ink-500 sm:inline">· {full}</span>
+    </span>
   )
 }
