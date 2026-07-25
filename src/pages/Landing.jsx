@@ -181,6 +181,9 @@ export default function Landing() {
             <span className="rounded-full bg-periwinkle-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Occupational Therapy (OT)
             </span>
+            <span className="rounded-full bg-zinc-500/20 px-3 py-1 text-xs font-medium text-ink-50">
+              Physical Therapy (PT)
+            </span>
             <span className="rounded-full bg-plum-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Student Support Team
             </span>
@@ -393,6 +396,11 @@ export default function Landing() {
                 name="Occupational Therapy (OT)"
                 color="periwinkle"
                 description="School-based OT activity ideas — fine motor & handwriting, sensory & self-regulation, ADLs, visual-motor & vocational, OTPF-4 / AOTA-aligned; activity planning, not clinical protocol."
+              />
+              <ModuleCard
+                name="Physical Therapy (PT)"
+                color="zinc"
+                description="School-based PT activity ideas — gross motor, mobility & positioning, adaptive-PE crossover & functional mobility, APTA / APTA Pediatric-aligned; activity planning, not clinical protocol."
               />
               <ModuleCard
                 name="Student Support Team"

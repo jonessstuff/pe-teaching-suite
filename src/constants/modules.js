@@ -40,6 +40,7 @@ export const SUBJECT_TAB_STYLES = {
   'School Counselors': 'bg-crimson-500/20 text-ink-50',
   'Speech-Language Pathologists': 'bg-bronze-500/20 text-ink-50',
   'Occupational Therapists': 'bg-periwinkle-500/20 text-ink-50',
+  'Physical Therapists': 'bg-zinc-500/20 text-ink-50',
   'Student Support Team Activities': 'bg-plum-500/20 text-ink-50',
   'Early Childhood': 'bg-grass-500/20 text-ink-50',
   'Intervention Planning': 'bg-stone-500/20 text-ink-50',
@@ -83,6 +84,7 @@ export const MODULES = [
   { label: 'School Counselors', subjects: ['School Counselors'] },
   { label: 'Speech-Language Pathologists', subjects: ['Speech-Language Pathologists'] },
   { label: 'Occupational Therapists', subjects: ['Occupational Therapists'] },
+  { label: 'Physical Therapists', subjects: ['Physical Therapists'] },
   { label: 'Student Support Team Activities', subjects: ['Student Support Team Activities'] },
   { label: 'Early Childhood / Pre-K', subjects: ['Early Childhood'] },
   { label: 'Intervention Planning', subjects: ['Intervention Planning'] },
@@ -137,7 +139,7 @@ export const PE_HEALTH_SUBJECTS = subjectsForModule('PE & Health')
 //   plum (Student Support Team Activities) · grass (Early Childhood / Pre-K) ·
 //   stone (Intervention Planning) · gold (Staff PD & Meeting Planning) ·
 //   periwinkle (Occupational Therapists) · coral (After-School Clubs) ·
-//   steel (Test Prep) · teal (Adaptive PE lesson tabs)
+//   steel (Test Prep) · zinc (Physical Therapists) · teal (Adaptive PE lesson tabs)
 //
 // AVAILABLE for future modules (School Counselors is next, then more). Each
 // entry's strings are full/literal so Tailwind's JIT compiles them and a new
@@ -157,12 +159,6 @@ export const PE_HEALTH_SUBJECTS = subjectsForModule('PE & Health')
 // as `bg-{c}-500/20 text-ink-50` (the readable badge pattern). The 2026-07 pass-2
 // hues (gold/coral/periwinkle/steel/mocha) are custom scales in tailwind.config.js.
 export const AVAILABLE_MODULE_ACCENTS = [
-  {
-    key: 'zinc', label: 'Zinc (cool neutral gray)',
-    tab: 'bg-zinc-500/20 text-ink-50', iconTint: 'bg-zinc-500/15',
-    accentText: 'text-zinc-400', hoverBorder: 'hover:border-zinc-400/40',
-    cardBorder: 'border-zinc-400', callout: 'border-zinc-500/30 bg-zinc-500/10',
-  },
   {
     key: 'mocha', label: 'Mocha (warm brown neutral)',
     tab: 'bg-mocha-500/20 text-ink-50', iconTint: 'bg-mocha-500/15',

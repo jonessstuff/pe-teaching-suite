@@ -330,6 +330,22 @@ export async function generateAfterSchoolClubs(input) {
   return data
 }
 
+export async function generatePt(input) {
+  const { data, error } = await supabase.functions.invoke('generate-pt', {
+    body: input,
+  })
+
+  if (error) {
+    let message = error.message ?? 'Generation failed'
+    try {
+      const body = await error.context?.json?.()
+      if (body?.error) message = body.error
+    } catch {}
+    throw new Error(message)
+  }
+  return data
+}
+
 export async function generateTestPrep(input) {
   const { data, error } = await supabase.functions.invoke('generate-test-prep', {
     body: input,
