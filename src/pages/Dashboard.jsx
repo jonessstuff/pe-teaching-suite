@@ -1,17 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Sparkles, BookOpen, BookMarked, ArrowRight, ArrowLeft, Loader2, CalendarDays, ClipboardList, Layers, Accessibility, BarChart3, CalendarRange, Trophy, Briefcase, ScrollText, PartyPopper, FileInput, BookCheck } from 'lucide-react'
-import { supabase } from '../lib/supabaseClient'
 import { listLessons } from '../services/lessonsService'
 import { listPeriods } from '../services/classPeriodsService'
-import { SUBJECT_AREAS } from '../types/lessonObject'
+import { PE_HEALTH_SUBJECTS } from '../constants/modules'
+import { useDisplayName, getTimeGreeting } from '../hooks/useDisplayName'
 import LessonCard from '../components/lesson/LessonCard'
-
-// PE & Health module scope — the subjects that belong to this home page.
-// Mirrors the filter used in LessonGenerator, LessonLibrary, and CurriculumMap.
-const PE_HEALTH_SUBJECTS = SUBJECT_AREAS.filter(
-  (s) => s !== 'Library/Media' && s !== 'Art' && s !== 'Music' && s !== 'Adaptive PE' && s !== 'STEM' && s !== 'CTE'
-)
 
 const TIPS = [
   'Tip: Click Copy on any Plan Book section to paste straight into PlanbookEdu.',
@@ -19,19 +13,6 @@ const TIPS = [
   'Tip: Print any lesson and choose "Save as PDF" to download it.',
   'Tip: Set up your class schedule once and every new lesson auto-fills.',
 ]
-
-function getGreeting() {
-  const hour = new Date().getHours()
-  if (hour >= 5 && hour < 12) return 'Good morning'
-  if (hour >= 12 && hour < 17) return 'Good afternoon'
-  return 'Good evening'
-}
-
-function getFirstName(user) {
-  const meta = user?.user_metadata ?? {}
-  const full = (meta.full_name ?? meta.name ?? '').trim()
-  return full.split(/\s+/)[0] || 'there'
-}
 
 function ActionCard({ to, icon: Icon, iconClass, hoverClass, title, subtitle }) {
   return (
@@ -59,12 +40,11 @@ function ActionCard({ to, icon: Icon, iconClass, hoverClass, title, subtitle }) 
 export default function Dashboard() {
   const [allLessons, setAllLessons] = useState(null)
   const [periods, setPeriods] = useState(null)
-  const [user, setUser] = useState(null)
   const [error, setError] = useState(null)
   const [tip] = useState(() => TIPS[Math.floor(Math.random() * TIPS.length)])
+  const firstName = useDisplayName()
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data.user))
     listLessons()
       .then(setAllLessons)
       .catch((err) => setError(err.message))
@@ -222,7 +202,7 @@ export default function Dashboard() {
       {/* Greeting */}
       <div>
         <h1 className="text-3xl font-semibold text-ink-50">
-          {getGreeting()}{user ? `, ${getFirstName(user)}` : ''}!
+          {getTimeGreeting()}{firstName ? `, ${firstName}` : ''}!
         </h1>
         <p className="mt-2 text-lg text-ink-400">What would you like to create today?</p>
         <p className="mt-3 text-xs italic text-ink-600">{tip}</p>

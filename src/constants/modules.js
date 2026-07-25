@@ -89,6 +89,19 @@ export function subjectInModule(subject, moduleLabel) {
   return mod ? mod.subjects.includes(subject) : false
 }
 
+/** Returns the subject values owned by a module (empty array if unknown). */
+export function subjectsForModule(moduleLabel) {
+  return MODULES.find((m) => m.label === moduleLabel)?.subjects ?? []
+}
+
+// The subjects the PE & Health module owns. CANONICAL allow-list used by both
+// the PE dashboard scope and the PE lesson generator's Subject chips.
+// (Previously each hand-maintained a deny-list off the full SUBJECT_AREAS
+// array, which silently swept in every new specialist subject — Intervention
+// Planning, Staff PD, etc. — as the app grew. Deriving from the registry keeps
+// them in lockstep.)
+export const PE_HEALTH_SUBJECTS = subjectsForModule('PE & Health')
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Module accent palette
 // ─────────────────────────────────────────────────────────────────────────────

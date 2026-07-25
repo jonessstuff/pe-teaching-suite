@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Sparkles, Loader2, X, Plus, ArrowLeft, ExternalLink } from 'lucide-react'
-import { SUBJECT_AREAS, gradeLabel } from '../types/lessonObject'
+import { gradeLabel } from '../types/lessonObject'
+import { PE_HEALTH_SUBJECTS } from '../constants/modules'
 import { generateLesson, generateUnit, generateFitnessTestPrep } from '../services/generationService'
 import { createLesson, createUnit } from '../services/lessonsService'
 import { listPeriods } from '../services/classPeriodsService'
@@ -418,7 +419,7 @@ export default function LessonGenerator() {
 
           <Field label="Subject">
             <div className="flex flex-wrap gap-2">
-              {SUBJECT_AREAS.filter((s) => s !== 'Library/Media' && s !== 'Art' && s !== 'Music' && s !== 'Adaptive PE' && s !== 'STEM' && s !== 'CTE').map((s) => (
+              {PE_HEALTH_SUBJECTS.map((s) => (
                 <button
                   key={s}
                   type="button"

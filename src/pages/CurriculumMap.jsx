@@ -4,7 +4,8 @@ import {
   CalendarRange, ChevronUp, ChevronDown, Pencil, Trash2,
   Plus, Loader2, Check, X, Sparkles, ArrowRight,
 } from 'lucide-react'
-import { SUBJECT_AREAS, gradeLabel } from '../types/lessonObject'
+import { gradeLabel } from '../types/lessonObject'
+import { PE_HEALTH_SUBJECTS } from '../constants/modules'
 import { getProfile } from '../services/profilesService'
 import { generateYearPlan } from '../services/generationService'
 import {
@@ -386,7 +387,7 @@ export default function CurriculumMap() {
             hint="Health, Family Life, and Driver's Ed will be woven in as shorter units throughout the PE schedule."
           >
             <div className="flex flex-wrap gap-2">
-              {SUBJECT_AREAS.filter((s) => s !== 'Library/Media' && s !== 'Art' && s !== 'Music' && s !== 'Adaptive PE' && s !== 'STEM' && s !== 'CTE').map((s) => (
+              {PE_HEALTH_SUBJECTS.map((s) => (
                 <button
                   key={s}
                   type="button"
@@ -734,7 +735,7 @@ function PendingUnitRow({ unit, isFirst, isLast, onChange, onMoveUp, onMoveDown,
             value={unit.subject}
             onChange={(e) => onChange({ subject: e.target.value })}
           >
-            {SUBJECT_AREAS.filter((s) => s !== 'Library/Media' && s !== 'Art' && s !== 'Music' && s !== 'Adaptive PE' && s !== 'STEM' && s !== 'CTE').map((s) => <option key={s} value={s}>{s}</option>)}
+            {PE_HEALTH_SUBJECTS.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
           <input
             className="input-field flex-1 min-w-[10rem] text-sm"
@@ -791,7 +792,7 @@ function UnitFormFields({ form, onChange }) {
             value={form.subject}
             onChange={(e) => onChange({ subject: e.target.value })}
           >
-            {SUBJECT_AREAS.filter((s) => s !== 'Library/Media' && s !== 'Art' && s !== 'Music' && s !== 'Adaptive PE' && s !== 'STEM' && s !== 'CTE').map((s) => <option key={s} value={s}>{s}</option>)}
+            {PE_HEALTH_SUBJECTS.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
         </FormField>
       </div>
