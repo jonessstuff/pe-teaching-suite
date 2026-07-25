@@ -135,7 +135,7 @@ export default function ModulePicker() {
             <div className="flex-1 space-y-1.5">
               <h2 className="text-xl font-semibold text-ink-50">CTE</h2>
               <p className="text-sm text-ink-400 leading-relaxed">
-                Career &amp; Technical Education for MS–HS — Hospitality &amp; Tourism, Finance, Marketing, Human Services / FCS, Health Science, Education &amp; Training, Career Readiness, Information Technology, Transportation, Distribution &amp; Logistics, Manufacturing, STEM / Engineering &amp; Technology, Business Management &amp; Administration, Agriculture, Food &amp; Natural Resources, Architecture &amp; Construction, and Arts, A/V Technology &amp; Communications pathways
+                Career &amp; Technical Education for MS–HS — Hospitality &amp; Tourism, Finance, Marketing, Human Services / FCS, Health Science, Education &amp; Training, Career Readiness, Information Technology, Transportation, Distribution &amp; Logistics, Manufacturing, STEM / Engineering &amp; Technology, Business Management &amp; Administration, Agriculture, Food &amp; Natural Resources, Architecture &amp; Construction, Arts, A/V Technology &amp; Communications, and Government &amp; Public Administration pathways
               </p>
             </div>
             <div className="flex items-center gap-1.5 text-sm font-medium text-pink-400 transition-[gap] group-hover:gap-2.5">

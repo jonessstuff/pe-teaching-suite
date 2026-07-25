@@ -31,6 +31,7 @@ const PATHWAY_LABELS = {
   agriculture: "Agriculture, Food & Natural Resources",
   construction: "Architecture & Construction",
   arts_av: "Arts, A/V Technology & Communications",
+  government: "Government & Public Administration",
 }
 
 function tierLevelLabel(tier, level) {
@@ -142,6 +143,10 @@ Then include entries from these ONLY where the lesson content clearly maps to th
 - Adobe Certified Professional — a widely recognized industry credential for creative/design-software skills (e.g., Photoshop, Illustrator, Premiere Pro, After Effects); reference it where the lesson builds those transferable skills, but keep software instruction TOOL-AGNOSTIC where possible (design principles transfer across tools). Framework field: "Adobe Certified Professional".
 - SkillsUSA — the CTSO with relevant AV / graphic-communications events (e.g., Audio/Radio Production, Television/Video Production, Graphic Communications, Photography). Framework field: "SkillsUSA".
 Content areas to prioritize: (a) graphic design fundamentals — visual design principles, typography, and basic design-software concepts (tool-agnostic where possible); (b) video / broadcast / journalism — basic video production, broadcast-journalism concepts, storytelling for media, and interviewing/reporting basics; (c) digital media & interactive design — web/digital content creation and basic animation or interactive-media concepts; and (d) printing & imaging (especially at the foundational/Intro level) — basic print-production concepts, project planning, and quality control in creative production. Keep the pathway's identity on APPLIED creative/communications production and a portfolio habit.`,
+    government: `Primary framework for Government & Public Administration. NOTE: Advance CTE's 2024 modernization merged this cluster with Law, Public Safety, Corrections & Security into "Public Service & Safety," but most state course catalogs still use the classic separate naming — build this as its own distinct Government & Public Administration pathway (national-first). This cluster does NOT have one dominant CTSO/credentialing body, so the CONTENT itself should carry the pathway's credibility (align to standards; don't name-drop certifications). Lead the competency list with entries from these, and treat the state CTE task list above as the state verification layer for them:
+- Common Career Technical Core (CCTC) — Government & Public Administration (GV) performance elements (Advance CTE), the PRIMARY content framework, spanning the cluster pathways: Governance; National Security; Foreign Service; Planning; Revenue & Taxation; Regulation; and Public Management & Administration. Framework field: "CCTC". Use the GV pathway code and performance-element numbering when confident (e.g., "GV-GOV" for governance, "GV-MGT" for public management); otherwise describe the standard and omit the code.
+- Employability Skills for Career Readiness Standards — the FOUNDATIONAL employability layer for this pathway (the same foundational layer used in Business Management & Administration): communication, teamwork, problem-solving and critical thinking, professionalism, and civic/ethical responsibility. Framework field: "Employability Skills". Anchor employability/professionalism and civic-responsibility content here.
+Content areas to prioritize: (a) governance — how government works, policy-making basics, and civic structures at the local, state, and federal levels; (b) public administration & management — how public agencies and services are administered and managed; (c) national security & foreign service — a broad, AWARENESS-level, age-appropriate overview of these career areas (keep it introductory, not operational); and (d) planning, revenue & regulation — a basic overview of public planning, taxation concepts, and regulatory functions. Keep the pathway's identity on public service, civic structures, and how the public sector operates.`,
   }[pathway] ?? ""
 
   const rigorNote =
@@ -178,6 +183,7 @@ function getCredentialFocus(pathway) {
     agriculture: ["FFA degrees, proficiency awards & Career Development Event (CDE) recognition", "Supervised Agricultural Experience (SAE) records & National FFA SAE recognition", "AFNR industry certifications where offered (e.g., Certified Veterinary Assistant, pesticide applicator, ServSafe for food products, welding)"],
     construction: ["NCCER Core & craft-area credentials (NCCER Registry) — the recognized entry credentials", "OSHA-10 (Construction) safety card", "SkillsUSA competitive-event recognition (e.g., Carpentry, Electrical, Plumbing, HVAC-R); pre-apprenticeship certificates (NCCER / trade-council programs)"],
     arts_av: ["A portfolio / demo reel of finished creative work — the primary currency of this field", "Adobe Certified Professional (e.g., Photoshop, Illustrator, Premiere Pro) where the program teaches those tools", "SkillsUSA competitive-event recognition (e.g., Graphic Communications, Television/Video Production, Photography)"],
+    government: ["A public-service / civics portfolio and projects (this cluster has no single dominant credential — content and demonstrated civic skill carry it)", "Recognition through civics & youth-government programs (e.g., YMCA Youth & Government, We the People, Model UN)", "General workplace/administrative certificates where offered (e.g., Microsoft Office Specialist)"],
   }[pathway] ?? []
 }
 
@@ -513,6 +519,28 @@ function getPhaseDescriptions(pathway) {
         desc: "Students reflect on how today's work fits real creative/communications production and a media career, share or peer-critique a piece, and name one revision for the next iteration and one thing to add to their portfolio. Connect the skill to a SkillsUSA event, an Adobe-certification skill, and an arts/AV/communications career pathway. End with a brief exit ticket. 5–8 minutes.",
       },
     },
+    government: {
+      warm_up: {
+        name: "Civic Hook",
+        desc: "Open with a concrete government / public-service scenario — a real local issue ('should the city build a new park or fix the roads?'), a policy or news moment, a public agency at work, or a 'you're the official, what would you decide?' prompt. Students react as a public servant or citizen would: what's the problem, who does it affect, and who decides? Connect to a real level of government, agency, or role. 5–8 minutes.",
+      },
+      whole_group_instruction: {
+        name: "Concept Instruction",
+        desc: "Teach the core government / public-administration concept directly using correct vocabulary (branches and levels of government, policy, legislation, public agency, budget/revenue, regulation, jurisdiction, checks and balances). Ground it in the relevant CCTC Government & Public Administration (GV) performance element. Address a common misconception and check understanding. 8–12 minutes.",
+      },
+      fitness_activities: {
+        name: "Applied Example / Guided Practice",
+        desc: "Model the civic/administrative skill step by step the way it's done in the public sector — tracing how a bill becomes law, mapping which agency and level of government handles a problem, reading a simple public budget, drafting a policy proposal or a public-service announcement, or working a decision-making framework for a public issue. Name each step and the civic principle behind it. Students watch, then walk through it once with teacher support. 5–10 minutes.",
+      },
+      independent_practice: {
+        name: "Hands-On Civic Application",
+        desc: "Students apply the skill in a realistic task: analyze a public issue and recommend a policy, simulate a council/agency decision or a mock-government role, map a public service to the agency and level of government that provides it, draft a proposal or civic communication, or work a basic public-budget / regulation scenario. Describe exactly what students do, what a strong result looks like, and what the teacher observes/coaches. Include a checklist or rubric aligned to a CCTC GV performance element, and connect it to real public service. 15–20 minutes.",
+      },
+      closure: {
+        name: "Reflection & Career Connection",
+        desc: "Students reflect on how today's work fits real public service and a government / public-administration career, share a decision or proposal, and name one way government affects their community. Connect the skill to a public-service career pathway (governance, public management, planning, or a public-service role) and a civic program or internship. End with a brief exit ticket. 5–8 minutes.",
+      },
+    },
   }
   return map[pathway] ?? map.hospitality
 }
@@ -599,6 +627,11 @@ function getPathwaySequence(pathway) {
       { level: "concentrator", course: "Graphic Design / Digital Media / Video & Broadcast Production (pathway course)", description: "Applied production in a chosen pathway (visual/graphic design, AV/film, journalism/broadcasting, or digital/interactive media) to CCTC standards, deeper software skill, media storytelling, and an ongoing portfolio." },
       { level: "completer", course: "Advanced Media Production / Capstone, Portfolio & Work-Based Learning", description: "Capstone client or personal project, a professional portfolio/demo reel, industry-credential attainment (e.g., Adobe Certified Professional), SkillsUSA competition, and an internship or freelance/mentorship experience in a creative/media setting." },
     ],
+    government: [
+      { level: "introductory", course: "Introduction to Government & Public Administration / Civics & Public Service", description: "Foundations — how government works and civic structures at the local, state, and federal levels, an introduction to public administration, and career awareness across governance, public management, planning, and public service." },
+      { level: "concentrator", course: "Public Administration & Policy / Government Systems", description: "Applied study of how public agencies and services are administered and managed, policy-making and analysis, public planning, revenue/taxation and regulation basics, and an awareness-level overview of national security and foreign service, aligned to CCTC GV standards." },
+      { level: "completer", course: "Advanced Public Administration / Capstone, Civic Project & Work-Based Learning", description: "Capstone civic or policy project, a public-service portfolio, participation in civics / youth-government programs, and work-based learning through a government/civic internship, service learning, or mentorship with a public official or agency." },
+    ],
   }[pathway] ?? []
 }
 
@@ -607,7 +640,7 @@ function getPathwaySequence(pathway) {
 // Work-Based Learning (HQWBL) model, which recognizes a broader set of 12 methods than
 // the internship/shadow/speaker default.
 function getWblGuidance(pathway) {
-  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing" || pathway === "engineering_tech" || pathway === "business_mgmt" || pathway === "agriculture" || pathway === "construction" || pathway === "arts_av") {
+  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing" || pathway === "engineering_tech" || pathway === "business_mgmt" || pathway === "agriculture" || pathway === "construction" || pathway === "arts_av" || pathway === "government") {
     const emphasis = pathway === "health_science"
       ? " Clinical experience is especially relevant for this pathway — prioritize clinical/hospital placements, patient-care rotations, and health-agency service learning where appropriate."
       : pathway === "education"
@@ -628,7 +661,9 @@ function getWblGuidance(pathway) {
                       ? " Apprenticeship and registered apprenticeship are especially relevant for this pathway — the construction trades are strongly apprenticeship-driven, so prioritize registered (pre-)apprenticeships (union and merit-shop/ABC and trade-council programs), youth apprenticeships, and co-op placements with contractors, alongside internships, job shadowing, and mentorship with journey-level tradespeople. Any hands-on jobsite placement must be properly supervised and follow OSHA jobsite-safety requirements."
                       : pathway === "arts_av"
                         ? " Internship, entrepreneurship, and mentorship are especially relevant for this pathway — creative/communications careers are portfolio- and project-driven, so prioritize internships at studios, agencies, newsrooms, or media/marketing teams; entrepreneurship (freelance/commission work and building a client portfolio or personal brand); and mentorship from working designers, videographers, or journalists. Also draw on school-based enterprise (producing the yearbook, morning announcements, school news, or design work for real clients) as authentic WBL, and emphasize building a professional portfolio/demo reel throughout."
-                        : ""
+                        : pathway === "government"
+                          ? " Internship, mentorship, and service learning are especially relevant for this pathway — public service is civic and community-based, so prioritize government/civic internships (a local council, mayor's or agency office, or legislative page/intern program), mentorship from public officials and administrators, and service learning that addresses a real community need, alongside job shadowing in a public agency. Youth-government and civic programs (e.g., YMCA Youth & Government, Model UN) also serve as authentic, program-based WBL for this cluster."
+                          : ""
     return `\nThis pathway follows Virginia's High-Quality Work-Based Learning (HQWBL) model, which recognizes 12 methods: job shadowing, service learning, mentorship, externship, school-based enterprise, internship, entrepreneurship, clinical experience, cooperative education, youth registered apprenticeship, registered apprenticeship, and supervised agricultural experience. When filling the fields below, draw the most lesson-appropriate ideas from this broader set (not only internships/shadows) — e.g., service learning with a community agency, a clinical experience, a school-based enterprise, or a mentorship — and fold them into the internships and job_shadows arrays as fits this lesson's content and tier.${emphasis}`
   }
   return ""
@@ -782,7 +817,7 @@ export function buildCteLessonSchema(includeELL = false) {
 
 /**
  * @param {Object} input
- * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'|'engineering_tech'|'business_mgmt'|'agriculture'|'construction'|'arts_av'} input.pathway
+ * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'|'engineering_tech'|'business_mgmt'|'agriculture'|'construction'|'arts_av'|'government'} input.pathway
  * @param {'ms'|'hs'} input.tier
  * @param {'introductory'|'concentrator'|'completer'|''} [input.level]  required when tier === 'hs'
  * @param {string}  input.topic

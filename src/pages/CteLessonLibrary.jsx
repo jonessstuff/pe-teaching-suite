@@ -21,6 +21,7 @@ const PATHWAY_FILTERS = [
   { value: 'agriculture', label: 'Agriculture, Food & Natural Resources' },
   { value: 'construction', label: 'Architecture & Construction' },
   { value: 'arts_av', label: 'Arts, A/V Technology & Communications' },
+  { value: 'government', label: 'Government & Public Administration' },
 ]
 
 export default function CteLessonLibrary() {

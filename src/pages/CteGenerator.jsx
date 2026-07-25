@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Wrench, Factory, Cpu, Building2, Sprout, HardHat, Clapperboard, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
+import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Wrench, Factory, Cpu, Building2, Sprout, HardHat, Clapperboard, Scale, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
 import { generateCteLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
@@ -98,6 +98,12 @@ const PATHWAYS = [
     description: 'Graphic design, video/broadcast/journalism, digital & interactive media, and print — portfolio-driven',
     icon: Clapperboard,
   },
+  {
+    value: 'government',
+    label: 'Government & Public Administration',
+    description: 'How government works — governance & policy, public administration, planning/revenue/regulation & public service',
+    icon: Scale,
+  },
 ]
 
 const LEVELS = [
@@ -122,6 +128,7 @@ const TOPIC_PLACEHOLDERS = {
   agriculture: 'e.g. Plant growth & soil basics, Crop production, Animal care & husbandry, Conservation & water quality, Agribusiness & marketing ag products, Intro to FFA & SAE projects',
   construction: 'e.g. Blueprint & construction-drawing reading, Building systems & materials, Framing basics, Measurement & layout, Intro to the trades (electrical/plumbing/HVAC/carpentry), Ladder & fall-protection safety',
   arts_av: 'e.g. Design principles & typography, Designing a poster or logo, Shooting & editing a short video, Broadcast journalism & interviewing, Digital/interactive media basics, Print production & quality control',
+  government: 'e.g. How a bill becomes law, Levels of government (local/state/federal), How public agencies are managed, Public budgeting & taxation basics, Analyzing a local policy issue, Intro to public-service careers',
 }
 
 const MATERIAL_PLACEHOLDERS = {
@@ -274,6 +281,16 @@ const MATERIAL_PLACEHOLDERS = {
     'e.g. Critique / project rubric',
     'e.g. Printer or print samples (for print/imaging)',
     'e.g. Microphone / tripod (for A/V)',
+  ],
+  government: [
+    'e.g. Public-issue / policy case handouts',
+    'e.g. Laptops/Chromebooks for research — 1 per pair',
+    'e.g. Levels-of-government / branches reference chart',
+    'e.g. Mock-government or council role cards',
+    'e.g. Sample public budget (simplified)',
+    'e.g. Sticky notes & chart paper',
+    'e.g. Policy-proposal / PSA template',
+    'e.g. Projector for discussion & examples',
   ],
 }
 
@@ -439,13 +456,14 @@ export default function CteGenerator() {
           </div>
         </div>
         <p className="text-sm text-ink-400 mt-3">
-          Generate a complete Career &amp; Technical Education lesson across fifteen pathways:
+          Generate a complete Career &amp; Technical Education lesson across sixteen pathways:
           Hospitality &amp; Tourism, Finance, Marketing, Human Services / FCS, Health Science,
           Education &amp; Training, Career Readiness (MS foundations), Information Technology,
           Transportation, Distribution &amp; Logistics, Manufacturing, STEM / Engineering &amp;
           Technology, Business Management &amp; Administration, Agriculture, Food &amp; Natural
-          Resources, Architecture &amp; Construction, or Arts, A/V Technology &amp; Communications —
-          with work-based learning and career pathway context built in.
+          Resources, Architecture &amp; Construction, Arts, A/V Technology &amp; Communications, or
+          Government &amp; Public Administration — with work-based learning and career pathway
+          context built in.
         </p>
       </div>
 
@@ -645,6 +663,7 @@ export default function CteGenerator() {
                 pathway === 'agriculture'     ? 'e.g. Explain the components of a plant growth system (AFNR — Plant Systems)' :
                 pathway === 'construction'    ? 'e.g. Read and interpret a floor plan and its scale (NCCER Core — Construction Drawings)' :
                 pathway === 'arts_av'         ? 'e.g. Apply design principles to a layout (CCTC AR-VIS / Visual Arts)' :
+                pathway === 'government'      ? 'e.g. Explain how a local government makes a policy decision (CCTC GV — Governance)' :
                                                 'e.g. Identify a target market (DECA PI)'
               }
               value={targetCompetency}
