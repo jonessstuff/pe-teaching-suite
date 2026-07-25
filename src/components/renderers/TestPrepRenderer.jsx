@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { Copy, Check, ShieldAlert, Info, Lightbulb, Clock, Eye, EyeOff } from 'lucide-react'
+import { Copy, Check, ShieldAlert, Info, Lightbulb, Clock, Eye, EyeOff, FileText, GraduationCap } from 'lucide-react'
 
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F']
 
 export default function TestPrepRenderer({ lesson }) {
   const [showAnswers, setShowAnswers] = useState(false)
+  const [viewMode, setViewMode] = useState('session') // 'session' | 'quiz'
   if (!lesson) return null
   const isState = lesson.path === 'state'
   const review = lesson.content_review ?? []
@@ -12,8 +13,136 @@ export default function TestPrepRenderer({ lesson }) {
   const questions = lesson.practice_questions ?? []
   const snapshot = lesson.format_snapshot ?? []
 
+  // View switcher — never prints. Lets a teacher flip between the full tutoring
+  // session and a clean, student-facing quiz-only sheet.
+  const viewToggle = (
+    <div className="flex rounded-lg bg-ink-900 p-1 w-fit print:hidden">
+      {[
+        { v: 'session', l: 'Full session', icon: FileText },
+        { v: 'quiz', l: 'Quiz only (student)', icon: GraduationCap },
+      ].map(({ v, l, icon: Icon }) => (
+        <button
+          key={v}
+          type="button"
+          onClick={() => setViewMode(v)}
+          className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+            viewMode === v ? 'bg-ink-700 text-ink-50 shadow-sm' : 'text-ink-400 hover:text-ink-200'
+          }`}
+        >
+          <Icon size={14} />
+          {l}
+        </button>
+      ))}
+    </div>
+  )
+
+  // Shared quiz + answer-key blocks (used by both views).
+  const quizBlock = questions.length > 0 && (
+    <div className="rounded-xl border border-steel-500/30 bg-steel-500/5 p-5 space-y-4">
+      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-steel-500/20 pb-3">
+        <div>
+          <h3 className="text-lg font-display font-semibold text-ink-50">{lesson.quiz_header || 'Practice Quiz'}</h3>
+          <p className="mt-0.5 text-xs text-ink-400">
+            {questions.length} question{questions.length !== 1 ? 's' : ''} · original practice
+          </p>
+        </div>
+        {lesson.time_limit_minutes ? (
+          <div className="flex items-center gap-1.5 rounded-lg bg-steel-500/15 px-3 py-1.5 text-sm text-ink-100 print:border print:border-ink-300">
+            <Clock size={14} className="text-steel-400" />
+            <span className="font-medium">Suggested time: {lesson.time_limit_minutes} min</span>
+          </div>
+        ) : null}
+      </div>
+      {lesson.pacing_note && <p className="-mt-1 text-xs text-ink-500">{lesson.pacing_note}</p>}
+
+      <ol className="space-y-5">
+        {questions.map((q, i) => (
+          <li key={i} className="flex gap-2.5">
+            <span className="mt-0.5 font-semibold text-ink-200">{i + 1}.</span>
+            <div className="flex-1 space-y-2">
+              <div className="flex items-start justify-between gap-3">
+                <p className="text-sm text-ink-100 whitespace-pre-line">{q.question}</p>
+                {q.skill && (
+                  <span className="hidden sm:inline shrink-0 rounded bg-ink-800 px-1.5 py-0.5 text-[10px] text-ink-400 print:hidden">{q.skill}</span>
+                )}
+              </div>
+              {(q.options ?? []).length > 0 ? (
+                <ul className="space-y-1">
+                  {q.options.map((o, j) => (
+                    <li key={j} className="text-sm text-ink-300">
+                      <span className="font-medium text-ink-400">{LETTERS[j]})</span> {o}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-xs italic text-ink-500">Student-produced response — write your answer.</p>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  )
+
+  const answerKeyBlock = questions.length > 0 && (
+    <div className={`rounded-xl border border-ink-800 bg-ink-900/40 p-5 ${showAnswers ? '' : 'print:hidden'}`}>
+      <div className="flex items-center justify-between">
+        <h3 className="label-eyebrow text-ink-400">Answer Key</h3>
+        <button
+          type="button"
+          onClick={() => setShowAnswers((v) => !v)}
+          className="flex items-center gap-1.5 rounded-lg border border-ink-700 px-3 py-1.5 text-xs font-medium text-ink-200 transition-colors hover:border-steel-400/50 print:hidden"
+        >
+          {showAnswers ? <EyeOff size={13} /> : <Eye size={13} />}
+          {showAnswers ? 'Hide answers' : 'Show answers'}
+        </button>
+      </div>
+      {showAnswers ? (
+        <ol className="mt-3 space-y-2.5">
+          {questions.map((q, i) => (
+            <li key={i} className="text-sm">
+              <span className="font-semibold text-steel-400">{i + 1}. {q.answer}</span>
+              {q.difficulty && <span className="ml-1.5 text-[10px] uppercase tracking-wide text-ink-600">{q.difficulty}</span>}
+              {q.explanation && <p className="mt-0.5 text-ink-400">{q.explanation}</p>}
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <p className="mt-2 text-xs text-ink-500">
+          Hidden for a clean student-facing copy. Click <span className="font-medium text-ink-300">Show answers</span> to reveal the key and explanations (it prints only when shown).
+        </p>
+      )}
+    </div>
+  )
+
+  // ── QUIZ-ONLY (student) VIEW — just the header + timed numbered questions +
+  //    the answer-key toggle; all tutor-facing scaffolding stripped. ──
+  if (viewMode === 'quiz') {
+    return (
+      <div className="card max-w-3xl mx-auto p-8 space-y-4">
+        {viewToggle}
+        <header className="space-y-2 border-b border-ink-900 pb-3">
+          <span className="label-eyebrow rounded px-2 py-0.5 bg-steel-500/15 text-ink-50">
+            {lesson.assessment_label || 'Test Prep'} · Practice Quiz
+          </span>
+          <div className="flex flex-wrap gap-x-8 gap-y-1 pt-1 text-sm text-ink-400">
+            <span>Name: <span className="text-ink-700">____________________________</span></span>
+            <span>Date: <span className="text-ink-700">________________</span></span>
+          </div>
+        </header>
+        <section className="space-y-3">
+          {quizBlock}
+          {answerKeyBlock}
+        </section>
+      </div>
+    )
+  }
+
+  // ── FULL TUTORING-SESSION VIEW ──
   return (
     <div className="card max-w-3xl mx-auto p-8 space-y-6">
+      {viewToggle}
+
       {/* Header */}
       <header className="space-y-2 border-b border-ink-900 pb-4">
         <div className="flex flex-wrap items-center gap-2">
@@ -90,84 +219,11 @@ export default function TestPrepRenderer({ lesson }) {
         </Section>
       )}
 
-      {/* ── PRACTICE QUIZ — structured, student-facing, answers held to the key ── */}
+      {/* Practice quiz + answer key */}
       {questions.length > 0 && (
         <section className="space-y-3">
-          <div className="rounded-xl border border-steel-500/30 bg-steel-500/5 p-5 space-y-4">
-            <div className="flex flex-wrap items-start justify-between gap-3 border-b border-steel-500/20 pb-3">
-              <div>
-                <h3 className="text-lg font-display font-semibold text-ink-50">{lesson.quiz_header || 'Practice Quiz'}</h3>
-                <p className="mt-0.5 text-xs text-ink-400">
-                  {questions.length} question{questions.length !== 1 ? 's' : ''} · original practice
-                </p>
-              </div>
-              {lesson.time_limit_minutes ? (
-                <div className="flex items-center gap-1.5 rounded-lg bg-steel-500/15 px-3 py-1.5 text-sm text-ink-100 print:border print:border-ink-300">
-                  <Clock size={14} className="text-steel-400" />
-                  <span className="font-medium">Suggested time: {lesson.time_limit_minutes} min</span>
-                </div>
-              ) : null}
-            </div>
-            {lesson.pacing_note && <p className="-mt-1 text-xs text-ink-500">{lesson.pacing_note}</p>}
-
-            <ol className="space-y-5">
-              {questions.map((q, i) => (
-                <li key={i} className="flex gap-2.5">
-                  <span className="mt-0.5 font-semibold text-ink-200">{i + 1}.</span>
-                  <div className="flex-1 space-y-2">
-                    <div className="flex items-start justify-between gap-3">
-                      <p className="text-sm text-ink-100 whitespace-pre-line">{q.question}</p>
-                      {q.skill && (
-                        <span className="hidden sm:inline shrink-0 rounded bg-ink-800 px-1.5 py-0.5 text-[10px] text-ink-400 print:hidden">{q.skill}</span>
-                      )}
-                    </div>
-                    {(q.options ?? []).length > 0 ? (
-                      <ul className="space-y-1">
-                        {q.options.map((o, j) => (
-                          <li key={j} className="text-sm text-ink-300">
-                            <span className="font-medium text-ink-400">{LETTERS[j]})</span> {o}
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="text-xs italic text-ink-500">Student-produced response — write your answer.</p>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
-
-          {/* ── ANSWER KEY — separate section; hidden by default so the printed copy is
-                student-facing. Toggle reveals it (and lets it print for a teacher copy). ── */}
-          <div className={`rounded-xl border border-ink-800 bg-ink-900/40 p-5 ${showAnswers ? '' : 'print:hidden'}`}>
-            <div className="flex items-center justify-between">
-              <h3 className="label-eyebrow text-ink-400">Answer Key</h3>
-              <button
-                type="button"
-                onClick={() => setShowAnswers((v) => !v)}
-                className="flex items-center gap-1.5 rounded-lg border border-ink-700 px-3 py-1.5 text-xs font-medium text-ink-200 transition-colors hover:border-steel-400/50 print:hidden"
-              >
-                {showAnswers ? <EyeOff size={13} /> : <Eye size={13} />}
-                {showAnswers ? 'Hide answers' : 'Show answers'}
-              </button>
-            </div>
-            {showAnswers ? (
-              <ol className="mt-3 space-y-2.5">
-                {questions.map((q, i) => (
-                  <li key={i} className="text-sm">
-                    <span className="font-semibold text-steel-400">{i + 1}. {q.answer}</span>
-                    {q.difficulty && <span className="ml-1.5 text-[10px] uppercase tracking-wide text-ink-600">{q.difficulty}</span>}
-                    {q.explanation && <p className="mt-0.5 text-ink-400">{q.explanation}</p>}
-                  </li>
-                ))}
-              </ol>
-            ) : (
-              <p className="mt-2 text-xs text-ink-500">
-                Hidden for a clean student-facing copy. Click <span className="font-medium text-ink-300">Show answers</span> to reveal the key and explanations (it prints only when shown).
-              </p>
-            )}
-          </div>
+          {quizBlock}
+          {answerKeyBlock}
         </section>
       )}
 
