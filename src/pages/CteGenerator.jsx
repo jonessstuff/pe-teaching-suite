@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
+import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
 import { generateCteLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
@@ -44,6 +44,12 @@ const PATHWAYS = [
     description: 'Teaching profession, lesson planning, classroom management & child development',
     icon: GraduationCap,
   },
+  {
+    value: 'career_readiness',
+    label: 'Career Readiness',
+    description: 'MS foundations — career exploration, employability skills, business communication & tech',
+    icon: Compass,
+  },
 ]
 
 const LEVELS = [
@@ -59,6 +65,7 @@ const TOPIC_PLACEHOLDERS = {
   human_services: 'e.g. Reading a nutrition label, Building a personal budget, Age-appropriate child activities, Mock job interview & workplace readiness',
   health_science: 'e.g. Taking vital signs, The cardiovascular system, Medical terminology word parts, Infection control & PPE, Patient positioning',
   education: 'e.g. Writing a measurable learning objective, Classroom management routines & procedures, Stages of child development, Delivering clear directions, Planning a read-aloud',
+  career_readiness: 'e.g. Interest & strengths self-assessment, Exploring the 16 career clusters, Writing a professional email, Teamwork & communication skills, Setting a career goal, Age-appropriate resume basics',
 }
 
 const MATERIAL_PLACEHOLDERS = {
@@ -121,6 +128,16 @@ const MATERIAL_PLACEHOLDERS = {
     'e.g. Classroom-management scenario cards',
     'e.g. Clipboards for field-observation notes',
     'e.g. Laptops for lesson research — 1 per pair',
+  ],
+  career_readiness: [
+    'e.g. Laptops/Chromebooks — 1 per student',
+    'e.g. Interest / career-cluster self-assessment (printed)',
+    'e.g. Career cluster sorting cards (16 clusters)',
+    'e.g. Professional email / resume templates',
+    'e.g. Informational-interview question sheet',
+    'e.g. Sticky notes & chart paper',
+    'e.g. Guest-speaker / career-fair sign-up sheet',
+    'e.g. Projector for presentations',
   ],
 }
 
@@ -286,9 +303,10 @@ export default function CteGenerator() {
           </div>
         </div>
         <p className="text-sm text-ink-400 mt-3">
-          Generate a complete Career &amp; Technical Education lesson across six pathways:
-          Hospitality &amp; Tourism, Finance, Marketing, Human Services / FCS, Health Science, or
-          Education &amp; Training — with work-based learning and career pathway context built in.
+          Generate a complete Career &amp; Technical Education lesson across seven pathways:
+          Hospitality &amp; Tourism, Finance, Marketing, Human Services / FCS, Health Science,
+          Education &amp; Training, or Career Readiness (MS foundations) — with work-based learning
+          and career pathway context built in.
         </p>
       </div>
 
@@ -479,6 +497,7 @@ export default function CteGenerator() {
                 pathway === 'human_services'  ? 'e.g. Plan a balanced meal (AAFCS Nutrition & Wellness)' :
                 pathway === 'health_science'  ? 'e.g. Measure and record blood pressure (NCHSE)' :
                 pathway === 'education'       ? 'e.g. Write a measurable learning objective (InTASC Standard 7)' :
+                pathway === 'career_readiness'? 'e.g. Demonstrate teamwork on a group task (Employability Skills: Effective Relationships)' :
                                                 'e.g. Identify a target market (DECA PI)'
               }
               value={targetCompetency}

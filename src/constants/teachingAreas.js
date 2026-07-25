@@ -45,4 +45,5 @@ export const CTE_PATHWAYS = [
   { key: 'human_services', label: 'Human Services / FCS' },
   { key: 'health_science', label: 'Health Science' },
   { key: 'education_training', label: 'Education & Training' },
+  { key: 'career_readiness', label: 'Career Readiness' },
 ]

@@ -8,6 +8,7 @@ const PHASE_LABELS = {
   human_services: ['Real-Life Hook', 'Concept Instruction', 'Skill Demonstration', 'Hands-On Application', 'Reflection & Life/Career Connection'],
   health_science: ['Clinical Hook', 'Concept Instruction', 'Skill Demonstration', 'Hands-On Clinical Application', 'Reflection & Career Connection'],
   education: ['Classroom Scenario Hook', 'Concept Instruction', 'Teaching Skill Demonstration', 'Hands-On Teaching Application', 'Reflection & Profession Connection'],
+  career_readiness: ['Career Hook', 'Direct Instruction', 'Skill Model / Guided Practice', 'Hands-On Career Application', 'Reflection & Next-Steps Connection'],
 }
 
 const PATHWAY_LABELS = {
@@ -17,6 +18,7 @@ const PATHWAY_LABELS = {
   human_services: 'Human Services / Family & Consumer Sciences',
   health_science: 'Health Science',
   education: 'Education & Training',
+  career_readiness: 'Career Readiness',
 }
 
 const LEVEL_LABELS = {

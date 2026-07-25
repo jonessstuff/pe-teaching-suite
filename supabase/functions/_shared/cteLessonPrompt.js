@@ -22,6 +22,7 @@ const PATHWAY_LABELS = {
   human_services: "Human Services / Family & Consumer Sciences",
   health_science: "Health Science",
   education: "Education & Training",
+  career_readiness: "Career Readiness",
 }
 
 function tierLevelLabel(tier, level) {
@@ -78,6 +79,11 @@ Content areas to prioritize: the Health Science I: Careers and Body Systems foun
 Then include entries from these where the lesson content maps to them:
 - Educators Rising Standards — the standards of Educators Rising, the dedicated national CTSO for future-educator students (not a repurposed general-business club), developed in partnership with the National Education Association (NEA) and aligned to the NBPTS and InTASC frameworks. Align applied tasks, portfolios, and projects to relevant Educators Rising competitive events and programs (e.g., Lesson Planning, Children's Literature, Ethical Dilemma, Public Speaking). Framework field: "Educators Rising". (Educators Rising is national; some states run their own affiliate — e.g., Texas's TAFE, the Texas Association of Future Educators — but keep this lesson national-first and point teachers to their own state's affiliate rather than building to any one state.)
 Content areas to prioritize: the Introduction to the Teaching Profession / Education & Training I foundation — lesson-planning basics, classroom-management fundamentals, an introduction to educational psychology and child/adolescent development, and early clinical/field experience (structured classroom observation and practicum in a real school setting).`,
+    career_readiness: `Primary national framework for Career Readiness (a Middle School Foundations pathway, typically 7th/8th grade, that students take BEFORE selecting a specific CTE pathway) — lead the competency list with entries from this, and treat the state CTE task list above as the state verification layer for it:
+- Employability Skills Framework (U.S. Department of Education, Office of Career, Technical, and Adult Education — OCTAE) — the foundational framework for this pathway, organized around three broad categories: (1) Applied Knowledge — applied academic skills and critical thinking (reading/writing/math for work, problem-solving, critical thinking, decision-making, reasoning); (2) Effective Relationships — interpersonal skills and personal qualities (teamwork, communication, respect, responsibility, integrity, professionalism, initiative, adaptability); and (3) Workplace Skills — resource, information, technology, and systems management (time management, planning & organizing, following directions, using workplace technology, understanding how a workplace works). Framework field: "Employability Skills Framework". Anchor every entry to the established 2018 three-category structure and name the category. NOTE: the framework is undergoing a 2.0 modernization as of 2025 — treat the 2018 three-category structure as the stable anchor and a foundational field document; do not invent 2.0 sub-competency codes.
+Then include entries from this where the lesson content maps to it:
+- National Career Clusters Framework — the 16 Career Clusters (Advance CTE). Framework field: "Career Clusters". Because this is a career-EXPLORATION foundations course, career-exploration and self-assessment content should introduce students to the RANGE of career clusters broadly (all 16), not just one — use this to frame students' interests, strengths, and values against the breadth of clusters and the high-school pathways they lead to.
+Content areas to prioritize (this pathway consolidates the common MS "Foundations" courses — Career Development, Exploring Careers, General Employability, and Business Communication and Technologies): (a) career exploration & self-assessment — interests, strengths, and values mapped to career clusters; (b) general employability skills — the three Employability Skills Framework categories; (c) business communication & technology basics — professional communication (email, presentations), basic workplace technology, and digital-literacy fundamentals; and (d) career-development planning — goal-setting, age-appropriate resume/application basics, and understanding pathways and next steps toward high-school CTE programs. Keep all content and rigor age-appropriate for middle school (awareness and exploration, not mastery). NOTE: several teacher requests referenced Texas TEKS-based courses by name (Career Development, Career Exploration); keep this lesson national-first and let the state CTE verification layer above cover state-specific course/standard alignment.`,
   }[pathway] ?? ""
 
   const rigorNote =
@@ -105,6 +111,7 @@ function getCredentialFocus(pathway) {
     human_services: ["AAFCS Pre-PAC certifications (e.g., Leadership Essentials, Nutrition/Food/Wellness, Food Science Fundamentals)", "FCCLA competitive event & national program recognition", "ServSafe Food Handler (for foods/nutrition content)"],
     health_science: ["NHA certifications (e.g., CCMA Clinical Medical Assistant, CPT Phlebotomy Technician)", "CPR / First Aid certification (AHA or American Red Cross)", "HOSA competitive event & program recognition"],
     education: ["Educators Rising Micro-credentials & competitive event recognition", "ETS ParaPro Assessment (entry-level paraeducator credential)", "Child Development Associate (CDA) credential — for early-childhood / education field placements"],
+    career_readiness: ["Employability-skills badges / digital-literacy micro-credentials appropriate for middle school (e.g., typing proficiency, Google/Microsoft basics)", "FBLA-Middle Level or SkillsUSA recognition (career-readiness competitive events)", "ACT WorkKeys National Career Readiness Certificate (NCRC) — introduced as a longer-term high-school/adult goal, not attained in middle school"],
   }[pathway] ?? []
 }
 
@@ -242,6 +249,28 @@ function getPhaseDescriptions(pathway) {
         desc: "Students reflect on how today's skill fits real teaching and a career in education, and name one professional habit they would carry into a field placement. Connect the skill to the credential/competition it supports (Educators Rising / ParaPro / clinical field experience). End with a brief exit ticket. 5–8 minutes.",
       },
     },
+    career_readiness: {
+      warm_up: {
+        name: "Career Hook",
+        desc: "Open with a concrete, relatable career moment for a 7th/8th grader — a 'what would you do at work?' scenario, a surprising job or salary fact, a short clip of a real worker, or a quick interest poll. Students react and connect it to a real job, career cluster, or workplace situation they can picture. Keep it exploratory and awareness-level, not mastery. 5–8 minutes.",
+      },
+      whole_group_instruction: {
+        name: "Direct Instruction",
+        desc: "Teach the core career-readiness or employability concept directly using correct but middle-school-accessible vocabulary (career cluster, interests vs. skills vs. values, employability skill, professionalism, digital literacy, goal-setting). Ground it in the relevant Employability Skills Framework category (Applied Knowledge, Effective Relationships, or Workplace Skills). Address a common misconception (e.g., 'you have to know your exact career now') and check understanding before practice. 8–12 minutes.",
+      },
+      fitness_activities: {
+        name: "Skill Model / Guided Practice",
+        desc: "Model the employability or career-readiness skill step by step the way it's used at work — writing a professional email, a confident introduction and handshake, sorting careers into clusters, a short self-assessment, or basic slide/document formatting. Name each step and why it matters on the job. Students watch, then walk through it once with teacher support. 5–10 minutes.",
+      },
+      independent_practice: {
+        name: "Hands-On Career Application",
+        desc: "Students apply the skill in a realistic but age-appropriate task: complete an interest/strengths self-assessment and map results to career clusters; draft and send a professional email; build a short 'about me / my future' presentation; prepare and practice informational-interview questions; or draft an age-appropriate resume or activity/application. Describe exactly what students do, what a strong result looks like, and what the teacher observes and coaches. Include a simple checklist or rubric tied to an Employability Skills Framework category. 15–20 minutes.",
+      },
+      closure: {
+        name: "Reflection & Next-Steps Connection",
+        desc: "Students reflect on what today's activity means for their own future and name one career cluster or high-school CTE pathway they want to explore next, plus one employability skill they'll keep building. Reinforce that middle-school foundations set up their high-school CTE choices. End with a brief exit ticket. 5–8 minutes.",
+      },
+    },
   }
   return map[pathway] ?? map.hospitality
 }
@@ -280,6 +309,14 @@ function getPathwaySequence(pathway) {
       { level: "concentrator", course: "Education & Training II / Instructional Practices & Human Growth and Development", description: "Applied pedagogy — writing objectives and lessons, differentiation and formative assessment, developmentally appropriate practice, and supervised field observation and practicum in a real classroom." },
       { level: "completer", course: "Practicum in Education & Training / Capstone, Educators Rising & Work-Based Learning", description: "Capstone with a clinical field placement (student-teaching-style experience), a professional teaching portfolio, Educators Rising competitive events, entry-level credential attainment (ParaPro / CDA), and work-based learning in a school setting." },
     ],
+    // Primarily a MIDDLE-SCHOOL Foundations pathway: the Intro/Concentrator/Completer
+    // labels map to the sequence of common 7th/8th-grade foundations courses, ending at
+    // the on-ramp into a specific high-school CTE pathway (rather than a HS capstone).
+    career_readiness: [
+      { level: "introductory", course: "Exploring Careers / Career Development (MS Foundations, 7th–8th)", description: "Middle-school career exploration and self-assessment — interests, strengths, and values mapped across the 16 career clusters, and a broad introduction to the world of work." },
+      { level: "concentrator", course: "General Employability & Business Communication and Technologies (MS Foundations)", description: "Applied employability skills across the three Employability Skills Framework categories, plus professional communication (email, presentations), workplace technology, and digital-literacy fundamentals." },
+      { level: "completer", course: "Career Development & Planning → High-School CTE (Foundations on-ramp)", description: "Career-development planning — goal-setting, age-appropriate resume/application basics, and choosing a high-school CTE pathway; the transition point into a specific cluster's high-school pathway sequence." },
+    ],
   }[pathway] ?? []
 }
 
@@ -288,12 +325,14 @@ function getPathwaySequence(pathway) {
 // Work-Based Learning (HQWBL) model, which recognizes a broader set of 12 methods than
 // the internship/shadow/speaker default.
 function getWblGuidance(pathway) {
-  if (pathway === "human_services" || pathway === "health_science" || pathway === "education") {
+  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness") {
     const emphasis = pathway === "health_science"
       ? " Clinical experience is especially relevant for this pathway — prioritize clinical/hospital placements, patient-care rotations, and health-agency service learning where appropriate."
       : pathway === "education"
         ? " Clinical/field experience is especially relevant for this pathway — prioritize structured classroom observation, tutoring and cross-age mentoring placements, and student-teaching-style field experiences in a real school, plus service learning with younger students."
-        : ""
+        : pathway === "career_readiness"
+          ? " Career-AWARENESS activities are especially relevant for this pathway — for many middle-schoolers this is their earliest exposure to work-based learning, so prioritize the awareness-level methods: guest speakers, career fairs, workplace tours, and informational interviews, alongside age-appropriate service learning and job shadowing. Keep placements exploratory rather than skill-mastery internships."
+          : ""
     return `\nThis pathway follows Virginia's High-Quality Work-Based Learning (HQWBL) model, which recognizes 12 methods: job shadowing, service learning, mentorship, externship, school-based enterprise, internship, entrepreneurship, clinical experience, cooperative education, youth registered apprenticeship, registered apprenticeship, and supervised agricultural experience. When filling the fields below, draw the most lesson-appropriate ideas from this broader set (not only internships/shadows) — e.g., service learning with a community agency, a clinical experience, a school-based enterprise, or a mentorship — and fold them into the internships and job_shadows arrays as fits this lesson's content and tier.${emphasis}`
   }
   return ""
@@ -423,7 +462,7 @@ export function buildCteLessonSchema(includeELL = false) {
 
 /**
  * @param {Object} input
- * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'} input.pathway
+ * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'} input.pathway
  * @param {'ms'|'hs'} input.tier
  * @param {'introductory'|'concentrator'|'completer'|''} [input.level]  required when tier === 'hs'
  * @param {string}  input.topic

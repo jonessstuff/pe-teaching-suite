@@ -12,6 +12,7 @@ const PATHWAY_FILTERS = [
   { value: 'human_services', label: 'Human Services / FCS' },
   { value: 'health_science', label: 'Health Science' },
   { value: 'education', label: 'Education & Training' },
+  { value: 'career_readiness', label: 'Career Readiness' },
 ]
 
 export default function CteLessonLibrary() {
