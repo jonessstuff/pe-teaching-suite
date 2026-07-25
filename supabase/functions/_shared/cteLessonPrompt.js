@@ -29,6 +29,7 @@ const PATHWAY_LABELS = {
   engineering_tech: "STEM / Engineering & Technology",
   business_mgmt: "Business Management & Administration",
   agriculture: "Agriculture, Food & Natural Resources",
+  construction: "Architecture & Construction",
 }
 
 function tierLevelLabel(tier, level) {
@@ -128,6 +129,12 @@ Content areas to prioritize: (a) business fundamentals — economics basics, how
 Then include entries from these where the lesson content maps to them:
 - National FFA Organization — the national CTSO for agricultural education, and a CORE, intracurricular program component of ag ed (NOT merely an extracurricular add-on): align applied tasks, leadership/professionalism, Career Development Events (CDEs) and Leadership Development Events (LDEs), degrees, and proficiency awards. Framework field: "FFA". Also note MANRRS (Minorities in Agriculture, Natural Resources, and Related Sciences) as a relevant related organization for career and collegiate connections.
 Content areas to prioritize: (a) Plant Science — crop production, horticulture basics, and plant systems; (b) Animal Science — large- and small-animal industries and animal care/production basics; (c) Natural Resources — environmental stewardship, conservation, and human interaction with natural resources and wildlife; and (d) Agribusiness — basic business and economic principles applied to agricultural products and services. Where relevant, frame the pathway around the three-circle agricultural-education model: classroom/lab instruction + FFA + Supervised Agricultural Experience (SAE).`,
+    construction: `Primary industry framework for Architecture & Construction — lead the competency list with entries from this, and treat the state CTE task list above as the state verification layer for it:
+- NCCER (National Center for Construction Education and Research) — the recognized NATIONAL standard for construction-trades curriculum and credentialing, organized around Core (basic safety, construction math, hand & power tools, construction drawings/blueprints, materials handling) plus craft-specific curricula (Carpentry, Electrical, Plumbing, HVAC, Masonry, Welding, Heavy Equipment, and more). Framework field: "NCCER". Name the NCCER module/level when confident (e.g., "NCCER Core — Introduction to Construction Drawings"); otherwise describe the competency clearly and omit the code. NCCER credentials (and the NCCER Registry) are the recognized entry credentials students can pursue. NCCER is parallel to how ASE functions for automotive, NIMS for manufacturing, and HOSA/NHA for Health Science.
+Then include entries from these where the lesson content maps to them:
+- SkillsUSA — the CTSO most closely associated with this cluster (national, parallel to DECA/FBLA/HOSA). Align applied tasks, projects, and professionalism to relevant SkillsUSA events (e.g., Carpentry, Electrical Construction Wiring, Plumbing, HVAC-R, Cabinetmaking, TeamWorks). Framework field: "SkillsUSA".
+- OSHA — construction-industry workplace-safety standards are directly relevant given power tools, ladders, scaffolding, heights, and lifting; align safety content to OSHA Construction (29 CFR 1926) expectations — fall protection, PPE, tool and electrical safety, and jobsite hazard awareness. The OSHA-10 (Construction) card is a common entry safety credential. Framework field: "OSHA". (See the SAFETY directive in this prompt for how to handle shop/jobsite safety.)
+Content areas to prioritize: (a) design / pre-construction — basic drafting concepts, blueprint / construction-drawing reading, and architectural design fundamentals; (b) construction fundamentals — basic building systems, materials, and construction methods and sequencing; (c) trades foundations — an introductory/exploratory overview of the specific trades (electrical, HVAC, plumbing, carpentry, and related); and (d) jobsite/shop safety — tool safety, fall protection, PPE, and jobsite hazard awareness (treat with the same seriousness as clinical safety — see the SAFETY directive).`,
   }[pathway] ?? ""
 
   const rigorNote =
@@ -162,6 +169,7 @@ function getCredentialFocus(pathway) {
     engineering_tech: ["PLTW course credentials / end-of-course assessments (e.g., Introduction to Engineering Design, Principles of Engineering)", "FIRST / RECF (VEX) robotics competition recognition & engineering-notebook awards", "SkillsUSA (e.g., Robotics & Automation, Engineering Technology); articulated college credit where offered"],
     business_mgmt: ["FBLA competitive-event recognition (e.g., Business Management, Organizational Leadership, Entrepreneurship)", "MBAResearch / NBEA-aligned business administration assessments & certificates", "Entrepreneurship & Small Business (ESB) or Microsoft Office Specialist (administrative skills) certifications where offered"],
     agriculture: ["FFA degrees, proficiency awards & Career Development Event (CDE) recognition", "Supervised Agricultural Experience (SAE) records & National FFA SAE recognition", "AFNR industry certifications where offered (e.g., Certified Veterinary Assistant, pesticide applicator, ServSafe for food products, welding)"],
+    construction: ["NCCER Core & craft-area credentials (NCCER Registry) — the recognized entry credentials", "OSHA-10 (Construction) safety card", "SkillsUSA competitive-event recognition (e.g., Carpentry, Electrical, Plumbing, HVAC-R); pre-apprenticeship certificates (NCCER / trade-council programs)"],
   }[pathway] ?? []
 }
 
@@ -453,6 +461,28 @@ function getPhaseDescriptions(pathway) {
         desc: "Students reflect on how today's skill fits real agriculture / natural-resources work and a career in the cluster, and name one idea they could turn into a Supervised Agricultural Experience (SAE) or explore through FFA. Connect the skill to an FFA CDE/degree and an AFNR career pathway. End with a brief exit ticket. 5–8 minutes.",
       },
     },
+    construction: {
+      warm_up: {
+        name: "Jobsite Hook",
+        desc: "Open with a concrete construction / architecture scenario — a real building or structure, a 'how was this built / how would you build it?' question, a jobsite problem, or a short clip. Students react as a tradesperson or designer would: what's the task, and what's the first SAFE step? Connect to a real trade, project, or employer. 5–8 minutes.",
+      },
+      whole_group_instruction: {
+        name: "Concept Instruction",
+        desc: "Teach the core construction / architecture concept or procedure directly using correct vocabulary (construction-drawing/blueprint terms, building systems, material and tool names, trade terms, load/structure/framing). Ground it in the relevant NCCER Core or craft module. ALWAYS teach the safety point to standard BEFORE any demonstration (fall protection, ladder/scaffold use, tool safety, PPE, electrical hazards). Address a common misconception and check understanding. 8–12 minutes.",
+      },
+      fitness_activities: {
+        name: "Skill Demonstration",
+        desc: "Model the construction skill step by step the way it's done on a jobsite or in a shop — reading/scaling a construction drawing, measuring and marking a layout, a hand/power-tool technique, or a framing / wiring / piping sequence — narrating EACH step AND its safety control (ladder/scaffold and fall protection, tool guards and inspection, PPE, keeping the area clear). Students watch, then walk through it once with close teacher support. 5–10 minutes.",
+      },
+      independent_practice: {
+        name: "Hands-On Construction Application",
+        desc: "Students apply the skill in a realistic, tier-appropriate lab/shop task: read or sketch a construction drawing, complete a measurement/layout task, build or simulate a small assembly, work a trade-specific station (electrical / plumbing / HVAC / carpentry), or (at the MS Exploratory level) a hands-on trades-exploration or design-thinking station. State exactly what students do, what a quality/in-spec result looks like, and what the teacher SUPERVISES. Include a checklist/rubric aligned to an NCCER competency, and require the relevant safety steps to be checked off before and during work. Emphasize direct supervision. 15–20 minutes.",
+      },
+      closure: {
+        name: "Reflection & Career Connection",
+        desc: "Students reflect on how today's skill fits real construction / architecture work and a career in the trades, and name one safe-work habit and one thing they'd verify next time. Connect the skill to the credential it builds toward (NCCER / OSHA-10) and a SkillsUSA event or apprenticeship. End with a brief exit ticket. 5–8 minutes.",
+      },
+    },
   }
   return map[pathway] ?? map.hospitality
 }
@@ -529,6 +559,11 @@ function getPathwaySequence(pathway) {
       { level: "concentrator", course: "Plant / Animal / Natural Resource / Agribusiness Systems (AFNR pathway course)", description: "Applied pathway coursework to AFNR standards — deeper plant, animal, natural-resource, or agribusiness science and skills, FFA Career Development Events, and an ongoing SAE project." },
       { level: "completer", course: "Advanced AFNR / Capstone, SAE, FFA & Work-Based Learning", description: "Capstone project, an expanded Supervised Agricultural Experience (entrepreneurship / placement / research), FFA degrees and proficiency awards, industry-credential attainment, and work-based learning in an agriculture / natural-resources setting." },
     ],
+    construction: [
+      { level: "introductory", course: "Introduction to Architecture & Construction / NCCER Core", description: "Foundations — jobsite and tool safety (OSHA / NCCER Core), construction math and measurement, blueprint / construction-drawing reading, materials handling, and an exploratory overview of the construction trades and architectural design." },
+      { level: "concentrator", course: "Construction Trades / Carpentry, Electrical, Plumbing or HVAC (NCCER craft)", description: "Applied craft coursework to NCCER standards in a chosen trade, construction methods and sequencing, layout and skilled tool use, and jobsite safety to OSHA standard, with SkillsUSA competition alignment." },
+      { level: "completer", course: "Advanced Construction / Capstone, NCCER Credential & Work-Based Learning", description: "Capstone build or design project, NCCER craft-credential attainment, OSHA-10, SkillsUSA competitive events, a registered (pre-)apprenticeship or co-op, and supervised work-based learning on a real jobsite or with a contractor." },
+    ],
   }[pathway] ?? []
 }
 
@@ -537,7 +572,7 @@ function getPathwaySequence(pathway) {
 // Work-Based Learning (HQWBL) model, which recognizes a broader set of 12 methods than
 // the internship/shadow/speaker default.
 function getWblGuidance(pathway) {
-  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing" || pathway === "engineering_tech" || pathway === "business_mgmt" || pathway === "agriculture") {
+  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing" || pathway === "engineering_tech" || pathway === "business_mgmt" || pathway === "agriculture" || pathway === "construction") {
     const emphasis = pathway === "health_science"
       ? " Clinical experience is especially relevant for this pathway — prioritize clinical/hospital placements, patient-care rotations, and health-agency service learning where appropriate."
       : pathway === "education"
@@ -554,7 +589,9 @@ function getWblGuidance(pathway) {
                   ? " Internship, mentorship, and entrepreneurship are especially relevant for this pathway — engineering/robotics work is project- and competition-driven, so prioritize internships with engineering employers or maker/robotics organizations, mentorship from practicing engineers and FIRST/RECF team mentors/coaches, and entrepreneurship (student design teams building and pitching a real prototype or product), alongside a school-based enterprise or robotics-team structure."
                   : pathway === "agriculture"
                     ? " Supervised Agricultural Experience (SAE) is the SIGNATURE work-based-learning component of this cluster — give it particular emphasis. An SAE is a required, ongoing, student-led project (entrepreneurship, placement/internship, research/experimental, or school-based enterprise) that ag students maintain and document in records; build ideas that connect to or launch an SAE. Treat FFA as a CORE, intracurricular program component (not just an extracurricular add-on) — its Career Development Events (CDEs), Leadership Development Events (LDEs), degrees, and proficiency awards are part of how this cluster's WBL works. Frame WBL around the three-circle model (classroom/lab + FFA + SAE), and also draw on cooperative education, job shadowing, and mentorship with agricultural producers, agencies, and agribusinesses."
-                    : ""
+                    : pathway === "construction"
+                      ? " Apprenticeship and registered apprenticeship are especially relevant for this pathway — the construction trades are strongly apprenticeship-driven, so prioritize registered (pre-)apprenticeships (union and merit-shop/ABC and trade-council programs), youth apprenticeships, and co-op placements with contractors, alongside internships, job shadowing, and mentorship with journey-level tradespeople. Any hands-on jobsite placement must be properly supervised and follow OSHA jobsite-safety requirements."
+                      : ""
     return `\nThis pathway follows Virginia's High-Quality Work-Based Learning (HQWBL) model, which recognizes 12 methods: job shadowing, service learning, mentorship, externship, school-based enterprise, internship, entrepreneurship, clinical experience, cooperative education, youth registered apprenticeship, registered apprenticeship, and supervised agricultural experience. When filling the fields below, draw the most lesson-appropriate ideas from this broader set (not only internships/shadows) — e.g., service learning with a community agency, a clinical experience, a school-based enterprise, or a mentorship — and fold them into the internships and job_shadows arrays as fits this lesson's content and tier.${emphasis}`
   }
   return ""
@@ -575,6 +612,11 @@ SAFETY (safety_notes field) — CRITICAL FOR THIS PATHWAY: Automotive/transporta
     return `
 
 SAFETY (safety_notes field) — CRITICAL FOR THIS PATHWAY: Manufacturing shop-floor work involves REAL physical risk — machine tools (mills, lathes, drill presses, band saws, grinders, CNC machines), rotating and cutting equipment, pinch and entanglement points, flying chips and debris, hot work/welding, heavy and awkward material handling, pneumatics/hydraulics, and electrical hazards. Treat safety with the SAME seriousness as a health-science clinical lesson — never generic "be careful." Populate the safety_notes array with SPECIFIC, lesson-relevant hazards and their controls (e.g., machine guarding and never removing or bypassing guards; PPE — safety glasses/face shield, hearing protection, closed-toe shoes, and NO loose clothing, gloves, jewelry, or long hair near rotating tools; lockout/tagout (LOTO) before any setup, service, or clearing of a jam; safe material handling and team lifting; keeping the floor and work area clear of chips, oil, and debris; and inspecting tools and machines before use), and foreground the relevant safety point inside the Concept Instruction, Skill Demonstration, and Hands-On phases. The FIRST item in safety_notes MUST be this boundary statement, verbatim: "This lesson plan supports classroom and lab PLANNING only. It is not a substitute for your program's required shop-safety training, certification, supervision, and equipment/PPE. Follow your school's and district's safety policies and any applicable OSHA / NIMS shop-safety requirements before any hands-on work."`
+  }
+  if (pathway === "construction") {
+    return `
+
+SAFETY (safety_notes field) — CRITICAL FOR THIS PATHWAY: Construction and construction-shop work involves REAL physical risk — falls from ladders, scaffolds, and heights (the leading cause of construction fatalities); power and hand tools (saws, nail guns, drills); electrical hazards; struck-by and caught-in/between hazards; heavy and awkward lifting and material handling; and dust, noise, and eye hazards. Treat safety with the SAME seriousness as a health-science clinical lesson — never generic "be careful." Populate the safety_notes array with SPECIFIC, lesson-relevant hazards and their controls (e.g., fall protection and correct ladder/scaffold setup and use; PPE — hard hat, safety glasses/face shield, hearing protection, gloves, and closed-toe/steel-toe boots, with NO loose clothing or jewelry near power tools; power-tool guards, inspection, and safe operation; electrical safety and lockout/tagout where relevant; proper lifting and team lifts; and keeping the work area clear of cords, tripping hazards, and debris), and foreground the relevant safety point inside the Concept Instruction, Skill Demonstration, and Hands-On phases. The FIRST item in safety_notes MUST be this boundary statement, verbatim: "This lesson plan supports classroom and lab PLANNING only. It is not a substitute for your program's required shop-safety training, certification, supervision, and equipment/PPE. Follow your school's and district's safety policies and any applicable OSHA / NCCER shop-safety requirements before any hands-on work."`
   }
   return ""
 }
@@ -703,7 +745,7 @@ export function buildCteLessonSchema(includeELL = false) {
 
 /**
  * @param {Object} input
- * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'|'engineering_tech'|'business_mgmt'|'agriculture'} input.pathway
+ * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'|'engineering_tech'|'business_mgmt'|'agriculture'|'construction'} input.pathway
  * @param {'ms'|'hs'} input.tier
  * @param {'introductory'|'concentrator'|'completer'|''} [input.level]  required when tier === 'hs'
  * @param {string}  input.topic

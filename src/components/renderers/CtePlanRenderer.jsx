@@ -15,6 +15,7 @@ const PHASE_LABELS = {
   engineering_tech: ['Engineering Challenge Hook', 'Concept Instruction', 'Guided Design / Build Demonstration', 'Hands-On Engineering Application', 'Reflection & Career Connection'],
   business_mgmt: ['Business Hook', 'Concept Instruction', 'Applied Example / Guided Practice', 'Hands-On Business Application', 'Reflection & Career Connection'],
   agriculture: ['Ag Hook', 'Concept Instruction', 'Skill Demonstration', 'Hands-On Ag Application', 'Reflection & Career Connection'],
+  construction: ['Jobsite Hook', 'Concept Instruction', 'Skill Demonstration', 'Hands-On Construction Application', 'Reflection & Career Connection'],
 }
 
 const PATHWAY_LABELS = {
@@ -31,6 +32,7 @@ const PATHWAY_LABELS = {
   engineering_tech: 'STEM / Engineering & Technology',
   business_mgmt: 'Business Management & Administration',
   agriculture: 'Agriculture, Food & Natural Resources',
+  construction: 'Architecture & Construction',
 }
 
 const LEVEL_LABELS = {

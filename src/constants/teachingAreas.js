@@ -52,4 +52,5 @@ export const CTE_PATHWAYS = [
   { key: 'engineering_tech', label: 'STEM / Engineering & Technology' },
   { key: 'business_mgmt', label: 'Business Management & Administration' },
   { key: 'agriculture', label: 'Agriculture, Food & Natural Resources' },
+  { key: 'construction', label: 'Architecture & Construction' },
 ]

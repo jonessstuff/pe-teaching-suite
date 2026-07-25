@@ -19,6 +19,7 @@ const PATHWAY_FILTERS = [
   { value: 'engineering_tech', label: 'STEM / Engineering & Technology' },
   { value: 'business_mgmt', label: 'Business Management & Administration' },
   { value: 'agriculture', label: 'Agriculture, Food & Natural Resources' },
+  { value: 'construction', label: 'Architecture & Construction' },
 ]
 
 export default function CteLessonLibrary() {

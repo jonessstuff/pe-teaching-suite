@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Wrench, Factory, Cpu, Building2, Sprout, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
+import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Wrench, Factory, Cpu, Building2, Sprout, HardHat, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
 import { generateCteLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
@@ -86,6 +86,12 @@ const PATHWAYS = [
     description: 'AFNR — plant & animal science, natural resources & conservation, agribusiness, with SAE & FFA',
     icon: Sprout,
   },
+  {
+    value: 'construction',
+    label: 'Architecture & Construction',
+    description: 'Blueprint reading & design, building systems & methods, the trades (electrical/HVAC/plumbing/carpentry) & jobsite safety',
+    icon: HardHat,
+  },
 ]
 
 const LEVELS = [
@@ -108,6 +114,7 @@ const TOPIC_PLACEHOLDERS = {
   engineering_tech: 'e.g. The engineering design process, Exploring engineering fields, Build & program a robot (FIRST/VEX), Sensors & actuators, Intro to coding & computational thinking, Prototype & iterate a design',
   business_mgmt: 'e.g. The four functions of management, Business structures (LLC vs. corporation), A management decision case, Building a basic operating budget, Org charts & workflow, Intro to entrepreneurship, Basic HR concepts',
   agriculture: 'e.g. Plant growth & soil basics, Crop production, Animal care & husbandry, Conservation & water quality, Agribusiness & marketing ag products, Intro to FFA & SAE projects',
+  construction: 'e.g. Blueprint & construction-drawing reading, Building systems & materials, Framing basics, Measurement & layout, Intro to the trades (electrical/plumbing/HVAC/carpentry), Ladder & fall-protection safety',
 }
 
 const MATERIAL_PLACEHOLDERS = {
@@ -240,6 +247,16 @@ const MATERIAL_PLACEHOLDERS = {
     'e.g. AFNR / FFA CDE reference materials',
     'e.g. SAE record book / template',
     'e.g. Chart paper & markers',
+  ],
+  construction: [
+    'e.g. Safety glasses & work gloves',
+    'e.g. Tape measures & speed squares',
+    'e.g. Sample blueprints / construction drawings',
+    'e.g. Scale ruler / architect scale',
+    'e.g. Lumber / building-material samples',
+    'e.g. Levels & framing squares',
+    'e.g. Jobsite-safety & PPE checklist',
+    'e.g. Grid/graph paper for layout & sketching',
   ],
 }
 
@@ -405,12 +422,13 @@ export default function CteGenerator() {
           </div>
         </div>
         <p className="text-sm text-ink-400 mt-3">
-          Generate a complete Career &amp; Technical Education lesson across thirteen pathways:
+          Generate a complete Career &amp; Technical Education lesson across fourteen pathways:
           Hospitality &amp; Tourism, Finance, Marketing, Human Services / FCS, Health Science,
           Education &amp; Training, Career Readiness (MS foundations), Information Technology,
           Transportation, Distribution &amp; Logistics, Manufacturing, STEM / Engineering &amp;
-          Technology, Business Management &amp; Administration, or Agriculture, Food &amp; Natural
-          Resources — with work-based learning and career pathway context built in.
+          Technology, Business Management &amp; Administration, Agriculture, Food &amp; Natural
+          Resources, or Architecture &amp; Construction — with work-based learning and career
+          pathway context built in.
         </p>
       </div>
 
@@ -608,6 +626,7 @@ export default function CteGenerator() {
                 pathway === 'engineering_tech'? 'e.g. Apply the engineering design process to a constraint-based challenge (PLTW / EDP)' :
                 pathway === 'business_mgmt'    ? 'e.g. Apply the four functions of management to a business scenario (NBEA Management)' :
                 pathway === 'agriculture'     ? 'e.g. Explain the components of a plant growth system (AFNR — Plant Systems)' :
+                pathway === 'construction'    ? 'e.g. Read and interpret a floor plan and its scale (NCCER Core — Construction Drawings)' :
                                                 'e.g. Identify a target market (DECA PI)'
               }
               value={targetCompetency}
