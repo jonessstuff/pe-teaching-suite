@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
+import { track, identifyUser } from '../lib/analytics'
 import TeachingAreasField from '../components/TeachingAreasField'
 
 function PlansK12Logo() {
@@ -50,7 +51,7 @@ export default function Login({ authError, onClearAuthError }) {
     setStatus('loading')
     setMessage(null)
 
-    const { error } =
+    const { data, error } =
       mode === 'sign_in'
         ? await supabase.auth.signInWithPassword({ email, password })
         : await supabase.auth.signUp({
@@ -73,6 +74,15 @@ export default function Login({ authError, onClearAuthError }) {
     }
 
     if (mode === 'sign_up') {
+      // Analytics: account creation. Identify by the new Supabase user id only
+      // (no email/name), then record the event with metadata only.
+      const newUserId = data?.user?.id
+      if (newUserId) identifyUser(newUserId)
+      const referralCode = new URLSearchParams(window.location.search).get('ref')
+      track('sign_up', {
+        method: 'email',
+        ...(referralCode ? { referral_code: referralCode } : {}),
+      })
       setStatus('idle')
       setMessage('Check your email to confirm your account.')
       return

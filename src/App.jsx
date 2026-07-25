@@ -5,6 +5,8 @@ import { supabase } from './lib/supabaseClient'
 import { claimSession, heartbeat, releaseSession, getStoredToken, clearStoredToken } from './services/sessionService'
 import { isInactive, recordActivity, clearActivity } from './services/inactivityService'
 import { useTheme } from './hooks/useTheme'
+import { identifyUser, resetAnalytics } from './lib/analytics'
+import { setSentryUser } from './lib/sentry'
 import { TrialProvider } from './context/TrialContext'
 import AppShell from './components/layout/AppShell'
 import ModulePicker from './pages/ModulePicker'
@@ -185,6 +187,21 @@ function App() {
 
     return () => listener.subscription.unsubscribe()
   }, [])
+
+  // Analytics + Sentry identity — mirror the resolved session's Supabase user
+  // id (id only, never email/name). Decoupled from the single-session logic
+  // above so it simply reacts to whatever session ends up set.
+  useEffect(() => {
+    if (session === undefined) return // still loading
+    const userId = session?.user?.id ?? null
+    if (userId) {
+      identifyUser(userId)
+      setSentryUser(userId)
+    } else {
+      resetAnalytics()
+      setSentryUser(null)
+    }
+  }, [session])
 
   // Heartbeat: keep last_seen_at fresh and detect displacement.
   // Runs immediately on session restore (catches a takeover while the tab

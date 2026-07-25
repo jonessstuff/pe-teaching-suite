@@ -4,6 +4,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Loader2, Printer, ChevronLeft, ChevronRight, Copy, Pencil, Check, X, Share2, Tag, Plus } from 'lucide-react'
 import { getLesson, listLessons, updateLesson, deleteLesson, deleteUnit, duplicateLesson, updateTags } from '../services/lessonsService'
 import { createShare, getShare, deleteShare } from '../services/sharingService'
+import { track } from '../lib/analytics'
 import PlanBookRenderer from '../components/renderers/PlanBookRenderer'
 import AdaptivePERenderer from '../components/renderers/AdaptivePERenderer'
 import CtePlanRenderer from '../components/renderers/CtePlanRenderer'
@@ -101,9 +102,12 @@ export default function LessonDetail() {
 
   async function handleShare() {
     try {
+      const isNewShare = !shareToken
       const share = shareToken ? { share_token: shareToken } : await createShare(id)
       setShareToken(share.share_token)
       setShowShare(true)
+      // Only count creating a share link as an export (not re-opening the panel).
+      if (isNewShare) track('lesson_exported', { format: 'share' })
     } catch (err) {
       setError(err.message)
     }

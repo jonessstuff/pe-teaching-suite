@@ -16,6 +16,8 @@ import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js";
 import { buildLessonGenerationPrompt } from "../_shared/lessonPrompt.js";
 import { callClaudeForJson } from "../_shared/anthropic.js";
 import { createEmptyLessonObject } from "../_shared/lessonObjectDefaults.js";
+import { captureLessonGenerated } from "../_shared/analytics.js";
+import { reportError } from "../_shared/sentry.js";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -70,7 +72,9 @@ Deno.serve(async (req) => {
       includeELL: includeELL === true,
     });
 
+    const _t0 = Date.now();
     const generated = await callClaudeForJson(system, user, 16000);
+    const durationMs = Date.now() - _t0;
 
     // Merge over a blank LessonObject so any fields the model omits
     // still come back as well-typed empty values rather than undefined.
@@ -100,8 +104,17 @@ Deno.serve(async (req) => {
       ].filter((q) => q.trim().length > 3);
     }
 
+    // Analytics: successful generation (metadata only — never lesson text).
+    await captureLessonGenerated(req, {
+      subject: subject ?? "PE",
+      grades: gradeBands,
+      type: "lesson",
+      durationMs,
+    });
+
     return jsonResponse(lessonObject);
   } catch (err) {
+    await reportError(err, { fn: "generate-lesson" });
     return errorResponse(err.message ?? String(err), 500);
   }
 });

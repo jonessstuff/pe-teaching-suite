@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 import { supabase } from '../lib/supabaseClient'
 import { getProfile } from '../services/profilesService'
 import { deriveTrialState, incrementExportCount } from '../services/trialService'
+import { track } from '../lib/analytics'
 
 // Skip the Stripe round-trip if the cached status was synced this recently.
 const STATUS_FRESH_MS = 60 * 60 * 1000 // 1 hour
@@ -94,8 +95,14 @@ export function TrialProvider({ children }) {
   // requestExport — gate + count a watermarkable export.
   // Returns true if the export may proceed, false if it was blocked
   // (and a paywall was opened).
-  const requestExport = useCallback(async () => {
-    if (state.isPaid) return true
+  // `format` is metadata only ('print' | 'pdf' | 'share'). lesson_exported
+  // fires only when the export actually proceeds (returns true), never when
+  // it's blocked by the paywall.
+  const requestExport = useCallback(async (format = 'print') => {
+    if (state.isPaid) {
+      track('lesson_exported', { format })
+      return true
+    }
     if (state.isExpired) {
       setPaywall('trial-expired')
       return false
@@ -107,9 +114,11 @@ export function TrialProvider({ children }) {
         setPaywall('export-cap')
         return false
       }
+      track('lesson_exported', { format })
       return true
     } catch {
       // If the counter RPC fails, don't hard-block the user's export.
+      track('lesson_exported', { format })
       return true
     }
   }, [state.isPaid, state.isExpired])

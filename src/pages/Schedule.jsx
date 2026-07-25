@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Plus, Pencil, Trash2, Loader2, X, Check } from 'lucide-react'
 import { listPeriods, createPeriod, updatePeriod, deletePeriod } from '../services/classPeriodsService'
+import { getProfile } from '../services/profilesService'
+import { track } from '../lib/analytics'
 import { SUBJECT_AREAS, gradeLabel } from '../types/lessonObject'
 
 const GRADE_OPTIONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
@@ -76,8 +78,25 @@ export default function Schedule() {
         duration_minutes: Number(form.duration_minutes),
       }
       if (formMode === 'add') {
+        const wasFirstPeriod = (periods ?? []).length === 0
         const created = await createPeriod(payload)
-        setPeriods((prev) => [...(prev ?? []), created])
+        const next = [...(periods ?? []), created]
+        setPeriods(next)
+        // onboarding_completed: profile (from signup/Settings) is set and the
+        // teacher has now added their first schedule entry. Fire once, on the
+        // 0 -> 1 transition. Metadata only.
+        if (wasFirstPeriod) {
+          try {
+            const profile = await getProfile()
+            track('onboarding_completed', {
+              subjects: profile?.teaching_areas ?? [],
+              state: profile?.state ?? null,
+              grade_bands: [...new Set(next.flatMap((p) => p.grade_bands ?? []))],
+            })
+          } catch {
+            /* analytics must never block the save */
+          }
+        }
       } else {
         const updated = await updatePeriod(editingId, payload)
         setPeriods((prev) => prev.map((p) => (p.id === editingId ? updated : p)))

@@ -14,6 +14,8 @@ import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js";
 import { buildUnitGenerationPrompt } from "../_shared/unitPrompt.js";
 import { callClaudeForJson } from "../_shared/anthropic.js";
 import { createEmptyLessonObject } from "../_shared/lessonObjectDefaults.js";
+import { captureLessonGenerated } from "../_shared/analytics.js";
+import { reportError } from "../_shared/sentry.js";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -84,10 +86,12 @@ Deno.serve(async (req) => {
       )
     );
 
+    const _t0 = Date.now();
     const generated = await Promise.race([
       callClaudeForJson(system, user, maxTokens),
       timeoutPromise,
     ]);
+    const durationMs = Date.now() - _t0;
 
     const generatedDays = Array.isArray(generated?.days) ? generated.days : [];
 
@@ -125,10 +129,19 @@ Deno.serve(async (req) => {
       return obj;
     });
 
+    // Analytics: successful generation (metadata only — never lesson text).
+    await captureLessonGenerated(req, {
+      subject: subject ?? "PE",
+      grades: gradeBands,
+      type: "unit",
+      durationMs,
+    });
+
     return jsonResponse({ days: lessonObjects });
   } catch (err) {
     const msg = (err as any)?.message ?? String(err);
     const status = /timed out/i.test(msg) ? 504 : 500;
+    await reportError(err, { fn: "generate-unit" });
     return errorResponse(msg, status);
   }
 });

@@ -3,6 +3,13 @@ import { createRoot } from 'react-dom/client'
 import { registerSW } from 'virtual:pwa-register'
 import './index.css'
 import App from './App.jsx'
+import { initSentry } from './lib/sentry'
+import { initAnalytics } from './lib/analytics'
+
+// Error monitoring + product analytics. Both no-op if their env token is
+// absent, so local dev without keys still runs cleanly.
+initSentry()
+initAnalytics()
 
 // Service worker registration (autoUpdate). With skipWaiting + clientsClaim in
 // the generated SW, registerSW reloads the page automatically once a new SW

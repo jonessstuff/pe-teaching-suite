@@ -276,7 +276,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
   async function handleDownloadPoster() {
     const svgEl = posterSvgRef.current
     if (!svgEl) return
-    if (!(await requestExport())) return
+    if (!(await requestExport('pdf'))) return
     const SCALE = 2
     const SVG_W = 816
     const SVG_H = 1056
