@@ -48,4 +48,5 @@ export const CTE_PATHWAYS = [
   { key: 'career_readiness', label: 'Career Readiness' },
   { key: 'information_technology', label: 'Information Technology' },
   { key: 'transportation', label: 'Transportation, Distribution & Logistics' },
+  { key: 'manufacturing', label: 'Manufacturing' },
 ]

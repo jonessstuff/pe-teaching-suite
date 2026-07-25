@@ -25,6 +25,7 @@ const PATHWAY_LABELS = {
   career_readiness: "Career Readiness",
   information_technology: "Information Technology",
   transportation: "Transportation, Distribution & Logistics",
+  manufacturing: "Manufacturing",
 }
 
 function tierLevelLabel(tier, level) {
@@ -97,6 +98,13 @@ Content areas to prioritize: (a) Web Design fundamentals — HTML/CSS basics, we
 Then include entries from this where the lesson content maps to it:
 - SkillsUSA — the CTSO most closely associated with this cluster (national, parallel to DECA/FBLA/HOSA/FCCLA). Align applied tasks, projects, and professionalism/employability content to relevant SkillsUSA competitive events (e.g., Automotive Service Technology, Diesel Equipment Technology) and the SkillsUSA Framework (personal, workplace, and technical skills grounded in academics). Framework field: "SkillsUSA".
 Content areas to prioritize: (a) automotive systems fundamentals — engine repair basics, brakes, suspension/steering, and electrical systems, at a depth appropriate to the tier; (b) SHOP SAFETY as a first-class, non-negotiable focus — safe handling of tools/equipment, vehicle-lift and jack/jack-stand operation, and hazard awareness (treat with the same seriousness as clinical safety — see the SAFETY directive in this prompt); (c) diagnostic & service-information skills — reading service manuals / service information, systematic problem identification, and the basic diagnostic process; and (d) at the Introductory / MS Exploratory level, a brief overview of the WIDER Transportation, Distribution & Logistics cluster beyond automotive (aviation/aircraft maintenance, logistics & supply chain, warehousing/distribution, rail, transit) so the foundational framing is not automotive-only.`,
+    manufacturing: `Primary industry framework for Manufacturing — lead the competency list with entries from this, and treat the state CTE task list above as the state verification layer for it:
+- NIMS (National Institute for Metalworking Skills) — the recognized NATIONAL credentialing organization for manufacturing/machining skills, organized around competency areas such as Measurement, Materials & Safety; Job Planning, Benchwork & Layout; Drill Press; Turning (lathe); Milling; Grinding; and CNC. Framework field: "NIMS". Name the NIMS credential/standard area when confident (e.g., "NIMS — Measurement, Materials & Safety"); otherwise describe the competency clearly and omit the code. NIMS is parallel to how ASE functions for automotive, HOSA/NHA for Health Science, and CompTIA for IT, and NIMS credentials are the recognized entry credentials students can pursue.
+Then include entries from these where the lesson content maps to them:
+- SMART MANUFACTURING / INDUSTRY 4.0 — modern manufacturing content that MUST be well represented in this pathway (do not let the lesson be traditional-only): industrial automation and robotics, the Industrial Internet of Things (IIoT) and smart sensors, manufacturing data analytics, and CNC / computer-controlled machining. Frame these as the current direction of the field alongside traditional foundations. Framework field: "Smart Manufacturing / Industry 4.0" (or cite a specific credential such as SACA — Smart Automation Certification Alliance — where clearly relevant; otherwise describe the concept).
+- MSSC (Manufacturing Skill Standards Council) Certified Production Technician (CPT) — a common production/technician credential; and SkillsUSA — the CTSO most associated with this cluster (align applied tasks and professionalism to relevant events, e.g., Precision Machining, Automated Manufacturing Technology, Additive Manufacturing / 3D printing). Framework field: "MSSC" or "SkillsUSA".
+- OSHA — general-industry workplace-safety standards are directly relevant given machine-tool and industrial-equipment risk; align safety content to OSHA expectations (machine guarding, PPE, lockout/tagout, material handling). Framework field: "OSHA". (See the SAFETY directive in this prompt for how to handle shop safety.)
+Content areas to prioritize: (a) manufacturing fundamentals — production processes, materials (metal, wood, plastics), and hand tools progressing to more complex equipment, at a tier-appropriate depth; (b) SMART MANUFACTURING / INDUSTRY 4.0 — automation, robotics, IIoT, data analytics, and CNC/computer-controlled machining (the specifically requested modern focus — ensure STRONG coverage, not an afterthought); (c) quality assurance & precision — blueprint/print reading, precision measurement, and quality-control processes; and (d) shop safety — machine-tool safety, PPE, lockout/tagout basics, and safe material handling (treat with the same seriousness as clinical safety — see the SAFETY directive).`,
   }[pathway] ?? ""
 
   const rigorNote =
@@ -127,6 +135,7 @@ function getCredentialFocus(pathway) {
     career_readiness: ["Employability-skills badges / digital-literacy micro-credentials appropriate for middle school (e.g., typing proficiency, Google/Microsoft basics)", "FBLA-Middle Level or SkillsUSA recognition (career-readiness competitive events)", "ACT WorkKeys National Career Readiness Certificate (NCRC) — introduced as a longer-term high-school/adult goal, not attained in middle school"],
     information_technology: ["CompTIA IT Fundamentals+ (ITF+) — entry-level IT credential (with A+ / Network+ / Security+ as later goals)", "Web-design / development certificates & micro-credentials (e.g., Responsive Web Design, HTML & CSS)", "FBLA Website Design / Introduction to Programming competitive event recognition"],
     transportation: ["ASE Student Certification (ASE Education Foundation) — the recognized entry credential", "ASE Maintenance & Light Repair (MLR) certification track — the professional-technician goal", "SkillsUSA competitive-event recognition (e.g., Automotive Service Technology); OSHA-10 / shop-safety credential where offered"],
+    manufacturing: ["NIMS credentials (e.g., Measurement, Materials & Safety; Machining Level I) — the recognized entry credentials", "MSSC Certified Production Technician (CPT); SACA Smart Automation / Industry 4.0 credentials", "SkillsUSA competitive-event recognition (e.g., Precision Machining, Automated Manufacturing); OSHA-10 general-industry safety"],
   }[pathway] ?? []
 }
 
@@ -330,6 +339,28 @@ function getPhaseDescriptions(pathway) {
         desc: "Students reflect on how today's skill fits real service work and an automotive/transportation career, and name one safe-work habit and one thing they'd verify next time. Connect the skill to the credential it builds toward (ASE Student Certification) and a SkillsUSA event or apprenticeship. End with a brief exit ticket. 5–8 minutes.",
       },
     },
+    manufacturing: {
+      warm_up: {
+        name: "Shop-Floor Hook",
+        desc: "Open with a concrete manufacturing scenario — a real product and 'how is this made?', a smart-factory / robotics / 3D-printing clip, a defective vs. in-spec part, or a named process (machining, welding, additive). Students react as a technician would: what process made this, and what's the first SAFE step? Connect to a real employer or role. 5–8 minutes.",
+      },
+      whole_group_instruction: {
+        name: "Concept Instruction",
+        desc: "Teach the core manufacturing or Industry 4.0 concept/procedure directly using correct vocabulary (process and machine names, tolerance, GD&T, CNC, PLC, IIoT, robotics, automation, lockout/tagout). Ground it in the relevant NIMS area (and Smart Manufacturing / Industry 4.0 where applicable). ALWAYS teach the safety point to standard BEFORE any demonstration (machine guarding, PPE, lockout/tagout, safe material handling). Address a common misconception and check understanding. 8–12 minutes.",
+      },
+      fitness_activities: {
+        name: "Skill Demonstration",
+        desc: "Model the manufacturing skill step by step the way it's done on the shop floor — taking a precision measurement, reading a print/blueprint, setting up or simulating a machine/CNC operation, a bench task, or a robotics/automation demo — narrating EACH step AND its safety control (guards in place, PPE, lockout/tagout, clear work area, no loose clothing near rotating tools). Students watch, then walk through it once with close teacher support. 5–10 minutes.",
+      },
+      independent_practice: {
+        name: "Hands-On Production Application",
+        desc: "Students apply the skill in a realistic, tier-appropriate lab/simulation: take and record precision measurements, read a blueprint and identify features/tolerances, run a quality-control check, program or simulate a CNC / robotics / automation task, or (at the MS Exploratory level) a hands-on process-ID or Industry-4.0 exploration station. State exactly what students do, what an in-spec result looks like, and what the teacher SUPERVISES. Include a checklist/rubric aligned to a NIMS competency, and require the relevant safety steps to be checked off before and during work. Emphasize direct supervision. 15–20 minutes.",
+      },
+      closure: {
+        name: "Reflection & Career Connection",
+        desc: "Students reflect on how today's skill fits real production work and a modern (smart) manufacturing career, and name one safe-work habit and one quality/precision practice they'd carry forward. Connect the skill to the credential it builds toward (NIMS / MSSC CPT) and a SkillsUSA event or apprenticeship. End with a brief exit ticket. 5–8 minutes.",
+      },
+    },
   }
   return map[pathway] ?? map.hospitality
 }
@@ -386,6 +417,11 @@ function getPathwaySequence(pathway) {
       { level: "concentrator", course: "Automotive Service Technology II / Maintenance & Light Repair", description: "Applied MLR service and maintenance across systems to ASE MLR standards, systematic diagnosis, service-manual use, and shop safety to standard, with SkillsUSA competition alignment." },
       { level: "completer", course: "Advanced Automotive / MLR Capstone, ASE & Work-Based Learning", description: "Capstone service work, ASE Student Certification preparation, SkillsUSA competitive events, a co-op or registered (pre-)apprenticeship, and supervised work-based learning in a real service facility." },
     ],
+    manufacturing: [
+      { level: "introductory", course: "Introduction to Manufacturing / Manufacturing Technology I", description: "Foundations — shop safety and tool use, production processes and materials (metal/wood/plastics), precision measurement and print reading, and an introduction to automation, robotics, and smart-manufacturing (Industry 4.0) concepts." },
+      { level: "concentrator", course: "Precision Machining / Advanced (Smart) Manufacturing", description: "Applied machining and production to NIMS standards, CNC / computer-controlled machining, automation and robotics, IIoT and manufacturing data, quality control, and shop safety to OSHA standard, with SkillsUSA alignment." },
+      { level: "completer", course: "Manufacturing Capstone / NIMS, Smart Manufacturing & Work-Based Learning", description: "Capstone production project, NIMS (and MSSC CPT / SACA Industry 4.0) credential attainment, SkillsUSA competitive events, a registered (pre-)apprenticeship or co-op, and supervised work-based learning in a real manufacturing facility." },
+    ],
   }[pathway] ?? []
 }
 
@@ -394,7 +430,7 @@ function getPathwaySequence(pathway) {
 // Work-Based Learning (HQWBL) model, which recognizes a broader set of 12 methods than
 // the internship/shadow/speaker default.
 function getWblGuidance(pathway) {
-  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation") {
+  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing") {
     const emphasis = pathway === "health_science"
       ? " Clinical experience is especially relevant for this pathway — prioritize clinical/hospital placements, patient-care rotations, and health-agency service learning where appropriate."
       : pathway === "education"
@@ -405,7 +441,9 @@ function getWblGuidance(pathway) {
             ? " Internship, entrepreneurship, and mentorship are especially relevant for this pathway — tech work lends itself to real internships, to entrepreneurship/freelance & portfolio work (building or maintaining real websites for clients, school clubs, or community organizations), and to mentorship with industry professionals. Prioritize these, plus a school-based enterprise (e.g., running the school/club website) where it fits the lesson."
             : pathway === "transportation"
               ? " Internship, cooperative education, and registered apprenticeship are especially relevant for this pathway — the automotive/transportation trades are apprenticeship-heavy, so prioritize co-op placements in real service facilities, youth/registered (pre-)apprenticeships, and internships at dealerships, independent shops, or fleet/transit operations, alongside mentorship with a certified (e.g., ASE) technician. Any hands-on placement must be properly supervised and follow the site's safety requirements."
-              : ""
+              : pathway === "manufacturing"
+                ? " Apprenticeship, internship, and cooperative education are especially relevant for this pathway — modern manufacturing is apprenticeship-heavy, so prioritize registered (pre-)apprenticeships and co-op placements in real production facilities, internships at manufacturers or machine shops, and mentorship with a NIMS-credentialed technician or manufacturing engineer. Any hands-on placement must be properly supervised and follow the site's OSHA safety requirements."
+                : ""
     return `\nThis pathway follows Virginia's High-Quality Work-Based Learning (HQWBL) model, which recognizes 12 methods: job shadowing, service learning, mentorship, externship, school-based enterprise, internship, entrepreneurship, clinical experience, cooperative education, youth registered apprenticeship, registered apprenticeship, and supervised agricultural experience. When filling the fields below, draw the most lesson-appropriate ideas from this broader set (not only internships/shadows) — e.g., service learning with a community agency, a clinical experience, a school-based enterprise, or a mentorship — and fold them into the internships and job_shadows arrays as fits this lesson's content and tier.${emphasis}`
   }
   return ""
@@ -421,6 +459,11 @@ function getSafetyGuidance(pathway) {
     return `
 
 SAFETY (safety_notes field) — CRITICAL FOR THIS PATHWAY: Automotive/transportation shop work involves REAL physical risk — vehicle lifts and jacks/jack stands, power and hand tools, hot components and exhaust, moving vehicles, batteries and (in hybrid/EV) high-voltage systems, chemicals and fluids, and eye/hearing/entanglement hazards. Treat safety with the SAME seriousness as a health-science clinical lesson — never generic "be careful." Populate the safety_notes array with SPECIFIC, lesson-relevant hazards and their controls (e.g., correct lift points and jack-stand use, wheel chocks, PPE — safety glasses/gloves/closed-toe shoes, tool inspection, disconnecting the battery / high-voltage precautions, ventilation for exhaust and fumes, safe fluid handling and disposal), and foreground the relevant safety point inside the Concept Instruction, Skill Demonstration, and Hands-On phases. The FIRST item in safety_notes MUST be this boundary statement, verbatim: "This lesson plan supports classroom and lab PLANNING only. It is not a substitute for your program's required shop-safety training, certification, supervision, and equipment/PPE. Follow your school's and district's safety policies and any applicable OSHA / ASE Education Foundation shop-safety requirements before any hands-on work."`
+  }
+  if (pathway === "manufacturing") {
+    return `
+
+SAFETY (safety_notes field) — CRITICAL FOR THIS PATHWAY: Manufacturing shop-floor work involves REAL physical risk — machine tools (mills, lathes, drill presses, band saws, grinders, CNC machines), rotating and cutting equipment, pinch and entanglement points, flying chips and debris, hot work/welding, heavy and awkward material handling, pneumatics/hydraulics, and electrical hazards. Treat safety with the SAME seriousness as a health-science clinical lesson — never generic "be careful." Populate the safety_notes array with SPECIFIC, lesson-relevant hazards and their controls (e.g., machine guarding and never removing or bypassing guards; PPE — safety glasses/face shield, hearing protection, closed-toe shoes, and NO loose clothing, gloves, jewelry, or long hair near rotating tools; lockout/tagout (LOTO) before any setup, service, or clearing of a jam; safe material handling and team lifting; keeping the floor and work area clear of chips, oil, and debris; and inspecting tools and machines before use), and foreground the relevant safety point inside the Concept Instruction, Skill Demonstration, and Hands-On phases. The FIRST item in safety_notes MUST be this boundary statement, verbatim: "This lesson plan supports classroom and lab PLANNING only. It is not a substitute for your program's required shop-safety training, certification, supervision, and equipment/PPE. Follow your school's and district's safety policies and any applicable OSHA / NIMS shop-safety requirements before any hands-on work."`
   }
   return ""
 }
@@ -549,7 +592,7 @@ export function buildCteLessonSchema(includeELL = false) {
 
 /**
  * @param {Object} input
- * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'} input.pathway
+ * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'} input.pathway
  * @param {'ms'|'hs'} input.tier
  * @param {'introductory'|'concentrator'|'completer'|''} [input.level]  required when tier === 'hs'
  * @param {string}  input.topic

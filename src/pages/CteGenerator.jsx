@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Wrench, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
+import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Wrench, Factory, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lucide-react'
 import { generateCteLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
@@ -62,6 +62,12 @@ const PATHWAYS = [
     description: 'Automotive maintenance & light repair (MLR) — systems, shop safety, diagnostics & the wider T&L cluster',
     icon: Wrench,
   },
+  {
+    value: 'manufacturing',
+    label: 'Manufacturing',
+    description: 'Production & machining, Smart Manufacturing / Industry 4.0 (automation, robotics, IIoT), QA & shop safety',
+    icon: Factory,
+  },
 ]
 
 const LEVELS = [
@@ -80,6 +86,7 @@ const TOPIC_PLACEHOLDERS = {
   career_readiness: 'e.g. Interest & strengths self-assessment, Exploring the 16 career clusters, Writing a professional email, Teamwork & communication skills, Setting a career goal, Age-appropriate resume basics',
   information_technology: 'e.g. HTML page structure, Styling with CSS, Responsive design basics, Wireframing a web page, How the internet works, Cybersecurity & strong passwords, Building a portfolio site',
   transportation: 'e.g. Brake system inspection, How a 4-stroke engine works, Suspension & steering check, Reading a service manual, Shop safety & vehicle-lift operation, Intro to the transportation & logistics cluster',
+  manufacturing: 'e.g. Precision measurement with calipers, Blueprint/print reading, Intro to CNC machining, Robotics & automation basics, IIoT & smart sensors, Lockout/tagout & machine safety, Materials & production processes',
 }
 
 const MATERIAL_PLACEHOLDERS = {
@@ -172,6 +179,16 @@ const MATERIAL_PLACEHOLDERS = {
     'e.g. Shop-safety checklist (printed)',
     'e.g. Digital multimeter',
     'e.g. Shop rags & fluid-spill kit',
+  ],
+  manufacturing: [
+    'e.g. Safety glasses & hearing protection',
+    'e.g. Digital calipers / micrometers — 1 per pair',
+    'e.g. Sample blueprints / prints',
+    'e.g. Metal/wood/plastic stock or sample parts',
+    'e.g. Machine-safety & lockout/tagout checklist',
+    'e.g. CNC simulator / robotics kit (where available)',
+    'e.g. Go/no-go gauges or QC check sheets',
+    'e.g. Bench vise & basic hand tools',
   ],
 }
 
@@ -337,11 +354,11 @@ export default function CteGenerator() {
           </div>
         </div>
         <p className="text-sm text-ink-400 mt-3">
-          Generate a complete Career &amp; Technical Education lesson across nine pathways:
+          Generate a complete Career &amp; Technical Education lesson across ten pathways:
           Hospitality &amp; Tourism, Finance, Marketing, Human Services / FCS, Health Science,
-          Education &amp; Training, Career Readiness (MS foundations), Information Technology, or
-          Transportation, Distribution &amp; Logistics — with work-based learning and career
-          pathway context built in.
+          Education &amp; Training, Career Readiness (MS foundations), Information Technology,
+          Transportation, Distribution &amp; Logistics, or Manufacturing — with work-based
+          learning and career pathway context built in.
         </p>
       </div>
 
@@ -535,6 +552,7 @@ export default function CteGenerator() {
                 pathway === 'career_readiness'? 'e.g. Demonstrate teamwork on a group task (Employability Skills: Effective Relationships)' :
                 pathway === 'information_technology' ? 'e.g. Build a responsive page layout with HTML/CSS (ISTE 4: Innovative Designer)' :
                 pathway === 'transportation'  ? 'e.g. Inspect and measure brake pad wear (ASE MLR — Brakes)' :
+                pathway === 'manufacturing'   ? 'e.g. Measure a part to tolerance with a caliper (NIMS — Measurement, Materials & Safety)' :
                                                 'e.g. Identify a target market (DECA PI)'
               }
               value={targetCompetency}

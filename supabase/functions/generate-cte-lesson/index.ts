@@ -4,7 +4,7 @@ import { callClaudeForJson } from "../_shared/anthropic.js"
 import { captureLessonGenerated } from "../_shared/analytics.js"
 import { reportError } from "../_shared/sentry.js"
 
-const VALID_PATHWAYS = ["hospitality", "finance", "marketing", "human_services", "health_science", "education", "career_readiness", "information_technology", "transportation"]
+const VALID_PATHWAYS = ["hospitality", "finance", "marketing", "human_services", "health_science", "education", "career_readiness", "information_technology", "transportation", "manufacturing"]
 const VALID_TIERS = ["ms", "hs"]
 const VALID_LEVELS = ["introductory", "concentrator", "completer"]
 
