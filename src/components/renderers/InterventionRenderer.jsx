@@ -16,16 +16,16 @@ export default function InterventionRenderer({ lesson }) {
       {/* Header */}
       <header className="space-y-2 border-b border-ink-900 pb-4">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="label-eyebrow rounded px-2 py-0.5 bg-stone-500/15 text-stone-400">
+          <span className="label-eyebrow rounded px-2 py-0.5 bg-stone-500/15 text-ink-50">
             Intervention Planning · MTSS/RTI
           </span>
           {lesson.domain && (
-            <span className="rounded px-2 py-0.5 text-xs font-semibold bg-stone-500/20 text-stone-300">
+            <span className="rounded px-2 py-0.5 text-xs font-semibold bg-stone-500/20 text-ink-50">
               {DOMAIN_LABEL[lesson.domain] ?? lesson.domain}
             </span>
           )}
           {lesson.tier && (
-            <span className="rounded px-2 py-0.5 text-xs font-semibold bg-amber-500/15 text-amber-400">
+            <span className="rounded px-2 py-0.5 text-xs font-semibold bg-amber-500/15 text-ink-50">
               {lesson.tier}
             </span>
           )}
@@ -41,7 +41,7 @@ export default function InterventionRenderer({ lesson }) {
       {/* Concern + targeted skill */}
       {lesson.concern_summary && (
         <div className="rounded-lg border border-stone-500/25 bg-stone-500/5 px-4 py-3">
-          <p className="text-xs font-semibold uppercase tracking-wide text-stone-300 mb-0.5">Concern</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-ink-300 mb-0.5">Concern</p>
           <p className="text-sm text-ink-200">{lesson.concern_summary}</p>
         </div>
       )}
@@ -56,7 +56,7 @@ export default function InterventionRenderer({ lesson }) {
       {(lesson.tier || lesson.tier_rationale) && (
         <Section title="Tier Framing" icon={Layers} copyText={`${lesson.tier ?? ''} — ${lesson.tier_rationale ?? ''}`}>
           <p className="text-ink-300">
-            {lesson.tier && <span className="font-semibold text-stone-300">{lesson.tier}. </span>}
+            {lesson.tier && <span className="font-semibold text-ink-300">{lesson.tier}. </span>}
             {lesson.tier_rationale}
           </p>
         </Section>
@@ -96,7 +96,7 @@ export default function InterventionRenderer({ lesson }) {
             {steps.map((s, i) => (
               <li key={i} className="rounded-lg bg-ink-900 px-4 py-3">
                 <div className="mb-1 flex items-center gap-2">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-stone-500/25 text-xs font-semibold text-stone-300">{i + 1}</span>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-stone-500/25 text-xs font-semibold text-ink-50">{i + 1}</span>
                   <p className="text-sm font-semibold text-ink-100">{s.step}</p>
                 </div>
                 <p className="text-sm text-ink-300">{s.detail}</p>
@@ -107,7 +107,7 @@ export default function InterventionRenderer({ lesson }) {
 
         {iv.teacher_moves && (
           <p className="mt-3 text-sm text-ink-300">
-            <span className="font-semibold text-stone-300">Teacher moves: </span>{iv.teacher_moves}
+            <span className="font-semibold text-ink-300">Teacher moves: </span>{iv.teacher_moves}
           </p>
         )}
       </Section>
@@ -144,7 +144,7 @@ export default function InterventionRenderer({ lesson }) {
           <ul className="space-y-1.5 text-ink-300">
             {standards.map((s, i) => (
               <li key={i} className="text-sm">
-                <span className="rounded bg-stone-500/15 px-1.5 py-0.5 text-xs font-semibold text-stone-400">{s.framework}</span>
+                <span className="rounded bg-stone-500/15 px-1.5 py-0.5 text-xs font-semibold text-ink-50">{s.framework}</span>
                 <span className="ml-1">{s.note}</span>
               </li>
             ))}
@@ -164,7 +164,7 @@ export default function InterventionRenderer({ lesson }) {
       {lesson.disclaimer && (
         <div className="flex items-start gap-2.5 rounded-lg border border-amber-500/25 bg-amber-500/5 px-4 py-3">
           <ShieldAlert size={15} className="mt-0.5 shrink-0 text-amber-400" />
-          <p className="text-xs text-ink-300"><span className="font-medium text-amber-300">Important: </span>{lesson.disclaimer}</p>
+          <p className="text-xs text-ink-300"><span className="font-medium text-ink-300">Important: </span>{lesson.disclaimer}</p>
         </div>
       )}
     </div>

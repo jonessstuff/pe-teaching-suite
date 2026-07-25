@@ -220,7 +220,7 @@ export default function ClassroomManagementGenerator() {
                     type="button"
                     onClick={() => { setOutputType(o.id); setCard(null); setSaveStatus('idle') }}
                     className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${
-                      outputType === o.id ? 'border-indigo-400 bg-indigo-500/15 text-indigo-300' : 'border-ink-800 text-ink-400 hover:border-ink-600'
+                      outputType === o.id ? 'border-indigo-400 bg-indigo-500/15 text-ink-300' : 'border-ink-800 text-ink-400 hover:border-ink-600'
                     }`}
                   >
                     {o.label}
@@ -323,7 +323,7 @@ export default function ClassroomManagementGenerator() {
                     ))}
                   </div>
                   {goals.length < 4 && (
-                    <button type="button" onClick={addGoal} className="mt-2 text-sm font-medium text-indigo-300 hover:text-indigo-200">
+                    <button type="button" onClick={addGoal} className="mt-2 text-sm font-medium text-ink-300 hover:text-ink-100">
                       + Add goal
                     </button>
                   )}
@@ -362,7 +362,7 @@ export default function ClassroomManagementGenerator() {
                         type="button"
                         onClick={() => { setNoteType(n.id); setCard(null); setSaveStatus('idle') }}
                         className={`flex flex-col items-start rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${
-                          noteType === n.id ? 'border-indigo-400 bg-indigo-500/15 text-indigo-300' : 'border-ink-800 text-ink-400 hover:border-ink-600'
+                          noteType === n.id ? 'border-indigo-400 bg-indigo-500/15 text-ink-300' : 'border-ink-800 text-ink-400 hover:border-ink-600'
                         }`}
                       >
                         <span>{n.label}</span>
@@ -460,7 +460,7 @@ export default function ClassroomManagementGenerator() {
                         type="button"
                         onClick={() => setNoteTone(t.id)}
                         className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${
-                          noteTone === t.id ? 'border-indigo-400 bg-indigo-500/15 text-indigo-300' : 'border-ink-800 text-ink-400 hover:border-ink-600'
+                          noteTone === t.id ? 'border-indigo-400 bg-indigo-500/15 text-ink-300' : 'border-ink-800 text-ink-400 hover:border-ink-600'
                         }`}
                       >
                         {t.label}
@@ -494,7 +494,7 @@ export default function ClassroomManagementGenerator() {
                       type="button"
                       onClick={() => setGradeBand(g.id)}
                       className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${
-                        gradeBand === g.id ? 'border-indigo-400 bg-indigo-500/15 text-indigo-300' : 'border-ink-800 text-ink-400 hover:border-ink-600'
+                        gradeBand === g.id ? 'border-indigo-400 bg-indigo-500/15 text-ink-300' : 'border-ink-800 text-ink-400 hover:border-ink-600'
                       }`}
                     >
                       {g.label}
@@ -555,7 +555,7 @@ export default function ClassroomManagementGenerator() {
             </div>
 
             {error && (
-              <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400">{error}</div>
+              <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-ink-100">{error}</div>
             )}
 
             <button

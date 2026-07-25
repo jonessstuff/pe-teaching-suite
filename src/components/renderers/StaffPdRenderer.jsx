@@ -11,11 +11,11 @@ export default function StaffPdRenderer({ lesson }) {
       {/* Header */}
       <header className="space-y-2 border-b border-ink-900 pb-4">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="label-eyebrow rounded px-2 py-0.5 bg-gold-500/15 text-gold-400 flex items-center gap-1">
+          <span className="label-eyebrow rounded px-2 py-0.5 bg-gold-500/15 text-ink-50 flex items-center gap-1">
             <Presentation size={12} /> Staff PD &amp; Meeting Planning
           </span>
           {lesson.content_area && (
-            <span className="rounded px-2 py-0.5 text-xs font-semibold bg-gold-500/20 text-gold-300">
+            <span className="rounded px-2 py-0.5 text-xs font-semibold bg-gold-500/20 text-ink-50">
               {lesson.content_area}
             </span>
           )}
@@ -49,7 +49,7 @@ export default function StaffPdRenderer({ lesson }) {
           <ul className="space-y-1.5 text-ink-300">
             {standards.map((s, i) => (
               <li key={i} className="text-sm">
-                <span className="rounded bg-gold-500/15 px-1.5 py-0.5 text-xs font-semibold text-gold-400">{s.standard}</span>
+                <span className="rounded bg-gold-500/15 px-1.5 py-0.5 text-xs font-semibold text-ink-50">{s.standard}</span>
                 <span className="ml-1">{s.note}</span>
               </li>
             ))}
@@ -94,7 +94,7 @@ function SectionBlock({ section }) {
           {steps.map((st, i) => (
             <li key={i} className="rounded-lg bg-ink-900 px-4 py-3">
               <div className="mb-1 flex items-center gap-2">
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gold-500/25 text-xs font-semibold text-gold-300">{i + 1}</span>
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gold-500/25 text-xs font-semibold text-ink-50">{i + 1}</span>
                 <p className="text-sm font-semibold text-ink-100">{st.label}</p>
                 {st.minutes ? (
                   <span className="flex items-center gap-0.5 rounded bg-ink-800 px-1.5 py-0.5 text-[11px] font-medium text-ink-400">
@@ -137,7 +137,7 @@ function TemplateBlock({ template }) {
   return (
     <div className="rounded-lg border border-ink-800 bg-ink-900/60 p-4">
       <div className="mb-2 flex items-center justify-between">
-        <span className="rounded bg-gold-500/15 px-2 py-0.5 text-xs font-semibold text-gold-400">{template.audience}</span>
+        <span className="rounded bg-gold-500/15 px-2 py-0.5 text-xs font-semibold text-ink-50">{template.audience}</span>
         <button type="button" onClick={handleCopy} className="flex items-center gap-1 text-xs text-ink-400 hover:text-gold-400 transition-colors print:hidden">
           {copied ? <Check size={13} /> : <Copy size={13} />}{copied ? 'Copied' : 'Copy'}
         </button>

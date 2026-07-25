@@ -144,10 +144,10 @@ export default function MakerProjectGenerator({ origin = 'stem' }) {
 
       {/* Info notice */}
       <div className="flex items-start gap-3 rounded-lg border border-slate-500/30 bg-slate-500/10 px-4 py-3">
-        <Info size={16} className="mt-0.5 shrink-0 text-slate-300" />
+        <Info size={16} className="mt-0.5 shrink-0 text-ink-300" />
         <div className="text-sm">
-          <p className="font-medium text-slate-200">Hands-on, safety-forward maker planning</p>
-          <p className="mt-0.5 text-slate-400">
+          <p className="font-medium text-ink-100">Hands-on, safety-forward maker planning</p>
+          <p className="mt-0.5 text-ink-300">
             Projects use the engineering design process and loosely anchor to ISTE competencies. Makerspace programming varies widely by school — verify equipment, budget, and safety against your own lab&rsquo;s policies. Don&rsquo;t enter student names.
           </p>
         </div>
@@ -241,7 +241,7 @@ export default function MakerProjectGenerator({ origin = 'stem' }) {
         </div>
 
         {error && (
-          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">
+          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-ink-100">
             {error}
           </div>
         )}

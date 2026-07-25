@@ -312,7 +312,7 @@ export default function StemGenerator() {
                 </div>
                 <div>
                   <p className={`text-sm font-semibold leading-tight ${
-                    focusArea === value ? 'text-cyan-300' : 'text-ink-200'
+                    focusArea === value ? 'text-ink-300' : 'text-ink-200'
                   }`}>
                     {label}
                   </p>
@@ -553,7 +553,7 @@ export default function StemGenerator() {
         </div>
 
         {error && (
-          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">
+          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-ink-100">
             {error}
           </div>
         )}

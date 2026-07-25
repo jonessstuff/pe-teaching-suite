@@ -88,11 +88,11 @@ export default function ArtPlanRenderer({ lesson }) {
           <span>{lesson.period_label ?? ''}</span>
           <div className="flex items-center gap-2">
             {lesson.stage_label && (
-              <span className="label-eyebrow rounded px-2 py-0.5 bg-orange-500/15 text-orange-400">
+              <span className="label-eyebrow rounded px-2 py-0.5 bg-orange-500/15 text-ink-50">
                 {lesson.stage_label}
               </span>
             )}
-            <span className="label-eyebrow rounded px-2 py-0.5 bg-orange-500/15 text-orange-400">
+            <span className="label-eyebrow rounded px-2 py-0.5 bg-orange-500/15 text-ink-50">
               Art
               {gradeBands.length > 0
                 ? ` · Grade${gradeBands.length > 1 ? 's' : ''} ${gradeBands.map(formatGrade).join('/')}`
@@ -327,7 +327,7 @@ export default function ArtPlanRenderer({ lesson }) {
                   href={`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-orange-400 hover:text-orange-300 underline underline-offset-2"
+                  className="text-orange-400 hover:text-ink-300 underline underline-offset-2"
                 >
                   {query}
                 </a>

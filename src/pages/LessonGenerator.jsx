@@ -607,7 +607,7 @@ export default function LessonGenerator() {
                   </div>
                   {unitDays === 3 && gradeBands.length >= 3 && (
                     <div className="mt-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2.5">
-                      <p className="text-xs text-amber-300">
+                      <p className="text-xs text-ink-300">
                         Heads up — 3 days × 3+ grade bands is a large generation and may time out. Consider 2 days or 2 grade bands for best results.
                       </p>
                     </div>

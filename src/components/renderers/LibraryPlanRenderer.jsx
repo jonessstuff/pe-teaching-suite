@@ -86,7 +86,7 @@ export default function LibraryPlanRenderer({ lesson }) {
         <div className="flex items-center justify-between text-sm text-ink-400">
           <span>{lesson.scheduled_date ?? 'Date TBD'}</span>
           <span>{lesson.period_label ?? ''}</span>
-          <span className="label-eyebrow rounded px-2 py-0.5 bg-blue-500/15 text-blue-400">
+          <span className="label-eyebrow rounded px-2 py-0.5 bg-blue-500/15 text-ink-50">
             Library/Media
             {gradeBands.length > 0
               ? ` · Grade${gradeBands.length > 1 ? 's' : ''} ${gradeBands.map(formatGrade).join('/')}`
@@ -316,7 +316,7 @@ export default function LibraryPlanRenderer({ lesson }) {
                   href={`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300 underline underline-offset-2"
+                  className="text-blue-400 hover:text-ink-300 underline underline-offset-2"
                 >
                   {query}
                 </a>

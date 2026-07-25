@@ -123,8 +123,8 @@ export default function StaffPdGenerator() {
       <div className="flex items-start gap-3 rounded-lg border border-gold-500/30 bg-gold-500/10 px-4 py-3">
         <ShieldAlert size={16} className="mt-0.5 shrink-0 text-gold-400" />
         <div className="text-sm">
-          <p className="font-medium text-gold-200">Practical planning support for building leaders</p>
-          <p className="mt-0.5 text-gold-300/90">
+          <p className="font-medium text-ink-100">Practical planning support for building leaders</p>
+          <p className="mt-0.5 text-ink-300">
             Job-embedded, collaborative professional-learning plans for teachers and staff. This is <span className="font-medium">not</span> a School Improvement Plan, a compliance/accountability document, or a teacher-evaluation instrument — walkthrough look-fors are informal &amp; formative.
           </p>
         </div>
@@ -190,7 +190,7 @@ export default function StaffPdGenerator() {
         </div>
 
         {error && (
-          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">{error}</div>
+          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-ink-100">{error}</div>
         )}
 
         <button type="submit" disabled={loading} className="btn-primary w-full justify-center gap-2 py-3 text-base disabled:opacity-50">

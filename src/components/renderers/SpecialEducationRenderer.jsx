@@ -54,7 +54,7 @@ function MultiTierPlan({ lesson }) {
             {tiers.map((t, i) => (
               <div key={i} className="rounded-lg border border-violet-500/20 bg-violet-500/5 px-4 py-3">
                 <div className="mb-1 flex items-center gap-2">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-500/25 text-xs font-semibold text-violet-300">{i + 1}</span>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-500/25 text-xs font-semibold text-ink-50">{i + 1}</span>
                   <p className="text-sm font-semibold text-ink-100">{t.tier_name}</p>
                 </div>
                 {t.who_it_serves && <p className="text-xs text-ink-500 mb-1.5 italic">{t.who_it_serves}</p>}
@@ -117,7 +117,7 @@ function FunctionalPlan({ lesson }) {
             {seq.map((s, i) => (
               <li key={i} className="rounded-lg bg-ink-900 px-4 py-3">
                 <div className="mb-1 flex items-center gap-2">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-500/25 text-xs font-semibold text-violet-300">{i + 1}</span>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-500/25 text-xs font-semibold text-ink-50">{i + 1}</span>
                   <p className="text-sm font-semibold text-ink-100">{s.step}</p>
                 </div>
                 <p className="text-sm text-ink-300">{s.what_students_do}</p>
@@ -144,7 +144,7 @@ function FunctionalPlan({ lesson }) {
 
       {lesson.age_respect_note && (
         <div className="rounded-lg border border-violet-500/25 bg-violet-500/5 px-4 py-3">
-          <p className="text-xs font-semibold text-violet-300 mb-0.5">Age &amp; dignity</p>
+          <p className="text-xs font-semibold text-ink-300 mb-0.5">Age &amp; dignity</p>
           <p className="text-sm text-ink-300">{lesson.age_respect_note}</p>
         </div>
       )}
@@ -189,7 +189,7 @@ function CoTeachingPlan({ lesson }) {
           <div className="space-y-3">
             {models.map((m, i) => (
               <div key={i} className="rounded-lg bg-ink-900 px-4 py-3">
-                <p className="text-sm font-semibold text-violet-300 mb-1">{m.model}</p>
+                <p className="text-sm font-semibold text-ink-300 mb-1">{m.model}</p>
                 {m.how_this_topic_works && <p className="text-sm text-ink-300"><span className="font-medium text-ink-200">How this topic works: </span>{m.how_this_topic_works}</p>}
                 {m.sped_teacher_role && <p className="mt-1 text-sm text-ink-300"><span className="font-medium text-ink-200">Your role: </span>{m.sped_teacher_role}</p>}
               </div>
@@ -213,7 +213,7 @@ function PlanHeader({ badge, gradeBands, title, subtitle }) {
   const bands = gradeBands ?? []
   return (
     <header className="space-y-2 border-b border-ink-900 pb-4">
-      <span className="label-eyebrow rounded px-2 py-0.5 bg-violet-500/15 text-violet-400">
+      <span className="label-eyebrow rounded px-2 py-0.5 bg-violet-500/15 text-ink-50">
         {badge}
         {bands.length > 0 ? ` · Grade${bands.length > 1 ? 's' : ''} ${bands.map(formatGrade).join('/')}` : ''}
       </span>
@@ -277,7 +277,7 @@ function StandardsBlock({ items }) {
       <ul className="space-y-1.5 text-ink-300">
         {list.map((s, i) => (
           <li key={i} className="text-sm">
-            <span className="rounded bg-violet-500/15 px-1.5 py-0.5 text-xs font-semibold text-violet-400">{s.framework}</span>
+            <span className="rounded bg-violet-500/15 px-1.5 py-0.5 text-xs font-semibold text-ink-50">{s.framework}</span>
             <span className="ml-1">— {s.text}</span>
           </li>
         ))}

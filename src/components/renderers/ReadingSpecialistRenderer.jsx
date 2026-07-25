@@ -19,7 +19,7 @@ export default function ReadingSpecialistRenderer({ lesson }) {
     <div className="card max-w-3xl mx-auto p-8 space-y-6">
       {/* Header */}
       <header className="space-y-2 border-b border-ink-900 pb-4">
-        <span className="label-eyebrow rounded px-2 py-0.5 bg-sky-500/15 text-sky-400">
+        <span className="label-eyebrow rounded px-2 py-0.5 bg-sky-500/15 text-ink-50">
           Reading Specialists · Structured Literacy
           {gradeBands.length > 0
             ? ` · Grade${gradeBands.length > 1 ? 's' : ''} ${gradeBands.map(formatGrade).join('/')}`
@@ -48,7 +48,7 @@ export default function ReadingSpecialistRenderer({ lesson }) {
             {seq.map((s, i) => (
               <li key={i} className="rounded-lg bg-ink-900 px-4 py-3">
                 <div className="mb-1 flex items-center gap-2">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sky-500/20 text-xs font-semibold text-sky-400">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sky-500/20 text-xs font-semibold text-ink-50">
                     {i + 1}
                   </span>
                   <p className="text-sm font-semibold text-ink-100">{s.step}</p>
@@ -139,7 +139,7 @@ export default function ReadingSpecialistRenderer({ lesson }) {
           <ul className="space-y-1.5 text-ink-300">
             {(lesson.standards_alignment ?? []).map((s, i) => (
               <li key={i} className="text-sm">
-                <span className="rounded bg-sky-500/15 px-1.5 py-0.5 text-xs font-semibold text-sky-400">{s.framework}</span>
+                <span className="rounded bg-sky-500/15 px-1.5 py-0.5 text-xs font-semibold text-ink-50">{s.framework}</span>
                 {s.domain && <span className="ml-1 text-xs text-ink-500">{s.domain}</span>}
                 <span className="ml-1">— {s.text}</span>
               </li>

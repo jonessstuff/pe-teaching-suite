@@ -133,7 +133,7 @@ export default function EOYNarrativeGenerator() {
             </div>
           ))}
 
-          {error && <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">{error}</p>}
+          {error && <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-ink-100">{error}</p>}
 
           <button type="submit" disabled={status === 'generating'}
             className="flex items-center gap-2 rounded-xl bg-sky-500 px-6 py-3 font-semibold text-white hover:bg-sky-400 disabled:opacity-50 transition-colors">

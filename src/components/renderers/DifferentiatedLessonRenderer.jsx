@@ -1,9 +1,9 @@
 const PROFILE_COLORS = {
-  advanced:     { label: 'Advanced',         bg: 'bg-purple-500/10', border: 'border-purple-500/30', text: 'text-purple-400' },
-  below_grade:  { label: 'Below Grade Level', bg: 'bg-amber-500/10',  border: 'border-amber-500/30',  text: 'text-amber-400'  },
-  sensory:      { label: 'Sensory',           bg: 'bg-cyan-500/10',   border: 'border-cyan-500/30',   text: 'text-cyan-400'   },
-  ell:          { label: 'ELL',               bg: 'bg-blue-500/10',   border: 'border-blue-500/30',   text: 'text-blue-400'   },
-  physical:     { label: 'Physical Mods',     bg: 'bg-green-500/10',  border: 'border-green-500/30',  text: 'text-green-400'  },
+  advanced:     { label: 'Advanced',         bg: 'bg-purple-500/10', border: 'border-purple-500/30', text: 'text-ink-50' },
+  below_grade:  { label: 'Below Grade Level', bg: 'bg-amber-500/10',  border: 'border-amber-500/30',  text: 'text-ink-50'  },
+  sensory:      { label: 'Sensory',           bg: 'bg-cyan-500/10',   border: 'border-cyan-500/30',   text: 'text-ink-50'   },
+  ell:          { label: 'ELL',               bg: 'bg-blue-500/10',   border: 'border-blue-500/30',   text: 'text-ink-50'   },
+  physical:     { label: 'Physical Mods',     bg: 'bg-green-500/10',  border: 'border-green-500/30',  text: 'text-ink-50'  },
 }
 
 function DiffSection({ label, value }) {

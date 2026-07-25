@@ -29,7 +29,7 @@ export default function MakerProjectRenderer({ lesson }) {
     <div className="card max-w-3xl mx-auto p-8 space-y-6">
       {/* Header */}
       <header className="space-y-2 border-b border-ink-900 pb-4">
-        <span className="label-eyebrow rounded px-2 py-0.5 bg-slate-500/15 text-slate-400">
+        <span className="label-eyebrow rounded px-2 py-0.5 bg-slate-500/15 text-ink-50">
           Makerspace{lesson.project_type ? ` · ${lesson.project_type}` : ''}
           {gradeBands.length > 0
             ? ` · Grade${gradeBands.length > 1 ? 's' : ''} ${gradeBands.map(formatGrade).join('/')}`
@@ -61,7 +61,7 @@ export default function MakerProjectRenderer({ lesson }) {
           <div className="rounded-lg border border-amber-500/25 bg-amber-500/5 px-4 py-3">
             <div className="mb-1.5 flex items-center gap-2">
               <ShieldAlert size={15} className="text-amber-400" />
-              <span className="text-sm font-semibold text-amber-300">Safety procedures</span>
+              <span className="text-sm font-semibold text-ink-300">Safety procedures</span>
             </div>
             <ul className="list-disc list-inside space-y-1 text-sm text-ink-300">
               {(safety.procedures ?? []).map((p, i) => <li key={i}>{p}</li>)}
@@ -80,7 +80,7 @@ export default function MakerProjectRenderer({ lesson }) {
             {design.map((d, i) => (
               <li key={i} className="rounded-lg bg-ink-900 px-4 py-3">
                 <div className="mb-1 flex items-center gap-2">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-slate-500/25 text-xs font-semibold text-slate-300">{i + 1}</span>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-slate-500/25 text-xs font-semibold text-ink-50">{i + 1}</span>
                   <p className="text-sm font-semibold text-ink-100">{d.phase}</p>
                 </div>
                 <p className="text-sm text-ink-300">{d.what_students_do}</p>
@@ -97,7 +97,7 @@ export default function MakerProjectRenderer({ lesson }) {
           copyText={[cc.subject ? `Subject: ${cc.subject}` : '', cc.connection, cc.example ? `Example: ${cc.example}` : ''].filter(Boolean).join('\n\n')}
         >
           <div className="rounded-lg border border-slate-500/20 bg-slate-500/5 px-4 py-3">
-            {cc.subject && <p className="text-xs font-semibold text-slate-300 mb-1">{cc.subject}</p>}
+            {cc.subject && <p className="text-xs font-semibold text-ink-300 mb-1">{cc.subject}</p>}
             {cc.connection && <p className="text-sm text-ink-300">{cc.connection}</p>}
             {cc.example && <p className="mt-1.5 text-sm text-ink-400"><span className="font-medium text-ink-300">Example: </span>{cc.example}</p>}
           </div>
@@ -147,7 +147,7 @@ export default function MakerProjectRenderer({ lesson }) {
           <ul className="space-y-1.5 text-ink-300">
             {(lesson.standards_alignment ?? []).map((s, i) => (
               <li key={i} className="text-sm">
-                <span className="rounded bg-slate-500/20 px-1.5 py-0.5 text-xs font-semibold text-slate-300">{s.framework}</span>
+                <span className="rounded bg-slate-500/20 px-1.5 py-0.5 text-xs font-semibold text-ink-50">{s.framework}</span>
                 <span className="ml-1">— {s.text}</span>
               </li>
             ))}
@@ -201,7 +201,7 @@ function Section({ title, copyText, children }) {
           <button
             type="button"
             onClick={handleCopy}
-            className="flex items-center gap-1 text-xs text-ink-400 hover:text-slate-300 transition-colors print:hidden"
+            className="flex items-center gap-1 text-xs text-ink-400 hover:text-ink-300 transition-colors print:hidden"
             title="Copy this section to clipboard"
           >
             {copied ? <Check size={14} /> : <Copy size={14} />}

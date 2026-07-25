@@ -8,12 +8,12 @@ function formatGrade(g) {
 // Accent per subject — literal class strings so Tailwind's JIT compiles them.
 const ACCENTS = {
   'Reading Specialists': {
-    text: 'text-sky-400', text3: 'text-sky-300', chip: 'bg-sky-500/15 text-sky-400',
-    num: 'bg-sky-500/25 text-sky-300', box: 'border-sky-500/25 bg-sky-500/5', hover: 'hover:text-sky-400',
+    text: 'text-sky-400', text3: 'text-ink-300', chip: 'bg-sky-500/15 text-sky-400',
+    num: 'bg-sky-500/25 text-ink-300', box: 'border-sky-500/25 bg-sky-500/5', hover: 'hover:text-sky-400',
   },
   'Math Specialists': {
-    text: 'text-lime-400', text3: 'text-lime-300', chip: 'bg-lime-500/15 text-lime-400',
-    num: 'bg-lime-500/25 text-lime-300', box: 'border-lime-500/25 bg-lime-500/5', hover: 'hover:text-lime-400',
+    text: 'text-lime-400', text3: 'text-ink-300', chip: 'bg-lime-500/15 text-lime-400',
+    num: 'bg-lime-500/25 text-ink-300', box: 'border-lime-500/25 bg-lime-500/5', hover: 'hover:text-lime-400',
   },
 }
 

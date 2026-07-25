@@ -126,8 +126,8 @@ export default function SchoolCounselorGenerator() {
       <div className="flex items-start gap-3 rounded-lg border border-crimson-500/30 bg-crimson-500/10 px-4 py-3">
         <ShieldAlert size={16} className="mt-0.5 shrink-0 text-crimson-400" />
         <div className="text-sm">
-          <p className="font-medium text-crimson-200">Classroom guidance lessons only</p>
-          <p className="mt-0.5 text-crimson-300/90">
+          <p className="font-medium text-ink-100">Classroom guidance lessons only</p>
+          <p className="mt-0.5 text-ink-300">
             Generates Tier 1, whole-class School Counseling Core Curriculum lessons across the three ASCA domains. It does <span className="font-medium">not</span> generate individual/small-group counseling session plans or crisis-response protocols — those need clinical judgment and are outside this tool. Don&rsquo;t enter student names.
           </p>
         </div>
@@ -195,7 +195,7 @@ export default function SchoolCounselorGenerator() {
         </div>
 
         {error && (
-          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">
+          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-ink-100">
             {error}
           </div>
         )}

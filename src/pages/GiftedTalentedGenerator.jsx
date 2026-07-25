@@ -147,8 +147,8 @@ export default function GiftedTalentedGenerator() {
       <div className="flex items-start gap-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3">
         <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-400" />
         <div className="text-sm">
-          <p className="font-medium text-amber-300">Privacy notice</p>
-          <p className="mt-0.5 text-amber-400">
+          <p className="font-medium text-ink-300">Privacy notice</p>
+          <p className="mt-0.5 text-ink-300">
             Do not enter student names or personally identifiable information. This tool generates planning and instructional support only — it is not an identification decision or a substitute for your district&rsquo;s GT eligibility process.
           </p>
         </div>
@@ -266,7 +266,7 @@ export default function GiftedTalentedGenerator() {
         )}
 
         {error && (
-          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">
+          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-ink-100">
             {error}
           </div>
         )}

@@ -157,8 +157,8 @@ export default function SpecialEducationGenerator() {
       <div className="flex items-start gap-3 rounded-lg border border-violet-500/30 bg-violet-500/10 px-4 py-3">
         <ShieldCheck size={16} className="mt-0.5 shrink-0 text-violet-400" />
         <div className="text-sm">
-          <p className="font-medium text-violet-200">Instructional ideas, not IEPs</p>
-          <p className="mt-0.5 text-violet-300/90">
+          <p className="font-medium text-ink-100">Instructional ideas, not IEPs</p>
+          <p className="mt-0.5 text-ink-300">
             This module supports instructional planning only. It does not write IEP goals, diagnose or classify disabilities, or determine legal compliance. Treat every output as ideas to adapt to your specific students and their existing IEPs. Don&rsquo;t enter student names.
           </p>
         </div>
@@ -313,7 +313,7 @@ export default function SpecialEducationGenerator() {
         </div>
 
         {error && (
-          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">
+          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-ink-100">
             {error}
           </div>
         )}

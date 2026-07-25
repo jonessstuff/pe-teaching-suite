@@ -184,8 +184,8 @@ export default function MathSpecialistGenerator() {
       <div className="flex items-start gap-3 rounded-lg border border-lime-500/30 bg-lime-500/10 px-4 py-3">
         <Info size={16} className="mt-0.5 shrink-0 text-lime-400" />
         <div className="text-sm">
-          <p className="font-medium text-lime-300">Concept-first, reasoning-rich planning</p>
-          <p className="mt-0.5 text-lime-400/90">
+          <p className="font-medium text-ink-300">Concept-first, reasoning-rich planning</p>
+          <p className="mt-0.5 text-ink-300">
             Lessons build procedural fluency from conceptual understanding using Concrete–Representational–Abstract sequencing and the NCTM process standards — for both pull-out intervention and co-teaching. Don&rsquo;t enter student names or identifying information.
           </p>
         </div>
@@ -216,7 +216,7 @@ export default function MathSpecialistGenerator() {
                 onClick={() => chooseTutoringType(t.value)}
                 className={`rounded-lg border px-3 py-2 text-left text-sm transition-colors ${
                   tutoringType === t.value
-                    ? 'border-lime-500/40 bg-lime-500/10 text-lime-200'
+                    ? 'border-lime-500/40 bg-lime-500/10 text-ink-100'
                     : 'border-ink-700 bg-ink-900 text-ink-300 hover:border-ink-600'
                 }`}
               >
@@ -372,7 +372,7 @@ export default function MathSpecialistGenerator() {
         </div>
 
         {error && (
-          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">
+          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-ink-100">
             {error}
           </div>
         )}

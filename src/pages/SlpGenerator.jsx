@@ -152,8 +152,8 @@ export default function SlpGenerator() {
       <div className="flex items-start gap-3 rounded-lg border border-bronze-500/30 bg-bronze-500/10 px-4 py-3">
         <ShieldAlert size={16} className="mt-0.5 shrink-0 text-bronze-400" />
         <div className="text-sm">
-          <p className="font-medium text-bronze-200">Activity ideas, not clinical protocol</p>
-          <p className="mt-0.5 text-bronze-300/90">
+          <p className="font-medium text-ink-100">Activity ideas, not clinical protocol</p>
+          <p className="mt-0.5 text-ink-300">
             SLP is a licensed clinical profession. This tool supports activity planning only — it does <span className="font-medium">not</span> diagnose, determine eligibility, or replace clinical judgment. Treat every output as activities to adapt to your caseload and treatment plan. Don&rsquo;t enter student/patient names.
           </p>
         </div>
@@ -164,8 +164,8 @@ export default function SlpGenerator() {
         <div className="flex items-start gap-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3">
           <FlaskConical size={16} className="mt-0.5 shrink-0 text-amber-400" />
           <div className="text-sm">
-            <p className="font-medium text-amber-200">Experimental tier — for review</p>
-            <p className="mt-0.5 text-amber-300/90">
+            <p className="font-medium text-ink-100">Experimental tier — for review</p>
+            <p className="mt-0.5 text-ink-300">
               Adult rehabilitation is outside the platform&rsquo;s core K-12 focus and is a higher-stakes clinical population. The strictest boundary applies: general activity ideas only — no treatment plan, prognosis, or swallowing/feeding clinical guidance. Everything must be filtered through the treating clinician&rsquo;s own assessment and judgment.
             </p>
           </div>
@@ -237,7 +237,7 @@ export default function SlpGenerator() {
         </div>
 
         {error && (
-          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">
+          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-ink-100">
             {error}
           </div>
         )}

@@ -177,15 +177,15 @@ export default function InterventionGenerator() {
               <div key={en.id} className="card p-5 space-y-2">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="text-xs font-semibold text-ink-300">{fmtDate(en.entry_date)}</span>
-                  {en.domain && <span className="rounded px-2 py-0.5 text-xs font-semibold bg-stone-500/20 text-stone-300">{en.domain}</span>}
-                  {en.tier && <span className="rounded px-2 py-0.5 text-xs font-semibold bg-amber-500/15 text-amber-400">{en.tier}</span>}
+                  {en.domain && <span className="rounded px-2 py-0.5 text-xs font-semibold bg-stone-500/20 text-ink-50">{en.domain}</span>}
+                  {en.tier && <span className="rounded px-2 py-0.5 text-xs font-semibold bg-amber-500/15 text-ink-50">{en.tier}</span>}
                 </div>
                 <p className="text-sm font-semibold text-ink-100">{en.title}</p>
                 {en.targeted_skill && <p className="text-sm text-ink-400">Targeted: {en.targeted_skill}</p>}
 
                 {/* Progress-check nudge tied to the saved progress-monitoring */}
                 <div className="rounded-lg border border-stone-500/25 bg-stone-500/5 px-3 py-2 text-xs text-ink-300">
-                  <span className="font-semibold text-stone-300">Check next: </span>
+                  <span className="font-semibold text-ink-300">Check next: </span>
                   You tried this on {fmtDate(en.entry_date)}.
                   {en.recheck_frequency ? ` Re-check ${en.recheck_frequency}.` : ''}
                   {en.success_indicators ? ` It's working if: ${en.success_indicators}` : ''}
@@ -242,7 +242,7 @@ export default function InterventionGenerator() {
         {/* Save-to-history control */}
         <div className="mb-4 rounded-lg border border-stone-500/25 bg-stone-500/5 px-4 py-3 print:hidden">
           {historySavedFor ? (
-            <p className="flex items-center gap-2 text-sm text-stone-200">
+            <p className="flex items-center gap-2 text-sm text-ink-100">
               <Check size={16} className="text-stone-400" /> Saved to intervention history for <b>{historySavedFor}</b>.
             </p>
           ) : (
@@ -292,8 +292,8 @@ export default function InterventionGenerator() {
       <div className="flex items-start gap-3 rounded-lg border border-stone-500/30 bg-stone-500/10 px-4 py-3">
         <ShieldAlert size={16} className="mt-0.5 shrink-0 text-stone-400" />
         <div className="text-sm">
-          <p className="font-medium text-stone-200">Instructional intervention ideas only</p>
-          <p className="mt-0.5 text-stone-300/90">
+          <p className="font-medium text-ink-100">Instructional intervention ideas only</p>
+          <p className="mt-0.5 text-ink-300">
             Generates a tiered intervention with progress-monitoring suggestions from a described concern. It does <span className="font-medium">not</span> replace universal screening, determine tier placement or special-education eligibility, or serve as a documented RTI/MTSS compliance record. Use alongside your team&rsquo;s data and judgment. Don&rsquo;t enter student names.
           </p>
         </div>
@@ -347,7 +347,7 @@ export default function InterventionGenerator() {
         </div>
 
         {error && (
-          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">{error}</div>
+          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-ink-100">{error}</div>
         )}
 
         <button type="submit" disabled={loading} className="btn-primary w-full justify-center gap-2 py-3 text-base disabled:opacity-50">

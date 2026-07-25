@@ -219,10 +219,10 @@ export default function SubBinderRenderer({
 
         {emergencyNotes && (
           <div className="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 print:border-gray-400 print:bg-gray-100">
-            <p className="text-sm font-semibold text-amber-400 print:text-black">
+            <p className="text-sm font-semibold text-ink-100 print:text-black">
               Important Notes
             </p>
-            <p className="mt-1 whitespace-pre-wrap text-sm text-amber-200 print:text-gray-800">
+            <p className="mt-1 whitespace-pre-wrap text-sm text-ink-100 print:text-gray-800">
               {emergencyNotes}
             </p>
           </div>
@@ -235,7 +235,7 @@ export default function SubBinderRenderer({
         return (
           <div key={wi} className={wi > 0 ? 'print:break-before-page' : ''}>
             <div className="mb-4 flex items-center justify-between">
-              <span className="rounded-full bg-amber-500/15 px-3 py-1 text-xs font-semibold text-amber-400 print:rounded print:border print:border-gray-400 print:bg-transparent print:text-black">
+              <span className="rounded-full bg-amber-500/15 px-3 py-1 text-xs font-semibold text-ink-50 print:rounded print:border print:border-gray-400 print:bg-transparent print:text-black">
                 Week {wi + 1} of {localBinder.length}
               </span>
               <button

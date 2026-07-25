@@ -25,11 +25,11 @@ export default function EarlyChildhoodRenderer({ lesson }) {
       {/* Header */}
       <header className="space-y-2 border-b border-ink-900 pb-4">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="label-eyebrow rounded px-2 py-0.5 bg-grass-500/15 text-grass-400">
+          <span className="label-eyebrow rounded px-2 py-0.5 bg-grass-500/15 text-ink-50">
             Early Childhood · Play-Based (DAP)
           </span>
           {lesson.age_group && (
-            <span className="rounded px-2 py-0.5 text-xs font-semibold bg-grass-500/20 text-grass-300">
+            <span className="rounded px-2 py-0.5 text-xs font-semibold bg-grass-500/20 text-ink-50">
               {lesson.age_group}
             </span>
           )}
@@ -47,7 +47,7 @@ export default function EarlyChildhoodRenderer({ lesson }) {
 
       {lesson.big_idea && (
         <div className="rounded-lg border border-grass-500/25 bg-grass-500/5 px-4 py-3">
-          <p className="text-xs font-semibold uppercase tracking-wide text-grass-300 mb-0.5">Big idea &amp; wondering</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-ink-300 mb-0.5">Big idea &amp; wondering</p>
           <p className="text-sm italic text-ink-200">{lesson.big_idea}</p>
         </div>
       )}
@@ -67,7 +67,7 @@ export default function EarlyChildhoodRenderer({ lesson }) {
           <div className="grid gap-2 sm:grid-cols-2">
             {focus.map((f, i) => (
               <div key={i} className="rounded-lg bg-ink-900 px-3 py-2">
-                <p className="text-xs font-semibold text-grass-300">{f.domain}</p>
+                <p className="text-xs font-semibold text-ink-300">{f.domain}</p>
                 <p className="mt-0.5 text-sm text-ink-300">{f.description}</p>
               </div>
             ))}
@@ -88,12 +88,12 @@ export default function EarlyChildhoodRenderer({ lesson }) {
             {centers.map((c, i) => (
               <div key={i} className="rounded-lg border border-ink-800 bg-ink-900/60 p-4">
                 <div className="mb-1.5 flex flex-wrap items-center gap-2">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-grass-500/25 text-xs font-semibold text-grass-300">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-grass-500/25 text-xs font-semibold text-ink-50">
                     {i + 1}
                   </span>
                   <p className="text-sm font-semibold text-ink-100">{c.name}</p>
                   {(c.domains ?? []).map((d, di) => (
-                    <span key={di} className="rounded bg-grass-500/10 px-1.5 py-0.5 text-[10px] font-medium text-grass-400">
+                    <span key={di} className="rounded bg-grass-500/10 px-1.5 py-0.5 text-[10px] font-medium text-ink-50">
                       {d}
                     </span>
                   ))}
@@ -202,18 +202,18 @@ export default function EarlyChildhoodRenderer({ lesson }) {
         >
           {standards.naeyc_dap && (
             <div className="mb-3">
-              <p className="text-xs font-semibold text-grass-300">NAEYC — Developmentally Appropriate Practice</p>
+              <p className="text-xs font-semibold text-ink-300">NAEYC — Developmentally Appropriate Practice</p>
               <p className="mt-0.5 text-sm text-ink-300">{standards.naeyc_dap}</p>
             </div>
           )}
 
           {naeycStandards.length > 0 && (
             <div className="mb-3">
-              <p className="mb-1 text-xs font-semibold text-grass-300">NAEYC Professional Standards &amp; Competencies</p>
+              <p className="mb-1 text-xs font-semibold text-ink-300">NAEYC Professional Standards &amp; Competencies</p>
               <ul className="space-y-1.5 text-ink-300">
                 {naeycStandards.map((s, i) => (
                   <li key={i} className="text-sm">
-                    <span className="rounded bg-grass-500/15 px-1.5 py-0.5 text-xs font-semibold text-grass-400">{s.code}</span>
+                    <span className="rounded bg-grass-500/15 px-1.5 py-0.5 text-xs font-semibold text-ink-50">{s.code}</span>
                     <span className="ml-1">{s.text}</span>
                   </li>
                 ))}
@@ -223,11 +223,11 @@ export default function EarlyChildhoodRenderer({ lesson }) {
 
           {elof.length > 0 && (
             <div>
-              <p className="mb-1 text-xs font-semibold text-grass-300">Head Start Early Learning Outcomes Framework (ELOF)</p>
+              <p className="mb-1 text-xs font-semibold text-ink-300">Head Start Early Learning Outcomes Framework (ELOF)</p>
               <ul className="space-y-1.5 text-ink-300">
                 {elof.map((e, i) => (
                   <li key={i} className="text-sm">
-                    <span className="rounded bg-grass-500/15 px-1.5 py-0.5 text-xs font-semibold text-grass-400">{e.domain}</span>
+                    <span className="rounded bg-grass-500/15 px-1.5 py-0.5 text-xs font-semibold text-ink-50">{e.domain}</span>
                     <span className="ml-1">{e.text}</span>
                   </li>
                 ))}
@@ -247,7 +247,7 @@ export default function EarlyChildhoodRenderer({ lesson }) {
       {lesson.teacher_note && (
         <div className="flex items-start gap-2.5 rounded-lg border border-grass-500/25 bg-grass-500/5 px-4 py-3">
           <Sparkles size={15} className="mt-0.5 shrink-0 text-grass-400" />
-          <p className="text-xs text-ink-300"><span className="font-medium text-grass-300">Note: </span>{lesson.teacher_note}</p>
+          <p className="text-xs text-ink-300"><span className="font-medium text-ink-300">Note: </span>{lesson.teacher_note}</p>
         </div>
       )}
     </div>

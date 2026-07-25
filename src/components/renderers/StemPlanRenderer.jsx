@@ -96,14 +96,14 @@ export default function StemPlanRenderer({ lesson }) {
           <span>{lesson.period_label ?? ''}</span>
           <div className="flex items-center gap-2 flex-wrap">
             {lesson.stage_label && (
-              <span className="label-eyebrow rounded px-2 py-0.5 bg-cyan-500/15 text-cyan-400">
+              <span className="label-eyebrow rounded px-2 py-0.5 bg-cyan-500/15 text-ink-50">
                 {lesson.stage_label}
               </span>
             )}
-            <span className="label-eyebrow rounded px-2 py-0.5 bg-cyan-500/15 text-cyan-400">
+            <span className="label-eyebrow rounded px-2 py-0.5 bg-cyan-500/15 text-ink-50">
               {focusLabel}
             </span>
-            <span className="label-eyebrow rounded px-2 py-0.5 bg-cyan-500/15 text-cyan-400">
+            <span className="label-eyebrow rounded px-2 py-0.5 bg-cyan-500/15 text-ink-50">
               STEM
               {gradeBands.length > 0
                 ? ` · Grade${gradeBands.length > 1 ? 's' : ''} ${gradeBands.map(formatGrade).join('/')}`
@@ -342,7 +342,7 @@ export default function StemPlanRenderer({ lesson }) {
                   href={`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-cyan-400 hover:text-cyan-300 underline underline-offset-2"
+                  className="text-cyan-400 hover:text-ink-300 underline underline-offset-2"
                 >
                   {query}
                 </a>

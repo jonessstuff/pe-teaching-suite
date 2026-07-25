@@ -24,12 +24,12 @@ export default function EslSpecialistRenderer({ lesson }) {
       {/* Header */}
       <header className="space-y-2 border-b border-ink-900 pb-4">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="label-eyebrow rounded px-2 py-0.5 bg-fuchsia-500/15 text-fuchsia-400">
+          <span className="label-eyebrow rounded px-2 py-0.5 bg-fuchsia-500/15 text-ink-50">
             ESL/ELL · WIDA
             {bands.length > 0 ? ` · Grade${bands.length > 1 ? 's' : ''} ${bands.map(formatGrade).join('/')}` : ''}
           </span>
           {lesson.proficiency_level && (
-            <span className="rounded px-2 py-0.5 text-xs font-semibold bg-fuchsia-500/20 text-fuchsia-300">
+            <span className="rounded px-2 py-0.5 text-xs font-semibold bg-fuchsia-500/20 text-ink-50">
               {lesson.proficiency_level_number ? `Level ${lesson.proficiency_level_number} · ` : ''}{lesson.proficiency_level}
             </span>
           )}
@@ -54,7 +54,7 @@ export default function EslSpecialistRenderer({ lesson }) {
         <div className="rounded-lg border border-fuchsia-500/25 bg-fuchsia-500/5 px-4 py-3">
           <div className="mb-1 flex items-center gap-2">
             <Languages size={14} className="text-fuchsia-400" />
-            <p className="text-xs font-semibold uppercase tracking-wide text-fuchsia-300">Language objective</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-ink-300">Language objective</p>
           </div>
           <p className="text-sm text-ink-200">{lesson.language_objective}</p>
         </div>
@@ -69,7 +69,7 @@ export default function EslSpecialistRenderer({ lesson }) {
           <div className="space-y-2">
             {vocab.map((v, i) => (
               <div key={i} className="rounded-lg bg-ink-900 px-4 py-2.5">
-                <p className="text-sm"><span className="font-semibold text-fuchsia-300">{v.term}</span> <span className="text-ink-300">— {v.student_friendly_definition}</span></p>
+                <p className="text-sm"><span className="font-semibold text-ink-300">{v.term}</span> <span className="text-ink-300">— {v.student_friendly_definition}</span></p>
                 {v.cognate_note && v.cognate_note.toLowerCase() !== 'no common cognate' && (
                   <p className="mt-0.5 text-xs text-ink-500">Cognate: {v.cognate_note}</p>
                 )}
@@ -107,7 +107,7 @@ export default function EslSpecialistRenderer({ lesson }) {
             {flow.map((s, i) => (
               <li key={i} className="rounded-lg bg-ink-900 px-4 py-3">
                 <div className="mb-1 flex items-center gap-2">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-fuchsia-500/25 text-xs font-semibold text-fuchsia-300">{i + 1}</span>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-fuchsia-500/25 text-xs font-semibold text-ink-50">{i + 1}</span>
                   <p className="text-sm font-semibold text-ink-100">{s.phase}</p>
                 </div>
                 <p className="text-sm text-ink-300">{s.what_happens}</p>
@@ -140,7 +140,7 @@ export default function EslSpecialistRenderer({ lesson }) {
           <ul className="space-y-1.5 text-ink-300">
             {(lesson.standards_alignment ?? []).map((s, i) => (
               <li key={i} className="text-sm">
-                <span className="rounded bg-fuchsia-500/15 px-1.5 py-0.5 text-xs font-semibold text-fuchsia-400">{s.framework}</span>
+                <span className="rounded bg-fuchsia-500/15 px-1.5 py-0.5 text-xs font-semibold text-ink-50">{s.framework}</span>
                 {s.domain && <span className="ml-1 text-xs text-ink-500">{s.domain}</span>}
                 <span className="ml-1">— {s.text}</span>
               </li>

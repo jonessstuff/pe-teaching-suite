@@ -139,8 +139,8 @@ export default function EslSpecialistGenerator() {
       <div className="flex items-start gap-3 rounded-lg border border-fuchsia-500/30 bg-fuchsia-500/10 px-4 py-3">
         <Info size={16} className="mt-0.5 shrink-0 text-fuchsia-400" />
         <div className="text-sm">
-          <p className="font-medium text-fuchsia-200">Language development is the curriculum</p>
-          <p className="mt-0.5 text-fuchsia-300/90">
+          <p className="font-medium text-ink-100">Language development is the curriculum</p>
+          <p className="mt-0.5 text-ink-300">
             For dedicated ESL/ELL teachers. Lessons pair a content objective with a separate language objective (SIOP), scaffolded to a specific WIDA proficiency level and covering all four language domains. Don&rsquo;t enter student names.
           </p>
         </div>
@@ -171,7 +171,7 @@ export default function EslSpecialistGenerator() {
               </select>
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-fuchsia-300" htmlFor="esl-level">WIDA proficiency level</label>
+              <label className="mb-1 block text-sm font-medium text-ink-300" htmlFor="esl-level">WIDA proficiency level</label>
               <select id="esl-level" value={proficiencyLevel} onChange={(e) => setProficiencyLevel(e.target.value)} className="input-field">
                 {PROFICIENCY_LEVELS.map(({ value, label }) => <option key={value} value={value}>{label}</option>)}
               </select>
@@ -234,7 +234,7 @@ export default function EslSpecialistGenerator() {
         </div>
 
         {error && (
-          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">
+          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-ink-100">
             {error}
           </div>
         )}

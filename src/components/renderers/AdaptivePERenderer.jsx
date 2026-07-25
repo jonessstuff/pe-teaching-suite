@@ -49,7 +49,7 @@ function APELessonPlan({ lesson }) {
         <div className="flex items-center justify-between text-sm text-ink-400">
           <span>{lesson.scheduled_date ?? 'Date TBD'}</span>
           <span>{lesson.period_label ?? ''}</span>
-          <span className="label-eyebrow rounded px-2 py-0.5 bg-rose-500/15 text-rose-400">
+          <span className="label-eyebrow rounded px-2 py-0.5 bg-rose-500/15 text-ink-50">
             Adaptive PE
             {gradeBands.length > 0
               ? ` · Grade${gradeBands.length > 1 ? 's' : ''} ${gradeBands.map(formatGrade).join('/')}`
@@ -225,7 +225,7 @@ function APEInclusionPlan({ lesson }) {
       {/* Header */}
       <header className="space-y-2 border-b border-ink-900 pb-4">
         <div className="flex items-center gap-2">
-          <span className="label-eyebrow rounded px-2 py-0.5 bg-rose-500/15 text-rose-400">
+          <span className="label-eyebrow rounded px-2 py-0.5 bg-rose-500/15 text-ink-50">
             Inclusion & Accommodation Plan
           </span>
         </div>

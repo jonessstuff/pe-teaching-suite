@@ -37,7 +37,7 @@ export default function FamilyNewsletterRenderer({ newsletter }) {
           <ul className="space-y-1.5">
             {try_at_home.map((tip, i) => (
               <li key={i} className="flex gap-2 text-sm text-ink-800 leading-snug print:text-gray-800">
-                <span className="mt-0.5 h-4 w-4 flex-shrink-0 rounded-full bg-accent-500/20 text-[10px] font-bold text-accent-400 flex items-center justify-center print:bg-gray-200 print:text-gray-600">
+                <span className="mt-0.5 h-4 w-4 flex-shrink-0 rounded-full bg-accent-500/20 text-[10px] font-bold text-ink-50 flex items-center justify-center print:bg-gray-200 print:text-gray-600">
                   {i + 1}
                 </span>
                 {tip}

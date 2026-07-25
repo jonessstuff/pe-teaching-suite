@@ -17,17 +17,17 @@ export default function SlpRenderer({ lesson }) {
       {/* Header */}
       <header className="space-y-2 border-b border-ink-900 pb-4">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="label-eyebrow rounded px-2 py-0.5 bg-bronze-500/15 text-bronze-400">
+          <span className="label-eyebrow rounded px-2 py-0.5 bg-bronze-500/15 text-ink-50">
             SLP · {lesson.content_area || 'Activity'}
             {!isAdult && bands.length > 0 ? ` · Grade${bands.length > 1 ? 's' : ''} ${bands.map(formatGrade).join('/')}` : ''}
           </span>
           {isAdult ? (
-            <span className="inline-flex items-center gap-1 rounded px-2 py-0.5 text-xs font-semibold bg-amber-500/20 text-amber-300">
+            <span className="inline-flex items-center gap-1 rounded px-2 py-0.5 text-xs font-semibold bg-amber-500/20 text-ink-50">
               <FlaskConical size={11} /> Experimental · Adult / Rehab
             </span>
           ) : (
             lesson.band_label && (
-              <span className="rounded px-2 py-0.5 text-xs font-semibold bg-bronze-500/20 text-bronze-300">{lesson.band_label}</span>
+              <span className="rounded px-2 py-0.5 text-xs font-semibold bg-bronze-500/20 text-ink-50">{lesson.band_label}</span>
             )
           )}
         </div>
@@ -42,7 +42,7 @@ export default function SlpRenderer({ lesson }) {
       {isAdult && (
         <div className="flex items-start gap-2.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3">
           <FlaskConical size={15} className="mt-0.5 shrink-0 text-amber-400" />
-          <p className="text-xs text-amber-200">
+          <p className="text-xs text-ink-100">
             <span className="font-semibold">Experimental tier, for review.</span> Adult rehabilitation is outside the platform&rsquo;s core K-12 focus and involves a higher-stakes clinical population. Treat everything below as general activity ideas only — to be filtered entirely through the treating clinician&rsquo;s assessment, plan of care, and judgment.
           </p>
         </div>
@@ -70,7 +70,7 @@ export default function SlpRenderer({ lesson }) {
             {activities.map((a, i) => (
               <div key={i} className="rounded-lg bg-ink-900 px-4 py-3">
                 <div className="mb-1 flex items-center gap-2">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-bronze-500/25 text-xs font-semibold text-bronze-300">{i + 1}</span>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-bronze-500/25 text-xs font-semibold text-ink-50">{i + 1}</span>
                   <p className="text-sm font-semibold text-ink-100">{a.name}</p>
                 </div>
                 {a.how_to_run && <p className="text-sm text-ink-300"><span className="font-medium text-ink-200">How: </span>{a.how_to_run}</p>}
@@ -112,7 +112,7 @@ export default function SlpRenderer({ lesson }) {
 
       {lesson.age_dignity_note && (
         <div className="rounded-lg border border-bronze-500/25 bg-bronze-500/5 px-4 py-3">
-          <p className="text-xs font-semibold text-bronze-300 mb-0.5">Age &amp; dignity</p>
+          <p className="text-xs font-semibold text-ink-300 mb-0.5">Age &amp; dignity</p>
           <p className="text-sm text-ink-300">{lesson.age_dignity_note}</p>
         </div>
       )}
@@ -126,7 +126,7 @@ export default function SlpRenderer({ lesson }) {
           <ul className="space-y-1.5 text-ink-300">
             {(lesson.standards_alignment ?? []).map((s, i) => (
               <li key={i} className="text-sm">
-                <span className="rounded bg-bronze-500/15 px-1.5 py-0.5 text-xs font-semibold text-bronze-400">{s.framework}</span>
+                <span className="rounded bg-bronze-500/15 px-1.5 py-0.5 text-xs font-semibold text-ink-50">{s.framework}</span>
                 <span className="ml-1">— {s.text}</span>
               </li>
             ))}
@@ -138,7 +138,7 @@ export default function SlpRenderer({ lesson }) {
       {lesson.clinical_boundary_note && (
         <div className={`flex items-start gap-2.5 rounded-lg border px-4 py-3 ${isAdult ? 'border-amber-500/40 bg-amber-500/10' : 'border-amber-500/25 bg-amber-500/5'}`}>
           <ShieldAlert size={15} className="mt-0.5 shrink-0 text-amber-400" />
-          <p className="text-xs text-ink-300"><span className="font-medium text-amber-300">Clinical boundary: </span>{lesson.clinical_boundary_note}</p>
+          <p className="text-xs text-ink-300"><span className="font-medium text-ink-300">Clinical boundary: </span>{lesson.clinical_boundary_note}</p>
         </div>
       )}
 

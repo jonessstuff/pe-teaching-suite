@@ -190,12 +190,12 @@ export default function PacingGuideGenerator() {
           {/* Preview progress */}
           {quarters.length > 0 && status === 'generating' && (
             <div className="rounded-lg border border-teal-500/20 bg-teal-500/5 p-4">
-              <p className="text-sm font-medium text-teal-400 mb-2">{progress}</p>
+              <p className="text-sm font-medium text-ink-200 mb-2">{progress}</p>
               <p className="text-xs text-ink-500">{quarters.length} of 4 quarters complete — results appear below as they finish</p>
             </div>
           )}
 
-          {error && <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">{error}</p>}
+          {error && <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-ink-100">{error}</p>}
 
           <div className="flex items-center gap-3">
             <button type="submit" disabled={status === 'generating'}

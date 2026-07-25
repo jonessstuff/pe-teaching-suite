@@ -86,7 +86,7 @@ export default function MusicPlanRenderer({ lesson }) {
         <div className="flex items-center justify-between text-sm text-ink-400">
           <span>{lesson.scheduled_date ?? 'Date TBD'}</span>
           <span>{lesson.period_label ?? ''}</span>
-          <span className="label-eyebrow rounded px-2 py-0.5 bg-purple-500/15 text-purple-400">
+          <span className="label-eyebrow rounded px-2 py-0.5 bg-purple-500/15 text-ink-50">
             Music
             {gradeBands.length > 0
               ? ` · Grade${gradeBands.length > 1 ? 's' : ''} ${gradeBands.map(formatGrade).join('/')}`
@@ -320,7 +320,7 @@ export default function MusicPlanRenderer({ lesson }) {
                   href={`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-purple-400 hover:text-purple-300 underline underline-offset-2"
+                  className="text-purple-400 hover:text-ink-300 underline underline-offset-2"
                 >
                   {query}
                 </a>

@@ -37,7 +37,7 @@ export default function WeatherAltRenderer({ lesson }) {
       {/* Already-indoor notice */}
       {isAlreadyIndoor ? (
         <div className="rounded-lg border border-sky-500/20 bg-sky-500/5 p-5">
-          <p className="text-sm text-sky-300">{lesson.weather_alt_notes}</p>
+          <p className="text-sm text-ink-300">{lesson.weather_alt_notes}</p>
         </div>
       ) : (
         <>

@@ -12,7 +12,7 @@ function UnitRow({ unit }) {
           {(unit.standards ?? []).map((s, i) => (
             <span
               key={i}
-              className="rounded bg-accent-500/10 px-1.5 py-0.5 text-[11px] font-mono text-accent-400 print:bg-gray-100 print:text-gray-600"
+              className="rounded bg-accent-500/10 px-1.5 py-0.5 text-[11px] font-mono text-ink-50 print:bg-gray-100 print:text-gray-600"
             >
               {s}
             </span>
@@ -32,7 +32,7 @@ function QuarterSection({ quarter, index }) {
       {/* Quarter header */}
       <div className="mb-3 flex items-center justify-between">
         <div>
-          <span className="rounded-full bg-accent-500/15 px-3 py-1 text-xs font-semibold text-accent-400 print:border print:border-gray-400 print:bg-transparent print:text-black">
+          <span className="rounded-full bg-accent-500/15 px-3 py-1 text-xs font-semibold text-ink-50 print:border print:border-gray-400 print:bg-transparent print:text-black">
             {quarter.label}
           </span>
           {quarter.date_range && (

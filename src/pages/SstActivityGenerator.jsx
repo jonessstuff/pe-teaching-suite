@@ -140,8 +140,8 @@ export default function SstActivityGenerator() {
       <div className="flex items-start gap-3 rounded-lg border border-plum-500/30 bg-plum-500/10 px-4 py-3">
         <ShieldAlert size={16} className="mt-0.5 shrink-0 text-plum-400" />
         <div className="text-sm">
-          <p className="font-medium text-plum-200">Group activity structure only</p>
-          <p className="mt-0.5 text-plum-300/90">
+          <p className="font-medium text-ink-100">Group activity structure only</p>
+          <p className="mt-0.5 text-ink-300">
             Fills a narrow gap — the ready-to-run <span className="font-medium">activity structure</span> your clinical training didn&rsquo;t cover. It does <span className="font-medium">not</span> provide individual counseling plans, assessment/eligibility content, FBAs/BIPs, crisis protocols, or diagnostic/clinical content, and never replaces your professional training. Don&rsquo;t enter student names.
           </p>
         </div>
@@ -150,7 +150,7 @@ export default function SstActivityGenerator() {
       <form onSubmit={handleGenerate} className="space-y-6">
         <div className="card p-6 space-y-5">
           <div>
-            <label className="mb-1 block text-sm font-medium text-plum-300" htmlFor="sst-role">Your role</label>
+            <label className="mb-1 block text-sm font-medium text-ink-300" htmlFor="sst-role">Your role</label>
             <select id="sst-role" value={role} onChange={(e) => setRole(e.target.value)} className="input-field">
               {ROLES.map(({ value, label }) => <option key={value} value={value}>{label}</option>)}
             </select>
@@ -222,7 +222,7 @@ export default function SstActivityGenerator() {
         </div>
 
         {error && (
-          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">
+          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-ink-100">
             {error}
           </div>
         )}

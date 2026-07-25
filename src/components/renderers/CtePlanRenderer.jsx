@@ -101,14 +101,14 @@ export default function CtePlanRenderer({ lesson }) {
           <span>{lesson.period_label ?? ''}</span>
           <div className="flex items-center gap-2 flex-wrap">
             {lesson.stage_label && (
-              <span className="label-eyebrow rounded px-2 py-0.5 bg-pink-500/20 text-pink-400">
+              <span className="label-eyebrow rounded px-2 py-0.5 bg-pink-500/20 text-ink-50">
                 {lesson.stage_label}
               </span>
             )}
-            <span className="label-eyebrow rounded px-2 py-0.5 bg-pink-500/20 text-pink-400">
+            <span className="label-eyebrow rounded px-2 py-0.5 bg-pink-500/20 text-ink-50">
               {pathwayLabel}
             </span>
-            <span className="label-eyebrow rounded px-2 py-0.5 bg-pink-500/20 text-pink-400">
+            <span className="label-eyebrow rounded px-2 py-0.5 bg-pink-500/20 text-ink-50">
               CTE · {tierLabel(lesson)}
             </span>
           </div>
@@ -189,7 +189,7 @@ export default function CtePlanRenderer({ lesson }) {
         )}
         {(lesson.credential_focus ?? []).length > 0 && (
           <div className="mt-3 rounded-lg border border-pink-500/20 bg-pink-500/5 p-3">
-            <p className="text-xs font-semibold text-pink-400 mb-1">Industry credentials this pathway builds toward</p>
+            <p className="text-xs font-semibold text-ink-100 mb-1">Industry credentials this pathway builds toward</p>
             <ul className="list-disc list-inside space-y-0.5 text-xs text-ink-400">
               {(lesson.credential_focus ?? []).map((c, i) => (
                 <li key={i}>{c}</li>
@@ -400,7 +400,7 @@ export default function CtePlanRenderer({ lesson }) {
                   href={`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-pink-400 hover:text-pink-300 underline underline-offset-2"
+                  className="text-pink-400 hover:text-ink-300 underline underline-offset-2"
                 >
                   {query}
                 </a>

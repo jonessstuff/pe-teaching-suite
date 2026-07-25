@@ -22,7 +22,7 @@ export default function MathSpecialistRenderer({ lesson }) {
     <div className="card max-w-3xl mx-auto p-8 space-y-6">
       {/* Header */}
       <header className="space-y-2 border-b border-ink-900 pb-4">
-        <span className="label-eyebrow rounded px-2 py-0.5 bg-lime-500/15 text-lime-400">
+        <span className="label-eyebrow rounded px-2 py-0.5 bg-lime-500/15 text-ink-50">
           Math Specialists · NCTM
           {gradeBands.length > 0
             ? ` · Grade${gradeBands.length > 1 ? 's' : ''} ${gradeBands.map(formatGrade).join('/')}`
@@ -111,7 +111,7 @@ export default function MathSpecialistRenderer({ lesson }) {
           <ul className="space-y-1.5 text-ink-300">
             {(lesson.standards_alignment ?? []).map((s, i) => (
               <li key={i} className="text-sm">
-                <span className="rounded bg-lime-500/15 px-1.5 py-0.5 text-xs font-semibold text-lime-400">{s.framework}</span>
+                <span className="rounded bg-lime-500/15 px-1.5 py-0.5 text-xs font-semibold text-ink-50">{s.framework}</span>
                 <span className="ml-1">— {s.text}</span>
               </li>
             ))}
@@ -135,7 +135,7 @@ function CraPhase({ n, label, text }) {
   return (
     <div className="rounded-lg bg-ink-900 px-4 py-3">
       <div className="mb-1 flex items-center gap-2">
-        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-lime-500/20 text-xs font-semibold text-lime-400">{n}</span>
+        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-lime-500/20 text-xs font-semibold text-ink-50">{n}</span>
         <p className="text-sm font-semibold text-ink-100">{label}</p>
       </div>
       <p className="text-sm text-ink-300 whitespace-pre-line">{text}</p>

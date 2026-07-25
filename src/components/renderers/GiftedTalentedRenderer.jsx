@@ -116,7 +116,7 @@ function EnrichPlan({ lesson }) {
             {enrich.map((e, i) => (
               <div key={i} className="rounded-lg bg-ink-900 px-4 py-3">
                 <div className="mb-1 flex items-center gap-2">
-                  <span className="rounded bg-amber-500/15 px-1.5 py-0.5 text-xs font-semibold text-amber-400">{e.renzulli_type}</span>
+                  <span className="rounded bg-amber-500/15 px-1.5 py-0.5 text-xs font-semibold text-ink-50">{e.renzulli_type}</span>
                   <p className="text-sm font-semibold text-ink-100">{e.title}</p>
                 </div>
                 <p className="text-sm text-ink-300">{e.description}</p>
@@ -164,7 +164,7 @@ function SupportGuide({ lesson }) {
   return (
     <div className="card max-w-3xl mx-auto p-8 space-y-6">
       <header className="space-y-2 border-b border-ink-900 pb-4">
-        <span className="label-eyebrow rounded px-2 py-0.5 bg-amber-500/15 text-amber-400">
+        <span className="label-eyebrow rounded px-2 py-0.5 bg-amber-500/15 text-ink-50">
           Gifted & Talented · Student Support Guidance
         </span>
         <h2 className="text-2xl font-display font-semibold text-ink-50">{lesson.title}</h2>
@@ -213,7 +213,7 @@ function SupportGuide({ lesson }) {
 function PlanHeader({ badge, gradeBands, title, subtitle }) {
   return (
     <header className="space-y-2 border-b border-ink-900 pb-4">
-      <span className="label-eyebrow rounded px-2 py-0.5 bg-amber-500/15 text-amber-400">
+      <span className="label-eyebrow rounded px-2 py-0.5 bg-amber-500/15 text-ink-50">
         {badge}
         {gradeBands.length > 0
           ? ` · Grade${gradeBands.length > 1 ? 's' : ''} ${gradeBands.map(formatGrade).join('/')}`
@@ -271,7 +271,7 @@ function StandardsBlock({ items }) {
       <ul className="space-y-1.5 text-ink-300">
         {list.map((s, i) => (
           <li key={i} className="text-sm">
-            <span className="rounded bg-amber-500/15 px-1.5 py-0.5 text-xs font-semibold text-amber-400">{s.framework}</span>{' '}
+            <span className="rounded bg-amber-500/15 px-1.5 py-0.5 text-xs font-semibold text-ink-50">{s.framework}</span>{' '}
             {s.text}
           </li>
         ))}

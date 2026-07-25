@@ -123,8 +123,8 @@ export default function EarlyChildhoodGenerator() {
       <div className="flex items-start gap-3 rounded-lg border border-grass-500/30 bg-grass-500/10 px-4 py-3">
         <Info size={16} className="mt-0.5 shrink-0 text-grass-400" />
         <div className="text-sm">
-          <p className="font-medium text-grass-200">Play-based, not a lesson with objectives</p>
-          <p className="mt-0.5 text-grass-300/90">
+          <p className="font-medium text-ink-100">Play-based, not a lesson with objectives</p>
+          <p className="mt-0.5 text-ink-300">
             Built on NAEYC&rsquo;s Developmentally Appropriate Practice (DAP) — learning centers, invitations, and guided play for the whole child. Aligns to NAEYC Professional Standards and the Head Start ELOF; always verify your state&rsquo;s own Pre-K standards. Don&rsquo;t enter children&rsquo;s names.
           </p>
         </div>
@@ -181,7 +181,7 @@ export default function EarlyChildhoodGenerator() {
         </div>
 
         {error && (
-          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">
+          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-ink-100">
             {error}
           </div>
         )}

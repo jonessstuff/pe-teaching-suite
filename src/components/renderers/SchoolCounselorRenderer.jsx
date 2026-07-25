@@ -16,12 +16,12 @@ export default function SchoolCounselorRenderer({ lesson }) {
       {/* Header */}
       <header className="space-y-2 border-b border-ink-900 pb-4">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="label-eyebrow rounded px-2 py-0.5 bg-crimson-500/15 text-crimson-400">
+          <span className="label-eyebrow rounded px-2 py-0.5 bg-crimson-500/15 text-ink-50">
             School Counseling · ASCA
             {bands.length > 0 ? ` · Grade${bands.length > 1 ? 's' : ''} ${bands.map(formatGrade).join('/')}` : ''}
           </span>
           {lesson.asca_domain && (
-            <span className="rounded px-2 py-0.5 text-xs font-semibold bg-crimson-500/20 text-crimson-300">
+            <span className="rounded px-2 py-0.5 text-xs font-semibold bg-crimson-500/20 text-ink-50">
               {lesson.asca_domain}
             </span>
           )}
@@ -36,7 +36,7 @@ export default function SchoolCounselorRenderer({ lesson }) {
 
       {lesson.essential_question && (
         <div className="rounded-lg border border-crimson-500/25 bg-crimson-500/5 px-4 py-3">
-          <p className="text-xs font-semibold uppercase tracking-wide text-crimson-300 mb-0.5">Essential question</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-ink-300 mb-0.5">Essential question</p>
           <p className="text-sm italic text-ink-200">{lesson.essential_question}</p>
         </div>
       )}
@@ -52,7 +52,7 @@ export default function SchoolCounselorRenderer({ lesson }) {
           <ul className="space-y-1.5 text-ink-300">
             {mb.map((m, i) => (
               <li key={i} className="text-sm">
-                <span className="rounded bg-crimson-500/15 px-1.5 py-0.5 text-xs font-semibold text-crimson-400">{m.code}</span>
+                <span className="rounded bg-crimson-500/15 px-1.5 py-0.5 text-xs font-semibold text-ink-50">{m.code}</span>
                 <span className="ml-1">{m.text}</span>
               </li>
             ))}
@@ -70,7 +70,7 @@ export default function SchoolCounselorRenderer({ lesson }) {
             {flow.map((s, i) => (
               <li key={i} className="rounded-lg bg-ink-900 px-4 py-3">
                 <div className="mb-1 flex items-center gap-2">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-crimson-500/25 text-xs font-semibold text-crimson-300">{i + 1}</span>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-crimson-500/25 text-xs font-semibold text-ink-50">{i + 1}</span>
                   <p className="text-sm font-semibold text-ink-100">{s.phase}</p>
                 </div>
                 <p className="text-sm text-ink-300">{s.what_happens}</p>
@@ -115,7 +115,7 @@ export default function SchoolCounselorRenderer({ lesson }) {
           <ul className="space-y-1.5 text-ink-300">
             {(lesson.standards_alignment ?? []).map((s, i) => (
               <li key={i} className="text-sm">
-                <span className="rounded bg-crimson-500/15 px-1.5 py-0.5 text-xs font-semibold text-crimson-400">{s.framework}</span>
+                <span className="rounded bg-crimson-500/15 px-1.5 py-0.5 text-xs font-semibold text-ink-50">{s.framework}</span>
                 <span className="ml-1">— {s.text}</span>
               </li>
             ))}
@@ -127,7 +127,7 @@ export default function SchoolCounselorRenderer({ lesson }) {
       {lesson.scope_note && (
         <div className="flex items-start gap-2.5 rounded-lg border border-amber-500/25 bg-amber-500/5 px-4 py-3">
           <ShieldAlert size={15} className="mt-0.5 shrink-0 text-amber-400" />
-          <p className="text-xs text-ink-300"><span className="font-medium text-amber-300">Scope: </span>{lesson.scope_note}</p>
+          <p className="text-xs text-ink-300"><span className="font-medium text-ink-300">Scope: </span>{lesson.scope_note}</p>
         </div>
       )}
 

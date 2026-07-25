@@ -182,8 +182,8 @@ export default function ReadingSpecialistGenerator() {
       <div className="flex items-start gap-3 rounded-lg border border-sky-500/30 bg-sky-500/10 px-4 py-3">
         <Info size={16} className="mt-0.5 shrink-0 text-sky-400" />
         <div className="text-sm">
-          <p className="font-medium text-sky-300">Instructional planning support</p>
-          <p className="mt-0.5 text-sky-400/90">
+          <p className="font-medium text-ink-300">Instructional planning support</p>
+          <p className="mt-0.5 text-ink-300">
             This tool supports instructional planning, not diagnosis. Reading difficulties consistent with dyslexia or other learning disabilities should be referred through your school&rsquo;s formal evaluation process. Do not enter student names or identifying information.
           </p>
         </div>
@@ -214,7 +214,7 @@ export default function ReadingSpecialistGenerator() {
                 onClick={() => chooseTutoringType(t.value)}
                 className={`rounded-lg border px-3 py-2 text-left text-sm transition-colors ${
                   tutoringType === t.value
-                    ? 'border-sky-500/40 bg-sky-500/10 text-sky-200'
+                    ? 'border-sky-500/40 bg-sky-500/10 text-ink-100'
                     : 'border-ink-700 bg-ink-900 text-ink-300 hover:border-ink-600'
                 }`}
               >
@@ -351,7 +351,7 @@ export default function ReadingSpecialistGenerator() {
         </div>
 
         {error && (
-          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">
+          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-ink-100">
             {error}
           </div>
         )}
