@@ -330,6 +330,28 @@ export async function generateAfterSchoolClubs(input) {
   return data
 }
 
+export async function generateTestPrep(input) {
+  const { data, error } = await supabase.functions.invoke('generate-test-prep', {
+    body: input,
+  })
+
+  if (error) {
+    let message = error.message ?? 'Generation failed'
+    try {
+      const body = await error.context?.json?.()
+      if (body?.error) message = body.error
+    } catch {}
+    throw new Error(message)
+  }
+  // generate-test-prep streams a keepalive to beat the 150s idle timeout, so a
+  // generation failure comes back as HTTP 200 with an { error } body rather than a
+  // non-2xx status. Surface it instead of rendering a broken session.
+  if (data?.error) {
+    throw new Error(data.error)
+  }
+  return data
+}
+
 export async function generateSchoolCounselor(input) {
   const { data, error } = await supabase.functions.invoke('generate-school-counselor', {
     body: input,

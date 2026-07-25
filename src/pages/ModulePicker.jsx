@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Library, Palette, Music, FlaskConical, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, PartyPopper, Users, Blocks, Layers, Presentation, ArrowRight } from 'lucide-react'
+import { Library, Palette, Music, FlaskConical, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, PartyPopper, Target, Users, Blocks, Layers, Presentation, ArrowRight } from 'lucide-react'
 import { useDisplayName, getTimeGreeting } from '../hooks/useDisplayName'
 
 export default function ModulePicker() {
@@ -274,6 +274,25 @@ export default function ModulePicker() {
               </p>
             </div>
             <div className="flex items-center gap-1.5 text-sm font-medium text-violet-400 transition-[gap] group-hover:gap-2.5">
+              Open module <ArrowRight size={15} />
+            </div>
+          </Link>
+
+          {/* Test Prep */}
+          <Link
+            to="/test-prep"
+            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-steel-400/40"
+          >
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-steel-500/15">
+              <Target size={28} className="text-steel-400" />
+            </div>
+            <div className="flex-1 space-y-1.5">
+              <h2 className="text-xl font-semibold text-ink-50">Test Prep</h2>
+              <p className="text-sm text-ink-400 leading-relaxed">
+                Original SAT/ACT &amp; state-assessment practice — original practice questions, strategies, content review &amp; test-day prep as tutoring-style sessions (1:1 or small group)
+              </p>
+            </div>
+            <div className="flex items-center gap-1.5 text-sm font-medium text-steel-400 transition-[gap] group-hover:gap-2.5">
               Open module <ArrowRight size={15} />
             </div>
           </Link>

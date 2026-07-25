@@ -162,6 +162,9 @@ export default function Landing() {
             <span className="rounded-full bg-sky-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Reading Specialists
             </span>
+            <span className="rounded-full bg-steel-500/20 px-3 py-1 text-xs font-medium text-ink-50">
+              Test Prep
+            </span>
             <span className="rounded-full bg-violet-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Special Education
             </span>
@@ -362,6 +365,11 @@ export default function Landing() {
                 name="Special Education"
                 color="violet"
                 description="Resource & self-contained instructional support — multi-tier differentiation, functional/life-skills, and push-in co-teaching ideas to adapt to your students, K–12."
+              />
+              <ModuleCard
+                name="Test Prep"
+                color="steel"
+                description="SAT/ACT and state-assessment prep as tutoring-style sessions — 100% original practice questions (never copyrighted items), strategies, content review, and test-day prep; state path verifies against your official blueprint."
               />
             </ModuleGroup>
 

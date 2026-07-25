@@ -33,6 +33,7 @@ export const SUBJECT_TAB_STYLES = {
   'Gifted & Talented': 'bg-amber-500/20 text-ink-50',
   'Reading Specialists': 'bg-sky-500/20 text-ink-50',
   'Math Specialists': 'bg-lime-500/20 text-ink-50',
+  'Test Prep': 'bg-steel-500/20 text-ink-50',
   Makerspace: 'bg-slate-500/20 text-ink-50',
   'Special Education': 'bg-violet-500/20 text-ink-50',
   'ESL/ELL Specialist': 'bg-fuchsia-500/20 text-ink-50',
@@ -75,6 +76,7 @@ export const MODULES = [
   { label: 'Gifted & Talented', subjects: ['Gifted & Talented'] },
   { label: 'Reading Specialists', subjects: ['Reading Specialists'] },
   { label: 'Math Specialists', subjects: ['Math Specialists'] },
+  { label: 'Test Prep', subjects: ['Test Prep'] },
   { label: 'Makerspace', subjects: ['Makerspace'] },
   { label: 'Special Education', subjects: ['Special Education'] },
   { label: 'ESL/ELL Specialist', subjects: ['ESL/ELL Specialist'] },
@@ -135,7 +137,7 @@ export const PE_HEALTH_SUBJECTS = subjectsForModule('PE & Health')
 //   plum (Student Support Team Activities) · grass (Early Childhood / Pre-K) ·
 //   stone (Intervention Planning) · gold (Staff PD & Meeting Planning) ·
 //   periwinkle (Occupational Therapists) · coral (After-School Clubs) ·
-//   teal (Adaptive PE lesson tabs)
+//   steel (Test Prep) · teal (Adaptive PE lesson tabs)
 //
 // AVAILABLE for future modules (School Counselors is next, then more). Each
 // entry's strings are full/literal so Tailwind's JIT compiles them and a new
@@ -160,12 +162,6 @@ export const AVAILABLE_MODULE_ACCENTS = [
     tab: 'bg-zinc-500/20 text-ink-50', iconTint: 'bg-zinc-500/15',
     accentText: 'text-zinc-400', hoverBorder: 'hover:border-zinc-400/40',
     cardBorder: 'border-zinc-400', callout: 'border-zinc-500/30 bg-zinc-500/10',
-  },
-  {
-    key: 'steel', label: 'Steel (muted slate-blue)',
-    tab: 'bg-steel-500/20 text-ink-50', iconTint: 'bg-steel-500/15',
-    accentText: 'text-steel-400', hoverBorder: 'hover:border-steel-400/40',
-    cardBorder: 'border-steel-400', callout: 'border-steel-500/30 bg-steel-500/10',
   },
   {
     key: 'mocha', label: 'Mocha (warm brown neutral)',
