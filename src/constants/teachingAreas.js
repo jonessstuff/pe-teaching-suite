@@ -53,4 +53,5 @@ export const CTE_PATHWAYS = [
   { key: 'business_mgmt', label: 'Business Management & Administration' },
   { key: 'agriculture', label: 'Agriculture, Food & Natural Resources' },
   { key: 'construction', label: 'Architecture & Construction' },
+  { key: 'arts_av', label: 'Arts, A/V Technology & Communications' },
 ]

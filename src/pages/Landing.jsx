@@ -317,7 +317,7 @@ export default function Landing() {
               <ModuleCard
                 name="CTE"
                 color="pink"
-                description="Career & Technical Education across Hospitality & Tourism, Finance, Marketing, Human Services / Family & Consumer Sciences, Health Science, Education & Training, Career Readiness (MS foundations), Information Technology, Transportation, Distribution & Logistics, Manufacturing, STEM / Engineering & Technology, Business Management & Administration, Agriculture, Food & Natural Resources, and Architecture & Construction pathways — standards-aligned and industry-relevant."
+                description="Career & Technical Education across Hospitality & Tourism, Finance, Marketing, Human Services / Family & Consumer Sciences, Health Science, Education & Training, Career Readiness (MS foundations), Information Technology, Transportation, Distribution & Logistics, Manufacturing, STEM / Engineering & Technology, Business Management & Administration, Agriculture, Food & Natural Resources, Architecture & Construction, and Arts, A/V Technology & Communications pathways — standards-aligned and industry-relevant."
               />
             </ModuleGroup>
 

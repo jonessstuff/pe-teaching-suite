@@ -16,6 +16,7 @@ const PHASE_LABELS = {
   business_mgmt: ['Business Hook', 'Concept Instruction', 'Applied Example / Guided Practice', 'Hands-On Business Application', 'Reflection & Career Connection'],
   agriculture: ['Ag Hook', 'Concept Instruction', 'Skill Demonstration', 'Hands-On Ag Application', 'Reflection & Career Connection'],
   construction: ['Jobsite Hook', 'Concept Instruction', 'Skill Demonstration', 'Hands-On Construction Application', 'Reflection & Career Connection'],
+  arts_av: ['Creative Hook', 'Concept Instruction', 'Guided Create / Demonstration', 'Hands-On Production', 'Reflection & Career Connection'],
 }
 
 const PATHWAY_LABELS = {
@@ -33,6 +34,7 @@ const PATHWAY_LABELS = {
   business_mgmt: 'Business Management & Administration',
   agriculture: 'Agriculture, Food & Natural Resources',
   construction: 'Architecture & Construction',
+  arts_av: 'Arts, A/V Technology & Communications',
 }
 
 const LEVEL_LABELS = {

@@ -30,6 +30,7 @@ const PATHWAY_LABELS = {
   business_mgmt: "Business Management & Administration",
   agriculture: "Agriculture, Food & Natural Resources",
   construction: "Architecture & Construction",
+  arts_av: "Arts, A/V Technology & Communications",
 }
 
 function tierLevelLabel(tier, level) {
@@ -135,6 +136,12 @@ Then include entries from these where the lesson content maps to them:
 - SkillsUSA — the CTSO most closely associated with this cluster (national, parallel to DECA/FBLA/HOSA). Align applied tasks, projects, and professionalism to relevant SkillsUSA events (e.g., Carpentry, Electrical Construction Wiring, Plumbing, HVAC-R, Cabinetmaking, TeamWorks). Framework field: "SkillsUSA".
 - OSHA — construction-industry workplace-safety standards are directly relevant given power tools, ladders, scaffolding, heights, and lifting; align safety content to OSHA Construction (29 CFR 1926) expectations — fall protection, PPE, tool and electrical safety, and jobsite hazard awareness. The OSHA-10 (Construction) card is a common entry safety credential. Framework field: "OSHA". (See the SAFETY directive in this prompt for how to handle shop/jobsite safety.)
 Content areas to prioritize: (a) design / pre-construction — basic drafting concepts, blueprint / construction-drawing reading, and architectural design fundamentals; (b) construction fundamentals — basic building systems, materials, and construction methods and sequencing; (c) trades foundations — an introductory/exploratory overview of the specific trades (electrical, HVAC, plumbing, carpentry, and related); and (d) jobsite/shop safety — tool safety, fall protection, PPE, and jobsite hazard awareness (treat with the same seriousness as clinical safety — see the SAFETY directive).`,
+    arts_av: `Primary framework for Arts, A/V Technology & Communications. NOTE: this cluster is more DIFFUSE than most (no single dominant credentialing body), so the CONTENT itself should carry the pathway's credibility more than name-dropping certifications — align to standards, keep software instruction tool-agnostic where possible, and only cite a credential when the content clearly maps to it. Lead the competency list with entries from this, and treat the state CTE task list above as the state verification layer for it:
+- Common Career Technical Core (CCTC) — the cluster's performance elements (Advance CTE), organized by pathway: Audio & Video Technology & Film (AR-AV), Journalism & Broadcasting (AR-JB), Printing Technology (AR-PRT), Visual Arts (AR-VIS), Performing Arts (AR-PER), and Telecommunications (AR-TEL), plus the Career Ready Practices. Framework field: "CCTC". Use the pathway code (e.g., "AR-PRT" for printing, "AR-JB" for journalism/broadcasting, "AR-VIS" for visual/graphic design) and performance-element numbering when confident; otherwise describe the standard and omit the code.
+Then include entries from these ONLY where the lesson content clearly maps to them (secondary — do not over-cite):
+- Adobe Certified Professional — a widely recognized industry credential for creative/design-software skills (e.g., Photoshop, Illustrator, Premiere Pro, After Effects); reference it where the lesson builds those transferable skills, but keep software instruction TOOL-AGNOSTIC where possible (design principles transfer across tools). Framework field: "Adobe Certified Professional".
+- SkillsUSA — the CTSO with relevant AV / graphic-communications events (e.g., Audio/Radio Production, Television/Video Production, Graphic Communications, Photography). Framework field: "SkillsUSA".
+Content areas to prioritize: (a) graphic design fundamentals — visual design principles, typography, and basic design-software concepts (tool-agnostic where possible); (b) video / broadcast / journalism — basic video production, broadcast-journalism concepts, storytelling for media, and interviewing/reporting basics; (c) digital media & interactive design — web/digital content creation and basic animation or interactive-media concepts; and (d) printing & imaging (especially at the foundational/Intro level) — basic print-production concepts, project planning, and quality control in creative production. Keep the pathway's identity on APPLIED creative/communications production and a portfolio habit.`,
   }[pathway] ?? ""
 
   const rigorNote =
@@ -170,6 +177,7 @@ function getCredentialFocus(pathway) {
     business_mgmt: ["FBLA competitive-event recognition (e.g., Business Management, Organizational Leadership, Entrepreneurship)", "MBAResearch / NBEA-aligned business administration assessments & certificates", "Entrepreneurship & Small Business (ESB) or Microsoft Office Specialist (administrative skills) certifications where offered"],
     agriculture: ["FFA degrees, proficiency awards & Career Development Event (CDE) recognition", "Supervised Agricultural Experience (SAE) records & National FFA SAE recognition", "AFNR industry certifications where offered (e.g., Certified Veterinary Assistant, pesticide applicator, ServSafe for food products, welding)"],
     construction: ["NCCER Core & craft-area credentials (NCCER Registry) — the recognized entry credentials", "OSHA-10 (Construction) safety card", "SkillsUSA competitive-event recognition (e.g., Carpentry, Electrical, Plumbing, HVAC-R); pre-apprenticeship certificates (NCCER / trade-council programs)"],
+    arts_av: ["A portfolio / demo reel of finished creative work — the primary currency of this field", "Adobe Certified Professional (e.g., Photoshop, Illustrator, Premiere Pro) where the program teaches those tools", "SkillsUSA competitive-event recognition (e.g., Graphic Communications, Television/Video Production, Photography)"],
   }[pathway] ?? []
 }
 
@@ -483,6 +491,28 @@ function getPhaseDescriptions(pathway) {
         desc: "Students reflect on how today's skill fits real construction / architecture work and a career in the trades, and name one safe-work habit and one thing they'd verify next time. Connect the skill to the credential it builds toward (NCCER / OSHA-10) and a SkillsUSA event or apprenticeship. End with a brief exit ticket. 5–8 minutes.",
       },
     },
+    arts_av: {
+      warm_up: {
+        name: "Creative Hook",
+        desc: "Open with a concrete arts/media moment — a strong vs. weak design, a viral video or news clip, a real logo/poster/ad, or a 'how would you tell this story?' prompt. Students react as a creative professional or communicator would: what works, what's the message, and who's the audience? Connect to a real creative/media role, product, or employer. 5–8 minutes.",
+      },
+      whole_group_instruction: {
+        name: "Concept Instruction",
+        desc: "Teach the core design/media/communications concept directly using correct vocabulary (design principles — balance, contrast, hierarchy, alignment; typography; shot types/framing; story arc; interview/reporting terms; resolution/format). Ground it in the relevant CCTC pathway (AR-VIS, AR-AV, AR-JB, or AR-PRT). Keep any software reference tool-agnostic. Address a common misconception and check understanding. 8–12 minutes.",
+      },
+      fitness_activities: {
+        name: "Guided Create / Demonstration",
+        desc: "Model the creative skill step by step the way a pro works — sketching a layout to design principles, planning shots or a storyboard, structuring an interview or a news lede, or setting up a simple print/export — narrating each choice and the reason behind it. Keep tools tool-agnostic where possible. Students watch, then walk through it once with teacher support. 5–10 minutes.",
+      },
+      independent_practice: {
+        name: "Hands-On Production",
+        desc: "Students apply the skill in a realistic, tier-appropriate production task: design a simple layout/graphic to design principles, plan or shoot/edit a short video segment, write and structure a news/interview piece, build a small digital/interactive artifact, or plan a print project with a QC check. Have students critique and iterate, and add the piece to a portfolio. Describe exactly what students do, what a strong result looks like, and what the teacher observes/coaches. Include a checklist or rubric aligned to a CCTC performance element. 15–20 minutes.",
+      },
+      closure: {
+        name: "Reflection & Career Connection",
+        desc: "Students reflect on how today's work fits real creative/communications production and a media career, share or peer-critique a piece, and name one revision for the next iteration and one thing to add to their portfolio. Connect the skill to a SkillsUSA event, an Adobe-certification skill, and an arts/AV/communications career pathway. End with a brief exit ticket. 5–8 minutes.",
+      },
+    },
   }
   return map[pathway] ?? map.hospitality
 }
@@ -564,6 +594,11 @@ function getPathwaySequence(pathway) {
       { level: "concentrator", course: "Construction Trades / Carpentry, Electrical, Plumbing or HVAC (NCCER craft)", description: "Applied craft coursework to NCCER standards in a chosen trade, construction methods and sequencing, layout and skilled tool use, and jobsite safety to OSHA standard, with SkillsUSA competition alignment." },
       { level: "completer", course: "Advanced Construction / Capstone, NCCER Credential & Work-Based Learning", description: "Capstone build or design project, NCCER craft-credential attainment, OSHA-10, SkillsUSA competitive events, a registered (pre-)apprenticeship or co-op, and supervised work-based learning on a real jobsite or with a contractor." },
     ],
+    arts_av: [
+      { level: "introductory", course: "Introduction to Arts, A/V Technology & Communications / Digital Media I", description: "Foundations — visual design principles and typography, an introduction to video/broadcast/journalism and digital media, printing & imaging basics, tool-agnostic software concepts, and career awareness across the cluster." },
+      { level: "concentrator", course: "Graphic Design / Digital Media / Video & Broadcast Production (pathway course)", description: "Applied production in a chosen pathway (visual/graphic design, AV/film, journalism/broadcasting, or digital/interactive media) to CCTC standards, deeper software skill, media storytelling, and an ongoing portfolio." },
+      { level: "completer", course: "Advanced Media Production / Capstone, Portfolio & Work-Based Learning", description: "Capstone client or personal project, a professional portfolio/demo reel, industry-credential attainment (e.g., Adobe Certified Professional), SkillsUSA competition, and an internship or freelance/mentorship experience in a creative/media setting." },
+    ],
   }[pathway] ?? []
 }
 
@@ -572,7 +607,7 @@ function getPathwaySequence(pathway) {
 // Work-Based Learning (HQWBL) model, which recognizes a broader set of 12 methods than
 // the internship/shadow/speaker default.
 function getWblGuidance(pathway) {
-  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing" || pathway === "engineering_tech" || pathway === "business_mgmt" || pathway === "agriculture" || pathway === "construction") {
+  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing" || pathway === "engineering_tech" || pathway === "business_mgmt" || pathway === "agriculture" || pathway === "construction" || pathway === "arts_av") {
     const emphasis = pathway === "health_science"
       ? " Clinical experience is especially relevant for this pathway — prioritize clinical/hospital placements, patient-care rotations, and health-agency service learning where appropriate."
       : pathway === "education"
@@ -591,7 +626,9 @@ function getWblGuidance(pathway) {
                     ? " Supervised Agricultural Experience (SAE) is the SIGNATURE work-based-learning component of this cluster — give it particular emphasis. An SAE is a required, ongoing, student-led project (entrepreneurship, placement/internship, research/experimental, or school-based enterprise) that ag students maintain and document in records; build ideas that connect to or launch an SAE. Treat FFA as a CORE, intracurricular program component (not just an extracurricular add-on) — its Career Development Events (CDEs), Leadership Development Events (LDEs), degrees, and proficiency awards are part of how this cluster's WBL works. Frame WBL around the three-circle model (classroom/lab + FFA + SAE), and also draw on cooperative education, job shadowing, and mentorship with agricultural producers, agencies, and agribusinesses."
                     : pathway === "construction"
                       ? " Apprenticeship and registered apprenticeship are especially relevant for this pathway — the construction trades are strongly apprenticeship-driven, so prioritize registered (pre-)apprenticeships (union and merit-shop/ABC and trade-council programs), youth apprenticeships, and co-op placements with contractors, alongside internships, job shadowing, and mentorship with journey-level tradespeople. Any hands-on jobsite placement must be properly supervised and follow OSHA jobsite-safety requirements."
-                      : ""
+                      : pathway === "arts_av"
+                        ? " Internship, entrepreneurship, and mentorship are especially relevant for this pathway — creative/communications careers are portfolio- and project-driven, so prioritize internships at studios, agencies, newsrooms, or media/marketing teams; entrepreneurship (freelance/commission work and building a client portfolio or personal brand); and mentorship from working designers, videographers, or journalists. Also draw on school-based enterprise (producing the yearbook, morning announcements, school news, or design work for real clients) as authentic WBL, and emphasize building a professional portfolio/demo reel throughout."
+                        : ""
     return `\nThis pathway follows Virginia's High-Quality Work-Based Learning (HQWBL) model, which recognizes 12 methods: job shadowing, service learning, mentorship, externship, school-based enterprise, internship, entrepreneurship, clinical experience, cooperative education, youth registered apprenticeship, registered apprenticeship, and supervised agricultural experience. When filling the fields below, draw the most lesson-appropriate ideas from this broader set (not only internships/shadows) — e.g., service learning with a community agency, a clinical experience, a school-based enterprise, or a mentorship — and fold them into the internships and job_shadows arrays as fits this lesson's content and tier.${emphasis}`
   }
   return ""
@@ -745,7 +782,7 @@ export function buildCteLessonSchema(includeELL = false) {
 
 /**
  * @param {Object} input
- * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'|'engineering_tech'|'business_mgmt'|'agriculture'|'construction'} input.pathway
+ * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'|'engineering_tech'|'business_mgmt'|'agriculture'|'construction'|'arts_av'} input.pathway
  * @param {'ms'|'hs'} input.tier
  * @param {'introductory'|'concentrator'|'completer'|''} [input.level]  required when tier === 'hs'
  * @param {string}  input.topic
