@@ -64,10 +64,11 @@ const FULL = ['schedule', 'assessments', 'standards', 'pacing', 'activity', 'eoy
 const LITE = ['schedule', 'pacing', 'activity', 'eoy', 'portfolio']
 const TESTPREP = ['assessments', 'standards', 'pacing', 'activity', 'eoy', 'portfolio']
 const PRO = ['eoy', 'portfolio']
-// FULL + the Long-Term Sub Binder, for content-lesson modules the Sub Binder now
-// orchestrates via a per-module generation path (Theater, Dance, World Languages,
-// JROTC, Elementary Technology, ESL/ELL, Gifted & Talented, Special Education).
-const FULL_SB = [...FULL, 'subbinder']
+// FULL + Long-Term Sub Binder + Import & Enhance, for the content-lesson modules
+// that both tools now support via per-module paths (Theater, Dance, World
+// Languages, JROTC, Elementary Technology, ESL/ELL, Gifted & Talented, Special
+// Education). Both reuse each module's own generator, so the eligible set matches.
+const FULL_SB = [...FULL, 'subbinder', 'import']
 
 export const MODULE_HOMES = {
   // CTE keeps its bespoke lesson library (/cte/lessons), so Browse points there

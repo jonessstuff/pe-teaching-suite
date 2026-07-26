@@ -4,17 +4,26 @@ import { ArrowLeft, FileInput, Loader2 } from 'lucide-react'
 import { generateImportedLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 
-const SUBJECTS = ['PE & Health', 'Adaptive PE', 'Art', 'Library & Media', 'Music', 'STEM']
+// Core specials reformat into the PlanBook schema; the "More modules" group each
+// reformat into their OWN module structure (server-side per-module dispatch).
+const CORE_SUBJECTS = ['PE & Health', 'Adaptive PE', 'Art', 'Library & Media', 'Music', 'STEM']
+const NEWER_SUBJECTS = [
+  'Theater', 'Dance', 'World Languages', 'JROTC', 'Elementary Technology',
+  'ESL/ELL Specialist', 'Gifted & Talented', 'Special Education',
+]
 const GRADES = [
   { label: 'K', value: 0 }, { label: '1', value: 1 }, { label: '2', value: 2 },
   { label: '3', value: 3 }, { label: '4', value: 4 }, { label: '5', value: 5 },
   { label: '6', value: 6 }, { label: '7', value: 7 }, { label: '8', value: 8 },
+  { label: '9', value: 9 }, { label: '10', value: 10 }, { label: '11', value: 11 },
+  { label: '12', value: 12 },
 ]
 
 export default function ImportLesson() {
   const navigate = useNavigate()
   const [subject, setSubject] = useState('PE & Health')
   const [gradeBand, setGradeBand] = useState(5)
+  const [targetLanguage, setTargetLanguage] = useState('')
   const [rawText, setRawText] = useState('')
   const [status, setStatus] = useState('idle')
   const [error, setError] = useState(null)
@@ -22,11 +31,15 @@ export default function ImportLesson() {
   async function handleImport(e) {
     e.preventDefault()
     if (!rawText.trim()) return
+    if (subject === 'World Languages' && !targetLanguage.trim()) {
+      setError('Enter the target language (e.g. Spanish) for this lesson.')
+      return
+    }
     setStatus('generating')
     setError(null)
 
     try {
-      const lessonObject = await generateImportedLesson({ rawText, subject, gradeBand })
+      const lessonObject = await generateImportedLesson({ rawText, subject, gradeBand, targetLanguage: targetLanguage.trim() })
       const saved = await createLesson(lessonObject)
       navigate(`/lessons/${saved.id}`)
     } catch (err) {
@@ -58,23 +71,48 @@ export default function ImportLesson() {
         {/* Subject */}
         <div>
           <label className="block text-sm font-medium text-ink-300 mb-2">Subject</label>
-          <div className="flex flex-wrap gap-2">
-            {SUBJECTS.map(s => (
-              <button
-                key={s}
-                type="button"
-                onClick={() => setSubject(s)}
-                className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${
-                  subject === s
-                    ? 'border-rose-500 bg-rose-500/15 text-rose-400'
-                    : 'border-ink-700 text-ink-500 hover:border-ink-500 hover:text-ink-200'
-                }`}
-              >
-                {s}
-              </button>
-            ))}
-          </div>
+          {[
+            { heading: 'Core specials', items: CORE_SUBJECTS },
+            { heading: 'More modules', items: NEWER_SUBJECTS },
+          ].map(({ heading, items }) => (
+            <div key={heading} className="mb-3 last:mb-0">
+              <p className="mb-1.5 text-xs uppercase tracking-wide text-ink-600">{heading}</p>
+              <div className="flex flex-wrap gap-2">
+                {items.map(s => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setSubject(s)}
+                    className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${
+                      subject === s
+                        ? 'border-rose-500 bg-rose-500/15 text-rose-400'
+                        : 'border-ink-700 text-ink-500 hover:border-ink-500 hover:text-ink-200'
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
+
+        {/* World Languages: target language (required — it can't be inferred before reformatting) */}
+        {subject === 'World Languages' && (
+          <div>
+            <label className="block text-sm font-medium text-ink-300 mb-2" htmlFor="import-language">
+              Target language
+            </label>
+            <input
+              id="import-language"
+              type="text"
+              value={targetLanguage}
+              onChange={e => setTargetLanguage(e.target.value)}
+              placeholder="e.g. Spanish, French, Mandarin"
+              className="w-full max-w-xs rounded-xl border border-ink-700 bg-white dark:bg-ink-800 px-4 py-2.5 text-sm text-ink-50 placeholder:text-ink-700 dark:placeholder:text-ink-600 outline-none focus:border-rose-500"
+            />
+          </div>
+        )}
 
         {/* Grade */}
         <div>
