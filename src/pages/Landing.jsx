@@ -634,8 +634,8 @@ export default function Landing() {
             <FeatureGroup label="Growth">
               <FeatureCard
                 icon={Users}
-                title="Referral program"
-                description="Share PlansK12 with a colleague and earn free months — your unique link is in Settings."
+                title="Share with a colleague"
+                description="Send PlansK12 to a fellow specialist — your unique share link is in Settings."
               />
               <FeatureCard
                 icon={Smartphone}
