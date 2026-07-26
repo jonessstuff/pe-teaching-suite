@@ -1,9 +1,116 @@
 import { Link } from 'react-router-dom'
-import { Library, Palette, Music, Drama, Wind, FlaskConical, Monitor, Award, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, Handshake, PersonStanding, ScanEye, Ear, PartyPopper, Target, Globe, Users, Blocks, Layers, Presentation, ArrowRight } from 'lucide-react'
+import { Library, Palette, Music, Drama, Wind, FlaskConical, Monitor, Award, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, Handshake, PersonStanding, ScanEye, Ear, PartyPopper, Target, Globe, Users, Blocks, Layers, Presentation, Star, ArrowRight } from 'lucide-react'
 import { useDisplayName, getTimeGreeting } from '../hooks/useDisplayName'
+import { useFavorites } from '../hooks/useFavorites'
+
+// ─── Module catalog ─────────────────────────────────────────────────────────
+// Single source of truth for the picker cards. `key` is the module's stable
+// route slug and is what gets stored in module_favorites. Accent class strings
+// are kept literal (never interpolated) so Tailwind's JIT compiles them.
+// PE & Health renders a custom wordmark SVG instead of a lucide icon.
+const GROUPS = [
+  {
+    label: 'Core Specials & Encore Subjects',
+    modules: [
+      { key: 'pe-health', to: '/pe-health', label: 'PE & Health', Icon: null, wrap: 'bg-accent-500/15', color: 'text-accent-400', hover: 'hover:border-accent-500/40',
+        desc: 'Lessons, units, year plans, sub plans, quizzes, Adaptive PE & IEP planning, and more' },
+      { key: 'art', to: '/art', label: 'Art', Icon: Palette, wrap: 'bg-orange-500/15', color: 'text-orange-400', hover: 'hover:border-orange-500/40',
+        desc: 'Elementary K–5 art lessons — NCAS-aligned, studio-ready with full teacher prep' },
+      { key: 'library', to: '/library', label: 'Library & Media', Icon: Library, wrap: 'bg-blue-500/15', color: 'text-blue-400', hover: 'hover:border-blue-500/40',
+        desc: 'Elementary K–5 library lesson planning — genre study, research skills, digital citizenship, and the shared Makerspace project generator (also in STEM)' },
+      { key: 'music', to: '/music', label: 'Music', Icon: Music, wrap: 'bg-purple-500/15', color: 'text-purple-400', hover: 'hover:border-purple-500/40',
+        desc: 'Elementary K–5 general music lessons — NCAS-aligned with listening examples and active music making' },
+      { key: 'theater', to: '/theater', label: 'Theater / Drama', Icon: Drama, wrap: 'bg-maroon-500/15', color: 'text-maroon-400', hover: 'hover:border-maroon-400/40',
+        desc: 'NCCAS Theatre lessons across the four Artistic Processes — Creating, Performing, Responding & Connecting — K–12, with original scene-starters and improv (never copyrighted scripts)' },
+      { key: 'dance', to: '/dance', label: 'Dance', Icon: Wind, wrap: 'bg-olive-500/15', color: 'text-olive-400', hover: 'hover:border-olive-400/40',
+        desc: 'NCCAS Dance lessons across the four Artistic Processes — Creating, Performing, Responding & Connecting — K–12, with the elements of dance & built-in body-safety guidance' },
+      { key: 'stem', to: '/stem', label: 'STEM', Icon: FlaskConical, wrap: 'bg-cyan-500/15', color: 'text-cyan-400', hover: 'hover:border-cyan-500/40',
+        desc: 'Elementary K–5 STEM lessons — engineering design, coding, science investigation, and the shared Makerspace project generator (also in Library & Media)' },
+      { key: 'elementary-tech', to: '/elementary-tech', label: 'Elementary Technology / Computer Lab', Icon: Monitor, wrap: 'bg-saffron-500/15', color: 'text-saffron-400', hover: 'hover:border-saffron-400/40',
+        desc: 'Self-contained K–5 computer-lab lessons — foundational skills, digital citizenship & online safety, creation tools, and intro coding — ISTE-aligned for a weekly tech special' },
+      { key: 'after-school-clubs', to: '/after-school-clubs', label: 'After-School Clubs', Icon: PartyPopper, wrap: 'bg-coral-500/15', color: 'text-coral-400', hover: 'hover:border-coral-400/40',
+        desc: 'Ready-to-run club session plans across 40+ club types — sports, academic, creative, wellness, leadership & interest clubs, scaled K–12 by grade band' },
+      { key: 'jrotc', to: '/jrotc', label: 'JROTC', Icon: Award, wrap: 'bg-denim-500/15', color: 'text-denim-400', hover: 'hover:border-denim-400/40',
+        desc: 'High-school citizenship & leadership lessons across the LET 1–4 progression — leadership, character, civics, wellness, service learning & career exploration (not military tactics)' },
+      { key: 'world-languages', to: '/world-languages', label: 'World Languages', Icon: Globe, wrap: 'bg-jade-500/15', color: 'text-jade-400', hover: 'hover:border-jade-400/40',
+        desc: 'ACTFL 5 Cs lessons for any language — Spanish, French, Mandarin, Latin, ASL & more — across Interpersonal, Interpretive & Presentational modes, Novice–Advanced (K–12)' },
+    ],
+  },
+  {
+    label: 'Career & Technical Education',
+    modules: [
+      { key: 'cte', to: '/cte', label: 'CTE', Icon: Briefcase, wrap: 'bg-pink-500/20', color: 'text-pink-400', hover: 'hover:border-pink-400/40',
+        desc: 'Career & Technical Education for MS–HS — Hospitality & Tourism, Finance, Marketing, Human Services / FCS, Health Science, Education & Training, Career Readiness, Information Technology, Transportation, Distribution & Logistics, Manufacturing, STEM / Engineering & Technology, Business Management & Administration, Agriculture, Food & Natural Resources, Architecture & Construction, Arts, A/V Technology & Communications, Government & Public Administration, and Law, Public Safety, Corrections & Security pathways' },
+    ],
+  },
+  {
+    label: 'Academic Intervention & Support',
+    modules: [
+      { key: 'esl-specialist', to: '/esl-specialist', label: 'ESL/ELL Specialist', Icon: Languages, wrap: 'bg-fuchsia-500/15', color: 'text-fuchsia-400', hover: 'hover:border-fuchsia-400/40',
+        desc: 'Language-development lessons for ESL/ELL teachers — WIDA proficiency levels, SIOP content & language objectives, all four language domains (K–12)' },
+      { key: 'gifted-talented', to: '/gifted-talented', label: 'Gifted & Talented', Icon: Sparkles, wrap: 'bg-amber-500/15', color: 'text-amber-400', hover: 'hover:border-amber-400/40',
+        desc: 'Differentiate any topic with Depth & Complexity, plan enrichment vs. acceleration, and support 2e & underachieving gifted learners (K–12)' },
+      { key: 'intervention', to: '/intervention', label: 'Intervention Planning', Icon: Layers, wrap: 'bg-stone-500/15', color: 'text-stone-400', hover: 'hover:border-stone-400/40',
+        desc: 'MTSS/RTI tiered intervention ideas from a described concern — routes to Reading (IDA), Math (NCTM/CRA), or Behavior support, with Tier framing & progress monitoring' },
+      { key: 'math-specialists', to: '/math-specialists', label: 'Math Specialists', Icon: Calculator, wrap: 'bg-lime-500/15', color: 'text-lime-400', hover: 'hover:border-lime-400/40',
+        desc: 'Concept-first math interventions & differentiation — CRA sequencing, Number Talks & NCTM process standards for pull-out and co-teaching, plus a Tutoring Mode (private/after-school & in-class pull-aside) (K–12)' },
+      { key: 'reading-specialists', to: '/reading-specialists', label: 'Reading Specialists', Icon: BookOpen, wrap: 'bg-sky-500/15', color: 'text-sky-400', hover: 'hover:border-sky-400/40',
+        desc: 'Explicit, systematic Structured Literacy interventions — phonics, fluency, comprehension & more, IDA-aligned with dyslexia-indicator flagging, plus a Tutoring Mode (private/after-school & in-class pull-aside) (K–12)' },
+      { key: 'special-education', to: '/special-education', label: 'Special Education', Icon: HeartHandshake, wrap: 'bg-violet-500/15', color: 'text-violet-400', hover: 'hover:border-violet-400/40',
+        desc: 'Resource & self-contained instructional support — multi-tier differentiation, functional/life-skills, and push-in co-teaching ideas to adapt to your students (K–12)' },
+      { key: 'test-prep', to: '/test-prep', label: 'Test Prep', Icon: Target, wrap: 'bg-steel-500/15', color: 'text-steel-400', hover: 'hover:border-steel-400/40',
+        desc: 'Original SAT/ACT & state-assessment practice — original practice questions, strategies, content review & test-day prep as tutoring-style sessions (1:1 or small group)' },
+    ],
+  },
+  {
+    label: 'Student Wellbeing & Behavior',
+    modules: [
+      { key: 'classroom-management', to: '/classroom-management', label: 'Classroom Management', Icon: ClipboardCheck, wrap: 'bg-indigo-500/20', color: 'text-indigo-400', hover: 'hover:border-indigo-400/40',
+        desc: 'All grade bands K–12 — printable quick-reference cards, behavior charts, reflection forms, behavior troubleshooting, ABC data sheets, CICO trackers, and parent communication tools' },
+      { key: 'school-counselors', to: '/school-counselors', label: 'School Counselors', Icon: Compass, wrap: 'bg-crimson-500/15', color: 'text-crimson-400', hover: 'hover:border-crimson-400/40',
+        desc: 'Whole-class classroom guidance curriculum — ASCA-aligned lessons across academic, career, and social/emotional development (K–12)' },
+      { key: 'slp', to: '/slp', label: 'Speech-Language Pathologists', Icon: Speech, wrap: 'bg-bronze-500/15', color: 'text-bronze-400', hover: 'hover:border-bronze-400/40',
+        desc: 'SLP session activity ideas — articulation, language, fluency, social communication & AAC, ASHA-aligned (K–12, plus an experimental adult-rehab tier)' },
+      { key: 'ot', to: '/ot', label: 'Occupational Therapists', Icon: Hand, wrap: 'bg-periwinkle-500/15', color: 'text-periwinkle-400', hover: 'hover:border-periwinkle-400/40',
+        desc: 'School-based OT activity ideas — fine motor & handwriting, sensory processing & regulation, ADLs, visual-motor & vocational skills, OTPF-4 / AOTA-aligned (K–12)' },
+      { key: 'pt', to: '/pt', label: 'Physical Therapists', Icon: PersonStanding, wrap: 'bg-zinc-500/15', color: 'text-zinc-400', hover: 'hover:border-zinc-400/40',
+        desc: 'School-based PT activity ideas — gross motor, mobility & positioning, adaptive-PE crossover & functional mobility, APTA / APTA Pediatric-aligned (K–12)' },
+      { key: 'tvi', to: '/tvi', label: 'Teacher of the Visually Impaired', Icon: ScanEye, wrap: 'bg-cobalt-500/15', color: 'text-cobalt-400', hover: 'hover:border-cobalt-400/40',
+        desc: 'Expanded Core Curriculum activity ideas — Braille & compensatory access, assistive technology, independent living, sensory & social skills, and career/transition, CEC/DVIDB-aligned (K–12)' },
+      { key: 'dhh', to: '/dhh', label: 'Teacher of the Deaf & Hard of Hearing', Icon: Ear, wrap: 'bg-magenta-500/15', color: 'text-magenta-400', hover: 'hover:border-magenta-400/40',
+        desc: 'ECC-DHH activity ideas — communication (bilingual-bicultural or listening & spoken language), self-advocacy, social-emotional, hearing technology & career transition, CEC/CED-aligned (K–12)' },
+      { key: 'student-support-activities', to: '/student-support-activities', label: 'Student Support Team Activities', Icon: Users, wrap: 'bg-plum-500/15', color: 'text-plum-400', hover: 'hover:border-plum-400/40',
+        desc: 'Ready-to-run small-group SEL & behavioral activities for social workers, school psychologists, MFLCs & behavior specialists — role-tailored, activity structure only (K–12)' },
+    ],
+  },
+  {
+    label: 'Early Childhood',
+    modules: [
+      { key: 'early-childhood', to: '/early-childhood', label: 'Early Childhood / Pre-K', Icon: Blocks, wrap: 'bg-grass-500/15', color: 'text-grass-400', hover: 'hover:border-grass-400/40',
+        desc: 'Play-based learning centers & guided-play invitations for the whole child — NAEYC DAP, NAEYC Professional Standards & Head Start ELOF (toddlers–TK)' },
+    ],
+  },
+  {
+    label: 'School Leadership',
+    modules: [
+      { key: 'staff-pd', to: '/staff-pd', label: 'Staff PD & Meeting Planning', Icon: Presentation, wrap: 'bg-gold-500/15', color: 'text-gold-400', hover: 'hover:border-gold-400/40',
+        desc: 'For principals & coaches — Learning Forward-aligned PD sessions, new-teacher mentoring, walkthrough look-fors, PLC/data-team protocols, and building communication templates' },
+      { key: 'instructional-coaching', to: '/instructional-coaching', label: 'Instructional Coaching', Icon: Handshake, wrap: 'bg-mocha-500/15', color: 'text-mocha-400', hover: 'hover:border-mocha-400/40',
+        desc: 'Non-evaluative, partnership-based coaching — conversation frameworks, teacher-driven observation tools, and goal-setting & data protocols built on Jim Knight’s Impact Cycle' },
+    ],
+  },
+]
+
+// Flat catalog, in display order — used to render pinned favorites without
+// reordering as the user stars/unstars.
+const ALL_MODULES = GROUPS.flatMap((g) => g.modules)
 
 export default function ModulePicker() {
   const firstName = useDisplayName()
+  const { favorites, toggle, loaded } = useFavorites()
+
+  const favoriteModules = ALL_MODULES.filter((m) => favorites.has(m.key))
+  const showFavorites = loaded && favoriteModules.length > 0
 
   return (
     <div className="space-y-10">
@@ -15,600 +122,80 @@ export default function ModulePicker() {
         <p className="mt-2 text-lg text-ink-400">Which module would you like to work in?</p>
       </div>
 
-      {/* Module cards, grouped by category (alphabetical within each group) */}
+      {/* Module cards, grouped by category (favorites pinned above the groups) */}
       <div className="space-y-12">
 
-        <ModuleSection label="Core Specials & Encore Subjects">
-          {/* PE & Health (flagship — pinned first, then alphabetical) */}
-          <Link
-            to="/pe-health"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-accent-500/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-500/15">
-              <svg width="30" height="20" viewBox="0 0 30 20" fill="none" aria-hidden="true">
-                <path
-                  d="M0 10 L6 10 L8 2 L11 18 L14 4 L17 10 L30 10"
-                  stroke="#10b981"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+        {showFavorites && (
+          <section className="space-y-5">
+            <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-amber-400">
+              <Star size={13} className="fill-amber-400" /> Favorites
+            </p>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {favoriteModules.map((m) => (
+                <ModuleCard key={m.key} module={m} isFavorite toggle={toggle} />
+              ))}
             </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">PE &amp; Health</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                Lessons, units, year plans, sub plans, quizzes, Adaptive PE &amp; IEP planning, and more
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-accent-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
+          </section>
+        )}
 
-          {/* Art */}
-          <Link
-            to="/art"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-orange-500/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-500/15">
-              <Palette size={28} className="text-orange-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">Art</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                Elementary K–5 art lessons — NCAS-aligned, studio-ready with full teacher prep
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-orange-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* Library & Media */}
-          <Link
-            to="/library"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-blue-500/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/15">
-              <Library size={28} className="text-blue-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">Library &amp; Media</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                Elementary K–5 library lesson planning — genre study, research skills, digital citizenship, and the shared Makerspace project generator (also in STEM)
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-blue-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* Music */}
-          <Link
-            to="/music"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-purple-500/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-500/15">
-              <Music size={28} className="text-purple-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">Music</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                Elementary K–5 general music lessons — NCAS-aligned with listening examples and active music making
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-purple-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* Theater / Drama */}
-          <Link
-            to="/theater"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-maroon-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-maroon-500/15">
-              <Drama size={28} className="text-maroon-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">Theater / Drama</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                NCCAS Theatre lessons across the four Artistic Processes — Creating, Performing, Responding &amp; Connecting — K–12, with original scene-starters and improv (never copyrighted scripts)
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-maroon-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* Dance */}
-          <Link
-            to="/dance"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-olive-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-olive-500/15">
-              <Wind size={28} className="text-olive-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">Dance</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                NCCAS Dance lessons across the four Artistic Processes — Creating, Performing, Responding &amp; Connecting — K–12, with the elements of dance &amp; built-in body-safety guidance
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-olive-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* STEM */}
-          <Link
-            to="/stem"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-cyan-500/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500/15">
-              <FlaskConical size={28} className="text-cyan-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">STEM</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                Elementary K–5 STEM lessons — engineering design, coding, science investigation, and the shared Makerspace project generator (also in Library &amp; Media)
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-cyan-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* Elementary Technology / Computer Lab */}
-          <Link
-            to="/elementary-tech"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-saffron-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-saffron-500/15">
-              <Monitor size={28} className="text-saffron-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">Elementary Technology / Computer Lab</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                Self-contained K–5 computer-lab lessons — foundational skills, digital citizenship &amp; online safety, creation tools, and intro coding — ISTE-aligned for a weekly tech special
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-saffron-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* After-School Clubs */}
-          <Link
-            to="/after-school-clubs"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-coral-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-coral-500/15">
-              <PartyPopper size={28} className="text-coral-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">After-School Clubs</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                Ready-to-run club session plans across 40+ club types — sports, academic, creative, wellness, leadership &amp; interest clubs, scaled K–12 by grade band
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-coral-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* JROTC */}
-          <Link
-            to="/jrotc"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-denim-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-denim-500/15">
-              <Award size={28} className="text-denim-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">JROTC</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                High-school citizenship &amp; leadership lessons across the LET 1–4 progression — leadership, character, civics, wellness, service learning &amp; career exploration (not military tactics)
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-denim-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* World Languages */}
-          <Link
-            to="/world-languages"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-jade-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-jade-500/15">
-              <Globe size={28} className="text-jade-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">World Languages</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                ACTFL 5 Cs lessons for any language — Spanish, French, Mandarin, Latin, ASL &amp; more — across Interpersonal, Interpretive &amp; Presentational modes, Novice–Advanced (K–12)
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-jade-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-        </ModuleSection>
-
-        <ModuleSection label="Career & Technical Education">
-          {/* CTE */}
-          <Link
-            to="/cte"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-pink-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-pink-500/20">
-              <Briefcase size={28} className="text-pink-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">CTE</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                Career &amp; Technical Education for MS–HS — Hospitality &amp; Tourism, Finance, Marketing, Human Services / FCS, Health Science, Education &amp; Training, Career Readiness, Information Technology, Transportation, Distribution &amp; Logistics, Manufacturing, STEM / Engineering &amp; Technology, Business Management &amp; Administration, Agriculture, Food &amp; Natural Resources, Architecture &amp; Construction, Arts, A/V Technology &amp; Communications, Government &amp; Public Administration, and Law, Public Safety, Corrections &amp; Security pathways
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-pink-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-        </ModuleSection>
-
-        <ModuleSection label="Academic Intervention & Support">
-          {/* ESL/ELL Specialist */}
-          <Link
-            to="/esl-specialist"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-fuchsia-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-fuchsia-500/15">
-              <Languages size={28} className="text-fuchsia-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">ESL/ELL Specialist</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                Language-development lessons for ESL/ELL teachers — WIDA proficiency levels, SIOP content &amp; language objectives, all four language domains (K–12)
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-fuchsia-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* Gifted & Talented */}
-          <Link
-            to="/gifted-talented"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-amber-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500/15">
-              <Sparkles size={28} className="text-amber-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">Gifted &amp; Talented</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                Differentiate any topic with Depth &amp; Complexity, plan enrichment vs. acceleration, and support 2e &amp; underachieving gifted learners (K–12)
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-amber-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* Intervention Planning */}
-          <Link
-            to="/intervention"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-stone-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-stone-500/15">
-              <Layers size={28} className="text-stone-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">Intervention Planning</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                MTSS/RTI tiered intervention ideas from a described concern — routes to Reading (IDA), Math (NCTM/CRA), or Behavior support, with Tier framing &amp; progress monitoring
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-stone-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* Math Specialists */}
-          <Link
-            to="/math-specialists"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-lime-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-lime-500/15">
-              <Calculator size={28} className="text-lime-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">Math Specialists</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                Concept-first math interventions &amp; differentiation — CRA sequencing, Number Talks &amp; NCTM process standards for pull-out and co-teaching, plus a Tutoring Mode (private/after-school &amp; in-class pull-aside) (K–12)
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-lime-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* Reading Specialists */}
-          <Link
-            to="/reading-specialists"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-sky-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-500/15">
-              <BookOpen size={28} className="text-sky-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">Reading Specialists</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                Explicit, systematic Structured Literacy interventions — phonics, fluency, comprehension &amp; more, IDA-aligned with dyslexia-indicator flagging, plus a Tutoring Mode (private/after-school &amp; in-class pull-aside) (K–12)
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-sky-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* Special Education */}
-          <Link
-            to="/special-education"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-violet-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-500/15">
-              <HeartHandshake size={28} className="text-violet-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">Special Education</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                Resource &amp; self-contained instructional support — multi-tier differentiation, functional/life-skills, and push-in co-teaching ideas to adapt to your students (K–12)
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-violet-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* Test Prep */}
-          <Link
-            to="/test-prep"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-steel-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-steel-500/15">
-              <Target size={28} className="text-steel-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">Test Prep</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                Original SAT/ACT &amp; state-assessment practice — original practice questions, strategies, content review &amp; test-day prep as tutoring-style sessions (1:1 or small group)
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-steel-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-        </ModuleSection>
-
-        <ModuleSection label="Student Wellbeing & Behavior">
-          {/* Classroom Management */}
-          <Link
-            to="/classroom-management"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-indigo-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-500/20">
-              <ClipboardCheck size={28} className="text-indigo-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">Classroom Management</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                All grade bands K–12 — printable quick-reference cards, behavior charts, reflection forms, behavior troubleshooting, ABC data sheets, CICO trackers, and parent communication tools
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-indigo-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* School Counselors */}
-          <Link
-            to="/school-counselors"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-crimson-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-crimson-500/15">
-              <Compass size={28} className="text-crimson-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">School Counselors</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                Whole-class classroom guidance curriculum — ASCA-aligned lessons across academic, career, and social/emotional development (K–12)
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-crimson-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* Speech-Language Pathologists */}
-          <Link
-            to="/slp"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-bronze-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-bronze-500/15">
-              <Speech size={28} className="text-bronze-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">Speech-Language Pathologists</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                SLP session activity ideas — articulation, language, fluency, social communication &amp; AAC, ASHA-aligned (K–12, plus an experimental adult-rehab tier)
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-bronze-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* Occupational Therapists */}
-          <Link
-            to="/ot"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-periwinkle-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-periwinkle-500/15">
-              <Hand size={28} className="text-periwinkle-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">Occupational Therapists</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                School-based OT activity ideas — fine motor &amp; handwriting, sensory processing &amp; regulation, ADLs, visual-motor &amp; vocational skills, OTPF-4 / AOTA-aligned (K–12)
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-periwinkle-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* Physical Therapists */}
-          <Link
-            to="/pt"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-zinc-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-zinc-500/15">
-              <PersonStanding size={28} className="text-zinc-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">Physical Therapists</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                School-based PT activity ideas — gross motor, mobility &amp; positioning, adaptive-PE crossover &amp; functional mobility, APTA / APTA Pediatric-aligned (K–12)
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-zinc-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* Teacher of the Visually Impaired */}
-          <Link
-            to="/tvi"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-cobalt-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cobalt-500/15">
-              <ScanEye size={28} className="text-cobalt-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">Teacher of the Visually Impaired</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                Expanded Core Curriculum activity ideas — Braille &amp; compensatory access, assistive technology, independent living, sensory &amp; social skills, and career/transition, CEC/DVIDB-aligned (K–12)
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-cobalt-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* Teacher of the Deaf & Hard of Hearing */}
-          <Link
-            to="/dhh"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-magenta-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-magenta-500/15">
-              <Ear size={28} className="text-magenta-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">Teacher of the Deaf &amp; Hard of Hearing</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                ECC-DHH activity ideas — communication (bilingual-bicultural or listening &amp; spoken language), self-advocacy, social-emotional, hearing technology &amp; career transition, CEC/CED-aligned (K–12)
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-magenta-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* Student Support Team Activities */}
-          <Link
-            to="/student-support-activities"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-plum-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-plum-500/15">
-              <Users size={28} className="text-plum-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">Student Support Team Activities</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                Ready-to-run small-group SEL &amp; behavioral activities for social workers, school psychologists, MFLCs &amp; behavior specialists — role-tailored, activity structure only (K–12)
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-plum-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-        </ModuleSection>
-
-        <ModuleSection label="Early Childhood">
-          {/* Early Childhood / Pre-K */}
-          <Link
-            to="/early-childhood"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-grass-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-grass-500/15">
-              <Blocks size={28} className="text-grass-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">Early Childhood / Pre-K</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                Play-based learning centers &amp; guided-play invitations for the whole child — NAEYC DAP, NAEYC Professional Standards &amp; Head Start ELOF (toddlers–TK)
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-grass-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-        </ModuleSection>
-
-        <ModuleSection label="School Leadership">
-          {/* Staff PD & Meeting Planning */}
-          <Link
-            to="/staff-pd"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-gold-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gold-500/15">
-              <Presentation size={28} className="text-gold-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">Staff PD &amp; Meeting Planning</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                For principals &amp; coaches — Learning Forward-aligned PD sessions, new-teacher mentoring, walkthrough look-fors, PLC/data-team protocols, and building communication templates
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-gold-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-
-          {/* Instructional Coaching */}
-          <Link
-            to="/instructional-coaching"
-            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-mocha-400/40"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-mocha-500/15">
-              <Handshake size={28} className="text-mocha-400" />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <h2 className="text-xl font-semibold text-ink-50">Instructional Coaching</h2>
-              <p className="text-sm text-ink-400 leading-relaxed">
-                Non-evaluative, partnership-based coaching — conversation frameworks, teacher-driven observation tools, and goal-setting &amp; data protocols built on Jim Knight&rsquo;s Impact Cycle
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-mocha-400 transition-[gap] group-hover:gap-2.5">
-              Open module <ArrowRight size={15} />
-            </div>
-          </Link>
-        </ModuleSection>
+        {GROUPS.map((group) => (
+          <ModuleSection key={group.label} label={group.label}>
+            {group.modules.map((m) => (
+              <ModuleCard key={m.key} module={m} isFavorite={favorites.has(m.key)} toggle={toggle} />
+            ))}
+          </ModuleSection>
+        ))}
 
       </div>
+    </div>
+  )
+}
+
+// ─── Module card (with favorite star) ───────────────────────────────────────
+function ModuleCard({ module: m, isFavorite, toggle }) {
+  return (
+    <div className="relative">
+      <Link
+        to={m.to}
+        className={`card group flex h-full flex-col gap-6 p-8 transition-colors ${m.hover}`}
+      >
+        <div className={`flex h-14 w-14 items-center justify-center rounded-2xl ${m.wrap}`}>
+          {m.key === 'pe-health' ? (
+            <svg width="30" height="20" viewBox="0 0 30 20" fill="none" aria-hidden="true">
+              <path
+                d="M0 10 L6 10 L8 2 L11 18 L14 4 L17 10 L30 10"
+                stroke="#10b981"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          ) : (
+            <m.Icon size={28} className={m.color} />
+          )}
+        </div>
+        <div className="flex-1 space-y-1.5">
+          {/* pr-8 keeps the title clear of the star button in the corner */}
+          <h2 className="pr-8 text-xl font-semibold text-ink-50">{m.label}</h2>
+          <p className="text-sm text-ink-400 leading-relaxed">{m.desc}</p>
+        </div>
+        <div className={`flex items-center gap-1.5 text-sm font-medium ${m.color} transition-[gap] group-hover:gap-2.5`}>
+          Open module <ArrowRight size={15} />
+        </div>
+      </Link>
+
+      {/* Favorite toggle — a sibling overlay (not nested in the Link) so it
+          doesn't navigate and isn't invalid interactive-in-anchor markup. */}
+      <button
+        type="button"
+        onClick={() => toggle(m.key)}
+        aria-pressed={isFavorite}
+        aria-label={isFavorite ? `Remove ${m.label} from favorites` : `Add ${m.label} to favorites`}
+        title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+        className="absolute right-4 top-4 z-10 rounded-full p-1.5 text-ink-600 transition-colors hover:bg-ink-800/60 hover:text-amber-400"
+      >
+        <Star size={20} className={isFavorite ? 'fill-amber-400 text-amber-400' : 'fill-transparent'} />
+      </button>
     </div>
   )
 }
