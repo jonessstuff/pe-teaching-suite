@@ -510,17 +510,12 @@ export default function LessonGenerator() {
               >
                 Single Lesson
               </button>
-              <button
-                type="button"
-                onClick={() => setMode('unit')}
-                className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                  mode === 'unit'
-                    ? 'bg-accent-500 text-white'
-                    : 'bg-ink-700 text-ink-200 hover:bg-ink-600'
-                }`}
+              <Link
+                to="/build-unit?subject=pe-health"
+                className="rounded-lg px-3 py-2 text-sm font-medium transition-colors bg-ink-700 text-ink-200 hover:bg-ink-600"
               >
-                Unit (1-3 days)
-              </button>
+                Unit (multi-day)
+              </Link>
               <button
                 type="button"
                 onClick={() => setMode('fitness_test')}

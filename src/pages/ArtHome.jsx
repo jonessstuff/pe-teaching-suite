@@ -91,7 +91,7 @@ export default function ArtHome() {
         )}
 
         <Link
-          to="/art/units/new"
+          to="/build-unit?subject=art"
           className="card group flex flex-col gap-4 p-6 transition-colors hover:border-orange-500/40"
         >
           <div className="flex items-start justify-between">

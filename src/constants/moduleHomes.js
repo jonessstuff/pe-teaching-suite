@@ -68,12 +68,12 @@ const PRO = ['eoy', 'portfolio']
 // that both tools now support via per-module paths (Theater, Dance, World
 // Languages, JROTC, Elementary Technology, ESL/ELL, Gifted & Talented, Special
 // Education). Both reuse each module's own generator, so the eligible set matches.
-const FULL_SB = [...FULL, 'subbinder', 'import']
+const FULL_SB = [...FULL, 'subbinder', 'import', 'unit']
 // Sub Binder but not Import & Enhance: CTE / Reading / Math Specialists get the
 // per-module Sub Binder, but their Import paths aren't built yet (CTE needs a
 // pathway selector; Reading/Math have a tutoring-mode split).
-const FULL_SUB = [...FULL, 'subbinder']
-const LITE_SUB = [...LITE, 'subbinder'] // Early Childhood
+const FULL_SUB = [...FULL, 'subbinder', 'unit']
+const LITE_SUB = [...LITE, 'subbinder', 'unit'] // Early Childhood
 
 export const MODULE_HOMES = {
   // CTE keeps its bespoke lesson library (/cte/lessons), so Browse points there

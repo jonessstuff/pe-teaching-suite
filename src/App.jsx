@@ -37,6 +37,7 @@ import StemUnitBuilder from './pages/StemUnitBuilder'
 import CteGenerator from './pages/CteGenerator'
 import CteLessonLibrary from './pages/CteLessonLibrary'
 import SubBinderGenerator from './pages/SubBinderGenerator'
+import UnitBuilder from './pages/UnitBuilder'
 import Schedule from './pages/Schedule'
 import Students from './pages/Students'
 import Settings from './pages/Settings'
@@ -386,6 +387,7 @@ function App() {
           <Route path="student-support-activities/generate" element={<SstActivityGenerator />} />
           <Route path="my-classroom-cards" element={<MyClassroomCards />} />
           <Route path="sub-binder" element={<SubBinderGenerator />} />
+          <Route path="build-unit" element={<UnitBuilder />} />
           <Route path="my-binders" element={<MyBinders />} />
           <Route path="assessments" element={<AssessmentBank />} />
           <Route path="standards-tracker" element={<StandardsTracker />} />

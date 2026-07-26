@@ -93,7 +93,7 @@ export default function StemHome() {
         )}
 
         <Link
-          to="/stem/units/new"
+          to="/build-unit?subject=stem"
           className="card group flex flex-col gap-4 p-6 transition-colors hover:border-cyan-500/40"
         >
           <div className="flex items-start justify-between">

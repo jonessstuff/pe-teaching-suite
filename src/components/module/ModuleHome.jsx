@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Sparkles, BookOpen, CalendarDays, BookCheck, BarChart3, CalendarRange, PartyPopper, ScrollText, FolderOpen, BookMarked, FileInput, ArrowRight, ArrowLeft, Loader2 } from 'lucide-react'
+import { Sparkles, BookOpen, CalendarDays, BookCheck, BarChart3, CalendarRange, PartyPopper, ScrollText, FolderOpen, BookMarked, FileInput, Layers, ArrowRight, ArrowLeft, Loader2 } from 'lucide-react'
 import { listLessons } from '../../services/lessonsService'
 import LessonCard from '../lesson/LessonCard'
 
@@ -49,6 +49,10 @@ const UTILITY_CARDS = {
     Icon: FileInput, title: 'Import & Enhance', desc: 'Paste an existing lesson — reformat & enrich it',
     to: '/import', well: 'bg-rose-500/15', text: 'text-rose-400', hover: 'hover:border-rose-500/40', arrow: 'group-hover:text-rose-400',
   },
+  unit: {
+    Icon: Layers, title: 'Build a Unit', desc: 'A multi-day unit that builds skill-on-skill',
+    to: '/build-unit', well: 'bg-teal-500/15', text: 'text-teal-400', hover: 'hover:border-teal-500/40', arrow: 'group-hover:text-teal-400',
+  },
 }
 
 function ActionCard({ Icon, title, desc, to, well, text, hover, arrow }) {
@@ -91,6 +95,12 @@ export default function ModuleHome({ config }) {
   // with its own bespoke library (e.g. CTE → /cte/lessons) overrides via browsePath.
   const browseTo = browsePath ?? `/lessons?module=${encodeURIComponent(moduleLabel)}`
 
+  // The shared tool cards (Sub Binder, Import, Unit Builder) each accept a
+  // ?subject= slug so they open preselected to THIS module rather than the
+  // default. Derive the slug from the module's own route (e.g. /theater/generate).
+  const TOOL_CARDS = { subbinder: true, import: true, unit: true }
+  const slug = (generatePath || '').split('/').filter(Boolean)[0]
+
   return (
     <div className="space-y-10">
       <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors">
@@ -121,7 +131,9 @@ export default function ModuleHome({ config }) {
         />
         {cards.map((key) => {
           const c = UTILITY_CARDS[key]
-          return c ? <ActionCard key={key} {...c} /> : null
+          if (!c) return null
+          const to = TOOL_CARDS[key] && slug ? `${c.to}?subject=${slug}` : c.to
+          return <ActionCard key={key} {...c} to={to} />
         })}
       </div>
 

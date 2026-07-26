@@ -91,7 +91,7 @@ export default function MusicHome() {
         )}
 
         <Link
-          to="/music/units/new"
+          to="/build-unit?subject=music"
           className="card group flex flex-col gap-4 p-6 transition-colors hover:border-purple-500/40"
         >
           <div className="flex items-start justify-between">

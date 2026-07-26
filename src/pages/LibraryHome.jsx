@@ -68,7 +68,7 @@ export default function LibraryHome() {
         </Link>
 
         <Link
-          to="/library/units/new"
+          to="/build-unit?subject=library"
           className="card group flex flex-col gap-4 p-6 transition-colors hover:border-violet-500/40"
         >
           <div className="flex items-start justify-between">

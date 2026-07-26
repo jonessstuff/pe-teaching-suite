@@ -76,11 +76,11 @@ export default function Dashboard() {
       subtitle: 'One focused class period, fully planned',
     },
     {
-      to: '/generate',
+      to: '/build-unit?subject=pe-health',
       icon: Layers,
       iconClass: 'bg-violet-500/15 text-violet-400',
       title: 'Build a unit',
-      subtitle: '2–3 days that build skill on skill',
+      subtitle: 'A multi-day unit that builds skill on skill',
     },
     ...(lessons.length > 0
       ? [
