@@ -48,11 +48,24 @@ Deno.serve(async (req) => {
       .eq("unsubscribe_token", token)
       .select("id");
     if (error) throw error;
+    let matched = !!data && data.length > 0;
+
+    // Fall back to the email-based suppression list — marketing recipients who
+    // have no profiles row (Stripe payers with no PlansK12 account).
+    if (!matched) {
+      const { data: mo, error: moErr } = await admin
+        .from("marketing_optouts")
+        .update({ opted_out: true })
+        .eq("token", token)
+        .select("email");
+      if (moErr) throw moErr;
+      matched = !!mo && mo.length > 0;
+    }
 
     // One-click (RFC 8058) expects a bare 200; don't leak whether the token matched.
     if (req.method === "POST") return new Response("ok", { status: 200 });
 
-    if (!data || data.length === 0) {
+    if (!matched) {
       return page("We couldn't find that unsubscribe link, but you may already be opted out. To be sure, reply to any PlansK12 email and we'll remove you.", 200);
     }
     return page("You've been unsubscribed from PlansK12 emails — you won't receive further messages from us. Changed your mind? Just reply to any email and we'll add you back.");
