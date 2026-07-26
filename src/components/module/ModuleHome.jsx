@@ -69,6 +69,7 @@ export default function ModuleHome({ config }) {
     subject, moduleLabel, title, Icon, accent, tagline,
     generatePath, generateTitle, generateDesc,
     browseTitle = 'Browse my lessons', browseNoun = 'lesson',
+    browsePath = null,
     cards = [],
   } = config
 
@@ -82,7 +83,9 @@ export default function ModuleHome({ config }) {
   }, [subject])
 
   const recent = (lessons ?? []).slice(0, 3)
-  const browseTo = `/lessons?module=${encodeURIComponent(moduleLabel)}`
+  // Most modules deep-link into the shared library filtered by module; a module
+  // with its own bespoke library (e.g. CTE → /cte/lessons) overrides via browsePath.
+  const browseTo = browsePath ?? `/lessons?module=${encodeURIComponent(moduleLabel)}`
 
   return (
     <div className="space-y-10">

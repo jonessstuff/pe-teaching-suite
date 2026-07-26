@@ -2,6 +2,7 @@ import {
   Drama, Hand, Wind, Globe, Award, Monitor, Compass, Languages, Sparkles,
   BookOpen, Calculator, HeartHandshake, Blocks, PartyPopper, Target, Layers,
   Users, Presentation, Handshake, PersonStanding, Speech, ScanEye, Ear,
+  Briefcase,
 } from 'lucide-react'
 
 // Per-module config for the reusable <ModuleHome> shell.
@@ -54,6 +55,7 @@ const ACCENTS = {
   stone:      { well: 'bg-stone-500/15',      text: 'text-stone-400',      hover: 'hover:border-stone-400/40',      arrow: 'group-hover:text-stone-400' },
   plum:       { well: 'bg-plum-500/15',       text: 'text-plum-400',       hover: 'hover:border-plum-400/40',       arrow: 'group-hover:text-plum-400' },
   steel:      { well: 'bg-steel-500/15',      text: 'text-steel-400',      hover: 'hover:border-steel-400/40',      arrow: 'group-hover:text-steel-400' },
+  pink:       { well: 'bg-pink-500/15',       text: 'text-pink-400',       hover: 'hover:border-pink-400/40',       arrow: 'group-hover:text-pink-400' },
 }
 const accent = (c) => ACCENTS[c]
 
@@ -68,6 +70,16 @@ const PRO = ['eoy', 'portfolio']
 const FULL_SB = [...FULL, 'subbinder']
 
 export const MODULE_HOMES = {
+  // CTE keeps its bespoke lesson library (/cte/lessons), so Browse points there
+  // via browsePath instead of the shared /lessons?module= deep-link. Sub Binder
+  // is intentionally left off (FULL, not FULL_SB) — CTE isn't wired for it yet.
+  cte: {
+    subject: 'CTE', moduleLabel: 'CTE', title: 'CTE', Icon: Briefcase, accent: accent('pink'),
+    tagline: 'Career & Technical Education lesson planning — Middle School & High School pathways',
+    generatePath: '/cte/generate', generateTitle: 'Generate a CTE lesson',
+    generateDesc: 'A standards-based lesson for your pathway, from exploratory MS to HS concentrator',
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', browsePath: '/cte/lessons', cards: FULL,
+  },
   // ── Content specials (scheduled classes) → ['schedule'] ──────────────────
   theater: {
     subject: 'Theater', moduleLabel: 'Theater / Drama', title: 'Theater / Drama', Icon: Drama, accent: accent('maroon'),
