@@ -187,6 +187,9 @@ export default function Landing() {
             <span className="rounded-full bg-zinc-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Physical Therapy (PT)
             </span>
+            <span className="rounded-full bg-cobalt-500/20 px-3 py-1 text-xs font-medium text-ink-50">
+              Visually Impaired (TVI)
+            </span>
             <span className="rounded-full bg-plum-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Student Support Team
             </span>
@@ -409,6 +412,11 @@ export default function Landing() {
                 name="Physical Therapy (PT)"
                 color="zinc"
                 description="School-based PT activity ideas — gross motor, mobility & positioning, adaptive-PE crossover & functional mobility, APTA / APTA Pediatric-aligned; activity planning, not clinical protocol."
+              />
+              <ModuleCard
+                name="Visually Impaired (TVI)"
+                color="cobalt"
+                description="Expanded Core Curriculum activity ideas — Braille & compensatory access, assistive technology, independent living, sensory & social skills, and career/transition, CEC/DVIDB-aligned; activity planning, not an assessment tool."
               />
               <ModuleCard
                 name="Student Support Team"

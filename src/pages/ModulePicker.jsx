@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Library, Palette, Music, FlaskConical, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, PersonStanding, PartyPopper, Target, Globe, Users, Blocks, Layers, Presentation, ArrowRight } from 'lucide-react'
+import { Library, Palette, Music, FlaskConical, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, PersonStanding, ScanEye, PartyPopper, Target, Globe, Users, Blocks, Layers, Presentation, ArrowRight } from 'lucide-react'
 import { useDisplayName, getTimeGreeting } from '../hooks/useDisplayName'
 
 export default function ModulePicker() {
@@ -409,6 +409,25 @@ export default function ModulePicker() {
               </p>
             </div>
             <div className="flex items-center gap-1.5 text-sm font-medium text-zinc-400 transition-[gap] group-hover:gap-2.5">
+              Open module <ArrowRight size={15} />
+            </div>
+          </Link>
+
+          {/* Teacher of the Visually Impaired */}
+          <Link
+            to="/tvi"
+            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-cobalt-400/40"
+          >
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cobalt-500/15">
+              <ScanEye size={28} className="text-cobalt-400" />
+            </div>
+            <div className="flex-1 space-y-1.5">
+              <h2 className="text-xl font-semibold text-ink-50">Teacher of the Visually Impaired</h2>
+              <p className="text-sm text-ink-400 leading-relaxed">
+                Expanded Core Curriculum activity ideas — Braille &amp; compensatory access, assistive technology, independent living, sensory &amp; social skills, and career/transition, CEC/DVIDB-aligned (K–12)
+              </p>
+            </div>
+            <div className="flex items-center gap-1.5 text-sm font-medium text-cobalt-400 transition-[gap] group-hover:gap-2.5">
               Open module <ArrowRight size={15} />
             </div>
           </Link>
