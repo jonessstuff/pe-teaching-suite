@@ -226,7 +226,7 @@ export default function AfterSchoolClubsGenerator() {
           <div>
             <h1 className="text-xl font-semibold text-ink-50">After-School Clubs</h1>
             <p className="text-xs text-ink-500">
-              Ready-to-run club session plans · K–12, scaled by grade band · 40+ club types
+              Ready-to-run club session plans · K–12, scaled by grade band · 68 club types
             </p>
           </div>
         </div>

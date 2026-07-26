@@ -137,7 +137,7 @@ export default function DanceGenerator() {
           <div>
             <h1 className="text-xl font-semibold text-ink-50">Dance</h1>
             <p className="text-xs text-ink-500">
-              NCCAS Dance lessons · the four Artistic Processes · Creating, Performing, Responding &amp; Connecting (K–12)
+              NCAS Dance lessons · the four Artistic Processes · Creating, Performing, Responding &amp; Connecting (K–12)
             </p>
           </div>
         </div>

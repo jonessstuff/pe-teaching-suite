@@ -2,7 +2,7 @@
  * Dance lesson prompt builder.
  *
  * Standards-based dance lessons grounded in the National Core Arts Standards
- * (NCCAS, Dance discipline), structured around the FOUR ARTISTIC PROCESSES:
+ * (NCAS, Dance discipline), structured around the FOUR ARTISTIC PROCESSES:
  * Creating, Performing/Presenting/Producing, Responding, Connecting. Grade bands
  * K-2 / 3-5 / 6-8 / 9-12, with the HS band calibrated to a Proficient /
  * Accomplished / Advanced tier. Professional body: NDEO (National Dance
@@ -34,9 +34,9 @@ const PROCESSES = {
 
 const SAFETY = `BODY SAFETY / INJURY PREVENTION — include in every lesson (populate safety_note): always warm up before vigorous movement and cool down after; use correct alignment and safe technique (no forcing turnout, splits, or extreme flexibility; protect knees/back/ankles); listen to the body and never dance through sharp pain; hydrate; and keep the space safe — clear spacing so dancers do not collide, appropriate footwear/bare-feet and a suitable non-slip surface. Keep it age-appropriate and matter-of-fact, not fear-based.`
 
-const STANDARDS = `Ground the lesson in the National Core Arts Standards (NCCAS), Dance discipline. Structure the content around the FOUR ARTISTIC PROCESSES (Creating; Performing, Presenting & Producing; Responding; Connecting) with THIS lesson centered on the chosen process while naturally touching others. Cite specific Dance anchor/performance standards with real code stems (e.g., DA:Cr1.1, DA:Pr5.1, DA:Re7.1, DA:Cn10.1) appropriate to the grade band; for HS, calibrate to the chosen tier (Proficient / Accomplished / Advanced). The field's professional body is the National Dance Education Organization (NDEO). Framework field: "NCCAS Dance".`
+const STANDARDS = `Ground the lesson in the National Core Arts Standards (NCAS), Dance discipline. Structure the content around the FOUR ARTISTIC PROCESSES (Creating; Performing, Presenting & Producing; Responding; Connecting) with THIS lesson centered on the chosen process while naturally touching others. Cite specific Dance anchor/performance standards with real code stems (e.g., DA:Cr1.1, DA:Pr5.1, DA:Re7.1, DA:Cn10.1) appropriate to the grade band; for HS, calibrate to the chosen tier (Proficient / Accomplished / Advanced). The field's professional body is the National Dance Education Organization (NDEO). Framework field: "NCAS Dance".`
 
-const STATE_DISCLAIMER = `Arts standards adoption varies by state (many use NCCAS or a state adaptation). Do NOT claim compliance with any specific state. Populate state_verification_note with a brief reminder to verify the teacher's own state's dance/arts standards.`
+const STATE_DISCLAIMER = `Arts standards adoption varies by state (many use NCAS or a state adaptation). Do NOT claim compliance with any specific state. Populate state_verification_note with a brief reminder to verify the teacher's own state's dance/arts standards.`
 
 const JSON_ONLY = `You must return ONLY a single JSON object — no markdown fences, no commentary, no preamble.`
 
@@ -71,7 +71,7 @@ function fieldNotes(dur) {
 - subject: always exactly "Dance".
 - artistic_process: the chosen process label. grade_bands: JSON array of grade numbers (K = 0) for the band. hs_tier: the HS tier label, or "" for non-HS bands.
 - duration_minutes: ${dur}.
-- enduring_understanding + essential_question: an NCCAS-style big idea and a driving question for the lesson.
+- enduring_understanding + essential_question: an NCAS-style big idea and a driving question for the lesson.
 - learning_objectives: 2–4 student "I can…" Can-Do statements aligned to the process and band.
 - warm_up: a concrete dance/movement warm-up that safely prepares the body and primes the day's work.
 - main_activities: 2–3 activities, each name / how_to_run (step by step, what the teacher and students actually do, using the elements of dance) / why_it_works (the dance-learning rationale).
@@ -81,7 +81,7 @@ function fieldNotes(dur) {
 - assessment: performance-based and/or reflective evidence (rubric focus, self/peer reflection) — not a paper test.
 - vocabulary: 4–8 age-appropriate dance terms (often the elements of dance: body, space, time, energy; locomotor/non-locomotor; levels, pathways, tempo, force) with plain-language meanings.
 - safety_note: ${SAFETY}
-- standards_alignment: 2–4 entries; framework exactly "NCCAS Dance"; code = a real DA: stem (e.g., "DA:Cr1.1"); text = what students do toward it.
+- standards_alignment: 2–4 entries; framework exactly "NCAS Dance"; code = a real DA: stem (e.g., "DA:Cr1.1"); text = what students do toward it.
 - ${STATE_DISCLAIMER}
 
 AGE & DIGNITY: match tone and material to the AGE — playful and imaginative for K-2; age-respectful, real dance conventions for middle/high school (never childish for teens).`
@@ -110,7 +110,7 @@ ${fieldNotes(durationMinutes)}
 
 LENGTH DISCIPLINE: complete JSON (every field present) over exhaustive detail. A response cut off before the closing brace is a FAILED response.`
 
-  const user = `Generate an NCCAS Dance lesson:
+  const user = `Generate an NCAS Dance lesson:
 
 - Artistic Process: ${process.label}
 - Grade band: ${band.label} — ${band.context}${isHs ? `\n- HS tier: ${HS_TIERS[hsTier] ?? HS_TIERS.proficient}` : ""}

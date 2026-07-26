@@ -2,7 +2,7 @@
  * Theater / Drama lesson prompt builder.
  *
  * Standards-based theatre lessons grounded in the National Core Arts Standards
- * (NCCAS, Theatre discipline), structured around the FOUR ARTISTIC PROCESSES:
+ * (NCAS, Theatre discipline), structured around the FOUR ARTISTIC PROCESSES:
  * Creating, Performing/Presenting/Producing, Responding, Connecting. Grade bands
  * K-2 / 3-5 / 6-8 / 9-12, with the HS band calibrated to a Proficient /
  * Accomplished / Advanced tier. Professional bodies: EdTA and AATE.
@@ -34,9 +34,9 @@ const PROCESSES = {
 
 const COPYRIGHT = `COPYRIGHT — HARD RULE: do NOT generate or reproduce actual copyrighted play scripts, scenes, monologues, or substantial dialogue from published or produced plays. Provide ORIGINAL scene-starter prompts, improvisation exercises, character/devising frameworks, and analysis structures instead. When referencing existing plays, keep them UNNAMED (describe the type/genre) or use PUBLIC-DOMAIN works (e.g., Shakespeare, Greek tragedy, folk/fairy tales) — and never reproduce more than a brief public-domain excerpt. Populate copyright_note with a reminder that all scene/script material here is original or public-domain, and the teacher must properly license any copyrighted script before use.`
 
-const STANDARDS = `Ground the lesson in the National Core Arts Standards (NCCAS), Theatre discipline. Structure the content around the FOUR ARTISTIC PROCESSES (Creating; Performing, Presenting & Producing; Responding; Connecting) with THIS lesson centered on the chosen process while naturally touching others. Cite specific Theatre anchor/performance standards with real code stems (e.g., TH:Cr1.1, TH:Pr4.1, TH:Re7.1, TH:Cn10.1) appropriate to the grade band; for HS, calibrate to the chosen tier (Proficient / Accomplished / Advanced). The field's professional bodies are the Educational Theatre Association (EdTA) and the American Alliance for Theatre and Education (AATE). Framework field: "NCCAS Theatre".`
+const STANDARDS = `Ground the lesson in the National Core Arts Standards (NCAS), Theatre discipline. Structure the content around the FOUR ARTISTIC PROCESSES (Creating; Performing, Presenting & Producing; Responding; Connecting) with THIS lesson centered on the chosen process while naturally touching others. Cite specific Theatre anchor/performance standards with real code stems (e.g., TH:Cr1.1, TH:Pr4.1, TH:Re7.1, TH:Cn10.1) appropriate to the grade band; for HS, calibrate to the chosen tier (Proficient / Accomplished / Advanced). The field's professional bodies are the Educational Theatre Association (EdTA) and the American Alliance for Theatre and Education (AATE). Framework field: "NCAS Theatre".`
 
-const STATE_DISCLAIMER = `Arts standards adoption varies by state (many use NCCAS or a state adaptation). Do NOT claim compliance with any specific state. Populate state_verification_note with a brief reminder to verify the teacher's own state's theatre/arts standards.`
+const STATE_DISCLAIMER = `Arts standards adoption varies by state (many use NCAS or a state adaptation). Do NOT claim compliance with any specific state. Populate state_verification_note with a brief reminder to verify the teacher's own state's theatre/arts standards.`
 
 const JSON_ONLY = `You must return ONLY a single JSON object — no markdown fences, no commentary, no preamble.`
 
@@ -71,7 +71,7 @@ function fieldNotes(dur) {
 - subject: always exactly "Theater".
 - artistic_process: the chosen process label. grade_bands: JSON array of grade numbers (K = 0) for the band. hs_tier: the HS tier label, or "" for non-HS bands.
 - duration_minutes: ${dur}.
-- enduring_understanding + essential_question: an NCCAS-style big idea and a driving question for the lesson.
+- enduring_understanding + essential_question: an NCAS-style big idea and a driving question for the lesson.
 - learning_objectives: 2–4 student "I can…" Can-Do statements aligned to the process and band.
 - warm_up: a concrete theater warm-up / drama game that primes the day's work.
 - main_activities: 2–3 activities, each name / how_to_run (step by step, what the teacher and students actually do) / why_it_works (the theatrical-skill rationale). ORIGINAL scene-starters and exercises only.
@@ -80,7 +80,7 @@ function fieldNotes(dur) {
 - materials: simple, realistic materials (open space, props from a classroom, chart paper) — nothing requiring a real stage unless age-appropriate.
 - assessment: performance-based and/or reflective evidence (rubric focus, self/peer reflection) — not a paper test.
 - vocabulary: 4–8 age-appropriate theater terms with plain-language meanings.
-- standards_alignment: 2–4 entries; framework exactly "NCCAS Theatre"; code = a real TH: stem (e.g., "TH:Cr1.1"); text = what students do toward it.
+- standards_alignment: 2–4 entries; framework exactly "NCAS Theatre"; code = a real TH: stem (e.g., "TH:Cr1.1"); text = what students do toward it.
 - ${STATE_DISCLAIMER}
 
 AGE & DIGNITY: match tone and material to the AGE — playful and imaginative for K-2; age-respectful, real theater conventions for middle/high school (never childish for teens).`
@@ -112,7 +112,7 @@ ${fieldNotes(durationMinutes)}
 
 LENGTH DISCIPLINE: complete JSON (every field present) over exhaustive detail. A response cut off before the closing brace is a FAILED response.`
 
-  const user = `Generate an NCCAS Theatre lesson:
+  const user = `Generate an NCAS Theatre lesson:
 
 - Artistic Process: ${process.label}
 - Grade band: ${band.label} — ${band.context}${isHs ? `\n- HS tier: ${HS_TIERS[hsTier] ?? HS_TIERS.proficient}` : ""}

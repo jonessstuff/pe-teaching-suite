@@ -345,12 +345,12 @@ export default function Landing() {
               <ModuleCard
                 name="Theater / Drama"
                 color="maroon"
-                description="NCCAS Theatre lessons across the four Artistic Processes — Creating, Performing, Responding & Connecting — K–12, using original scene-starters & improv, never copyrighted scripts."
+                description="NCAS Theatre lessons across the four Artistic Processes — Creating, Performing, Responding & Connecting — K–12, using original scene-starters & improv, never copyrighted scripts."
               />
               <ModuleCard
                 name="Dance"
                 color="olive"
-                description="NCCAS Dance lessons across the four Artistic Processes — Creating, Performing, Responding & Connecting — K–12, built on the elements of dance with age-appropriate body-safety guidance."
+                description="NCAS Dance lessons across the four Artistic Processes — Creating, Performing, Responding & Connecting — K–12, built on the elements of dance with age-appropriate body-safety guidance."
               />
               <ModuleCard
                 name="STEM"

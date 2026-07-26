@@ -137,7 +137,7 @@ export default function TheaterGenerator() {
           <div>
             <h1 className="text-xl font-semibold text-ink-50">Theater / Drama</h1>
             <p className="text-xs text-ink-500">
-              NCCAS Theatre lessons · the four Artistic Processes · Creating, Performing, Responding &amp; Connecting (K–12)
+              NCAS Theatre lessons · the four Artistic Processes · Creating, Performing, Responding &amp; Connecting (K–12)
             </p>
           </div>
         </div>

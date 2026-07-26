@@ -63,14 +63,14 @@ export const MODULE_HOMES = {
   // ── Content specials (scheduled classes) → ['schedule'] ──────────────────
   theater: {
     subject: 'Theater', moduleLabel: 'Theater / Drama', title: 'Theater / Drama', Icon: Drama, accent: accent('maroon'),
-    tagline: 'NCCAS theatre lessons across the four Artistic Processes — K–12',
+    tagline: 'NCAS theatre lessons across the four Artistic Processes — K–12',
     generatePath: '/theater/generate', generateTitle: 'Generate a theatre lesson',
     generateDesc: 'A standards-based lesson across Creating, Performing, Responding & Connecting',
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL,
   },
   dance: {
     subject: 'Dance', moduleLabel: 'Dance', title: 'Dance', Icon: Wind, accent: accent('olive'),
-    tagline: 'NCCAS dance lessons across the four Artistic Processes — K–12',
+    tagline: 'NCAS dance lessons across the four Artistic Processes — K–12',
     generatePath: '/dance/generate', generateTitle: 'Generate a dance lesson',
     generateDesc: 'A standards-based lesson with the elements of dance & body-safety guidance',
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL,

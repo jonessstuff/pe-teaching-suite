@@ -30,7 +30,7 @@ Return a complete lesson object as a single JSON object with this exact schema:
 Rules:
 - Preserve the teacher's original activity descriptions — enhance the language, don't replace their ideas.
 - "fitness_activities" is the main activity field for PE, Art, Library, STEM. Use "whole_group_instruction" for Music and classroom subjects. Fill whichever is appropriate.
-- "standards": add 1-3 real, appropriate standards for this subject and grade. Use SHAPE America for PE, NCCAS for Art, ISTE/AASL for Library, Next Gen Science for STEM, CCSS for ELA/Math.
+- "standards": add 1-3 real, appropriate standards for this subject and grade. Use SHAPE America for PE, NCAS for Art, ISTE/AASL for Library, Next Gen Science for STEM, CCSS for ELA/Math.
 - "duration_minutes": estimate from the lesson content if not stated.
 - "unit": infer from lesson content if not stated.
 - "teacher_notes": note anything preserved from the original that might need the teacher's review.

@@ -46,7 +46,7 @@ Rules:
 - 3–5 units per quarter. Units should be logically sequenced and build on each other.
 - "sessions": how many class sessions this unit spans. All units' sessions must sum to total_sessions.
 - "week_range": e.g. "Weeks 1–3" or "Weeks 12–15"
-- "standards": 1-3 real, grade-appropriate ${subject} standards (SHAPE America for PE, NCCAS for Art, etc.)
+- "standards": 1-3 real, grade-appropriate ${subject} standards (SHAPE America for PE, NCAS for Art, etc.)
 - "key_assessment": the primary summative or formative assessment for this unit (1 sentence)
 - "description": 2-3 sentences on what students will learn and do in this unit
 - Scope and sequence should be developmentally appropriate for grade ${gradeLabel}
