@@ -190,6 +190,9 @@ export default function Landing() {
             <span className="rounded-full bg-cobalt-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Visually Impaired (TVI)
             </span>
+            <span className="rounded-full bg-magenta-500/20 px-3 py-1 text-xs font-medium text-ink-50">
+              Deaf/Hard of Hearing (D/HH)
+            </span>
             <span className="rounded-full bg-plum-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Student Support Team
             </span>
@@ -417,6 +420,11 @@ export default function Landing() {
                 name="Visually Impaired (TVI)"
                 color="cobalt"
                 description="Expanded Core Curriculum activity ideas — Braille & compensatory access, assistive technology, independent living, sensory & social skills, and career/transition, CEC/DVIDB-aligned; activity planning, not an assessment tool."
+              />
+              <ModuleCard
+                name="Deaf/Hard of Hearing (D/HH)"
+                color="magenta"
+                description="ECC-DHH activity ideas — communication (bilingual-bicultural or listening & spoken language, teacher's choice), self-advocacy, social-emotional, hearing technology & career transition, CEC/CED-aligned; activity planning, not an assessment tool."
               />
               <ModuleCard
                 name="Student Support Team"

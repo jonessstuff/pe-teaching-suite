@@ -43,6 +43,7 @@ export const SUBJECT_TAB_STYLES = {
   'Occupational Therapists': 'bg-periwinkle-500/20 text-ink-50',
   'Physical Therapists': 'bg-zinc-500/20 text-ink-50',
   'Teacher of the Visually Impaired': 'bg-cobalt-500/20 text-ink-50',
+  'Teacher of the Deaf & Hard of Hearing': 'bg-magenta-500/20 text-ink-50',
   'Student Support Team Activities': 'bg-plum-500/20 text-ink-50',
   'Early Childhood': 'bg-grass-500/20 text-ink-50',
   'Intervention Planning': 'bg-stone-500/20 text-ink-50',
@@ -89,6 +90,7 @@ export const MODULES = [
   { label: 'Occupational Therapists', subjects: ['Occupational Therapists'] },
   { label: 'Physical Therapists', subjects: ['Physical Therapists'] },
   { label: 'Teacher of the Visually Impaired', subjects: ['Teacher of the Visually Impaired'] },
+  { label: 'Teacher of the Deaf & Hard of Hearing', subjects: ['Teacher of the Deaf & Hard of Hearing'] },
   { label: 'Student Support Team Activities', subjects: ['Student Support Team Activities'] },
   { label: 'Early Childhood / Pre-K', subjects: ['Early Childhood'] },
   { label: 'Intervention Planning', subjects: ['Intervention Planning'] },
@@ -144,7 +146,8 @@ export const PE_HEALTH_SUBJECTS = subjectsForModule('PE & Health')
 //   stone (Intervention Planning) · gold (Staff PD & Meeting Planning) ·
 //   periwinkle (Occupational Therapists) · coral (After-School Clubs) ·
 //   steel (Test Prep) · zinc (Physical Therapists) · jade (World Languages) ·
-//   cobalt (Teacher of the Visually Impaired) · teal (Adaptive PE lesson tabs)
+//   cobalt (Teacher of the Visually Impaired) · magenta (Teacher of the Deaf & Hard of Hearing) ·
+//   teal (Adaptive PE lesson tabs)
 //
 // AVAILABLE for future modules (School Counselors is next, then more). Each
 // entry's strings are full/literal so Tailwind's JIT compiles them and a new
@@ -171,12 +174,6 @@ export const AVAILABLE_MODULE_ACCENTS = [
     cardBorder: 'border-mocha-400', callout: 'border-mocha-500/30 bg-mocha-500/10',
   },
   // ── 2026-07 palette expansion pass 3 (custom scales in tailwind.config.js) ──
-  {
-    key: 'magenta', label: 'Magenta (vivid pink-purple)',
-    tab: 'bg-magenta-500/20 text-ink-50', iconTint: 'bg-magenta-500/15',
-    accentText: 'text-magenta-400', hoverBorder: 'hover:border-magenta-400/40',
-    cardBorder: 'border-magenta-400', callout: 'border-magenta-500/30 bg-magenta-500/10',
-  },
   {
     key: 'saffron', label: 'Saffron (golden yellow)',
     tab: 'bg-saffron-500/20 text-ink-50', iconTint: 'bg-saffron-500/15',
