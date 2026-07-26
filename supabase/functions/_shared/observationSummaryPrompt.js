@@ -1,3 +1,5 @@
+import { serializeLessonForTools } from "./lessonSummary.js"
+import { toolDirective } from "./toolSubjectDirectives.js"
 /**
  * Observation/Evaluation prep prompt builder.
  *
@@ -86,5 +88,5 @@ VOCABULARY (new): ${(lessonObject.new_vocabulary ?? []).join(", ") || "(none lis
 
 Return the JSON object now.`
 
-  return { system, user }
+  return { system, user: user + `\n\nFULL LESSON DETAIL (authoritative source of truth for this lesson):\n${serializeLessonForTools(lessonObject)}` + toolDirective("observationSummary", lessonObject.subject) }
 }

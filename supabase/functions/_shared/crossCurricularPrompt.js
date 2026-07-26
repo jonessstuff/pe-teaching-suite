@@ -1,3 +1,5 @@
+import { serializeLessonForTools } from "./lessonSummary.js"
+import { toolDirective } from "./toolSubjectDirectives.js"
 export function buildCrossCurricularPrompt(lessonObject) {
   const subject = lessonObject.subject ?? 'PE';
   const gradeBands = (lessonObject.grade_bands ?? []).map(g => g === 0 ? 'K' : String(g));
@@ -44,5 +46,5 @@ ${standards}
 
 Return the JSON object now.`;
 
-  return { system, user };
+  return { system, user: user + `\n\nFULL LESSON DETAIL (authoritative source of truth for this lesson):\n${serializeLessonForTools(lessonObject)}` + toolDirective("crossCurricular", lessonObject.subject) };
 }

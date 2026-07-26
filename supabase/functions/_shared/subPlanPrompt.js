@@ -1,3 +1,5 @@
+import { serializeLessonForTools } from "./lessonSummary.js"
+import { toolDirective } from "./toolSubjectDirectives.js"
 /**
  * Sub plan generation prompt builder.
  *
@@ -60,5 +62,5 @@ ${JSON.stringify(
 
 Return the JSON object now.`;
 
-  return { system, user };
+  return { system, user: user + `\n\nFULL LESSON DETAIL (authoritative source of truth for this lesson):\n${serializeLessonForTools(lessonObject)}` + toolDirective("subPlan", lessonObject.subject) };
 }

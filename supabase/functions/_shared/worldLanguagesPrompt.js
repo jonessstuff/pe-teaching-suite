@@ -17,6 +17,8 @@
  * use (especially for less common languages).
  */
 
+import { WL_ACCURACY } from "./wlAccuracy.js"
+
 const BANDS = {
   "k-2": { label: "K–2", context: "early elementary / FLES exposure — playful and oral; TPR (total physical response), songs, gestures, games, and concrete high-frequency vocabulary with heavy modeling; minimal reading/writing." },
   "3-5": { label: "3–5", context: "upper-elementary FLES — oral proficiency focus with simple reading/writing; games, routines, and culture; short connected phrases building on memorized language." },
@@ -39,11 +41,9 @@ const FRAMING = `Structure the lesson around the ACTFL World-Readiness Standards
 
 PROFICIENCY: calibrate everything to the specified ACTFL proficiency level using the ACTFL Proficiency Guidelines (2024 revision), which describe function across four domains (speaking, writing, listening, reading). Levels run Novice → Intermediate → Advanced → Superior → Distinguished; K-12 work centers on Novice–Advanced. Give a proficiency-appropriate Can-Do–style learning target.`
 
-const ACCURACY = `CRITICAL — TARGET-LANGUAGE ACCURACY GUARDRAIL:
-- Do NOT generate long, native-speaker-quality passages, essays, or extended texts in the target language — you cannot verify their accuracy.
-- Frame ALL instructions, activity descriptions, and teacher notes in ENGLISH. Supply only SHORT, high-frequency example vocabulary and phrases in the target language (a handful per section), each with an English gloss.
-- Keep example language simple and checkable; avoid idioms, complex grammar, or invented forms. If unsure of a form, describe the FUNCTION in English (e.g., "a greeting appropriate to time of day") rather than guessing.
-- Populate accuracy_note with a clear reminder that the teacher (or a native-speaker/heritage resource) must verify ALL target-language content for spelling, grammar, register, and cultural appropriateness before use — especially for less commonly taught languages.`
+// Shared guardrail (see wlAccuracy.js) + this module's accuracy_note instruction.
+const ACCURACY = `${WL_ACCURACY}
+- Populate the accuracy_note field with that verification reminder for the teacher.`
 
 const LANGUAGE_ADAPT = `ADAPT to the target language:
 - Classical languages (e.g., Latin, Ancient Greek): emphasize the INTERPRETIVE (reading) mode; interpersonal speaking may be limited — frame it as oral reading, recitation, or spoken practice as the program does; cultures = the classical civilization.

@@ -4,6 +4,7 @@ import { Award, Sparkles, Loader2, ArrowLeft, ExternalLink, ShieldCheck } from '
 import { generateJrotc } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import JrotcRenderer from '../components/renderers/JrotcRenderer'
+import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 import { useTrial } from '../context/TrialContext'
 
 const LET_LEVELS = [
@@ -92,6 +93,10 @@ export default function JrotcGenerator() {
         </div>
         {savedId && <p className="mb-4 text-xs text-ink-500 print:hidden">Saved to your lesson archive.</p>}
         <JrotcRenderer lesson={result} />
+
+        {savedId && (
+          <SecondaryToolsPanel savedId={savedId} lessonObject={result} subject={result?.subject} />
+        )}
       </div>
     )
   }

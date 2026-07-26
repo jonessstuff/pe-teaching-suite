@@ -92,6 +92,18 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
   const hasPoster = Boolean(lo?.poster_content?.steps?.length)
   const isPE = PE_SUBJECTS.has(subject)
 
+  // Standing rule: activity-idea / clinical / non-evaluative modules NEVER get
+  // Quiz or Rubric (no gradable delivered "content"; grading conflicts with
+  // their professional non-evaluative practice). Content-delivery lesson modules
+  // get the full tool set — the teacher decides what to use.
+  const NON_EVALUATIVE = new Set([
+    'Occupational Therapists', 'Physical Therapists', 'Speech-Language Pathologists',
+    'Teacher of the Visually Impaired', 'Teacher of the Deaf & Hard of Hearing',
+    'School Counselors', 'Intervention Planning', 'Student Support Team Activities',
+  ])
+  const allowQuizRubric = !NON_EVALUATIVE.has(subject)
+  const isWorldLanguages = subject === 'World Languages'
+
   async function run(setter, fn) {
     setter(true)
     setError(null)
@@ -325,8 +337,8 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
             </button>
           )}
 
-          {/* Quiz */}
-          {!hasQuiz ? (
+          {/* Quiz — hidden for non-evaluative modules */}
+          {allowQuizRubric && (!hasQuiz ? (
             <button onClick={handleGenerateQuiz} disabled={generatingQuiz} className="btn-primary">
               {generatingQuiz ? <Loader2 size={16} className="animate-spin" /> : <ClipboardList size={16} />}
               Generate quiz
@@ -336,7 +348,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
               <ClipboardList size={16} />
               Quiz
             </button>
-          )}
+          ))}
 
           {/* Observation prep */}
           {!hasObsSummary ? (
@@ -410,11 +422,13 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
               </button>
             )}
 
-            {/* Rubric */}
+            {/* Rubric — hidden for non-evaluative modules */}
+            {allowQuizRubric && (
             <button onClick={rubric ? () => toggle('rubric') : handleGenerateRubric} disabled={generatingRubric} className={rubric && toolView === 'rubric' ? 'btn-primary' : 'btn-secondary'}>
               {generatingRubric ? <Loader2 size={16} className="animate-spin" /> : <Star size={16} />}
               {rubric ? 'Rubric' : 'Generate rubric'}
             </button>
+            )}
 
             {/* Exit ticket */}
             <button onClick={exitTickets ? () => toggle('exitticket') : handleGenerateExitTicket} disabled={generatingExitTicket} className={exitTickets && toolView === 'exitticket' ? 'btn-primary' : 'btn-secondary'}>
@@ -493,6 +507,11 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
       )}
       {toolView === 'quiz' && hasQuiz && (
         <div className="space-y-3">
+          {isWorldLanguages && (
+            <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-ink-200">
+              ⚠️ Verify all target-language text (spelling, grammar, register) with a native/heritage speaker before use — especially for less commonly taught languages.
+            </p>
+          )}
           <QuizRenderer quiz_questions={lo.quiz_questions} />
           {!quizSavedToBank && (
             <button onClick={handleSaveQuizToBank} className="btn-secondary text-xs">

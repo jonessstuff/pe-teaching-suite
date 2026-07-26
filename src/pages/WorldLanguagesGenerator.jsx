@@ -4,6 +4,7 @@ import { Globe, Sparkles, Loader2, ArrowLeft, ExternalLink, Info } from 'lucide-
 import { generateWorldLanguages } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import WorldLanguagesRenderer from '../components/renderers/WorldLanguagesRenderer'
+import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 import { useTrial } from '../context/TrialContext'
 
 const GRADE_BANDS = [
@@ -101,6 +102,10 @@ export default function WorldLanguagesGenerator() {
         )}
 
         <WorldLanguagesRenderer lesson={result} />
+
+        {savedId && (
+          <SecondaryToolsPanel savedId={savedId} lessonObject={result} subject={result?.subject} />
+        )}
       </div>
     )
   }

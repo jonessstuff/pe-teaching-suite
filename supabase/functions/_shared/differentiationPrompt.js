@@ -1,3 +1,5 @@
+import { serializeLessonForTools } from "./lessonSummary.js"
+import { toolDirective } from "./toolSubjectDirectives.js"
 const PROFILE_DESCRIPTIONS = {
   advanced: 'Advanced / Gifted — students who have mastered grade-level content and need extension, complexity, and independent challenge',
   below_grade: 'Below Grade Level — students working below grade expectations who need scaffolding, reduced complexity, and additional support',
@@ -53,5 +55,5 @@ Learning targets: ${Object.values(lessonObject.learning_targets ?? {}).join(' | 
 
 Return the JSON object now.`;
 
-  return { system, user };
+  return { system, user: user + `\n\nFULL LESSON DETAIL (authoritative source of truth for this lesson):\n${serializeLessonForTools(lessonObject)}` + toolDirective("differentiation", lessonObject.subject) };
 }

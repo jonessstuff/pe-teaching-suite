@@ -1,3 +1,5 @@
+import { toolDirective } from "./toolSubjectDirectives.js"
+
 export function buildWarmupPrompt({ subject, gradeBand, duration, equipment }) {
   const gradeLabel = gradeBand === 0 ? 'K' : String(gradeBand);
   const equipmentStr = Array.isArray(equipment) ? equipment.join(', ') : (equipment ?? '');
@@ -34,5 +36,5 @@ Available equipment: ${equipmentStr || 'none'}
 
 Return the JSON object now.`;
 
-  return { system, user };
+  return { system, user: user + toolDirective("warmup", subject) };
 }

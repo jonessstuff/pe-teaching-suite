@@ -4,6 +4,7 @@ import { Drama, Sparkles, Loader2, ArrowLeft, ExternalLink, Info } from 'lucide-
 import { generateTheater } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import TheaterRenderer from '../components/renderers/TheaterRenderer'
+import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 import { useTrial } from '../context/TrialContext'
 
 const GRADE_BANDS = [
@@ -113,6 +114,10 @@ export default function TheaterGenerator() {
         )}
 
         <TheaterRenderer lesson={result} />
+
+        {savedId && (
+          <SecondaryToolsPanel savedId={savedId} lessonObject={result} subject={result?.subject} />
+        )}
       </div>
     )
   }

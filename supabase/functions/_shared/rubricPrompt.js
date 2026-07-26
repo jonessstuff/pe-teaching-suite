@@ -1,3 +1,5 @@
+import { serializeLessonForTools } from "./lessonSummary.js"
+import { toolDirective } from "./toolSubjectDirectives.js"
 export function buildRubricPrompt(lessonObject) {
   const gradeBands = lessonObject.grade_bands ?? [];
   const firstGrade = gradeBands[0];
@@ -55,5 +57,5 @@ Main activity: ${lessonObject.fitness_activities || lessonObject.whole_group_ins
 
 Return the JSON object now.`;
 
-  return { system, user };
+  return { system, user: user + `\n\nFULL LESSON DETAIL (authoritative source of truth for this lesson):\n${serializeLessonForTools(lessonObject)}` + toolDirective("rubric", lessonObject.subject) };
 }

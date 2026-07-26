@@ -4,6 +4,7 @@ import { Wind, Sparkles, Loader2, ArrowLeft, ExternalLink, ShieldAlert } from 'l
 import { generateDance } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import DanceRenderer from '../components/renderers/DanceRenderer'
+import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 import { useTrial } from '../context/TrialContext'
 
 const GRADE_BANDS = [
@@ -113,6 +114,10 @@ export default function DanceGenerator() {
         )}
 
         <DanceRenderer lesson={result} />
+
+        {savedId && (
+          <SecondaryToolsPanel savedId={savedId} lessonObject={result} subject={result?.subject} />
+        )}
       </div>
     )
   }

@@ -4,6 +4,7 @@ import { Compass, Sparkles, Loader2, ArrowLeft, ExternalLink, ShieldAlert } from
 import { generateSchoolCounselor } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import SchoolCounselorRenderer from '../components/renderers/SchoolCounselorRenderer'
+import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 import { useTrial } from '../context/TrialContext'
 
 const GRADE_BANDS = [
@@ -97,6 +98,10 @@ export default function SchoolCounselorGenerator() {
         )}
 
         <SchoolCounselorRenderer lesson={result} />
+
+        {savedId && (
+          <SecondaryToolsPanel savedId={savedId} lessonObject={result} subject={result?.subject} />
+        )}
       </div>
     )
   }
