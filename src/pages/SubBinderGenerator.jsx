@@ -15,6 +15,10 @@ import {
   generateEslSpecialist,
   generateGiftedTalented,
   generateSpecialEducation,
+  generateCteLesson,
+  generateReadingSpecialist,
+  generateMathSpecialist,
+  generateEarlyChildhood,
 } from '../services/generationService'
 import { createBinder } from '../services/subBinderService'
 import { US_STATES } from '../constants/usStates'
@@ -35,7 +39,8 @@ const CORE_SUBJECTS = ['PE & Health', 'Library & Media', 'Art', 'Music', 'STEM',
 
 // Newer content-lesson modules → how to collect the grade and which extra
 // required params to gather. grade: 'k12' | 'k5' numeric toggle, or 'none' for
-// HS letLevel-driven modules (JROTC). Each subject key is the canonical
+// modules that use their OWN level model instead of a K-12 grade (JROTC LET
+// level, CTE tier, Early Childhood age group). Each subject key is the canonical
 // lesson_object.subject string (must match LESSON_RENDERERS for correct display).
 const NEWER_SUBJECTS = {
   'Theater':               { grade: 'k12', extras: [] },
@@ -46,7 +51,51 @@ const NEWER_SUBJECTS = {
   'ESL/ELL Specialist':    { grade: 'k12', extras: [] },
   'Gifted & Talented':     { grade: 'k12', extras: [] },
   'Special Education':     { grade: 'k12', extras: [] },
+  'CTE':                   { grade: 'none', extras: ['cte'] },
+  'Reading Specialists':   { grade: 'k12', extras: ['readingSkill'] },
+  'Math Specialists':      { grade: 'k12', extras: [] },
+  'Early Childhood':       { grade: 'none', extras: ['ecAge'] },
 }
+
+// Per-module option lists (mirrors each module's own generator form).
+const CTE_PATHWAYS = [
+  { value: 'hospitality', label: 'Hospitality & Tourism' },
+  { value: 'finance', label: 'Finance' },
+  { value: 'marketing', label: 'Marketing' },
+  { value: 'human_services', label: 'Human Services / FCS' },
+  { value: 'health_science', label: 'Health Science' },
+  { value: 'education', label: 'Education & Training' },
+  { value: 'career_readiness', label: 'Career Readiness' },
+  { value: 'information_technology', label: 'Information Technology' },
+  { value: 'transportation', label: 'Transportation, Distribution & Logistics' },
+  { value: 'manufacturing', label: 'Manufacturing' },
+  { value: 'engineering_tech', label: 'STEM / Engineering & Technology' },
+  { value: 'business_mgmt', label: 'Business Management & Administration' },
+  { value: 'agriculture', label: 'Agriculture, Food & Natural Resources' },
+  { value: 'construction', label: 'Architecture & Construction' },
+  { value: 'arts_av', label: 'Arts, A/V Technology & Communications' },
+  { value: 'government', label: 'Government & Public Administration' },
+  { value: 'law_safety', label: 'Law, Public Safety, Corrections & Security' },
+]
+const CTE_LEVELS = [
+  { value: 'introductory', label: 'Introductory' },
+  { value: 'concentrator', label: 'Concentrator' },
+  { value: 'completer', label: 'Completer' },
+]
+const READING_SKILLS = [
+  'Phonological & Phonemic Awareness',
+  'Phonics & Word Recognition (Decoding)',
+  'Reading Fluency',
+  'Vocabulary',
+  'Reading Comprehension',
+  'Written Expression',
+]
+const EC_AGE_GROUPS = [
+  { value: 'toddler', label: 'Toddlers (about 2s)' },
+  { value: 'preschool3', label: 'Preschool (3s)' },
+  { value: 'prek4', label: 'Pre-K (4s)' },
+  { value: 'tk5', label: 'Transitional K (older 5s)' },
+]
 
 const SUBJECTS = [...CORE_SUBJECTS, ...Object.keys(NEWER_SUBJECTS)]
 
@@ -105,6 +154,10 @@ const SUBJECT_FROM_SLUG = {
   'esl-specialist': 'ESL/ELL Specialist',
   'gifted-talented': 'Gifted & Talented',
   'special-education': 'Special Education',
+  'cte': 'CTE',
+  'reading-specialists': 'Reading Specialists',
+  'math-specialists': 'Math Specialists',
+  'early-childhood': 'Early Childhood',
 }
 
 // Subject → back-home path for the result toolbar
@@ -123,6 +176,10 @@ const SUBJECT_HOME_PATH = {
   'ESL/ELL Specialist': '/esl-specialist',
   'Gifted & Talented': '/gifted-talented',
   'Special Education': '/special-education',
+  'CTE': '/cte',
+  'Reading Specialists': '/reading-specialists',
+  'Math Specialists': '/math-specialists',
+  'Early Childhood': '/early-childhood',
 }
 
 const LET_LEVELS = ['LET 1', 'LET 2', 'LET 3', 'LET 4']
@@ -194,7 +251,7 @@ async function callDayGenerator(subject, stemFocusArea, payload) {
 // level, mode, …) rather than forcing the PE-shaped payload through. `focus` is
 // the day's instructional topic + sequence position; `notes` carries the
 // substitute framing + class routines. `band` is unused for JROTC (HS/letLevel).
-async function callNewerDayGenerator(subject, { band, focus, notes, duration, extra }) {
+async function callNewerDayGenerator(subject, { band, focus, notes, duration, classSize, state, extra }) {
   switch (subject) {
     case 'Theater':
       return generateTheater({ gradeBand: band, artisticProcess: 'creating', hsTier: 'proficient', focus, durationMinutes: duration, teacherNotes: notes })
@@ -212,6 +269,22 @@ async function callNewerDayGenerator(subject, { band, focus, notes, duration, ex
       return generateGiftedTalented({ mode: 'differentiate', gradeBand: band, topic: focus, contentArea: '', teacherNotes: notes })
     case 'Special Education':
       return generateSpecialEducation({ mode: 'multitier', gradeBand: band, topic: focus, contentArea: '', teacherNotes: notes })
+    case 'CTE':
+      // Uses tier/level + a pathway instead of a K-12 grade.
+      return generateCteLesson({
+        pathway: extra.ctePathway, tier: extra.cteTier, level: extra.cteTier === 'hs' ? extra.cteLevel : '',
+        topic: focus, materials: [], classSize, durationMinutes: duration, targetCompetency: '', state,
+        sessionNumber: 0, totalSessions: 0, includeELL: false,
+      })
+    case 'Reading Specialists':
+      // Whole-class mode (a substitute covers scheduled group lessons, not 1:1 tutoring).
+      return generateReadingSpecialist({ skillArea: extra.readingSkill, gradeBand: band, focus, durationMinutes: duration, groupSize: 'Whole class', studentPattern: '', teacherNotes: notes, handsOn: false })
+    case 'Math Specialists':
+      // Whole-class differentiation; domain auto-detected from the day's topic.
+      return generateMathSpecialist({ topic: focus, gradeBand: band, domain: '', setting: 'differentiation', focus: '', durationMinutes: duration, studentContext: '', teacherNotes: notes, handsOn: false })
+    case 'Early Childhood':
+      // Age-group based (no K-12 grade); the day's topic becomes the study theme.
+      return generateEarlyChildhood({ studyTheme: focus, ageGroup: extra.ecAgeGroup, programType: 'general', teacherNotes: notes })
     default:
       throw new Error(`Sub Binder does not support module: ${subject}`)
   }
@@ -246,6 +319,11 @@ export default function SubBinderGenerator() {
   const [targetLanguage, setTargetLanguage] = useState('') // World Languages
   const [wlLevel, setWlLevel] = useState('novice')         // World Languages proficiency
   const [letLevel, setLetLevel] = useState('LET 1')        // JROTC LET level
+  const [ctePathway, setCtePathway] = useState('hospitality') // CTE
+  const [cteTier, setCteTier] = useState('ms')                // CTE (ms | hs)
+  const [cteLevel, setCteLevel] = useState('introductory')    // CTE HS course level
+  const [readingSkill, setReadingSkill] = useState(READING_SKILLS[0]) // Reading Specialists
+  const [ecAgeGroup, setEcAgeGroup] = useState('prek4')       // Early Childhood age group
 
   // Generation state
   const [view, setView] = useState('form') // 'form' | 'result'
@@ -281,7 +359,10 @@ export default function SubBinderGenerator() {
 
     const isNewer = !!NEWER_SUBJECTS[subject]
     const band = numToBand(gradeBands)
-    const extra = { targetLanguage: targetLanguage.trim(), wlLevel, letLevel }
+    const extra = {
+      targetLanguage: targetLanguage.trim(), wlLevel, letLevel,
+      ctePathway, cteTier, cteLevel, readingSkill, ecAgeGroup,
+    }
 
     setLoading(true)
     setError(null)
@@ -347,6 +428,8 @@ export default function SubBinderGenerator() {
               focus: focusLines.join('\n'),
               notes: notesLines.join('\n'),
               duration,
+              classSize,
+              state,
               extra,
             })
           } else {
@@ -617,6 +700,105 @@ export default function SubBinderGenerator() {
               </select>
               <p className="mt-1 text-xs text-ink-500">
                 JROTC is high-school only — the LET level sets the grade span.
+              </p>
+            </div>
+          )}
+
+          {subject === 'CTE' && (
+            <div className="space-y-4">
+              <div>
+                <label className="mb-1 block text-sm text-ink-300" htmlFor="cte-pathway">
+                  Career pathway
+                </label>
+                <select
+                  id="cte-pathway"
+                  value={ctePathway}
+                  onChange={(e) => setCtePathway(e.target.value)}
+                  className="input-field"
+                >
+                  {CTE_PATHWAYS.map(({ value, label }) => (
+                    <option key={value} value={value}>{label}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="mb-2 block text-sm text-ink-300">Level</label>
+                <div className="flex flex-wrap gap-2">
+                  {[{ value: 'ms', label: 'Middle school (exploratory)' }, { value: 'hs', label: 'High school' }].map(({ value, label }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => setCteTier(value)}
+                      className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                        cteTier === value ? 'bg-amber-500 text-white' : 'bg-ink-800 text-ink-300 hover:bg-ink-700'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {cteTier === 'hs' && (
+                <div>
+                  <label className="mb-1 block text-sm text-ink-300" htmlFor="cte-level">
+                    Course level
+                  </label>
+                  <select
+                    id="cte-level"
+                    value={cteLevel}
+                    onChange={(e) => setCteLevel(e.target.value)}
+                    className="input-field"
+                  >
+                    {CTE_LEVELS.map(({ value, label }) => (
+                      <option key={value} value={value}>{label}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              <p className="text-xs text-ink-500">
+                CTE uses a pathway + tier instead of a K-12 grade.
+              </p>
+            </div>
+          )}
+
+          {subject === 'Reading Specialists' && (
+            <div>
+              <label className="mb-1 block text-sm text-ink-300" htmlFor="reading-skill">
+                Primary skill area
+              </label>
+              <select
+                id="reading-skill"
+                value={readingSkill}
+                onChange={(e) => setReadingSkill(e.target.value)}
+                className="input-field"
+              >
+                {READING_SKILLS.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+              <p className="mt-1 text-xs text-ink-500">
+                Whole-class structured-literacy lessons a substitute can run.
+              </p>
+            </div>
+          )}
+
+          {subject === 'Early Childhood' && (
+            <div>
+              <label className="mb-1 block text-sm text-ink-300" htmlFor="ec-age">
+                Age group
+              </label>
+              <select
+                id="ec-age"
+                value={ecAgeGroup}
+                onChange={(e) => setEcAgeGroup(e.target.value)}
+                className="input-field"
+              >
+                {EC_AGE_GROUPS.map(({ value, label }) => (
+                  <option key={value} value={value}>{label}</option>
+                ))}
+              </select>
+              <p className="mt-1 text-xs text-ink-500">
+                Early Childhood uses an age group (not a K-12 grade); the topic becomes the study theme.
               </p>
             </div>
           )}

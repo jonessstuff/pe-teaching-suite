@@ -69,6 +69,11 @@ const PRO = ['eoy', 'portfolio']
 // Languages, JROTC, Elementary Technology, ESL/ELL, Gifted & Talented, Special
 // Education). Both reuse each module's own generator, so the eligible set matches.
 const FULL_SB = [...FULL, 'subbinder', 'import']
+// Sub Binder but not Import & Enhance: CTE / Reading / Math Specialists get the
+// per-module Sub Binder, but their Import paths aren't built yet (CTE needs a
+// pathway selector; Reading/Math have a tutoring-mode split).
+const FULL_SUB = [...FULL, 'subbinder']
+const LITE_SUB = [...LITE, 'subbinder'] // Early Childhood
 
 export const MODULE_HOMES = {
   // CTE keeps its bespoke lesson library (/cte/lessons), so Browse points there
@@ -79,7 +84,7 @@ export const MODULE_HOMES = {
     tagline: 'Career & Technical Education lesson planning — Middle School & High School pathways',
     generatePath: '/cte/generate', generateTitle: 'Generate a CTE lesson',
     generateDesc: 'A standards-based lesson for your pathway, from exploratory MS to HS concentrator',
-    browseTitle: 'Browse my lessons', browseNoun: 'lesson', browsePath: '/cte/lessons', cards: FULL,
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', browsePath: '/cte/lessons', cards: FULL_SUB,
   },
   // ── Content specials (scheduled classes) → ['schedule'] ──────────────────
   theater: {
@@ -143,14 +148,14 @@ export const MODULE_HOMES = {
     tagline: 'Explicit, systematic Structured Literacy interventions — IDA-aligned, K–12',
     generatePath: '/reading-specialists/generate', generateTitle: 'Generate a reading intervention',
     generateDesc: 'Phonics, fluency, comprehension & more, with dyslexia-indicator flagging',
-    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL,
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SUB,
   },
   'math-specialists': {
     subject: 'Math Specialists', moduleLabel: 'Math Specialists', title: 'Math Specialists', Icon: Calculator, accent: accent('lime'),
     tagline: 'Concept-first math interventions & differentiation — NCTM-aligned, K–12',
     generatePath: '/math-specialists/generate', generateTitle: 'Generate a math intervention',
     generateDesc: 'CRA sequencing, Number Talks & NCTM process standards',
-    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL,
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SUB,
   },
   'special-education': {
     subject: 'Special Education', moduleLabel: 'Special Education', title: 'Special Education', Icon: HeartHandshake, accent: accent('violet'),
@@ -164,7 +169,7 @@ export const MODULE_HOMES = {
     tagline: 'Play-based learning centers & guided-play invitations — NAEYC DAP',
     generatePath: '/early-childhood/generate', generateTitle: 'Generate a play-based plan',
     generateDesc: 'Learning centers, circle time & whole-child domains (toddlers–TK)',
-    browseTitle: 'Browse my plans', browseNoun: 'plan', cards: LITE,
+    browseTitle: 'Browse my plans', browseNoun: 'plan', cards: LITE_SUB,
   },
   'after-school-clubs': {
     subject: 'After-School Clubs', moduleLabel: 'After-School Clubs', title: 'After-School Clubs', Icon: PartyPopper, accent: accent('coral'),
