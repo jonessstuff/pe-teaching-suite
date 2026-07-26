@@ -47,49 +47,6 @@ export async function generateLesson(input) {
  * @returns {Promise<Pick<import("../types/lessonObject").LessonObject,
  *   "sub_friendly_instructions" | "sub_script" | "sub_management_script" | "sub_diagram">>}
  */
-/**
- * Calls the server-side unit generation function. Returns an array
- * of fully populated LessonObjects (one per day, 1-3 days), each
- * tagged with unit_day_number and unit_total_days.
- *
- * @param {Object} input
- * @returns {Promise<{ days: import("../types/lessonObject").LessonObject[] }>}
- */
-export async function generateUnit(input) {
-  // Safety-net timeout on the client side: if the Edge Function's connection
-  // drops without a clean response (runtime kill), we surface a timeout error
-  // rather than hanging indefinitely. The function itself races at 140 s and
-  // returns a JSON error first in the normal timeout case.
-  const CLIENT_TIMEOUT_MS = 5 * 60 * 1000
-
-  const invokePromise = supabase.functions.invoke('generate-unit', { body: input })
-  const timeoutPromise = new Promise((_, reject) =>
-    setTimeout(() => reject(new Error('timeout')), CLIENT_TIMEOUT_MS)
-  )
-
-  let result
-  try {
-    result = await Promise.race([invokePromise, timeoutPromise])
-  } catch {
-    throw new Error('timeout')
-  }
-
-  const { data, error } = result
-
-  if (error) {
-    // FunctionsHttpError.message is always a generic string. The real message
-    // is in the JSON body returned by the Edge Function.
-    let message = error.message ?? 'Generation failed'
-    try {
-      const body = await error.context?.json?.()
-      if (body?.error) message = body.error
-    } catch {}
-    throw new Error(message)
-  }
-
-  return data
-}
-
 export async function generateSubPlan(lessonId) {
   const { data, error } = await supabase.functions.invoke('generate-sub-plan', {
     body: { lessonId },

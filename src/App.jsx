@@ -20,15 +20,12 @@ import CurriculumMap from './pages/CurriculumMap'
 import LibraryHome from './pages/LibraryHome'
 import LibraryGenerator from './pages/LibraryGenerator'
 import LibraryLessonLibrary from './pages/LibraryLessonLibrary'
-import LibraryUnitBuilder from './pages/LibraryUnitBuilder'
 import ArtHome from './pages/ArtHome'
 import ArtGenerator from './pages/ArtGenerator'
 import ArtLessonLibrary from './pages/ArtLessonLibrary'
-import ArtUnitBuilder from './pages/ArtUnitBuilder'
 import MusicHome from './pages/MusicHome'
 import MusicGenerator from './pages/MusicGenerator'
 import MusicLessonLibrary from './pages/MusicLessonLibrary'
-import MusicUnitBuilder from './pages/MusicUnitBuilder'
 import AdaptivePEGenerator from './pages/AdaptivePEGenerator'
 import StemHome from './pages/StemHome'
 import StemGenerator from './pages/StemGenerator'
@@ -319,16 +316,13 @@ function App() {
           <Route path="library" element={<LibraryHome />} />
           <Route path="library/generate" element={<LibraryGenerator />} />
           <Route path="library/lessons" element={<LibraryLessonLibrary />} />
-          <Route path="library/units/new" element={<LibraryUnitBuilder />} />
           <Route path="library/makerspace" element={<MakerProjectGenerator origin="library" />} />
           <Route path="art" element={<ArtHome />} />
           <Route path="art/generate" element={<ArtGenerator />} />
           <Route path="art/lessons" element={<ArtLessonLibrary />} />
-          <Route path="art/units/new" element={<ArtUnitBuilder />} />
           <Route path="music" element={<MusicHome />} />
           <Route path="music/generate" element={<MusicGenerator />} />
           <Route path="music/lessons" element={<MusicLessonLibrary />} />
-          <Route path="music/units/new" element={<MusicUnitBuilder />} />
           <Route path="adaptive-pe" element={<AdaptivePEGenerator />} />
           <Route path="stem" element={<StemHome />} />
           <Route path="stem/generate" element={<StemGenerator />} />

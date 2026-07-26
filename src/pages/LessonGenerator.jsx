@@ -3,8 +3,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Sparkles, Loader2, X, Plus, ArrowLeft, ExternalLink } from 'lucide-react'
 import { gradeLabel } from '../types/lessonObject'
 import { PE_HEALTH_SUBJECTS } from '../constants/modules'
-import { generateLesson, generateUnit, generateFitnessTestPrep } from '../services/generationService'
-import { createLesson, createUnit } from '../services/lessonsService'
+import { generateLesson, generateFitnessTestPrep } from '../services/generationService'
+import { createLesson } from '../services/lessonsService'
 import { listPeriods } from '../services/classPeriodsService'
 import { listStudentsByPeriod } from '../services/studentsService'
 import { getProfile } from '../services/profilesService'
@@ -25,12 +25,9 @@ export default function LessonGenerator() {
   const [unit, setUnit] = useState(fromUnit.unit ?? '')
   const [topic, setTopic] = useState('')
   const [targetStandard, setTargetStandard] = useState('')
-  const [mode, setMode] = useState('lesson') // 'lesson' | 'unit' | 'fitness_test'
+  const [mode, setMode] = useState('lesson') // 'lesson' | 'fitness_test'
   const [fitnessTestName, setFitnessTestName] = useState('FitnessGram')
   const [fitnessComponents, setFitnessComponents] = useState([])
-  const [unitName, setUnitName] = useState(fromUnit.unit ?? '')
-  const [unitTheme, setUnitTheme] = useState('')
-  const [unitDays, setUnitDays] = useState(3)
   const [equipment, setEquipment] = useState([''])
   const [classSize, setClassSize] = useState(28)
   const [duration, setDuration] = useState(45)
@@ -80,7 +77,6 @@ export default function LessonGenerator() {
       ? gradeBands.filter((g) => g !== grade)
       : [...gradeBands, grade].sort((a, b) => a - b)
     setGradeBands(next)
-    if (mode === 'unit' && next.length >= 3 && unitDays === 3) setUnitDays(2)
   }
 
   function updateEquipment(index, value) {
@@ -178,36 +174,6 @@ export default function LessonGenerator() {
         setGeneratedLesson(lessonObject)
         setSavedId(saved.id)
         setStatus('result')
-      } else if (mode === 'unit') {
-        const { days } = await generateUnit({
-          gradeBands,
-          unitName,
-          theme: unitTheme,
-          days: Number(unitDays),
-          targetStandard: targetStandard.trim(),
-          subject,
-          state: state || undefined,
-          stationsMode: useStations,
-          stationCount: useStations ? Number(numStations) : undefined,
-          equipment: equipment.map((e) => e.trim()).filter(Boolean),
-          classSize: Number(classSize),
-          durationMinutes: Number(duration),
-          students: studentAccommodations,
-          includeELL,
-        })
-
-        const createdUnit = await createUnit({ name: unitName, subject, gradeBands })
-
-        let firstSaved = null
-        for (const lessonObject of days) {
-          const saved = await createLesson(lessonObject, {
-            aiModel: 'claude-sonnet-4-6',
-            unitId: createdUnit.id,
-          })
-          if (!firstSaved) firstSaved = saved
-        }
-
-        navigate('/lessons')
       } else {
         const lessonObject = await generateLesson({
           gradeBands,
@@ -236,9 +202,7 @@ export default function LessonGenerator() {
       const msg = err?.message ?? ''
       const isTimeout = /timed?\s*out/i.test(msg)
       setErrorMsg(
-        isTimeout && mode === 'unit'
-          ? 'Unit generation timed out — try reducing the number of days or grade bands, then try again.'
-          : isTimeout
+        isTimeout
           ? 'Generation timed out — please try again.'
           : msg || 'Something went wrong generating this lesson.'
       )
@@ -576,57 +540,6 @@ export default function LessonGenerator() {
                 </div>
               </Field>
             </>
-          ) : mode === 'unit' ? (
-            <>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Field label="Unit name">
-                  <input
-                    className="input-field"
-                    placeholder="Pickleball"
-                    value={unitName}
-                    onChange={(e) => setUnitName(e.target.value)}
-                    required
-                  />
-                </Field>
-                <Field label="Number of days">
-                  <div className="flex gap-2">
-                    {[1, 2, 3].map((n) => (
-                      <button
-                        key={n}
-                        type="button"
-                        onClick={() => setUnitDays(n)}
-                        className={`h-10 flex-1 rounded-lg text-sm font-semibold transition-colors ${
-                          unitDays === n
-                            ? 'bg-accent-500 text-white'
-                            : 'bg-ink-700 text-ink-200 hover:bg-ink-600'
-                        }`}
-                      >
-                        {n} {n === 1 ? 'day' : 'days'}
-                      </button>
-                    ))}
-                  </div>
-                  {unitDays === 3 && gradeBands.length >= 3 && (
-                    <div className="mt-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2.5">
-                      <p className="text-xs text-ink-300">
-                        Heads up — 3 days × 3+ grade bands is a large generation and may time out. Consider 2 days or 2 grade bands for best results.
-                      </p>
-                    </div>
-                  )}
-                </Field>
-              </div>
-
-              <Field
-                label="Theme / focus notes (optional)"
-                hint="Describe the overall progression you want — e.g. 'start with grip and serve, build to rally and scoring rules'."
-              >
-                <textarea
-                  className="input-field min-h-[80px]"
-                  placeholder="e.g. Introduce grip, serve, and basic rally on Day 1; build toward scoring and game play by the final day."
-                  value={unitTheme}
-                  onChange={(e) => setUnitTheme(e.target.value)}
-                />
-              </Field>
-            </>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Unit">
@@ -779,21 +692,19 @@ export default function LessonGenerator() {
             {isGenerating ? (
               <>
                 <Loader2 size={16} className="animate-spin" />
-                {mode === 'unit' ? 'Generating unit…' : mode === 'fitness_test' ? 'Generating prep lessons…' : 'Generating lesson…'}
+                {mode === 'fitness_test' ? 'Generating prep lessons…' : 'Generating lesson…'}
               </>
             ) : (
               <>
                 <Sparkles size={16} />
-                {mode === 'unit' ? 'Generate unit' : mode === 'fitness_test' ? 'Generate fitness test prep' : 'Generate lesson'}
+                {mode === 'fitness_test' ? 'Generate fitness test prep' : 'Generate lesson'}
               </>
             )}
           </button>
 
           {isGenerating && (
             <p className="text-sm text-ink-400">
-              {mode === 'unit'
-                ? 'Hang tight — your unit is being crafted. Generating 3 progressive lessons usually takes 2–3 minutes.'
-                : mode === 'fitness_test'
+              {mode === 'fitness_test'
                 ? 'Generating fitness test prep lessons — one per selected component. This usually takes 1–2 minutes per lesson.'
                 : 'Hang tight — your lesson is being crafted. This usually takes 1–2 minutes.'}
             </p>
