@@ -261,7 +261,7 @@ export default function Landing() {
               n={1}
               icon={MousePointerClick}
               title="Pick your subject or specialty"
-              description="Choose from 19 built-in specialties — from PE and Art to reading intervention, speech-language, and staff PD."
+              description="Choose from 31 built-in specialties — from PE and Art to reading intervention, speech-language, therapy services, world languages, and staff PD."
             />
             <StepCard
               n={2}
@@ -365,7 +365,7 @@ export default function Landing() {
               <ModuleCard
                 name="After-School Clubs"
                 color="coral"
-                description="Ready-to-run club session plans across 40+ club types — sports, academic, creative, wellness, leadership & interest clubs — scaled K–12 by grade band, low-prep and runnable by a first-time sponsor."
+                description="Ready-to-run club session plans across 68 club types — sports, academic, creative, wellness, leadership, life-skills & interest clubs — scaled K–12 by grade band, low-prep and runnable by a first-time sponsor."
               />
               <ModuleCard
                 name="JROTC"
@@ -871,9 +871,10 @@ function StepCard({ n, icon: Icon, title, description }) {
 // Keep in sync with the module descriptions above.
 const STANDARDS = [
   { abbr: 'SHAPE America', full: 'PE & Health' },
-  { abbr: 'NCAS', full: 'National Core Arts — Art & Music' },
+  { abbr: 'NCAS', full: 'National Core Arts — Art, Music, Theater & Dance' },
   { abbr: 'AASL', full: 'School Libraries' },
   { abbr: 'ISTE', full: 'Educational Technology' },
+  { abbr: 'ACTFL', full: 'World Languages' },
   { abbr: 'WIDA', full: 'English Language Development' },
   { abbr: 'NAGC', full: 'Gifted & Talented' },
   { abbr: 'IDA', full: 'Structured Literacy / Dyslexia' },
@@ -881,6 +882,8 @@ const STANDARDS = [
   { abbr: 'CEC', full: 'Special Education' },
   { abbr: 'ASCA', full: 'School Counseling' },
   { abbr: 'ASHA', full: 'Speech-Language' },
+  { abbr: 'AOTA', full: 'Occupational Therapy' },
+  { abbr: 'APTA', full: 'Physical Therapy' },
   { abbr: 'NAEYC', full: 'Early Childhood' },
   { abbr: 'Head Start ELOF', full: 'Early Learning Outcomes' },
   { abbr: 'Learning Forward', full: 'Professional Learning' },

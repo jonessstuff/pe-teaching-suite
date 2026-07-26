@@ -29,7 +29,7 @@ const GROUPS = [
       { key: 'elementary-tech', to: '/elementary-tech', label: 'Elementary Technology / Computer Lab', Icon: Monitor, wrap: 'bg-saffron-500/15', color: 'text-saffron-400', hover: 'hover:border-saffron-400/40',
         desc: 'Self-contained K–5 computer-lab lessons — foundational skills, digital citizenship & online safety, creation tools, and intro coding — ISTE-aligned for a weekly tech special' },
       { key: 'after-school-clubs', to: '/after-school-clubs', label: 'After-School Clubs', Icon: PartyPopper, wrap: 'bg-coral-500/15', color: 'text-coral-400', hover: 'hover:border-coral-400/40',
-        desc: 'Ready-to-run club session plans across 40+ club types — sports, academic, creative, wellness, leadership & interest clubs, scaled K–12 by grade band' },
+        desc: 'Ready-to-run club session plans across 68 club types — sports, academic, creative, wellness, leadership, life-skills & interest clubs, scaled K–12 by grade band' },
       { key: 'jrotc', to: '/jrotc', label: 'JROTC', Icon: Award, wrap: 'bg-denim-500/15', color: 'text-denim-400', hover: 'hover:border-denim-400/40',
         desc: 'High-school citizenship & leadership lessons across the LET 1–4 progression — leadership, character, civics, wellness, service learning & career exploration (not military tactics)' },
       { key: 'world-languages', to: '/world-languages', label: 'World Languages', Icon: Globe, wrap: 'bg-jade-500/15', color: 'text-jade-400', hover: 'hover:border-jade-400/40',
