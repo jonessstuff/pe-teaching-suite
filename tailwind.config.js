@@ -58,6 +58,16 @@ export default {
         periwinkle:{ 300: '#b3b6f6', 400: '#8b90ee', 500: '#6a70e0' }, // blue-violet (between blue and violet)
         steel:     { 300: '#9fb3c8', 400: '#6b8db0', 500: '#4e6f92' }, // muted slate-blue (vs grayer slate)
         mocha:     { 300: '#c4a893', 400: '#a07d63', 500: '#7f6049' }, // warm mid-brown neutral (vs taupe stone / copper bronze)
+        // 2026-07 palette expansion pass 3 (wheel is full — these are saturated
+        // mid-tones tuned to the least-crowded remaining regions; pair near-hues
+        // with a distinct module icon). Same usage: bg-{c}-500/15, text-{c}-400,
+        // border-{c}-400. All read AA on the dark UI at -400.
+        jade:      { 300: '#6fe0bd', 400: '#22b892', 500: '#12876a' }, // jewel green (between emerald and teal)
+        cobalt:    { 300: '#8fb0f7', 400: '#4f82ef', 500: '#3160cc' }, // strong mid-blue (deeper/bluer than sky, vs Library blue)
+        magenta:   { 300: '#f07bce', 400: '#dd45a8', 500: '#b82f88' }, // vivid magenta (between fuchsia and plum)
+        saffron:   { 300: '#f6d067', 400: '#e6a70c', 500: '#bd850a' }, // golden saffron yellow (vs mustard gold / amber)
+        olive:     { 300: '#c4cc72', 400: '#9aa32c', 500: '#767d20' }, // olive yellow-green (vs bright lime / leaf grass)
+        maroon:    { 300: '#d68a8a', 400: '#bd4a4a', 500: '#9a3636' }, // deep brick red (browner/darker than true-red crimson)
       },
       boxShadow: {
         card: '0 1px 2px 0 rgb(15 23 42 / 0.04), 0 1px 1px 0 rgb(15 23 42 / 0.03)',

@@ -27,6 +27,7 @@ export const SUBJECT_TAB_STYLES = {
   Art: 'bg-orange-500/20 text-ink-50',
   Music: 'bg-purple-500/20 text-ink-50',
   STEM: 'bg-cyan-500/20 text-ink-50',
+  'World Languages': 'bg-jade-500/20 text-ink-50',
   'After-School Clubs': 'bg-coral-500/20 text-ink-50',
   CTE: 'bg-pink-500/20 text-ink-50',
   'Classroom Management': 'bg-indigo-500/20 text-ink-50',
@@ -70,6 +71,7 @@ export const MODULES = [
   { label: 'Art', subjects: ['Art'] },
   { label: 'Music', subjects: ['Music'] },
   { label: 'STEM', subjects: ['STEM'] },
+  { label: 'World Languages', subjects: ['World Languages'] },
   { label: 'After-School Clubs', subjects: ['After-School Clubs'] },
   { label: 'Adaptive PE', subjects: ['Adaptive PE'] },
   { label: 'CTE', subjects: ['CTE'] },
@@ -139,7 +141,8 @@ export const PE_HEALTH_SUBJECTS = subjectsForModule('PE & Health')
 //   plum (Student Support Team Activities) · grass (Early Childhood / Pre-K) ·
 //   stone (Intervention Planning) · gold (Staff PD & Meeting Planning) ·
 //   periwinkle (Occupational Therapists) · coral (After-School Clubs) ·
-//   steel (Test Prep) · zinc (Physical Therapists) · teal (Adaptive PE lesson tabs)
+//   steel (Test Prep) · zinc (Physical Therapists) · jade (World Languages) ·
+//   teal (Adaptive PE lesson tabs)
 //
 // AVAILABLE for future modules (School Counselors is next, then more). Each
 // entry's strings are full/literal so Tailwind's JIT compiles them and a new
@@ -164,5 +167,36 @@ export const AVAILABLE_MODULE_ACCENTS = [
     tab: 'bg-mocha-500/20 text-ink-50', iconTint: 'bg-mocha-500/15',
     accentText: 'text-mocha-400', hoverBorder: 'hover:border-mocha-400/40',
     cardBorder: 'border-mocha-400', callout: 'border-mocha-500/30 bg-mocha-500/10',
+  },
+  // ── 2026-07 palette expansion pass 3 (custom scales in tailwind.config.js) ──
+  {
+    key: 'cobalt', label: 'Cobalt (strong mid-blue)',
+    tab: 'bg-cobalt-500/20 text-ink-50', iconTint: 'bg-cobalt-500/15',
+    accentText: 'text-cobalt-400', hoverBorder: 'hover:border-cobalt-400/40',
+    cardBorder: 'border-cobalt-400', callout: 'border-cobalt-500/30 bg-cobalt-500/10',
+  },
+  {
+    key: 'magenta', label: 'Magenta (vivid pink-purple)',
+    tab: 'bg-magenta-500/20 text-ink-50', iconTint: 'bg-magenta-500/15',
+    accentText: 'text-magenta-400', hoverBorder: 'hover:border-magenta-400/40',
+    cardBorder: 'border-magenta-400', callout: 'border-magenta-500/30 bg-magenta-500/10',
+  },
+  {
+    key: 'saffron', label: 'Saffron (golden yellow)',
+    tab: 'bg-saffron-500/20 text-ink-50', iconTint: 'bg-saffron-500/15',
+    accentText: 'text-saffron-400', hoverBorder: 'hover:border-saffron-400/40',
+    cardBorder: 'border-saffron-400', callout: 'border-saffron-500/30 bg-saffron-500/10',
+  },
+  {
+    key: 'olive', label: 'Olive (yellow-green)',
+    tab: 'bg-olive-500/20 text-ink-50', iconTint: 'bg-olive-500/15',
+    accentText: 'text-olive-400', hoverBorder: 'hover:border-olive-400/40',
+    cardBorder: 'border-olive-400', callout: 'border-olive-500/30 bg-olive-500/10',
+  },
+  {
+    key: 'maroon', label: 'Maroon (deep brick red)',
+    tab: 'bg-maroon-500/20 text-ink-50', iconTint: 'bg-maroon-500/15',
+    accentText: 'text-maroon-400', hoverBorder: 'hover:border-maroon-400/40',
+    cardBorder: 'border-maroon-400', callout: 'border-maroon-500/30 bg-maroon-500/10',
   },
 ]

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Library, Palette, Music, FlaskConical, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, PersonStanding, PartyPopper, Target, Users, Blocks, Layers, Presentation, ArrowRight } from 'lucide-react'
+import { Library, Palette, Music, FlaskConical, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, PersonStanding, PartyPopper, Target, Globe, Users, Blocks, Layers, Presentation, ArrowRight } from 'lucide-react'
 import { useDisplayName, getTimeGreeting } from '../hooks/useDisplayName'
 
 export default function ModulePicker() {
@@ -137,6 +137,25 @@ export default function ModulePicker() {
               </p>
             </div>
             <div className="flex items-center gap-1.5 text-sm font-medium text-coral-400 transition-[gap] group-hover:gap-2.5">
+              Open module <ArrowRight size={15} />
+            </div>
+          </Link>
+
+          {/* World Languages */}
+          <Link
+            to="/world-languages"
+            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-jade-400/40"
+          >
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-jade-500/15">
+              <Globe size={28} className="text-jade-400" />
+            </div>
+            <div className="flex-1 space-y-1.5">
+              <h2 className="text-xl font-semibold text-ink-50">World Languages</h2>
+              <p className="text-sm text-ink-400 leading-relaxed">
+                ACTFL 5 Cs lessons for any language — Spanish, French, Mandarin, Latin, ASL &amp; more — across Interpersonal, Interpretive &amp; Presentational modes, Novice–Advanced (K–12)
+              </p>
+            </div>
+            <div className="flex items-center gap-1.5 text-sm font-medium text-jade-400 transition-[gap] group-hover:gap-2.5">
               Open module <ArrowRight size={15} />
             </div>
           </Link>

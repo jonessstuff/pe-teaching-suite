@@ -71,6 +71,7 @@ import SchoolCounselorGenerator from './pages/SchoolCounselorGenerator'
 import SlpGenerator from './pages/SlpGenerator'
 import OtGenerator from './pages/OtGenerator'
 import PtGenerator from './pages/PtGenerator'
+import WorldLanguagesGenerator from './pages/WorldLanguagesGenerator'
 import AfterSchoolClubsGenerator from './pages/AfterSchoolClubsGenerator'
 import TestPrepGenerator from './pages/TestPrepGenerator'
 import SstActivityGenerator from './pages/SstActivityGenerator'
@@ -320,6 +321,7 @@ function App() {
           <Route path="slp" element={<SlpGenerator />} />
           <Route path="ot" element={<OtGenerator />} />
           <Route path="pt" element={<PtGenerator />} />
+          <Route path="world-languages" element={<WorldLanguagesGenerator />} />
           <Route path="after-school-clubs" element={<AfterSchoolClubsGenerator />} />
           <Route path="test-prep" element={<TestPrepGenerator />} />
           <Route path="student-support-activities" element={<SstActivityGenerator />} />

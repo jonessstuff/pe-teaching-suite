@@ -142,6 +142,9 @@ export default function Landing() {
             <span className="rounded-full bg-coral-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               After-School Clubs
             </span>
+            <span className="rounded-full bg-jade-500/20 px-3 py-1 text-xs font-medium text-ink-50">
+              World Languages
+            </span>
             {/* Career & technical education */}
             <span className="rounded-full bg-pink-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               CTE
@@ -327,6 +330,11 @@ export default function Landing() {
                 name="After-School Clubs"
                 color="coral"
                 description="Ready-to-run club session plans across 40+ club types — sports, academic, creative, wellness, leadership & interest clubs — scaled K–12 by grade band, low-prep and runnable by a first-time sponsor."
+              />
+              <ModuleCard
+                name="World Languages"
+                color="jade"
+                description="ACTFL 5 Cs lessons for any target language — Spanish, French, Mandarin, Latin, ASL & more — structured by the three communication modes (Interpersonal, Interpretive, Presentational), Novice–Advanced, K–12."
               />
             </ModuleGroup>
 
@@ -715,6 +723,12 @@ const MODULE_STYLES = {
   periwinkle: { border: 'border-periwinkle-400', pill: 'bg-periwinkle-500/20' },
   steel:      { border: 'border-steel-400',      pill: 'bg-steel-500/20'      },
   mocha:      { border: 'border-mocha-400',      pill: 'bg-mocha-500/20'      },
+  jade:       { border: 'border-jade-400',       pill: 'bg-jade-500/20'       },
+  cobalt:     { border: 'border-cobalt-400',     pill: 'bg-cobalt-500/20'     },
+  magenta:    { border: 'border-magenta-400',    pill: 'bg-magenta-500/20'    },
+  saffron:    { border: 'border-saffron-400',    pill: 'bg-saffron-500/20'    },
+  olive:      { border: 'border-olive-400',      pill: 'bg-olive-500/20'      },
+  maroon:     { border: 'border-maroon-400',     pill: 'bg-maroon-500/20'     },
 }
 
 function ModuleGroup({ label, children }) {
