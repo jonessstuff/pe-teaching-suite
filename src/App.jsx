@@ -162,8 +162,10 @@ function App() {
           return
         }
 
-        // No claim in flight — this is the genuine first login event.
-        activeClaimPromise = claimSession()
+        // No claim in flight — this is the genuine first login event. Evict the
+        // oldest session if the account is at the limit, so a new sign-in (e.g.
+        // installing the PWA, a separate storage context) never hard-fails.
+        activeClaimPromise = claimSession({ evictOldest: true })
         try {
           await activeClaimPromise
           setAuthError(null)

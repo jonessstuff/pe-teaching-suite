@@ -7,14 +7,19 @@
  * keeps last_seen_at fresh; rows older than STALE_MINUTES are treated as
  * expired and cleaned up at the start of each claimSession() call.
  *
- * Error sentinel: claimSession() throws the string literal "ALREADY_ACTIVE"
- * when the session limit is reached, so callers can distinguish it from
- * unexpected Supabase errors and show the right UI message.
+ * A genuine new sign-in (claimSession({ evictOldest: true })) never hard-fails:
+ * if the account is already at MAX_SESSIONS it EVICTS the least-recently-seen
+ * session to make room (LRU), and that displaced context logs itself out on its
+ * next heartbeat. This is what lets a subscriber install the PWA (a separate
+ * storage context from the browser, so it always claims a fresh session) without
+ * getting locked out. Only the non-evicting form — a heartbeat re-claim after a
+ * device was displaced — still throws "ALREADY_ACTIVE", so a displaced device
+ * does NOT fight its way back in and ping-pong with the device that replaced it.
  */
 
 import { supabase } from '../lib/supabaseClient'
 
-const MAX_SESSIONS = 2        // maximum concurrent logins per account
+const MAX_SESSIONS = 3        // maximum concurrent logins per account
 const STALE_MINUTES = 20      // minutes of inactivity before a session expires
 const SESSION_TOKEN_KEY = 'plansk12_session_token'
 
@@ -46,18 +51,22 @@ function staleThresholdISO() {
  *   1. Delete any stale rows for this user (keeps the table clean).
  *   2. Count FRESH rows only (last_seen_at >= threshold). Self-sufficient
  *      regardless of whether Step 1 succeeded or matched any rows.
- *   3. If count >= MAX_SESSIONS, throw "ALREADY_ACTIVE".
- *   4. Otherwise insert a new row and write the token to localStorage.
+ *   3. If count >= MAX_SESSIONS: with evictOldest, delete the oldest live
+ *      row(s) to make room; without it, throw "ALREADY_ACTIVE".
+ *   4. Insert a new row and write the token to localStorage.
  *
  * Note: steps 1–4 are separate round-trips with no transaction. A very
  * unlikely simultaneous-login race could briefly allow MAX_SESSIONS + 1
  * rows; this self-corrects at the next claimSession() call and is an
  * acceptable trade-off for this use case.
  *
+ * @param {{ evictOldest?: boolean }} [opts]  Pass { evictOldest: true } for a
+ *   genuine new sign-in (make room by displacing the oldest). Omit for a
+ *   heartbeat re-claim (block instead of evicting, to avoid ping-pong).
  * @returns {Promise<string>} The newly minted session token.
- * @throws {"ALREADY_ACTIVE"} If MAX_SESSIONS live sessions already exist.
+ * @throws {"ALREADY_ACTIVE"} If at the limit and evictOldest is not set.
  */
-export async function claimSession() {
+export async function claimSession({ evictOldest = false } = {}) {
   const threshold = staleThresholdISO()
 
   // Fetch the current user's id once — needed for scoped queries.
@@ -97,9 +106,40 @@ export async function claimSession() {
     throw new Error(`Session check failed: ${countError.message}`)
   }
 
-  // Step 3: block if the limit is reached.
+  // Step 3: handle the limit.
   if ((count ?? 0) >= MAX_SESSIONS) {
-    throw 'ALREADY_ACTIVE'
+    if (!evictOldest) {
+      // Heartbeat re-claim path: don't fight back in, just report displacement.
+      throw 'ALREADY_ACTIVE'
+    }
+    // Genuine new sign-in: evict the least-recently-seen session(s) to make room,
+    // so after inserting this one the account sits at exactly MAX_SESSIONS. The
+    // evicted context sees its row gone on its next heartbeat and logs out.
+    const evictCount = (count ?? 0) - MAX_SESSIONS + 1
+    const { data: oldest, error: oldestError } = await supabase
+      .from('active_sessions')
+      .select('session_token')
+      .eq('user_id', userId)
+      .gte('last_seen_at', threshold)
+      .order('last_seen_at', { ascending: true })
+      .limit(evictCount)
+
+    if (oldestError) {
+      // Couldn't read the rows to evict — let the login through anyway rather
+      // than hard-failing the app; the cap self-corrects on the next claim.
+      console.warn('claimSession: could not read sessions to evict:', oldestError.message)
+    } else if (oldest?.length) {
+      const tokens = oldest.map((r) => r.session_token)
+      const { error: evictError } = await supabase
+        .from('active_sessions')
+        .delete()
+        .in('session_token', tokens)
+      if (evictError) {
+        console.warn('claimSession: eviction delete failed:', evictError.message)
+      } else {
+        console.info(`claimSession: evicted ${tokens.length} oldest session(s) to make room`)
+      }
+    }
   }
 
   // Step 4: insert a new row for this login.
