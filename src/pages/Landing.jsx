@@ -136,8 +136,14 @@ export default function Landing() {
             <span className="rounded-full bg-purple-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Music
             </span>
+            <span className="rounded-full bg-maroon-500/20 px-3 py-1 text-xs font-medium text-ink-50">
+              Theater / Drama
+            </span>
             <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               STEM
+            </span>
+            <span className="rounded-full bg-saffron-500/20 px-3 py-1 text-xs font-medium text-ink-50">
+              Elementary Technology
             </span>
             <span className="rounded-full bg-coral-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               After-School Clubs
@@ -328,9 +334,19 @@ export default function Landing() {
                 description="Warm-ups, listening examples, and National Core Arts Standards for general music K–5."
               />
               <ModuleCard
+                name="Theater / Drama"
+                color="maroon"
+                description="NCCAS Theatre lessons across the four Artistic Processes — Creating, Performing, Responding & Connecting — K–12, using original scene-starters & improv, never copyrighted scripts."
+              />
+              <ModuleCard
                 name="STEM"
                 color="cyan"
                 description="Engineering challenges, coding, science investigations, and maker projects — all four in one place, plus the shared Makerspace project generator (tool-specific builds, also in Library & Media)."
+              />
+              <ModuleCard
+                name="Elementary Technology / Computer Lab"
+                color="saffron"
+                description="Self-contained K–5 computer-lab lessons for a weekly tech special — foundational mouse/keyboard/typing skills, digital citizenship & online safety, creation tools, and intro coding/computational thinking, aligned to the ISTE Standards for Students."
               />
               <ModuleCard
                 name="After-School Clubs"
@@ -828,6 +844,7 @@ const STANDARDS = [
   { abbr: 'SHAPE America', full: 'PE & Health' },
   { abbr: 'NCAS', full: 'National Core Arts — Art & Music' },
   { abbr: 'AASL', full: 'School Libraries' },
+  { abbr: 'ISTE', full: 'Educational Technology' },
   { abbr: 'WIDA', full: 'English Language Development' },
   { abbr: 'NAGC', full: 'Gifted & Talented' },
   { abbr: 'IDA', full: 'Structured Literacy / Dyslexia' },

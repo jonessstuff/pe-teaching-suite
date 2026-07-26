@@ -186,6 +186,22 @@ export async function generateAdaptivePE(input) {
   return data
 }
 
+export async function generateTheater(input) {
+  const { data, error } = await supabase.functions.invoke('generate-theater', {
+    body: input,
+  })
+
+  if (error) {
+    let message = error.message ?? 'Generation failed'
+    try {
+      const body = await error.context?.json?.()
+      if (body?.error) message = body.error
+    } catch {}
+    throw new Error(message)
+  }
+  return data
+}
+
 export async function generateGiftedTalented(input) {
   const { data, error } = await supabase.functions.invoke('generate-gifted-talented', {
     body: input,
@@ -423,6 +439,22 @@ export async function generateTestPrep(input) {
 
 export async function generateSchoolCounselor(input) {
   const { data, error } = await supabase.functions.invoke('generate-school-counselor', {
+    body: input,
+  })
+
+  if (error) {
+    let message = error.message ?? 'Generation failed'
+    try {
+      const body = await error.context?.json?.()
+      if (body?.error) message = body.error
+    } catch {}
+    throw new Error(message)
+  }
+  return data
+}
+
+export async function generateElementaryTech(input) {
+  const { data, error } = await supabase.functions.invoke('generate-elementary-tech', {
     body: input,
   })
 

@@ -26,7 +26,9 @@ export const SUBJECT_TAB_STYLES = {
   'Library/Media': 'bg-blue-500/20 text-ink-50',
   Art: 'bg-orange-500/20 text-ink-50',
   Music: 'bg-purple-500/20 text-ink-50',
+  Theater: 'bg-maroon-500/20 text-ink-50',
   STEM: 'bg-cyan-500/20 text-ink-50',
+  'Elementary Technology': 'bg-saffron-500/20 text-ink-50',
   'World Languages': 'bg-jade-500/20 text-ink-50',
   'After-School Clubs': 'bg-coral-500/20 text-ink-50',
   CTE: 'bg-pink-500/20 text-ink-50',
@@ -72,7 +74,9 @@ export const MODULES = [
   { label: 'Library & Media', subjects: ['Library/Media'] },
   { label: 'Art', subjects: ['Art'] },
   { label: 'Music', subjects: ['Music'] },
+  { label: 'Theater / Drama', subjects: ['Theater'] },
   { label: 'STEM', subjects: ['STEM'] },
+  { label: 'Elementary Technology / Computer Lab', subjects: ['Elementary Technology'] },
   { label: 'World Languages', subjects: ['World Languages'] },
   { label: 'After-School Clubs', subjects: ['After-School Clubs'] },
   { label: 'Adaptive PE', subjects: ['Adaptive PE'] },
@@ -147,6 +151,7 @@ export const PE_HEALTH_SUBJECTS = subjectsForModule('PE & Health')
 //   periwinkle (Occupational Therapists) · coral (After-School Clubs) ·
 //   steel (Test Prep) · zinc (Physical Therapists) · jade (World Languages) ·
 //   cobalt (Teacher of the Visually Impaired) · magenta (Teacher of the Deaf & Hard of Hearing) ·
+//   saffron (Elementary Technology / Computer Lab) · maroon (Theater / Drama) ·
 //   teal (Adaptive PE lesson tabs)
 //
 // AVAILABLE for future modules (School Counselors is next, then more). Each
@@ -174,22 +179,11 @@ export const AVAILABLE_MODULE_ACCENTS = [
     cardBorder: 'border-mocha-400', callout: 'border-mocha-500/30 bg-mocha-500/10',
   },
   // ── 2026-07 palette expansion pass 3 (custom scales in tailwind.config.js) ──
-  {
-    key: 'saffron', label: 'Saffron (golden yellow)',
-    tab: 'bg-saffron-500/20 text-ink-50', iconTint: 'bg-saffron-500/15',
-    accentText: 'text-saffron-400', hoverBorder: 'hover:border-saffron-400/40',
-    cardBorder: 'border-saffron-400', callout: 'border-saffron-500/30 bg-saffron-500/10',
-  },
+  // (saffron consumed → Elementary Technology / Computer Lab)
   {
     key: 'olive', label: 'Olive (yellow-green)',
     tab: 'bg-olive-500/20 text-ink-50', iconTint: 'bg-olive-500/15',
     accentText: 'text-olive-400', hoverBorder: 'hover:border-olive-400/40',
     cardBorder: 'border-olive-400', callout: 'border-olive-500/30 bg-olive-500/10',
-  },
-  {
-    key: 'maroon', label: 'Maroon (deep brick red)',
-    tab: 'bg-maroon-500/20 text-ink-50', iconTint: 'bg-maroon-500/15',
-    accentText: 'text-maroon-400', hoverBorder: 'hover:border-maroon-400/40',
-    cardBorder: 'border-maroon-400', callout: 'border-maroon-500/30 bg-maroon-500/10',
   },
 ]

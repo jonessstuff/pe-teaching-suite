@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Library, Palette, Music, FlaskConical, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, PersonStanding, ScanEye, Ear, PartyPopper, Target, Globe, Users, Blocks, Layers, Presentation, ArrowRight } from 'lucide-react'
+import { Library, Palette, Music, Drama, FlaskConical, Monitor, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, PersonStanding, ScanEye, Ear, PartyPopper, Target, Globe, Users, Blocks, Layers, Presentation, ArrowRight } from 'lucide-react'
 import { useDisplayName, getTimeGreeting } from '../hooks/useDisplayName'
 
 export default function ModulePicker() {
@@ -103,6 +103,25 @@ export default function ModulePicker() {
             </div>
           </Link>
 
+          {/* Theater / Drama */}
+          <Link
+            to="/theater"
+            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-maroon-400/40"
+          >
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-maroon-500/15">
+              <Drama size={28} className="text-maroon-400" />
+            </div>
+            <div className="flex-1 space-y-1.5">
+              <h2 className="text-xl font-semibold text-ink-50">Theater / Drama</h2>
+              <p className="text-sm text-ink-400 leading-relaxed">
+                NCCAS Theatre lessons across the four Artistic Processes — Creating, Performing, Responding &amp; Connecting — K–12, with original scene-starters and improv (never copyrighted scripts)
+              </p>
+            </div>
+            <div className="flex items-center gap-1.5 text-sm font-medium text-maroon-400 transition-[gap] group-hover:gap-2.5">
+              Open module <ArrowRight size={15} />
+            </div>
+          </Link>
+
           {/* STEM */}
           <Link
             to="/stem"
@@ -118,6 +137,25 @@ export default function ModulePicker() {
               </p>
             </div>
             <div className="flex items-center gap-1.5 text-sm font-medium text-cyan-400 transition-[gap] group-hover:gap-2.5">
+              Open module <ArrowRight size={15} />
+            </div>
+          </Link>
+
+          {/* Elementary Technology / Computer Lab */}
+          <Link
+            to="/elementary-tech"
+            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-saffron-400/40"
+          >
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-saffron-500/15">
+              <Monitor size={28} className="text-saffron-400" />
+            </div>
+            <div className="flex-1 space-y-1.5">
+              <h2 className="text-xl font-semibold text-ink-50">Elementary Technology / Computer Lab</h2>
+              <p className="text-sm text-ink-400 leading-relaxed">
+                Self-contained K–5 computer-lab lessons — foundational skills, digital citizenship &amp; online safety, creation tools, and intro coding — ISTE-aligned for a weekly tech special
+              </p>
+            </div>
+            <div className="flex items-center gap-1.5 text-sm font-medium text-saffron-400 transition-[gap] group-hover:gap-2.5">
               Open module <ArrowRight size={15} />
             </div>
           </Link>

@@ -68,6 +68,7 @@ import EarlyChildhoodGenerator from './pages/EarlyChildhoodGenerator'
 import InterventionGenerator from './pages/InterventionGenerator'
 import StaffPdGenerator from './pages/StaffPdGenerator'
 import SchoolCounselorGenerator from './pages/SchoolCounselorGenerator'
+import ElementaryTechGenerator from './pages/ElementaryTechGenerator'
 import SlpGenerator from './pages/SlpGenerator'
 import OtGenerator from './pages/OtGenerator'
 import PtGenerator from './pages/PtGenerator'
@@ -77,6 +78,7 @@ import WorldLanguagesGenerator from './pages/WorldLanguagesGenerator'
 import AfterSchoolClubsGenerator from './pages/AfterSchoolClubsGenerator'
 import TestPrepGenerator from './pages/TestPrepGenerator'
 import SstActivityGenerator from './pages/SstActivityGenerator'
+import TheaterGenerator from './pages/TheaterGenerator'
 
 // Module-level promise reference. When a genuine new login triggers claimSession(),
 // this holds the in-flight Promise so that any concurrent SIGNED_IN events (e.g.
@@ -320,12 +322,14 @@ function App() {
           <Route path="intervention" element={<InterventionGenerator />} />
           <Route path="staff-pd" element={<StaffPdGenerator />} />
           <Route path="school-counselors" element={<SchoolCounselorGenerator />} />
+          <Route path="elementary-tech" element={<ElementaryTechGenerator />} />
           <Route path="slp" element={<SlpGenerator />} />
           <Route path="ot" element={<OtGenerator />} />
           <Route path="pt" element={<PtGenerator />} />
           <Route path="tvi" element={<TviGenerator />} />
           <Route path="dhh" element={<DhhGenerator />} />
           <Route path="world-languages" element={<WorldLanguagesGenerator />} />
+          <Route path="theater" element={<TheaterGenerator />} />
           <Route path="after-school-clubs" element={<AfterSchoolClubsGenerator />} />
           <Route path="test-prep" element={<TestPrepGenerator />} />
           <Route path="student-support-activities" element={<SstActivityGenerator />} />
