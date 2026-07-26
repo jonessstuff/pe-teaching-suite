@@ -157,6 +157,10 @@ export default function Landing() {
             <span className="rounded-full bg-jade-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               World Languages
             </span>
+            {/* Early childhood */}
+            <span className="rounded-full bg-grass-500/20 px-3 py-1 text-xs font-medium text-ink-50">
+              Early Childhood / Pre-K
+            </span>
             {/* Career & technical education */}
             <span className="rounded-full bg-pink-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               CTE
@@ -207,10 +211,6 @@ export default function Landing() {
             </span>
             <span className="rounded-full bg-plum-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Student Support Team
-            </span>
-            {/* Early childhood */}
-            <span className="rounded-full bg-grass-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Early Childhood / Pre-K
             </span>
             {/* School leadership */}
             <span className="rounded-full bg-gold-500/20 px-3 py-1 text-xs font-medium text-ink-50">
@@ -379,6 +379,14 @@ export default function Landing() {
               />
             </ModuleGroup>
 
+            <ModuleGroup label="Early Childhood">
+              <ModuleCard
+                name="Early Childhood / Pre-K"
+                color="grass"
+                description="Play-based learning centers & guided-play invitations for the whole child — NAEYC Developmentally Appropriate Practice, NAEYC Professional Standards & Head Start ELOF, toddlers through TK."
+              />
+            </ModuleGroup>
+
             <ModuleGroup label="Career & Technical Education">
               <ModuleCard
                 name="CTE"
@@ -465,14 +473,6 @@ export default function Landing() {
                 name="Student Support Team"
                 color="plum"
                 description="Ready-to-run small-group SEL & behavioral activities for social workers, school psychologists, MFLCs & behavior specialists — role-tailored, activity structure only, K–12."
-              />
-            </ModuleGroup>
-
-            <ModuleGroup label="Early Childhood">
-              <ModuleCard
-                name="Early Childhood / Pre-K"
-                color="grass"
-                description="Play-based learning centers & guided-play invitations for the whole child — NAEYC Developmentally Appropriate Practice, NAEYC Professional Standards & Head Start ELOF, toddlers through TK."
               />
             </ModuleGroup>
 

@@ -37,6 +37,13 @@ const GROUPS = [
     ],
   },
   {
+    label: 'Early Childhood',
+    modules: [
+      { key: 'early-childhood', to: '/early-childhood', label: 'Early Childhood / Pre-K', Icon: Blocks, wrap: 'bg-grass-500/15', color: 'text-grass-400', hover: 'hover:border-grass-400/40',
+        desc: 'Play-based learning centers & guided-play invitations for the whole child — NAEYC DAP, NAEYC Professional Standards & Head Start ELOF (toddlers–TK)' },
+    ],
+  },
+  {
     label: 'Career & Technical Education',
     modules: [
       { key: 'cte', to: '/cte', label: 'CTE', Icon: Briefcase, wrap: 'bg-pink-500/20', color: 'text-pink-400', hover: 'hover:border-pink-400/40',
@@ -81,13 +88,6 @@ const GROUPS = [
         desc: 'ECC-DHH activity ideas — communication (bilingual-bicultural or listening & spoken language), self-advocacy, social-emotional, hearing technology & career transition, CEC/CED-aligned (K–12)' },
       { key: 'student-support-activities', to: '/student-support-activities', label: 'Student Support Team Activities', Icon: Users, wrap: 'bg-plum-500/15', color: 'text-plum-400', hover: 'hover:border-plum-400/40',
         desc: 'Ready-to-run small-group SEL & behavioral activities for social workers, school psychologists, MFLCs & behavior specialists — role-tailored, activity structure only (K–12)' },
-    ],
-  },
-  {
-    label: 'Early Childhood',
-    modules: [
-      { key: 'early-childhood', to: '/early-childhood', label: 'Early Childhood / Pre-K', Icon: Blocks, wrap: 'bg-grass-500/15', color: 'text-grass-400', hover: 'hover:border-grass-400/40',
-        desc: 'Play-based learning centers & guided-play invitations for the whole child — NAEYC DAP, NAEYC Professional Standards & Head Start ELOF (toddlers–TK)' },
     ],
   },
   {
