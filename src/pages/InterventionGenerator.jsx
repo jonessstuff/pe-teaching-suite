@@ -220,8 +220,8 @@ export default function InterventionGenerator() {
     return (
       <div>
         <div className="mb-6 flex items-center gap-3 print:hidden">
-          <Link to="/" className="flex items-center gap-1.5 text-sm text-ink-400 hover:text-ink-200 transition-colors">
-            <ArrowLeft size={16} /> All modules
+          <Link to="/intervention" className="flex items-center gap-1.5 text-sm text-ink-400 hover:text-ink-200 transition-colors">
+            <ArrowLeft size={16} /> Intervention Planning
           </Link>
           <button type="button" onClick={resetForm} className="flex items-center gap-1.5 text-sm text-ink-400 hover:text-ink-200 transition-colors">
             New concern
@@ -271,8 +271,8 @@ export default function InterventionGenerator() {
   return (
     <div className="max-w-2xl space-y-8">
       <div>
-        <Link to="/" className="mb-3 flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors">
-          <ArrowLeft size={14} /> All modules
+        <Link to="/intervention" className="mb-3 flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors">
+          <ArrowLeft size={14} /> Intervention Planning
         </Link>
         <div className="flex items-center gap-2 mb-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-stone-500/15">

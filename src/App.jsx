@@ -9,6 +9,8 @@ import { identifyUser, resetAnalytics } from './lib/analytics'
 import { setSentryUser } from './lib/sentry'
 import { TrialProvider } from './context/TrialContext'
 import AppShell from './components/layout/AppShell'
+import ModuleHome from './components/module/ModuleHome'
+import { MODULE_HOMES } from './constants/moduleHomes'
 import ModulePicker from './pages/ModulePicker'
 import Dashboard from './pages/Dashboard'
 import LessonGenerator from './pages/LessonGenerator'
@@ -316,29 +318,52 @@ function App() {
           <Route path="cte/generate" element={<CteGenerator />} />
           <Route path="cte/lessons" element={<CteLessonLibrary />} />
           <Route path="classroom-management" element={<ClassroomManagementGenerator />} />
-          <Route path="gifted-talented" element={<GiftedTalentedGenerator />} />
-          <Route path="reading-specialists" element={<ReadingSpecialistGenerator />} />
-          <Route path="math-specialists" element={<MathSpecialistGenerator />} />
-          <Route path="special-education" element={<SpecialEducationGenerator />} />
-          <Route path="esl-specialist" element={<EslSpecialistGenerator />} />
-          <Route path="early-childhood" element={<EarlyChildhoodGenerator />} />
-          <Route path="intervention" element={<InterventionGenerator />} />
-          <Route path="staff-pd" element={<StaffPdGenerator />} />
-          <Route path="instructional-coaching" element={<InstructionalCoachingGenerator />} />
-          <Route path="school-counselors" element={<SchoolCounselorGenerator />} />
-          <Route path="elementary-tech" element={<ElementaryTechGenerator />} />
-          <Route path="slp" element={<SlpGenerator />} />
-          <Route path="ot" element={<OtGenerator />} />
-          <Route path="pt" element={<PtGenerator />} />
-          <Route path="tvi" element={<TviGenerator />} />
-          <Route path="dhh" element={<DhhGenerator />} />
-          <Route path="world-languages" element={<WorldLanguagesGenerator />} />
-          <Route path="theater" element={<TheaterGenerator />} />
-          <Route path="dance" element={<DanceGenerator />} />
-          <Route path="after-school-clubs" element={<AfterSchoolClubsGenerator />} />
-          <Route path="jrotc" element={<JrotcGenerator />} />
-          <Route path="test-prep" element={<TestPrepGenerator />} />
-          <Route path="student-support-activities" element={<SstActivityGenerator />} />
+          <Route path="gifted-talented" element={<ModuleHome config={MODULE_HOMES['gifted-talented']} />} />
+          <Route path="gifted-talented/generate" element={<GiftedTalentedGenerator />} />
+          <Route path="reading-specialists" element={<ModuleHome config={MODULE_HOMES['reading-specialists']} />} />
+          <Route path="reading-specialists/generate" element={<ReadingSpecialistGenerator />} />
+          <Route path="math-specialists" element={<ModuleHome config={MODULE_HOMES['math-specialists']} />} />
+          <Route path="math-specialists/generate" element={<MathSpecialistGenerator />} />
+          <Route path="special-education" element={<ModuleHome config={MODULE_HOMES['special-education']} />} />
+          <Route path="special-education/generate" element={<SpecialEducationGenerator />} />
+          <Route path="esl-specialist" element={<ModuleHome config={MODULE_HOMES['esl-specialist']} />} />
+          <Route path="esl-specialist/generate" element={<EslSpecialistGenerator />} />
+          <Route path="early-childhood" element={<ModuleHome config={MODULE_HOMES['early-childhood']} />} />
+          <Route path="early-childhood/generate" element={<EarlyChildhoodGenerator />} />
+          <Route path="intervention" element={<ModuleHome config={MODULE_HOMES['intervention']} />} />
+          <Route path="intervention/generate" element={<InterventionGenerator />} />
+          <Route path="staff-pd" element={<ModuleHome config={MODULE_HOMES['staff-pd']} />} />
+          <Route path="staff-pd/generate" element={<StaffPdGenerator />} />
+          <Route path="instructional-coaching" element={<ModuleHome config={MODULE_HOMES['instructional-coaching']} />} />
+          <Route path="instructional-coaching/generate" element={<InstructionalCoachingGenerator />} />
+          <Route path="school-counselors" element={<ModuleHome config={MODULE_HOMES['school-counselors']} />} />
+          <Route path="school-counselors/generate" element={<SchoolCounselorGenerator />} />
+          <Route path="elementary-tech" element={<ModuleHome config={MODULE_HOMES['elementary-tech']} />} />
+          <Route path="elementary-tech/generate" element={<ElementaryTechGenerator />} />
+          <Route path="slp" element={<ModuleHome config={MODULE_HOMES['slp']} />} />
+          <Route path="slp/generate" element={<SlpGenerator />} />
+          <Route path="ot" element={<ModuleHome config={MODULE_HOMES.ot} />} />
+          <Route path="ot/generate" element={<OtGenerator />} />
+          <Route path="pt" element={<ModuleHome config={MODULE_HOMES['pt']} />} />
+          <Route path="pt/generate" element={<PtGenerator />} />
+          <Route path="tvi" element={<ModuleHome config={MODULE_HOMES['tvi']} />} />
+          <Route path="tvi/generate" element={<TviGenerator />} />
+          <Route path="dhh" element={<ModuleHome config={MODULE_HOMES['dhh']} />} />
+          <Route path="dhh/generate" element={<DhhGenerator />} />
+          <Route path="world-languages" element={<ModuleHome config={MODULE_HOMES['world-languages']} />} />
+          <Route path="world-languages/generate" element={<WorldLanguagesGenerator />} />
+          <Route path="theater" element={<ModuleHome config={MODULE_HOMES.theater} />} />
+          <Route path="theater/generate" element={<TheaterGenerator />} />
+          <Route path="dance" element={<ModuleHome config={MODULE_HOMES['dance']} />} />
+          <Route path="dance/generate" element={<DanceGenerator />} />
+          <Route path="after-school-clubs" element={<ModuleHome config={MODULE_HOMES['after-school-clubs']} />} />
+          <Route path="after-school-clubs/generate" element={<AfterSchoolClubsGenerator />} />
+          <Route path="jrotc" element={<ModuleHome config={MODULE_HOMES['jrotc']} />} />
+          <Route path="jrotc/generate" element={<JrotcGenerator />} />
+          <Route path="test-prep" element={<ModuleHome config={MODULE_HOMES['test-prep']} />} />
+          <Route path="test-prep/generate" element={<TestPrepGenerator />} />
+          <Route path="student-support-activities" element={<ModuleHome config={MODULE_HOMES['student-support-activities']} />} />
+          <Route path="student-support-activities/generate" element={<SstActivityGenerator />} />
           <Route path="my-classroom-cards" element={<MyClassroomCards />} />
           <Route path="sub-binder" element={<SubBinderGenerator />} />
           <Route path="my-binders" element={<MyBinders />} />

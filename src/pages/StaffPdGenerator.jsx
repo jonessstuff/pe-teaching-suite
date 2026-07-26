@@ -78,8 +78,8 @@ export default function StaffPdGenerator() {
     return (
       <div>
         <div className="mb-6 flex items-center gap-3 print:hidden">
-          <Link to="/" className="flex items-center gap-1.5 text-sm text-ink-400 hover:text-ink-200 transition-colors">
-            <ArrowLeft size={16} /> All modules
+          <Link to="/staff-pd" className="flex items-center gap-1.5 text-sm text-ink-400 hover:text-ink-200 transition-colors">
+            <ArrowLeft size={16} /> Staff PD & Meeting Planning
           </Link>
           <button type="button" onClick={resetForm} className="flex items-center gap-1.5 text-sm text-ink-400 hover:text-ink-200 transition-colors">
             Start over
@@ -103,8 +103,8 @@ export default function StaffPdGenerator() {
     <div className="max-w-2xl space-y-8">
       {/* Header */}
       <div>
-        <Link to="/" className="mb-3 flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors">
-          <ArrowLeft size={14} /> All modules
+        <Link to="/staff-pd" className="mb-3 flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors">
+          <ArrowLeft size={14} /> Staff PD & Meeting Planning
         </Link>
         <div className="flex items-center gap-2 mb-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gold-500/15">

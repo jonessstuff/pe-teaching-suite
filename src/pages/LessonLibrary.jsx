@@ -1,15 +1,21 @@
 
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { Sparkles, Loader2, Search, Star } from 'lucide-react'
 import { listLessons } from '../services/lessonsService'
 import { MODULES, subjectInModule } from '../constants/modules'
 import LessonCard from '../components/lesson/LessonCard'
 
 export default function LessonLibrary() {
+  const [searchParams] = useSearchParams()
+  // A module Home's "Browse" card deep-links with ?module=<label>; preselect
+  // that filter when it matches a known module, else default to All.
+  const requestedModule = searchParams.get('module')
+  const initialFilter = MODULES.some((m) => m.label === requestedModule) ? requestedModule : 'All'
+
   const [lessons, setLessons] = useState(null)
   const [error, setError] = useState(null)
-  const [moduleFilter, setModuleFilter] = useState('All')
+  const [moduleFilter, setModuleFilter] = useState(initialFilter)
   const [search, setSearch] = useState('')
   const [sortOrder, setSortOrder] = useState('newest') // 'newest' | 'oldest' | 'az'
   const [favoritesOnly, setFavoritesOnly] = useState(false)
