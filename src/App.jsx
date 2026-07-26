@@ -30,7 +30,6 @@ import AdaptivePEGenerator from './pages/AdaptivePEGenerator'
 import StemHome from './pages/StemHome'
 import StemGenerator from './pages/StemGenerator'
 import StemLessonLibrary from './pages/StemLessonLibrary'
-import StemUnitBuilder from './pages/StemUnitBuilder'
 import CteGenerator from './pages/CteGenerator'
 import CteLessonLibrary from './pages/CteLessonLibrary'
 import SubBinderGenerator from './pages/SubBinderGenerator'
@@ -327,7 +326,6 @@ function App() {
           <Route path="stem" element={<StemHome />} />
           <Route path="stem/generate" element={<StemGenerator />} />
           <Route path="stem/lessons" element={<StemLessonLibrary />} />
-          <Route path="stem/units/new" element={<StemUnitBuilder />} />
           <Route path="stem/makerspace" element={<MakerProjectGenerator origin="stem" />} />
           <Route path="cte" element={<ModuleHome config={MODULE_HOMES.cte} />} />
           <Route path="cte/generate" element={<CteGenerator />} />
