@@ -93,6 +93,10 @@ let activeClaimPromise = null
 function App() {
   const [session, setSession] = useState(undefined) // undefined = loading
   const [authError, setAuthError] = useState(null)
+  // Set when this device was displaced (a newer login evicted its session). Routes
+  // the signed-out user to Login so the explanatory notice is actually seen, rather
+  // than silently dropping them on the landing page. Self-clears on next sign-in.
+  const [displaced, setDisplaced] = useState(false)
   useTheme() // applies dark/light class to <html> on mount
 
   useEffect(() => {
@@ -246,7 +250,13 @@ function App() {
         await claimSession()
         // Re-claimed successfully; user stays logged in with a fresh row.
       } catch {
-        // Can't re-claim (ALREADY_ACTIVE or DB error) — genuine displacement.
+        // Can't re-claim (ALREADY_ACTIVE or DB error) — genuine displacement:
+        // a newer login (e.g. another device, or installing the PWA past the
+        // session limit) evicted this session. Surface a brief notice so it
+        // isn't mysterious, and route to Login (setDisplaced) since the signed-
+        // out user would otherwise land silently on the marketing page.
+        setAuthError('You’ve been signed out because your account was opened on another device.')
+        setDisplaced(true)
         // scope: 'local' so we don't revoke the other devices' tokens and
         // trigger the account-wide re-login cascade (see the login handler above).
         supabase.auth.signOut({ scope: 'local' })
@@ -256,6 +266,13 @@ function App() {
     tick() // immediate check on mount / session restore
     const interval = setInterval(tick, HEARTBEAT_MS)
     return () => clearInterval(interval)
+  }, [session])
+
+  // Clear the displacement flag once a session is (re)established, so a stale
+  // flag can't surface the "signed out on another device" notice on a later,
+  // ordinary logout.
+  useEffect(() => {
+    if (session) setDisplaced(false)
   }, [session])
 
   if (session === undefined) {
@@ -270,13 +287,15 @@ function App() {
     return (
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login authError={authError} onClearAuthError={() => setAuthError(null)} />} />
+          <Route path="/" element={displaced
+            ? <Login authError={authError} onClearAuthError={() => { setAuthError(null); setDisplaced(false) }} />
+            : <Landing />} />
+          <Route path="/login" element={<Login authError={authError} onClearAuthError={() => { setAuthError(null); setDisplaced(false) }} />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/shared/:token" element={<SharedLesson />} />
           <Route path="/try" element={<TryFreeLesson />} />
           <Route path="/free-lesson/:token" element={<FreeLessonView />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<Navigate to={displaced ? '/login' : '/'} replace />} />
         </Routes>
       </BrowserRouter>
     )
