@@ -67,6 +67,7 @@ import EslSpecialistGenerator from './pages/EslSpecialistGenerator'
 import EarlyChildhoodGenerator from './pages/EarlyChildhoodGenerator'
 import InterventionGenerator from './pages/InterventionGenerator'
 import StaffPdGenerator from './pages/StaffPdGenerator'
+import InstructionalCoachingGenerator from './pages/InstructionalCoachingGenerator'
 import SchoolCounselorGenerator from './pages/SchoolCounselorGenerator'
 import ElementaryTechGenerator from './pages/ElementaryTechGenerator'
 import SlpGenerator from './pages/SlpGenerator'
@@ -79,6 +80,7 @@ import AfterSchoolClubsGenerator from './pages/AfterSchoolClubsGenerator'
 import TestPrepGenerator from './pages/TestPrepGenerator'
 import SstActivityGenerator from './pages/SstActivityGenerator'
 import TheaterGenerator from './pages/TheaterGenerator'
+import DanceGenerator from './pages/DanceGenerator'
 
 // Module-level promise reference. When a genuine new login triggers claimSession(),
 // this holds the in-flight Promise so that any concurrent SIGNED_IN events (e.g.
@@ -321,6 +323,7 @@ function App() {
           <Route path="early-childhood" element={<EarlyChildhoodGenerator />} />
           <Route path="intervention" element={<InterventionGenerator />} />
           <Route path="staff-pd" element={<StaffPdGenerator />} />
+          <Route path="instructional-coaching" element={<InstructionalCoachingGenerator />} />
           <Route path="school-counselors" element={<SchoolCounselorGenerator />} />
           <Route path="elementary-tech" element={<ElementaryTechGenerator />} />
           <Route path="slp" element={<SlpGenerator />} />
@@ -330,6 +333,7 @@ function App() {
           <Route path="dhh" element={<DhhGenerator />} />
           <Route path="world-languages" element={<WorldLanguagesGenerator />} />
           <Route path="theater" element={<TheaterGenerator />} />
+          <Route path="dance" element={<DanceGenerator />} />
           <Route path="after-school-clubs" element={<AfterSchoolClubsGenerator />} />
           <Route path="test-prep" element={<TestPrepGenerator />} />
           <Route path="student-support-activities" element={<SstActivityGenerator />} />

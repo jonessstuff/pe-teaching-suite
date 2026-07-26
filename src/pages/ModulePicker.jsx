@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Library, Palette, Music, Drama, FlaskConical, Monitor, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, PersonStanding, ScanEye, Ear, PartyPopper, Target, Globe, Users, Blocks, Layers, Presentation, ArrowRight } from 'lucide-react'
+import { Library, Palette, Music, Drama, Wind, FlaskConical, Monitor, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, Handshake, PersonStanding, ScanEye, Ear, PartyPopper, Target, Globe, Users, Blocks, Layers, Presentation, ArrowRight } from 'lucide-react'
 import { useDisplayName, getTimeGreeting } from '../hooks/useDisplayName'
 
 export default function ModulePicker() {
@@ -118,6 +118,25 @@ export default function ModulePicker() {
               </p>
             </div>
             <div className="flex items-center gap-1.5 text-sm font-medium text-maroon-400 transition-[gap] group-hover:gap-2.5">
+              Open module <ArrowRight size={15} />
+            </div>
+          </Link>
+
+          {/* Dance */}
+          <Link
+            to="/dance"
+            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-olive-400/40"
+          >
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-olive-500/15">
+              <Wind size={28} className="text-olive-400" />
+            </div>
+            <div className="flex-1 space-y-1.5">
+              <h2 className="text-xl font-semibold text-ink-50">Dance</h2>
+              <p className="text-sm text-ink-400 leading-relaxed">
+                NCCAS Dance lessons across the four Artistic Processes — Creating, Performing, Responding &amp; Connecting — K–12, with the elements of dance &amp; built-in body-safety guidance
+              </p>
+            </div>
+            <div className="flex items-center gap-1.5 text-sm font-medium text-olive-400 transition-[gap] group-hover:gap-2.5">
               Open module <ArrowRight size={15} />
             </div>
           </Link>
@@ -546,6 +565,25 @@ export default function ModulePicker() {
               </p>
             </div>
             <div className="flex items-center gap-1.5 text-sm font-medium text-gold-400 transition-[gap] group-hover:gap-2.5">
+              Open module <ArrowRight size={15} />
+            </div>
+          </Link>
+
+          {/* Instructional Coaching */}
+          <Link
+            to="/instructional-coaching"
+            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-mocha-400/40"
+          >
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-mocha-500/15">
+              <Handshake size={28} className="text-mocha-400" />
+            </div>
+            <div className="flex-1 space-y-1.5">
+              <h2 className="text-xl font-semibold text-ink-50">Instructional Coaching</h2>
+              <p className="text-sm text-ink-400 leading-relaxed">
+                Non-evaluative, partnership-based coaching — conversation frameworks, teacher-driven observation tools, and goal-setting &amp; data protocols built on Jim Knight&rsquo;s Impact Cycle
+              </p>
+            </div>
+            <div className="flex items-center gap-1.5 text-sm font-medium text-mocha-400 transition-[gap] group-hover:gap-2.5">
               Open module <ArrowRight size={15} />
             </div>
           </Link>

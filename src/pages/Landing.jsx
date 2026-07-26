@@ -139,6 +139,9 @@ export default function Landing() {
             <span className="rounded-full bg-maroon-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Theater / Drama
             </span>
+            <span className="rounded-full bg-olive-500/20 px-3 py-1 text-xs font-medium text-ink-50">
+              Dance
+            </span>
             <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               STEM
             </span>
@@ -209,6 +212,9 @@ export default function Landing() {
             {/* School leadership */}
             <span className="rounded-full bg-gold-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               Staff PD &amp; Meeting Planning
+            </span>
+            <span className="rounded-full bg-mocha-500/20 px-3 py-1 text-xs font-medium text-ink-50">
+              Instructional Coaching
             </span>
           </div>
 
@@ -339,6 +345,11 @@ export default function Landing() {
                 description="NCCAS Theatre lessons across the four Artistic Processes — Creating, Performing, Responding & Connecting — K–12, using original scene-starters & improv, never copyrighted scripts."
               />
               <ModuleCard
+                name="Dance"
+                color="olive"
+                description="NCCAS Dance lessons across the four Artistic Processes — Creating, Performing, Responding & Connecting — K–12, built on the elements of dance with age-appropriate body-safety guidance."
+              />
+              <ModuleCard
                 name="STEM"
                 color="cyan"
                 description="Engineering challenges, coding, science investigations, and maker projects — all four in one place, plus the shared Makerspace project generator (tool-specific builds, also in Library & Media)."
@@ -462,6 +473,11 @@ export default function Landing() {
                 name="Staff PD & Meeting Planning"
                 color="gold"
                 description="For principals & coaches — Learning Forward-aligned PD sessions, new-teacher mentoring, walkthrough look-fors, PLC/data-team protocols, and building communication templates for adult, job-embedded professional learning."
+              />
+              <ModuleCard
+                name="Instructional Coaching"
+                color="mocha"
+                description="Non-evaluative, partnership-based coaching built on Jim Knight's Impact Cycle & Partnership Principles — coaching conversation frameworks, teacher-driven observation tools (not evaluation), and goal-setting & data-use protocols. Confidential support, never a performance review."
               />
             </ModuleGroup>
           </div>

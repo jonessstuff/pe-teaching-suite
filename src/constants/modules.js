@@ -27,6 +27,7 @@ export const SUBJECT_TAB_STYLES = {
   Art: 'bg-orange-500/20 text-ink-50',
   Music: 'bg-purple-500/20 text-ink-50',
   Theater: 'bg-maroon-500/20 text-ink-50',
+  Dance: 'bg-olive-500/20 text-ink-50',
   STEM: 'bg-cyan-500/20 text-ink-50',
   'Elementary Technology': 'bg-saffron-500/20 text-ink-50',
   'World Languages': 'bg-jade-500/20 text-ink-50',
@@ -50,6 +51,7 @@ export const SUBJECT_TAB_STYLES = {
   'Early Childhood': 'bg-grass-500/20 text-ink-50',
   'Intervention Planning': 'bg-stone-500/20 text-ink-50',
   'Staff PD & Meeting Planning': 'bg-gold-500/20 text-ink-50',
+  'Instructional Coaching': 'bg-mocha-500/20 text-ink-50',
 }
 
 // Neutral last-resort style for a genuinely unknown subject only.
@@ -75,6 +77,7 @@ export const MODULES = [
   { label: 'Art', subjects: ['Art'] },
   { label: 'Music', subjects: ['Music'] },
   { label: 'Theater / Drama', subjects: ['Theater'] },
+  { label: 'Dance', subjects: ['Dance'] },
   { label: 'STEM', subjects: ['STEM'] },
   { label: 'Elementary Technology / Computer Lab', subjects: ['Elementary Technology'] },
   { label: 'World Languages', subjects: ['World Languages'] },
@@ -99,6 +102,7 @@ export const MODULES = [
   { label: 'Early Childhood / Pre-K', subjects: ['Early Childhood'] },
   { label: 'Intervention Planning', subjects: ['Intervention Planning'] },
   { label: 'Staff PD & Meeting Planning', subjects: ['Staff PD & Meeting Planning'] },
+  { label: 'Instructional Coaching', subjects: ['Instructional Coaching'] },
 ]
 
 /** True when `subject` belongs to the module identified by `moduleLabel`. */
@@ -152,7 +156,7 @@ export const PE_HEALTH_SUBJECTS = subjectsForModule('PE & Health')
 //   steel (Test Prep) · zinc (Physical Therapists) · jade (World Languages) ·
 //   cobalt (Teacher of the Visually Impaired) · magenta (Teacher of the Deaf & Hard of Hearing) ·
 //   saffron (Elementary Technology / Computer Lab) · maroon (Theater / Drama) ·
-//   teal (Adaptive PE lesson tabs)
+//   mocha (Instructional Coaching) · olive (Dance) · teal (Adaptive PE lesson tabs)
 //
 // AVAILABLE for future modules (School Counselors is next, then more). Each
 // entry's strings are full/literal so Tailwind's JIT compiles them and a new
@@ -172,18 +176,10 @@ export const PE_HEALTH_SUBJECTS = subjectsForModule('PE & Health')
 // as `bg-{c}-500/20 text-ink-50` (the readable badge pattern). The 2026-07 pass-2
 // hues (gold/coral/periwinkle/steel/mocha) are custom scales in tailwind.config.js.
 export const AVAILABLE_MODULE_ACCENTS = [
-  {
-    key: 'mocha', label: 'Mocha (warm brown neutral)',
-    tab: 'bg-mocha-500/20 text-ink-50', iconTint: 'bg-mocha-500/15',
-    accentText: 'text-mocha-400', hoverBorder: 'hover:border-mocha-400/40',
-    cardBorder: 'border-mocha-400', callout: 'border-mocha-500/30 bg-mocha-500/10',
-  },
-  // ── 2026-07 palette expansion pass 3 (custom scales in tailwind.config.js) ──
-  // (saffron consumed → Elementary Technology / Computer Lab)
-  {
-    key: 'olive', label: 'Olive (yellow-green)',
-    tab: 'bg-olive-500/20 text-ink-50', iconTint: 'bg-olive-500/15',
-    accentText: 'text-olive-400', hoverBorder: 'hover:border-olive-400/40',
-    cardBorder: 'border-olive-400', callout: 'border-olive-500/30 bg-olive-500/10',
-  },
+  // ── 2026-07 palette expansion pass 3 — ALL CONSUMED ──
+  // (jade→World Languages, cobalt→TVI, magenta→D-HH, saffron→Elementary Technology,
+  //  maroon→Theater, mocha→Instructional Coaching, olive→Dance)
+  // The palette is now EMPTY. The next module needs a fresh pass-4 expansion:
+  // add new custom scales in tailwind.config.js + matching entries here + Landing
+  // MODULE_STYLES keys (lean muted/neutral or pair a near-hue with a distinct icon).
 ]
