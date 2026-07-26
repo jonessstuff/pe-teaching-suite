@@ -1,12 +1,32 @@
 import { useState } from 'react'
 import { ChevronDown, ChevronUp, Pencil, X, Check } from 'lucide-react'
+import LessonBody from '../lesson/lessonBodyRenderers'
 
 const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+
+// The original six modules use the compact, PE-shaped, inline-editable DayCard.
+// Every newer module produces its own lesson shape, so its days render full-width
+// via LessonBody (the same subject→renderer dispatch the archive uses).
+const CORE_SUBJECTS = new Set([
+  'PE & Health', 'Adaptive PE', 'Library & Media', 'Art', 'Music', 'STEM',
+])
 
 function truncate(text, max) {
   if (!text) return ''
   const flat = String(text).replace(/\s+/g, ' ').trim()
   return flat.length <= max ? flat : flat.slice(0, max).trimEnd() + '…'
+}
+
+// Full-width day card for newer modules: a day label + the module's own renderer.
+function FullDayCard({ lesson, dayName, subject }) {
+  return (
+    <div className="rounded-lg border border-ink-800 p-5 print:border-gray-400 print:break-inside-avoid">
+      <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-ink-500 print:text-gray-500">
+        {dayName}
+      </p>
+      <LessonBody subject={subject} lesson={lesson} />
+    </div>
+  )
 }
 
 function DayCard({ lesson, dayName, onUpdate }) {
@@ -181,6 +201,7 @@ export default function SubBinderRenderer({
 }) {
   const [localBinder, setLocalBinder] = useState(binder)
   const [expandedWeeks, setExpandedWeeks] = useState(() => binder.map(() => true))
+  const peShaped = CORE_SUBJECTS.has(subject)
 
   function toggleWeek(i) {
     setExpandedWeeks((prev) => prev.map((v, idx) => (idx === i ? !v : v)))
@@ -249,17 +270,26 @@ export default function SubBinderRenderer({
             </div>
 
             <div
-              className={`grid gap-4 sm:grid-cols-2 lg:grid-cols-3 print:block print:space-y-4 ${
-                isOpen ? '' : 'hidden print:block'
-              }`}
+              className={`print:block print:space-y-4 ${
+                peShaped ? 'grid gap-4 sm:grid-cols-2 lg:grid-cols-3' : 'space-y-6'
+              } ${isOpen ? '' : 'hidden print:block'}`}
             >
               {weekDays.map((lesson, di) => (
-                <DayCard
-                  key={di}
-                  lesson={lesson}
-                  dayName={DAY_NAMES[di]}
-                  onUpdate={onUpdateDay ? (updated) => handleUpdateDay(wi, di, updated) : undefined}
-                />
+                peShaped ? (
+                  <DayCard
+                    key={di}
+                    lesson={lesson}
+                    dayName={DAY_NAMES[di]}
+                    onUpdate={onUpdateDay ? (updated) => handleUpdateDay(wi, di, updated) : undefined}
+                  />
+                ) : (
+                  <FullDayCard
+                    key={di}
+                    lesson={lesson}
+                    dayName={DAY_NAMES[di]}
+                    subject={subject}
+                  />
+                )
               ))}
             </div>
           </div>

@@ -19,9 +19,13 @@ import {
 //   • Test Prep → TESTPREP (assessable + plannable, but not a scheduled class)
 //   • clinical / adult / support (non-evaluative) → PRO: EOY + Portfolio only
 //     (never Assessment Bank / Standards Tracker — no gradable delivered content)
-// Sub Binder + Import & Enhance stay original-6-only: they are structurally
-// coupled to the PE lesson shape (Sub Binder orchestrates the original lesson
-// generators; Import outputs the PE PlanBook schema) and need per-module rework.
+// Sub Binder now supports the content-lesson modules too (via FULL_SB), calling
+// each module's own generator with its real params — see SubBinderGenerator's
+// callNewerDayGenerator. It is NOT offered for the non-evaluative / clinical
+// modules (OT, PT, SLP, TVI, D/HH, School Counselors, Intervention, SST): those
+// serve an IEP caseload or produce single plans, not a day-by-day class sequence
+// a sub runs. Import & Enhance stays original-6-only (outputs the PE PlanBook
+// schema) and still needs per-module rework.
 //
 // Accent class strings MUST be literal (never interpolated) so Tailwind's JIT
 // scanner compiles them. ACCENTS maps each module color to its four literal
@@ -58,6 +62,10 @@ const FULL = ['schedule', 'assessments', 'standards', 'pacing', 'activity', 'eoy
 const LITE = ['schedule', 'pacing', 'activity', 'eoy', 'portfolio']
 const TESTPREP = ['assessments', 'standards', 'pacing', 'activity', 'eoy', 'portfolio']
 const PRO = ['eoy', 'portfolio']
+// FULL + the Long-Term Sub Binder, for content-lesson modules the Sub Binder now
+// orchestrates via a per-module generation path (Theater, Dance, World Languages,
+// JROTC, Elementary Technology, ESL/ELL, Gifted & Talented, Special Education).
+const FULL_SB = [...FULL, 'subbinder']
 
 export const MODULE_HOMES = {
   // ── Content specials (scheduled classes) → ['schedule'] ──────────────────
@@ -66,35 +74,35 @@ export const MODULE_HOMES = {
     tagline: 'NCAS theatre lessons across the four Artistic Processes — K–12',
     generatePath: '/theater/generate', generateTitle: 'Generate a theatre lesson',
     generateDesc: 'A standards-based lesson across Creating, Performing, Responding & Connecting',
-    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL,
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SB,
   },
   dance: {
     subject: 'Dance', moduleLabel: 'Dance', title: 'Dance', Icon: Wind, accent: accent('olive'),
     tagline: 'NCAS dance lessons across the four Artistic Processes — K–12',
     generatePath: '/dance/generate', generateTitle: 'Generate a dance lesson',
     generateDesc: 'A standards-based lesson with the elements of dance & body-safety guidance',
-    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL,
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SB,
   },
   'world-languages': {
     subject: 'World Languages', moduleLabel: 'World Languages', title: 'World Languages', Icon: Globe, accent: accent('jade'),
     tagline: 'ACTFL 5 Cs lessons for any language — Novice to Advanced, K–12',
     generatePath: '/world-languages/generate', generateTitle: 'Generate a language lesson',
     generateDesc: 'The 5 Cs across Interpersonal, Interpretive & Presentational modes',
-    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL,
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SB,
   },
   jrotc: {
     subject: 'JROTC', moduleLabel: 'JROTC', title: 'JROTC', Icon: Award, accent: accent('denim'),
     tagline: 'High-school citizenship & leadership across the LET 1–4 progression',
     generatePath: '/jrotc/generate', generateTitle: 'Generate a JROTC lesson',
     generateDesc: 'Leadership, character, civics, wellness, service learning & career exploration',
-    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL,
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SB,
   },
   'elementary-tech': {
     subject: 'Elementary Technology', moduleLabel: 'Elementary Technology / Computer Lab', title: 'Elementary Technology', Icon: Monitor, accent: accent('saffron'),
     tagline: 'Self-contained K–5 computer-lab lessons — ISTE-aligned',
     generatePath: '/elementary-tech/generate', generateTitle: 'Generate a tech lesson',
     generateDesc: 'Foundational skills, digital citizenship & online safety, creation tools & intro coding',
-    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL,
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SB,
   },
   'school-counselors': {
     subject: 'School Counselors', moduleLabel: 'School Counselors', title: 'School Counselors', Icon: Compass, accent: accent('crimson'),
@@ -108,14 +116,14 @@ export const MODULE_HOMES = {
     tagline: 'Language-development lessons for ESL/ELL teachers — WIDA & SIOP, K–12',
     generatePath: '/esl-specialist/generate', generateTitle: 'Generate an ELD lesson',
     generateDesc: 'WIDA proficiency levels, SIOP objectives, all four language domains',
-    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL,
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SB,
   },
   'gifted-talented': {
     subject: 'Gifted & Talented', moduleLabel: 'Gifted & Talented', title: 'Gifted & Talented', Icon: Sparkles, accent: accent('amber'),
     tagline: 'Depth & Complexity, enrichment vs. acceleration, and 2e support — K–12',
     generatePath: '/gifted-talented/generate', generateTitle: 'Generate a gifted lesson',
     generateDesc: 'Differentiate, enrich, or support 2e & underachieving gifted learners',
-    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL,
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SB,
   },
   'reading-specialists': {
     subject: 'Reading Specialists', moduleLabel: 'Reading Specialists', title: 'Reading Specialists', Icon: BookOpen, accent: accent('sky'),
@@ -136,7 +144,7 @@ export const MODULE_HOMES = {
     tagline: 'Resource & self-contained instructional support ideas — K–12',
     generatePath: '/special-education/generate', generateTitle: 'Generate a lesson',
     generateDesc: 'Multi-tier, functional/life-skills & push-in co-teaching ideas to adapt',
-    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL,
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SB,
   },
   'early-childhood': {
     subject: 'Early Childhood', moduleLabel: 'Early Childhood / Pre-K', title: 'Early Childhood / Pre-K', Icon: Blocks, accent: accent('grass'),

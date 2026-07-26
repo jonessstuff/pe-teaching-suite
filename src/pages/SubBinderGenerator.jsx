@@ -7,6 +7,14 @@ import {
   generateArtLesson,
   generateMusicLesson,
   generateStemLesson,
+  generateTheater,
+  generateDance,
+  generateWorldLanguages,
+  generateJrotc,
+  generateElementaryTech,
+  generateEslSpecialist,
+  generateGiftedTalented,
+  generateSpecialEducation,
 } from '../services/generationService'
 import { createBinder } from '../services/subBinderService'
 import { US_STATES } from '../constants/usStates'
@@ -16,7 +24,46 @@ import UpgradeBanner from '../components/UpgradeBanner'
 
 // ── Constants ──────────────────────────────────────────────────────────────
 
-const SUBJECTS = ['PE & Health', 'Library & Media', 'Art', 'Music', 'STEM', 'Adaptive PE']
+// Original six modules use the PE-shaped generator path (numeric grade + a single
+// `topic` prompt). Grouped separately in the dropdown from the newer modules,
+// which each call their OWN generator with that generator's real required params
+// (see NEWER_SUBJECTS + callNewerDayGenerator). Non-evaluative / clinical modules
+// (OT, PT, SLP, TVI, D/HH, School Counselors, Intervention, SST) are intentionally
+// NOT offered: they serve an IEP caseload or produce single plans, not a day-by-day
+// class sequence a substitute runs — the Sub Binder concept doesn't fit them.
+const CORE_SUBJECTS = ['PE & Health', 'Library & Media', 'Art', 'Music', 'STEM', 'Adaptive PE']
+
+// Newer content-lesson modules → how to collect the grade and which extra
+// required params to gather. grade: 'k12' | 'k5' numeric toggle, or 'none' for
+// HS letLevel-driven modules (JROTC). Each subject key is the canonical
+// lesson_object.subject string (must match LESSON_RENDERERS for correct display).
+const NEWER_SUBJECTS = {
+  'Theater':               { grade: 'k12', extras: [] },
+  'Dance':                 { grade: 'k12', extras: [] },
+  'World Languages':       { grade: 'k12', extras: ['targetLanguage', 'wlLevel'] },
+  'JROTC':                 { grade: 'none', extras: ['letLevel'] },
+  'Elementary Technology': { grade: 'k5',  extras: [] },
+  'ESL/ELL Specialist':    { grade: 'k12', extras: [] },
+  'Gifted & Talented':     { grade: 'k12', extras: [] },
+  'Special Education':     { grade: 'k12', extras: [] },
+}
+
+const SUBJECTS = [...CORE_SUBJECTS, ...Object.keys(NEWER_SUBJECTS)]
+
+// Numeric K-12 grade → the band string the newer generators expect.
+function numToBand(n) {
+  if (n == null) return '9-12'
+  if (n <= 2) return 'k-2'
+  if (n <= 5) return '3-5'
+  if (n <= 8) return '6-8'
+  return '9-12'
+}
+
+// 'k12' | 'k5' | 'none' — which grade input a subject uses.
+function gradeModel(subject) {
+  if (NEWER_SUBJECTS[subject]) return NEWER_SUBJECTS[subject].grade
+  return isK12Subject(subject) ? 'k12' : 'k5'
+}
 
 const WEEK_OPTIONS = [1, 2, 3, 4, 6, 8]
 
@@ -50,6 +97,14 @@ const SUBJECT_FROM_SLUG = {
   'music': 'Music',
   'stem': 'STEM',
   'adaptive-pe': 'Adaptive PE',
+  'theater': 'Theater',
+  'dance': 'Dance',
+  'world-languages': 'World Languages',
+  'jrotc': 'JROTC',
+  'elementary-tech': 'Elementary Technology',
+  'esl-specialist': 'ESL/ELL Specialist',
+  'gifted-talented': 'Gifted & Talented',
+  'special-education': 'Special Education',
 }
 
 // Subject → back-home path for the result toolbar
@@ -60,7 +115,17 @@ const SUBJECT_HOME_PATH = {
   'Music': '/music',
   'STEM': '/stem',
   'Adaptive PE': '/pe-health',
+  'Theater': '/theater',
+  'Dance': '/dance',
+  'World Languages': '/world-languages',
+  'JROTC': '/jrotc',
+  'Elementary Technology': '/elementary-tech',
+  'ESL/ELL Specialist': '/esl-specialist',
+  'Gifted & Talented': '/gifted-talented',
+  'Special Education': '/special-education',
 }
+
+const LET_LEVELS = ['LET 1', 'LET 2', 'LET 3', 'LET 4']
 
 function isK12Subject(subj) {
   return subj === 'PE & Health' || subj === 'Adaptive PE'
@@ -124,6 +189,34 @@ async function callDayGenerator(subject, stemFocusArea, payload) {
   }
 }
 
+// Per-module orchestration for the newer modules. Each calls its OWN generator
+// with that generator's real required params (band string, target language, LET
+// level, mode, …) rather than forcing the PE-shaped payload through. `focus` is
+// the day's instructional topic + sequence position; `notes` carries the
+// substitute framing + class routines. `band` is unused for JROTC (HS/letLevel).
+async function callNewerDayGenerator(subject, { band, focus, notes, duration, extra }) {
+  switch (subject) {
+    case 'Theater':
+      return generateTheater({ gradeBand: band, artisticProcess: 'creating', hsTier: 'proficient', focus, durationMinutes: duration, teacherNotes: notes })
+    case 'Dance':
+      return generateDance({ gradeBand: band, artisticProcess: 'creating', hsTier: 'proficient', focus, durationMinutes: duration, teacherNotes: notes })
+    case 'World Languages':
+      return generateWorldLanguages({ targetLanguage: extra.targetLanguage, gradeBand: band, proficiencyLevel: extra.wlLevel, theme: focus, sessionLengthMinutes: duration, teacherNotes: notes })
+    case 'JROTC':
+      return generateJrotc({ topic: focus, letLevel: extra.letLevel, contentArea: 'leadership_fundamentals', durationMinutes: duration, notes })
+    case 'Elementary Technology':
+      return generateElementaryTech({ topic: focus, gradeBand: band, contentArea: '', durationMinutes: duration, teacherNotes: notes })
+    case 'ESL/ELL Specialist':
+      return generateEslSpecialist({ topic: focus, gradeBand: band, proficiencyLevel: 'developing', contentArea: '', durationMinutes: duration, homeLanguages: '', teacherNotes: notes })
+    case 'Gifted & Talented':
+      return generateGiftedTalented({ mode: 'differentiate', gradeBand: band, topic: focus, contentArea: '', teacherNotes: notes })
+    case 'Special Education':
+      return generateSpecialEducation({ mode: 'multitier', gradeBand: band, topic: focus, contentArea: '', teacherNotes: notes })
+    default:
+      throw new Error(`Sub Binder does not support module: ${subject}`)
+  }
+}
+
 // ── Main component ─────────────────────────────────────────────────────────
 
 export default function SubBinderGenerator() {
@@ -149,6 +242,11 @@ export default function SubBinderGenerator() {
   const [routines, setRoutines] = useState('')
   const [emergencyNotes, setEmergencyNotes] = useState('')
 
+  // Per-module required params (only some modules use these — see NEWER_SUBJECTS).
+  const [targetLanguage, setTargetLanguage] = useState('') // World Languages
+  const [wlLevel, setWlLevel] = useState('novice')         // World Languages proficiency
+  const [letLevel, setLetLevel] = useState('LET 1')        // JROTC LET level
+
   // Generation state
   const [view, setView] = useState('form') // 'form' | 'result'
   const [loading, setLoading] = useState(false)
@@ -163,18 +261,27 @@ export default function SubBinderGenerator() {
   const [saveStatus, setSaveStatus] = useState('idle') // idle | saving | saved | error
 
   function handleSubjectChange(newSubject) {
-    const wasK12 = isK12Subject(subject)
-    const nowK12 = isK12Subject(newSubject)
+    // Reset the grade selection whenever the grade INPUT model changes (K-12 ↔
+    // K-5 ↔ none), so a stale grade from the previous subject can't leak through.
+    if (gradeModel(subject) !== gradeModel(newSubject)) setGradeBands(null)
     setSubject(newSubject)
-    if (wasK12 !== nowK12) setGradeBands(null)
   }
 
   async function handleGenerate(e) {
     e.preventDefault()
-    if (gradeBands === null) {
+    const model = gradeModel(subject)
+    if (model !== 'none' && gradeBands === null) {
       setError('Select a grade.')
       return
     }
+    if (subject === 'World Languages' && !targetLanguage.trim()) {
+      setError('Enter the target language (e.g. Spanish).')
+      return
+    }
+
+    const isNewer = !!NEWER_SUBJECTS[subject]
+    const band = numToBand(gradeBands)
+    const extra = { targetLanguage: targetLanguage.trim(), wlLevel, letLevel }
 
     setLoading(true)
     setError(null)
@@ -217,13 +324,40 @@ export default function SubBinderGenerator() {
             topicLines.push('', 'Important notes:', emergencyNotes.trim())
           }
 
-          const lesson = await callDayGenerator(subject, stemFocusArea, {
-            gradeBands: [gradeBands],
-            topic: topicLines.join('\n'),
-            classSize,
-            durationMinutes: duration,
-            state,
-          })
+          let lesson
+          if (isNewer) {
+            // Newer modules: their generators take a topic/focus + separate notes,
+            // so split the instructional content from the substitute framing rather
+            // than cramming everything into one PE-style `topic` blob.
+            const focusLines = [
+              topics.trim() || '(No specific topics given — generate an age-appropriate lesson for this subject.)',
+              '',
+              `This is day ${week * 5 + day + 1} of ${weekCount * 5} in a planned sequence (Week ${weekNum}, ${dayName}). Build progressively; do not repeat content already covered.`,
+            ]
+            if (priorContext) {
+              focusLines.push('', 'Already taught (do not repeat — build on it):', priorContext)
+            }
+            const notesLines = [
+              `This lesson is for a LONG-TERM SUBSTITUTE covering the class for ${weekCount} week${weekCount !== 1 ? 's' : ''}. Keep it self-contained and easy for a non-specialist substitute to run.`,
+            ]
+            if (routines.trim()) notesLines.push('', 'Class routines & expectations:', routines.trim())
+            if (emergencyNotes.trim()) notesLines.push('', 'Important notes:', emergencyNotes.trim())
+            lesson = await callNewerDayGenerator(subject, {
+              band,
+              focus: focusLines.join('\n'),
+              notes: notesLines.join('\n'),
+              duration,
+              extra,
+            })
+          } else {
+            lesson = await callDayGenerator(subject, stemFocusArea, {
+              gradeBands: [gradeBands],
+              topic: topicLines.join('\n'),
+              classSize,
+              durationMinutes: duration,
+              state,
+            })
+          }
 
           allDays.push(lesson)
           weekDays.push(lesson)
@@ -341,7 +475,8 @@ export default function SubBinderGenerator() {
 
   // ── Form view ────────────────────────────────────────────────────────────
 
-  const gradeOptions = isK12Subject(subject) ? K12_GRADES : K5_GRADES
+  const currentGradeModel = gradeModel(subject)
+  const gradeOptions = currentGradeModel === 'k12' ? K12_GRADES : K5_GRADES
   const totalDays = weekCount * 5
 
   return (
@@ -375,6 +510,10 @@ export default function SubBinderGenerator() {
           Fill in your class details and topics to cover. PlansK12 generates a complete daily
           plan for every week, ready to hand to your substitute.
         </p>
+        <p className="mt-3 rounded-lg border border-ink-800 bg-ink-900/40 px-3 py-2 text-xs text-ink-400">
+          Out for just a day? This builds a full week or more. For a single-day absence,
+          generate one lesson instead and use its <span className="font-medium text-ink-300">Generate sub plan</span> button.
+        </p>
       </div>
 
       <form onSubmit={handleGenerate} className="space-y-6">
@@ -393,9 +532,16 @@ export default function SubBinderGenerator() {
               onChange={(e) => handleSubjectChange(e.target.value)}
               className="input-field"
             >
-              {SUBJECTS.map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
+              <optgroup label="Core specials">
+                {CORE_SUBJECTS.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </optgroup>
+              <optgroup label="More modules">
+                {Object.keys(NEWER_SUBJECTS).map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </optgroup>
             </select>
           </div>
 
@@ -418,6 +564,60 @@ export default function SubBinderGenerator() {
                   </button>
                 ))}
               </div>
+            </div>
+          )}
+
+          {subject === 'World Languages' && (
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="mb-1 block text-sm text-ink-300" htmlFor="wl-language">
+                  Target language
+                </label>
+                <input
+                  id="wl-language"
+                  type="text"
+                  value={targetLanguage}
+                  onChange={(e) => setTargetLanguage(e.target.value)}
+                  placeholder="e.g. Spanish, French, Mandarin"
+                  className="input-field"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm text-ink-300" htmlFor="wl-level">
+                  Proficiency level
+                </label>
+                <select
+                  id="wl-level"
+                  value={wlLevel}
+                  onChange={(e) => setWlLevel(e.target.value)}
+                  className="input-field"
+                >
+                  <option value="novice">Novice</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="advanced">Advanced</option>
+                </select>
+              </div>
+            </div>
+          )}
+
+          {subject === 'JROTC' && (
+            <div>
+              <label className="mb-1 block text-sm text-ink-300" htmlFor="let-level">
+                LET level
+              </label>
+              <select
+                id="let-level"
+                value={letLevel}
+                onChange={(e) => setLetLevel(e.target.value)}
+                className="input-field"
+              >
+                {LET_LEVELS.map((l) => (
+                  <option key={l} value={l}>{l}</option>
+                ))}
+              </select>
+              <p className="mt-1 text-xs text-ink-500">
+                JROTC is high-school only — the LET level sets the grade span.
+              </p>
             </div>
           )}
         </div>
@@ -484,18 +684,20 @@ export default function SubBinderGenerator() {
         <div className="card p-6 space-y-5">
           <h2 className="text-sm font-semibold text-ink-200">Class setup</h2>
 
-          <div>
-            <label className="mb-2 block text-sm text-ink-300">Grade</label>
-            <GradeToggle
-              options={gradeOptions}
-              selected={gradeBands}
-              onChange={setGradeBands}
-              accent="bg-amber-500"
-            />
-            {gradeBands === null && (
-              <p className="mt-1 text-xs text-red-400">Select a grade.</p>
-            )}
-          </div>
+          {currentGradeModel !== 'none' && (
+            <div>
+              <label className="mb-2 block text-sm text-ink-300">Grade</label>
+              <GradeToggle
+                options={gradeOptions}
+                selected={gradeBands}
+                onChange={setGradeBands}
+                accent="bg-amber-500"
+              />
+              {gradeBands === null && (
+                <p className="mt-1 text-xs text-red-400">Select a grade.</p>
+              )}
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -591,7 +793,7 @@ export default function SubBinderGenerator() {
 
         <button
           type="submit"
-          disabled={loading || gradeBands === null}
+          disabled={loading || (currentGradeModel !== 'none' && gradeBands === null)}
           className="btn-primary w-full justify-center gap-2 py-3 text-base disabled:opacity-50"
         >
           {loading ? (

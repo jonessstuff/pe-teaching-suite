@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Sparkles, BookOpen, CalendarDays, BookCheck, BarChart3, CalendarRange, PartyPopper, ScrollText, FolderOpen, ArrowRight, ArrowLeft, Loader2 } from 'lucide-react'
+import { Sparkles, BookOpen, CalendarDays, BookCheck, BarChart3, CalendarRange, PartyPopper, ScrollText, FolderOpen, BookMarked, ArrowRight, ArrowLeft, Loader2 } from 'lucide-react'
 import { listLessons } from '../../services/lessonsService'
 import LessonCard from '../lesson/LessonCard'
 
@@ -40,6 +40,10 @@ const UTILITY_CARDS = {
   portfolio: {
     Icon: FolderOpen, title: 'Portfolio Builder', desc: 'Your teaching philosophy & portfolio',
     to: '/portfolio', well: 'bg-rose-500/15', text: 'text-rose-400', hover: 'hover:border-rose-500/40', arrow: 'group-hover:text-rose-400',
+  },
+  subbinder: {
+    Icon: BookMarked, title: 'Long-Term Sub Binder', desc: 'Week-by-week plans for an extended absence',
+    to: '/sub-binder', well: 'bg-amber-500/15', text: 'text-amber-400', hover: 'hover:border-amber-500/40', arrow: 'group-hover:text-amber-400',
   },
 }
 
