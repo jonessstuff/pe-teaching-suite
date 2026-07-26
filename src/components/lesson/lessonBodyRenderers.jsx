@@ -11,6 +11,7 @@
 //
 // Every lesson renderer takes a uniform `{ lesson }` prop, so dispatch is a
 // simple lookup. Unknown/base PE subjects fall back to PlanBookRenderer.
+import { createElement } from 'react'
 import PlanBookRenderer from '../renderers/PlanBookRenderer'
 import CtePlanRenderer from '../renderers/CtePlanRenderer'
 import ArtPlanRenderer from '../renderers/ArtPlanRenderer'
@@ -45,7 +46,7 @@ import InstructionalCoachingRenderer from '../renderers/InstructionalCoachingRen
 
 // NOTE: Adaptive PE is intentionally NOT here — LessonDetail special-cases it
 // (it also suppresses the secondary-tools panel), so it never reaches this map.
-export const LESSON_RENDERERS = {
+const LESSON_RENDERERS = {
   // Full-lesson specials (their generators use these; the archive now matches)
   'CTE': CtePlanRenderer,
   'Art': ArtPlanRenderer,
@@ -100,6 +101,8 @@ function resolveRenderer(subject, lesson) {
  * falling back to PlanBookRenderer for base PE subjects (or any unmapped one).
  */
 export default function LessonBody({ subject, lesson }) {
-  const Renderer = resolveRenderer(subject, lesson)
-  return <Renderer lesson={lesson} />
+  // createElement (not JSX <Renderer/>) because the component is chosen
+  // dynamically from a stable module-level map — the react-hooks
+  // static-components rule flags a capitalized component const used as JSX.
+  return createElement(resolveRenderer(subject, lesson), { lesson })
 }

@@ -4,9 +4,8 @@ import { Loader2, AlertCircle } from 'lucide-react'
 import { getSharedLesson } from '../services/sharingService'
 import { supabase } from '../lib/supabaseClient'
 import { WATERMARK_TEXT } from '../services/trialService'
-import PlanBookRenderer from '../components/renderers/PlanBookRenderer'
-import CtePlanRenderer from '../components/renderers/CtePlanRenderer'
 import AdaptivePERenderer from '../components/renderers/AdaptivePERenderer'
+import LessonBody from '../components/lesson/lessonBodyRenderers'
 import SharedLessonPreview from '../components/SharedLessonPreview'
 
 // Tiled, faint diagonal watermark (reuses WATERMARK_TEXT) laid over the gated
@@ -97,10 +96,8 @@ export default function SharedLesson() {
             <div className="rounded-xl border border-ink-200 bg-white p-6 print:border-gray-300">
               {lesson.lesson_object?.subject === 'Adaptive PE' ? (
                 <AdaptivePERenderer lesson={lesson.lesson_object} />
-              ) : lesson.lesson_object?.subject === 'CTE' ? (
-                <CtePlanRenderer lesson={lesson.lesson_object} />
               ) : (
-                <PlanBookRenderer lesson={lesson.lesson_object} />
+                <LessonBody subject={lesson.lesson_object?.subject} lesson={lesson.lesson_object} />
               )}
             </div>
 
