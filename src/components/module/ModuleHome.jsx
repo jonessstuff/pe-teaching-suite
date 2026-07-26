@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Sparkles, BookOpen, CalendarDays, BookCheck, BarChart3, ArrowRight, ArrowLeft, Loader2 } from 'lucide-react'
+import { Sparkles, BookOpen, CalendarDays, BookCheck, BarChart3, CalendarRange, PartyPopper, ScrollText, FolderOpen, ArrowRight, ArrowLeft, Loader2 } from 'lucide-react'
 import { listLessons } from '../../services/lessonsService'
 import LessonCard from '../lesson/LessonCard'
 
@@ -24,6 +24,22 @@ const UTILITY_CARDS = {
   standards: {
     Icon: BarChart3, title: 'Standards Tracker', desc: "See which standards you've covered",
     to: '/standards-tracker', well: 'bg-violet-500/15', text: 'text-violet-400', hover: 'hover:border-violet-500/40', arrow: 'group-hover:text-violet-400',
+  },
+  pacing: {
+    Icon: CalendarRange, title: 'Pacing Guide', desc: 'Full-year scope & sequence',
+    to: '/pacing-guide', well: 'bg-teal-500/15', text: 'text-teal-400', hover: 'hover:border-teal-500/40', arrow: 'group-hover:text-teal-400',
+  },
+  activity: {
+    Icon: PartyPopper, title: 'Activity Bank', desc: 'Low-prep activities for any occasion',
+    to: '/activity-bank', well: 'bg-yellow-500/15', text: 'text-yellow-400', hover: 'hover:border-yellow-500/40', arrow: 'group-hover:text-yellow-400',
+  },
+  eoy: {
+    Icon: ScrollText, title: 'EOY Narrative', desc: 'Professional end-of-year summary',
+    to: '/eoy-narrative', well: 'bg-sky-500/15', text: 'text-sky-400', hover: 'hover:border-sky-500/40', arrow: 'group-hover:text-sky-400',
+  },
+  portfolio: {
+    Icon: FolderOpen, title: 'Portfolio Builder', desc: 'Your teaching philosophy & portfolio',
+    to: '/portfolio', well: 'bg-rose-500/15', text: 'text-rose-400', hover: 'hover:border-rose-500/40', arrow: 'group-hover:text-rose-400',
   },
 }
 

@@ -40,6 +40,11 @@ EXIT-TICKET-SPECIFIC: Frame in ENGLISH — a quick check tied to the lesson's AC
   warmup: {
     [WL]: `WORLD LANGUAGES — Provide LANGUAGE-CLASS bell-ringers / openers (NOT PE warm-ups): e.g. a greetings circle, a quick vocabulary-recall game, a "word of the day", or a describe-the-picture prompt. Frame in ENGLISH; any target-language content is short vocab/phrases with glosses. No equipment or fitness framing.`,
   },
+  activityBank: {
+    [JROTC]: `JROTC — NON-MILITARY BOUNDARY: Activities stay in citizenship, leadership, character, wellness, and life-skills territory. NEVER involve weapons, marksmanship, combat, or tactical content, and do NOT use military rank/drill framing. Drill & ceremony, if referenced at all, is precision teamwork & tradition ONLY (like a marching band or color guard).`,
+    [WL]: `WORLD LANGUAGES — ${WL_ACCURACY}
+Frame every activity in ENGLISH; any target-language content is short vocab/phrases with English glosses only — never a translation or extended-production task.`,
+  },
 }
 
 /** Returns the directive for a tool+subject, or '' if there is none. */

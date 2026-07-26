@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
+import { ASSESSABLE_SUBJECTS } from '../constants/toolSubjects'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, BarChart2, Loader2 } from 'lucide-react'
 import { listLessons } from '../services/lessonsService'
 
-const SUBJECTS = ['All Subjects', 'PE & Health', 'Adaptive PE', 'Art', 'Library & Media', 'Music', 'STEM']
+const SUBJECTS = ['All Subjects', ...ASSESSABLE_SUBJECTS]
 const GRADES = ['All Grades', 'K', 1, 2, 3, 4, 5, 6, 7, 8]
 
 function frequencyClass(count) {
@@ -42,7 +43,21 @@ export default function StandardsTracker() {
     const lo = typeof lesson.lesson_object === 'string'
       ? (() => { try { return JSON.parse(lesson.lesson_object) } catch { return null } })()
       : lesson.lesson_object
-    const lessonStandards = lo?.standards
+    let lessonStandards = lo?.standards
+    if (!Array.isArray(lessonStandards) || lessonStandards.length === 0) {
+      // Newer specialist modules use standards_alignment: [{ framework, text }]
+      // (no per-grade code). Map each to a tracker entry keyed by framework/text
+      // and attributed to the lesson's grade band(s).
+      const alignment = lo?.standards_alignment
+      const grades = Array.isArray(lo?.grade_bands) && lo.grade_bands.length ? lo.grade_bands : [0]
+      lessonStandards = Array.isArray(alignment)
+        ? alignment.flatMap((a) => {
+            if (!a) return []
+            const code = a.code ?? a.framework ?? (a.text ?? '').slice(0, 28)
+            return grades.map((g) => ({ grade: g, code, text: a.text ?? a.framework ?? '' }))
+          })
+        : []
+    }
     if (!Array.isArray(lessonStandards)) continue
     for (const s of lessonStandards) {
       if (!s || s.code == null) continue

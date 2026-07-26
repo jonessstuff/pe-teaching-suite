@@ -1,6 +1,8 @@
+import { toolDirective } from "./toolSubjectDirectives.js"
+
 const OCCASION_CONTEXT = {
   'Before holiday break': 'Students are excited and energy is high. Activities should be fun and celebratory while still engaging. Low academic pressure.',
-  'Emergency sub day': 'A substitute teacher with no PE background is running the class. Activities must be extremely simple to explain, require minimal equipment, and have built-in management structures.',
+  'Emergency sub day': 'A substitute teacher with no background in this subject is running the class. Activities must be extremely simple to explain, require minimal materials, and have built-in management structures.',
   'Rainy day (indoor)': 'Class is moved indoors, likely to a gym, hallway, or classroom. Activities must work in a smaller or non-traditional space.',
   'Early release': 'Shortened class period — likely 15-30 minutes. Activities should be complete and satisfying in less time.',
   'Testing week filler': 'Students are mentally tired from standardized testing. Activities should be low-stakes, stress-relieving, and enjoyable — emphasize fun over skill development.',
@@ -29,7 +31,7 @@ Return ONLY a single JSON object with this exact schema:
 Rules:
 - Generate exactly 5 activities.
 - Each activity takes approximately ${duration} minutes total (including transition).
-- Equipment must be minimal — common gym equipment only (cones, balls, hula hoops, jump ropes, poly spots). Prefer 0-2 items per activity.
+- Equipment/materials must be minimal and appropriate to THIS subject — for PE that means cones/balls/poly spots; for other subjects use only what that class normally has on hand (paper, whiteboard, the classroom's own supplies). Prefer 0-2 common items per activity, or none. Do NOT force gym equipment onto a non-PE subject.
 - "setup_mins": realistic setup time in minutes (0-3 for sub-friendly activities).
 - "description": 4-5 sentences. Include how to explain it to students, how to start/stop, safety considerations, and how to manage the space. Written so a sub can read it cold and run it immediately.
 - "variations": 1-2 sentences on how to make it easier or harder.
@@ -45,5 +47,5 @@ Context: ${occasionContext}
 
 Return the JSON object now.`;
 
-  return { system, user };
+  return { system, user: user + toolDirective("activityBank", subject) };
 }

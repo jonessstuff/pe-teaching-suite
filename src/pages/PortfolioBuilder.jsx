@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { ALL_TEACHER_SUBJECTS } from '../constants/toolSubjects'
 import { Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Briefcase, Loader2, Trash2, Plus, Printer, Wand2, Check, Save } from 'lucide-react'
 import { generatePortfolio } from '../services/generationService'
@@ -6,7 +7,7 @@ import { createPortfolio, updatePortfolio, listPortfolios, getPortfolio, deleteP
 import { listLessons } from '../services/lessonsService'
 import { useTrial } from '../context/TrialContext'
 
-const SUBJECTS = ['PE & Health', 'Adaptive PE', 'Art', 'Library & Media', 'Music', 'STEM']
+const SUBJECTS = ALL_TEACHER_SUBJECTS
 
 function SectionHeader({ label }) {
   return <h3 className="text-xs font-semibold uppercase tracking-widest text-ink-500 mb-3">{label}</h3>

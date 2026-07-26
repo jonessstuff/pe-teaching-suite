@@ -8,18 +8,20 @@ import {
 //
 // `subject` matches the lesson_object.subject a module writes (for the recent
 // list). `moduleLabel` matches the MODULES label in constants/modules.js (for
-// the Browse filter deep-link). `cards` lists which UTILITY cards to show beyond
-// the always-present Generate + Browse. HONESTY RULE: only surface a card whose
-// underlying tool genuinely supports this subject TODAY. Right now that is just
-// `schedule` (uses the full SUBJECT_AREAS). Assessment Bank / Standards Tracker
-// (6-scoped filter dropdowns) and Sub Binder / Pacing Guide / Import / EOY /
-// Activity Bank (6-scoped subject pickers) are deferred to Phase 3, which
-// expands those tools to all subjects — only then do their cards get added here.
-//
-// Tiered card rule:
-//   • content specials (scheduled classes) → ['schedule']
-//   • clinical / adult / support           → []  (Generate + Browse only —
-//     caseload ≠ class periods for clinical; no class for adult/support)
+// the Browse filter deep-link). `cards` picks a set of UTILITY cards (see the
+// FULL/LITE/TESTPREP/PRO constants below) shown beyond the always-present
+// Generate + Browse. Phase 3 expanded the shared tools to all subjects, so the
+// card sets now respect the content-delivery vs. non-evaluative gating:
+//   • content-delivery lessons (gradable) → FULL: schedule, Assessment Bank,
+//     Standards Tracker, Pacing Guide, Activity Bank, EOY, Portfolio
+//   • lesson/activity but non-gradable (School Counselors, Early Childhood,
+//     After-School Clubs) → LITE: schedule, Pacing, Activity, EOY, Portfolio
+//   • Test Prep → TESTPREP (assessable + plannable, but not a scheduled class)
+//   • clinical / adult / support (non-evaluative) → PRO: EOY + Portfolio only
+//     (never Assessment Bank / Standards Tracker — no gradable delivered content)
+// Sub Binder + Import & Enhance stay original-6-only: they are structurally
+// coupled to the PE lesson shape (Sub Binder orchestrates the original lesson
+// generators; Import outputs the PE PlanBook schema) and need per-module rework.
 //
 // Accent class strings MUST be literal (never interpolated) so Tailwind's JIT
 // scanner compiles them. ACCENTS maps each module color to its four literal
@@ -51,6 +53,12 @@ const ACCENTS = {
 }
 const accent = (c) => ACCENTS[c]
 
+// Phase 3 card sets — expanded now that the shared tools support all subjects.
+const FULL = ['schedule', 'assessments', 'standards', 'pacing', 'activity', 'eoy', 'portfolio']
+const LITE = ['schedule', 'pacing', 'activity', 'eoy', 'portfolio']
+const TESTPREP = ['assessments', 'standards', 'pacing', 'activity', 'eoy', 'portfolio']
+const PRO = ['eoy', 'portfolio']
+
 export const MODULE_HOMES = {
   // ── Content specials (scheduled classes) → ['schedule'] ──────────────────
   theater: {
@@ -58,91 +66,91 @@ export const MODULE_HOMES = {
     tagline: 'NCCAS theatre lessons across the four Artistic Processes — K–12',
     generatePath: '/theater/generate', generateTitle: 'Generate a theatre lesson',
     generateDesc: 'A standards-based lesson across Creating, Performing, Responding & Connecting',
-    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: ['schedule'],
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL,
   },
   dance: {
     subject: 'Dance', moduleLabel: 'Dance', title: 'Dance', Icon: Wind, accent: accent('olive'),
     tagline: 'NCCAS dance lessons across the four Artistic Processes — K–12',
     generatePath: '/dance/generate', generateTitle: 'Generate a dance lesson',
     generateDesc: 'A standards-based lesson with the elements of dance & body-safety guidance',
-    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: ['schedule'],
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL,
   },
   'world-languages': {
     subject: 'World Languages', moduleLabel: 'World Languages', title: 'World Languages', Icon: Globe, accent: accent('jade'),
     tagline: 'ACTFL 5 Cs lessons for any language — Novice to Advanced, K–12',
     generatePath: '/world-languages/generate', generateTitle: 'Generate a language lesson',
     generateDesc: 'The 5 Cs across Interpersonal, Interpretive & Presentational modes',
-    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: ['schedule'],
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL,
   },
   jrotc: {
     subject: 'JROTC', moduleLabel: 'JROTC', title: 'JROTC', Icon: Award, accent: accent('denim'),
     tagline: 'High-school citizenship & leadership across the LET 1–4 progression',
     generatePath: '/jrotc/generate', generateTitle: 'Generate a JROTC lesson',
     generateDesc: 'Leadership, character, civics, wellness, service learning & career exploration',
-    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: ['schedule'],
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL,
   },
   'elementary-tech': {
     subject: 'Elementary Technology', moduleLabel: 'Elementary Technology / Computer Lab', title: 'Elementary Technology', Icon: Monitor, accent: accent('saffron'),
     tagline: 'Self-contained K–5 computer-lab lessons — ISTE-aligned',
     generatePath: '/elementary-tech/generate', generateTitle: 'Generate a tech lesson',
     generateDesc: 'Foundational skills, digital citizenship & online safety, creation tools & intro coding',
-    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: ['schedule'],
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL,
   },
   'school-counselors': {
     subject: 'School Counselors', moduleLabel: 'School Counselors', title: 'School Counselors', Icon: Compass, accent: accent('crimson'),
     tagline: 'Tier 1 whole-class classroom guidance — ASCA-aligned, K–12',
     generatePath: '/school-counselors/generate', generateTitle: 'Generate a guidance lesson',
     generateDesc: 'Classroom guidance across academic, career & social/emotional development',
-    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: ['schedule'],
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: LITE,
   },
   'esl-specialist': {
     subject: 'ESL/ELL Specialist', moduleLabel: 'ESL/ELL Specialist', title: 'ESL/ELL Specialist', Icon: Languages, accent: accent('fuchsia'),
     tagline: 'Language-development lessons for ESL/ELL teachers — WIDA & SIOP, K–12',
     generatePath: '/esl-specialist/generate', generateTitle: 'Generate an ELD lesson',
     generateDesc: 'WIDA proficiency levels, SIOP objectives, all four language domains',
-    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: ['schedule'],
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL,
   },
   'gifted-talented': {
     subject: 'Gifted & Talented', moduleLabel: 'Gifted & Talented', title: 'Gifted & Talented', Icon: Sparkles, accent: accent('amber'),
     tagline: 'Depth & Complexity, enrichment vs. acceleration, and 2e support — K–12',
     generatePath: '/gifted-talented/generate', generateTitle: 'Generate a gifted lesson',
     generateDesc: 'Differentiate, enrich, or support 2e & underachieving gifted learners',
-    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: ['schedule'],
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL,
   },
   'reading-specialists': {
     subject: 'Reading Specialists', moduleLabel: 'Reading Specialists', title: 'Reading Specialists', Icon: BookOpen, accent: accent('sky'),
     tagline: 'Explicit, systematic Structured Literacy interventions — IDA-aligned, K–12',
     generatePath: '/reading-specialists/generate', generateTitle: 'Generate a reading intervention',
     generateDesc: 'Phonics, fluency, comprehension & more, with dyslexia-indicator flagging',
-    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: ['schedule'],
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL,
   },
   'math-specialists': {
     subject: 'Math Specialists', moduleLabel: 'Math Specialists', title: 'Math Specialists', Icon: Calculator, accent: accent('lime'),
     tagline: 'Concept-first math interventions & differentiation — NCTM-aligned, K–12',
     generatePath: '/math-specialists/generate', generateTitle: 'Generate a math intervention',
     generateDesc: 'CRA sequencing, Number Talks & NCTM process standards',
-    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: ['schedule'],
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL,
   },
   'special-education': {
     subject: 'Special Education', moduleLabel: 'Special Education', title: 'Special Education', Icon: HeartHandshake, accent: accent('violet'),
     tagline: 'Resource & self-contained instructional support ideas — K–12',
     generatePath: '/special-education/generate', generateTitle: 'Generate a lesson',
     generateDesc: 'Multi-tier, functional/life-skills & push-in co-teaching ideas to adapt',
-    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: ['schedule'],
+    browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL,
   },
   'early-childhood': {
     subject: 'Early Childhood', moduleLabel: 'Early Childhood / Pre-K', title: 'Early Childhood / Pre-K', Icon: Blocks, accent: accent('grass'),
     tagline: 'Play-based learning centers & guided-play invitations — NAEYC DAP',
     generatePath: '/early-childhood/generate', generateTitle: 'Generate a play-based plan',
     generateDesc: 'Learning centers, circle time & whole-child domains (toddlers–TK)',
-    browseTitle: 'Browse my plans', browseNoun: 'plan', cards: ['schedule'],
+    browseTitle: 'Browse my plans', browseNoun: 'plan', cards: LITE,
   },
   'after-school-clubs': {
     subject: 'After-School Clubs', moduleLabel: 'After-School Clubs', title: 'After-School Clubs', Icon: PartyPopper, accent: accent('coral'),
     tagline: 'Ready-to-run club session plans across 68 club types — K–12',
     generatePath: '/after-school-clubs/generate', generateTitle: 'Generate a session plan',
     generateDesc: 'Low-prep club sessions runnable by a first-time sponsor',
-    browseTitle: 'Browse my session plans', browseNoun: 'session plan', cards: ['schedule'],
+    browseTitle: 'Browse my session plans', browseNoun: 'session plan', cards: LITE,
   },
 
   // ── Clinical / related services → [] (Generate + Browse, relabeled) ──────
@@ -151,35 +159,35 @@ export const MODULE_HOMES = {
     tagline: 'School-based OT activity ideas — OTPF-4 / AOTA-aligned (K–12)',
     generatePath: '/ot/generate', generateTitle: 'Generate an activity plan',
     generateDesc: 'Fine-motor, sensory, ADLs, visual-motor & vocational activity ideas',
-    browseTitle: 'Browse my activity plans', browseNoun: 'activity plan', cards: [],
+    browseTitle: 'Browse my activity plans', browseNoun: 'activity plan', cards: PRO,
   },
   pt: {
     subject: 'Physical Therapists', moduleLabel: 'Physical Therapists', title: 'Physical Therapists', Icon: PersonStanding, accent: accent('zinc'),
     tagline: 'School-based PT activity ideas — APTA / APTA Pediatric-aligned (K–12)',
     generatePath: '/pt/generate', generateTitle: 'Generate an activity plan',
     generateDesc: 'Gross-motor, mobility & positioning, adaptive-PE crossover & functional mobility',
-    browseTitle: 'Browse my activity plans', browseNoun: 'activity plan', cards: [],
+    browseTitle: 'Browse my activity plans', browseNoun: 'activity plan', cards: PRO,
   },
   slp: {
     subject: 'Speech-Language Pathologists', moduleLabel: 'Speech-Language Pathologists', title: 'Speech-Language Pathologists', Icon: Speech, accent: accent('bronze'),
     tagline: 'SLP session activity ideas — ASHA-aligned (K–12)',
     generatePath: '/slp/generate', generateTitle: 'Generate an activity plan',
     generateDesc: 'Articulation, language, fluency, social communication & AAC',
-    browseTitle: 'Browse my activity plans', browseNoun: 'activity plan', cards: [],
+    browseTitle: 'Browse my activity plans', browseNoun: 'activity plan', cards: PRO,
   },
   tvi: {
     subject: 'Teacher of the Visually Impaired', moduleLabel: 'Teacher of the Visually Impaired', title: 'Teacher of the Visually Impaired', Icon: ScanEye, accent: accent('cobalt'),
     tagline: 'Expanded Core Curriculum activity ideas — CEC/DVIDB-aligned (K–12)',
     generatePath: '/tvi/generate', generateTitle: 'Generate an activity plan',
     generateDesc: 'Braille & compensatory access, assistive tech, independent living & more',
-    browseTitle: 'Browse my activity plans', browseNoun: 'activity plan', cards: [],
+    browseTitle: 'Browse my activity plans', browseNoun: 'activity plan', cards: PRO,
   },
   dhh: {
     subject: 'Teacher of the Deaf & Hard of Hearing', moduleLabel: 'Teacher of the Deaf & Hard of Hearing', title: 'Teacher of the Deaf & Hard of Hearing', Icon: Ear, accent: accent('magenta'),
     tagline: 'ECC-DHH activity ideas — CEC/CED-aligned (K–12)',
     generatePath: '/dhh/generate', generateTitle: 'Generate an activity plan',
     generateDesc: 'Communication, self-advocacy, social-emotional, hearing technology & transition',
-    browseTitle: 'Browse my activity plans', browseNoun: 'activity plan', cards: [],
+    browseTitle: 'Browse my activity plans', browseNoun: 'activity plan', cards: PRO,
   },
 
   // ── Adult-facing / support → [] (Generate + Browse, relabeled) ───────────
@@ -188,34 +196,34 @@ export const MODULE_HOMES = {
     tagline: 'Learning Forward-aligned professional learning for building leaders',
     generatePath: '/staff-pd/generate', generateTitle: 'Generate a PD plan',
     generateDesc: 'PD sessions, mentoring, walkthroughs, PLC protocols & communication',
-    browseTitle: 'Browse my plans', browseNoun: 'plan', cards: [],
+    browseTitle: 'Browse my plans', browseNoun: 'plan', cards: PRO,
   },
   'instructional-coaching': {
     subject: 'Instructional Coaching', moduleLabel: 'Instructional Coaching', title: 'Instructional Coaching', Icon: Handshake, accent: accent('mocha'),
     tagline: 'Non-evaluative, partnership-based coaching — Jim Knight’s Impact Cycle',
     generatePath: '/instructional-coaching/generate', generateTitle: 'Generate a coaching resource',
     generateDesc: 'Conversation frameworks, teacher-driven observation tools & data protocols',
-    browseTitle: 'Browse my resources', browseNoun: 'resource', cards: [],
+    browseTitle: 'Browse my resources', browseNoun: 'resource', cards: PRO,
   },
   intervention: {
     subject: 'Intervention Planning', moduleLabel: 'Intervention Planning', title: 'Intervention Planning', Icon: Layers, accent: accent('stone'),
     tagline: 'MTSS/RTI tiered intervention ideas with progress monitoring',
     generatePath: '/intervention/generate', generateTitle: 'Generate an intervention plan',
     generateDesc: 'Tiered Reading, Math or Behavior support from a described concern',
-    browseTitle: 'Browse my plans', browseNoun: 'plan', cards: [],
+    browseTitle: 'Browse my plans', browseNoun: 'plan', cards: PRO,
   },
   'student-support-activities': {
     subject: 'Student Support Team Activities', moduleLabel: 'Student Support Team Activities', title: 'Student Support Team Activities', Icon: Users, accent: accent('plum'),
     tagline: 'Small-group SEL & behavioral activities for support-team roles',
     generatePath: '/student-support-activities/generate', generateTitle: 'Generate an activity',
     generateDesc: 'Role-tailored, activity-structure-only small-group SEL & behavioral plans',
-    browseTitle: 'Browse my activities', browseNoun: 'activity', cards: [],
+    browseTitle: 'Browse my activities', browseNoun: 'activity', cards: PRO,
   },
   'test-prep': {
     subject: 'Test Prep', moduleLabel: 'Test Prep', title: 'Test Prep', Icon: Target, accent: accent('steel'),
     tagline: 'Original SAT/ACT & state-assessment practice — tutoring-style sessions',
     generatePath: '/test-prep/generate', generateTitle: 'Generate a test-prep session',
     generateDesc: 'Original practice questions, strategies, content review & test-day prep',
-    browseTitle: 'Browse my sessions', browseNoun: 'session', cards: [],
+    browseTitle: 'Browse my sessions', browseNoun: 'session', cards: TESTPREP,
   },
 }

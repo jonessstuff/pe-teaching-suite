@@ -1,9 +1,10 @@
 import { useState } from 'react'
+import { PLANNING_SUBJECTS } from '../constants/toolSubjects'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, PartyPopper, Loader2, Copy, Check } from 'lucide-react'
 import { generateActivityBank } from '../services/generationService'
 
-const SUBJECTS = ['PE & Health', 'Adaptive PE', 'Art', 'Library & Media', 'Music', 'STEM']
+const SUBJECTS = PLANNING_SUBJECTS
 const GRADES = [
   { label: 'K', value: 0 }, { label: '1', value: 1 }, { label: '2', value: 2 },
   { label: '3', value: 3 }, { label: '4', value: 4 }, { label: '5', value: 5 },

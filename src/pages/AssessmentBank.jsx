@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { ASSESSABLE_SUBJECTS } from '../constants/toolSubjects'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, Archive, Trash2, Printer, Search, Loader2 } from 'lucide-react'
 import { listAssessments, deleteAssessment } from '../services/assessmentService'
@@ -14,7 +15,7 @@ const TYPE_COLORS = {
   rubric: { badge: 'bg-blue-500/15 text-blue-400',     label: 'Rubric' },
 }
 
-const SUBJECTS = ['All Subjects', 'PE & Health', 'Adaptive PE', 'Art', 'Library & Media', 'Music', 'STEM']
+const SUBJECTS = ['All Subjects', ...ASSESSABLE_SUBJECTS]
 
 export default function AssessmentBank() {
   const { isTrial, isExpired, openPaywall } = useTrial()
