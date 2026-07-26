@@ -261,7 +261,7 @@ export default function Landing() {
               n={1}
               icon={MousePointerClick}
               title="Pick your subject or specialty"
-              description="Choose from 31 built-in specialties — from PE and Art to reading intervention, speech-language, therapy services, world languages, and staff PD."
+              description="Choose from 30 built-in specialties — from PE and Art to reading intervention, speech-language, therapy services, world languages, and staff PD."
             />
             <StepCard
               n={2}
