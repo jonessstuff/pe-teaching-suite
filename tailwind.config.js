@@ -68,6 +68,14 @@ export default {
         saffron:   { 300: '#f6d067', 400: '#e6a70c', 500: '#bd850a' }, // golden saffron yellow (vs mustard gold / amber)
         olive:     { 300: '#c4cc72', 400: '#9aa32c', 500: '#767d20' }, // olive yellow-green (vs bright lime / leaf grass)
         maroon:    { 300: '#d68a8a', 400: '#bd4a4a', 500: '#9a3636' }, // deep brick red (browner/darker than true-red crimson)
+        // 2026-07 palette expansion pass 4 (the saturated wheel is exhausted — these
+        // lean muted/desaturated and sit in the least-crowded remaining pockets; each
+        // pairs with a distinct module icon to disambiguate a near-hue). Same usage:
+        // bg-{c}-500/15, text-{c}-400, border-{c}-400. All read AA on the dark UI at -400.
+        denim:     { 300: '#9db6d6', 400: '#5a83b5', 500: '#41618c' }, // dusty civic blue (faded true-blue, vs saturated cobalt / greyer steel / bright sky)
+        sage:      { 300: '#aec6a6', 400: '#7ba06d', 500: '#5c7e50' }, // muted grey-green (desaturated, vs vivid grass / yellow-olive / teal-jade)
+        clay:      { 300: '#e2a48a', 400: '#c76d48', 500: '#a35334' }, // terracotta / earthenware (redder-brown than bronze, oranger than maroon, muted vs coral)
+        sand:      { 300: '#e6d3a4', 400: '#c7a458', 500: '#a4843c' }, // pale warm khaki neutral (lighter/desaturated vs golden gold-saffron, vs dark-brown mocha)
       },
       boxShadow: {
         card: '0 1px 2px 0 rgb(15 23 42 / 0.04), 0 1px 1px 0 rgb(15 23 42 / 0.03)',

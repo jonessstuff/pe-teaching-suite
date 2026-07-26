@@ -32,6 +32,7 @@ export const SUBJECT_TAB_STYLES = {
   'Elementary Technology': 'bg-saffron-500/20 text-ink-50',
   'World Languages': 'bg-jade-500/20 text-ink-50',
   'After-School Clubs': 'bg-coral-500/20 text-ink-50',
+  JROTC: 'bg-denim-500/20 text-ink-50',
   CTE: 'bg-pink-500/20 text-ink-50',
   'Classroom Management': 'bg-indigo-500/20 text-ink-50',
   'Gifted & Talented': 'bg-amber-500/20 text-ink-50',
@@ -82,6 +83,7 @@ export const MODULES = [
   { label: 'Elementary Technology / Computer Lab', subjects: ['Elementary Technology'] },
   { label: 'World Languages', subjects: ['World Languages'] },
   { label: 'After-School Clubs', subjects: ['After-School Clubs'] },
+  { label: 'JROTC', subjects: ['JROTC'] },
   { label: 'Adaptive PE', subjects: ['Adaptive PE'] },
   { label: 'CTE', subjects: ['CTE'] },
   { label: 'Classroom Management', subjects: ['Classroom Management'] },
@@ -156,7 +158,8 @@ export const PE_HEALTH_SUBJECTS = subjectsForModule('PE & Health')
 //   steel (Test Prep) · zinc (Physical Therapists) · jade (World Languages) ·
 //   cobalt (Teacher of the Visually Impaired) · magenta (Teacher of the Deaf & Hard of Hearing) ·
 //   saffron (Elementary Technology / Computer Lab) · maroon (Theater / Drama) ·
-//   mocha (Instructional Coaching) · olive (Dance) · teal (Adaptive PE lesson tabs)
+//   mocha (Instructional Coaching) · olive (Dance) · denim (JROTC) ·
+//   teal (Adaptive PE lesson tabs)
 //
 // AVAILABLE for future modules (School Counselors is next, then more). Each
 // entry's strings are full/literal so Tailwind's JIT compiles them and a new
@@ -179,7 +182,26 @@ export const AVAILABLE_MODULE_ACCENTS = [
   // ── 2026-07 palette expansion pass 3 — ALL CONSUMED ──
   // (jade→World Languages, cobalt→TVI, magenta→D-HH, saffron→Elementary Technology,
   //  maroon→Theater, mocha→Instructional Coaching, olive→Dance)
-  // The palette is now EMPTY. The next module needs a fresh pass-4 expansion:
-  // add new custom scales in tailwind.config.js + matching entries here + Landing
-  // MODULE_STYLES keys (lean muted/neutral or pair a near-hue with a distinct icon).
+  //
+  // ── 2026-07 palette expansion pass 4 (custom scales in tailwind.config.js) ──
+  // Four muted/desaturated hues in the least-crowded remaining pockets; each needs a
+  // distinct module icon to disambiguate a near-hue. (denim consumed → JROTC.)
+  {
+    key: 'sage', label: 'Sage (muted grey-green)',
+    tab: 'bg-sage-500/20 text-ink-50', iconTint: 'bg-sage-500/15',
+    accentText: 'text-sage-400', hoverBorder: 'hover:border-sage-400/40',
+    cardBorder: 'border-sage-400', callout: 'border-sage-500/30 bg-sage-500/10',
+  },
+  {
+    key: 'clay', label: 'Clay (terracotta / earthenware)',
+    tab: 'bg-clay-500/20 text-ink-50', iconTint: 'bg-clay-500/15',
+    accentText: 'text-clay-400', hoverBorder: 'hover:border-clay-400/40',
+    cardBorder: 'border-clay-400', callout: 'border-clay-500/30 bg-clay-500/10',
+  },
+  {
+    key: 'sand', label: 'Sand (pale warm khaki neutral)',
+    tab: 'bg-sand-500/20 text-ink-50', iconTint: 'bg-sand-500/15',
+    accentText: 'text-sand-400', hoverBorder: 'hover:border-sand-400/40',
+    cardBorder: 'border-sand-400', callout: 'border-sand-500/30 bg-sand-500/10',
+  },
 ]

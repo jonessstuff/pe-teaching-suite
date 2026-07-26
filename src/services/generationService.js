@@ -362,6 +362,22 @@ export async function generateAfterSchoolClubs(input) {
   return data
 }
 
+export async function generateJrotc(input) {
+  const { data, error } = await supabase.functions.invoke('generate-jrotc', {
+    body: input,
+  })
+
+  if (error) {
+    let message = error.message ?? 'Generation failed'
+    try {
+      const body = await error.context?.json?.()
+      if (body?.error) message = body.error
+    } catch {}
+    throw new Error(message)
+  }
+  return data
+}
+
 export async function generateDhh(input) {
   const { data, error } = await supabase.functions.invoke('generate-dhh', {
     body: input,

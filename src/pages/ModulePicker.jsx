@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Library, Palette, Music, Drama, Wind, FlaskConical, Monitor, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, Handshake, PersonStanding, ScanEye, Ear, PartyPopper, Target, Globe, Users, Blocks, Layers, Presentation, ArrowRight } from 'lucide-react'
+import { Library, Palette, Music, Drama, Wind, FlaskConical, Monitor, Award, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, Handshake, PersonStanding, ScanEye, Ear, PartyPopper, Target, Globe, Users, Blocks, Layers, Presentation, ArrowRight } from 'lucide-react'
 import { useDisplayName, getTimeGreeting } from '../hooks/useDisplayName'
 
 export default function ModulePicker() {
@@ -194,6 +194,25 @@ export default function ModulePicker() {
               </p>
             </div>
             <div className="flex items-center gap-1.5 text-sm font-medium text-coral-400 transition-[gap] group-hover:gap-2.5">
+              Open module <ArrowRight size={15} />
+            </div>
+          </Link>
+
+          {/* JROTC */}
+          <Link
+            to="/jrotc"
+            className="card group flex flex-col gap-6 p-8 transition-colors hover:border-denim-400/40"
+          >
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-denim-500/15">
+              <Award size={28} className="text-denim-400" />
+            </div>
+            <div className="flex-1 space-y-1.5">
+              <h2 className="text-xl font-semibold text-ink-50">JROTC</h2>
+              <p className="text-sm text-ink-400 leading-relaxed">
+                High-school citizenship &amp; leadership lessons across the LET 1–4 progression — leadership, character, civics, wellness, service learning &amp; career exploration (not military tactics)
+              </p>
+            </div>
+            <div className="flex items-center gap-1.5 text-sm font-medium text-denim-400 transition-[gap] group-hover:gap-2.5">
               Open module <ArrowRight size={15} />
             </div>
           </Link>

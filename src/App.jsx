@@ -77,6 +77,7 @@ import TviGenerator from './pages/TviGenerator'
 import DhhGenerator from './pages/DhhGenerator'
 import WorldLanguagesGenerator from './pages/WorldLanguagesGenerator'
 import AfterSchoolClubsGenerator from './pages/AfterSchoolClubsGenerator'
+import JrotcGenerator from './pages/JrotcGenerator'
 import TestPrepGenerator from './pages/TestPrepGenerator'
 import SstActivityGenerator from './pages/SstActivityGenerator'
 import TheaterGenerator from './pages/TheaterGenerator'
@@ -335,6 +336,7 @@ function App() {
           <Route path="theater" element={<TheaterGenerator />} />
           <Route path="dance" element={<DanceGenerator />} />
           <Route path="after-school-clubs" element={<AfterSchoolClubsGenerator />} />
+          <Route path="jrotc" element={<JrotcGenerator />} />
           <Route path="test-prep" element={<TestPrepGenerator />} />
           <Route path="student-support-activities" element={<SstActivityGenerator />} />
           <Route path="my-classroom-cards" element={<MyClassroomCards />} />

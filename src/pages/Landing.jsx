@@ -151,6 +151,9 @@ export default function Landing() {
             <span className="rounded-full bg-coral-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               After-School Clubs
             </span>
+            <span className="rounded-full bg-denim-500/20 px-3 py-1 text-xs font-medium text-ink-50">
+              JROTC
+            </span>
             <span className="rounded-full bg-jade-500/20 px-3 py-1 text-xs font-medium text-ink-50">
               World Languages
             </span>
@@ -363,6 +366,11 @@ export default function Landing() {
                 name="After-School Clubs"
                 color="coral"
                 description="Ready-to-run club session plans across 40+ club types — sports, academic, creative, wellness, leadership & interest clubs — scaled K–12 by grade band, low-prep and runnable by a first-time sponsor."
+              />
+              <ModuleCard
+                name="JROTC"
+                color="denim"
+                description="High-school citizenship & leadership development across the LET 1–4 progression — leadership fundamentals, advanced leadership & mentorship, civics, wellness & life skills, service learning, and civilian + military career exploration. Not military tactics; drill is precision teamwork & tradition."
               />
               <ModuleCard
                 name="World Languages"
@@ -777,6 +785,11 @@ const MODULE_STYLES = {
   saffron:    { border: 'border-saffron-400',    pill: 'bg-saffron-500/20'    },
   olive:      { border: 'border-olive-400',      pill: 'bg-olive-500/20'      },
   maroon:     { border: 'border-maroon-400',     pill: 'bg-maroon-500/20'     },
+  // pass-4
+  denim:      { border: 'border-denim-400',      pill: 'bg-denim-500/20'      },
+  sage:       { border: 'border-sage-400',       pill: 'bg-sage-500/20'       },
+  clay:       { border: 'border-clay-400',       pill: 'bg-clay-500/20'       },
+  sand:       { border: 'border-sand-400',       pill: 'bg-sand-500/20'       },
 }
 
 function ModuleGroup({ label, children }) {
