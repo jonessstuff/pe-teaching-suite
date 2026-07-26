@@ -7,11 +7,12 @@ import { reportError } from "../_shared/sentry.js";
 const VALID_BANDS = ["k-2", "3-5", "6-8", "9-12"]
 const VALID_CLUBS = [
   "basketball", "volleyball", "soccer", "flag_football", "pickleball", "badminton", "table_tennis", "ultimate_frisbee", "bowling", "archery",
-  "dnd", "stem", "robotics", "coding", "debate", "model_un", "quiz_bowl", "book_club", "creative_writing", "chess", "math_team",
-  "yearbook", "newspaper", "photography", "film_video", "art", "choir", "drama", "step_team", "dance_team",
-  "run_club", "fitness_club", "jump_rope", "cheer", "yoga", "hiking",
-  "student_council", "honor_society", "kindness_club", "environmental_club", "peer_mentoring",
+  "dnd", "stem", "robotics", "coding", "debate", "model_un", "quiz_bowl", "book_club", "creative_writing", "chess", "math_team", "lego_club", "foreign_language", "resume_club", "entrepreneurship",
+  "yearbook", "newspaper", "photography", "film_video", "art", "choir", "drama", "step_team", "dance_team", "digital_art", "sewing_fiber", "stained_glass", "ceramics",
+  "run_club", "fitness_club", "jump_rope", "cheer", "yoga", "hiking", "golf", "tennis", "swim", "wellness", "nature_club", "gardening", "marine_science",
+  "student_council", "honor_society", "kindness_club", "environmental_club", "peer_mentoring", "sca_sga", "beta_club", "mock_trial", "youth_in_government", "key_club",
   "anime_manga", "esports", "language_culture",
+  "cooking_club", "boys_girls_club", "natural_products", "candle_making",
 ]
 
 Deno.serve(async (req: Request) => {

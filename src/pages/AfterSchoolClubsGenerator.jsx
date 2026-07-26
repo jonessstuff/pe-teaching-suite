@@ -45,6 +45,10 @@ const CLUB_GROUPS = [
       { value: 'creative_writing', label: 'Creative writing' },
       { value: 'chess', label: 'Chess' },
       { value: 'math_team', label: 'Math team' },
+      { value: 'lego_club', label: 'Lego club' },
+      { value: 'foreign_language', label: 'Foreign language club (Spanish, French…)' },
+      { value: 'resume_club', label: 'Resume writing (MS/HS)' },
+      { value: 'entrepreneurship', label: 'Entrepreneurship / young business' },
     ],
   },
   {
@@ -59,6 +63,10 @@ const CLUB_GROUPS = [
       { value: 'drama', label: 'Drama / theater' },
       { value: 'step_team', label: 'Step team' },
       { value: 'dance_team', label: 'Dance team' },
+      { value: 'digital_art', label: 'Digital art' },
+      { value: 'sewing_fiber', label: 'Sewing / fiber crafts' },
+      { value: 'stained_glass', label: 'Stained glass' },
+      { value: 'ceramics', label: 'Ceramics / pottery' },
     ],
   },
   {
@@ -70,6 +78,13 @@ const CLUB_GROUPS = [
       { value: 'cheer', label: 'Cheer' },
       { value: 'yoga', label: 'Yoga / mindfulness' },
       { value: 'hiking', label: 'Hiking / outdoors' },
+      { value: 'golf', label: 'Golf' },
+      { value: 'tennis', label: 'Tennis' },
+      { value: 'swim', label: 'Swim club' },
+      { value: 'wellness', label: 'Wellness / healthy habits' },
+      { value: 'nature_club', label: 'Nature club' },
+      { value: 'gardening', label: 'Gardening' },
+      { value: 'marine_science', label: 'Marine life / ocean science' },
     ],
   },
   {
@@ -80,6 +95,11 @@ const CLUB_GROUPS = [
       { value: 'kindness_club', label: 'Kindness / service club' },
       { value: 'environmental_club', label: 'Environmental / sustainability' },
       { value: 'peer_mentoring', label: 'Peer mentoring' },
+      { value: 'sca_sga', label: 'SCA / SGA (student government)' },
+      { value: 'beta_club', label: 'Beta Club / Junior Beta Club' },
+      { value: 'mock_trial', label: 'Mock trial' },
+      { value: 'youth_in_government', label: 'Youth in Government' },
+      { value: 'key_club', label: 'Key Club / Interact' },
     ],
   },
   {
@@ -88,6 +108,15 @@ const CLUB_GROUPS = [
       { value: 'anime_manga', label: 'Anime / manga club' },
       { value: 'esports', label: 'Gaming / esports' },
       { value: 'language_culture', label: 'Language & culture club' },
+    ],
+  },
+  {
+    label: 'Life Skills & Hands-On',
+    options: [
+      { value: 'cooking_club', label: 'Cooking (baking / culinary)' },
+      { value: 'boys_girls_club', label: 'Boys / Girls club (mentorship)' },
+      { value: 'natural_products', label: 'Natural products / DIY (soap)' },
+      { value: 'candle_making', label: 'Candle making' },
     ],
   },
 ]
