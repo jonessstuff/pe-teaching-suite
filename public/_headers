@@ -1,0 +1,4 @@
+# Serve the web app manifest with its correct MIME type (Netlify otherwise
+# falls back to application/octet-stream, which some PWA audits flag).
+/manifest.webmanifest
+  Content-Type: application/manifest+json
