@@ -5,7 +5,7 @@ import { captureLessonGenerated } from "../_shared/analytics.js";
 import { reportError } from "../_shared/sentry.js";
 
 const VALID_BANDS = ["k-2", "3-5", "6-8", "9-12"]
-const VALID_TOOLS = ["3d_printer", "laser_cutter", "vinyl_cutter", "robotics", "hand_tools", "electronics", "classic_build"]
+const VALID_TOOLS = ["3d_printer", "laser_cutter", "screen_printing", "vinyl_cutter", "robotics", "hand_tools", "electronics", "classic_build"]
 
 Deno.serve(async (req: Request) => {
   console.log("[generate-maker-project] handler entered, method:", req.method)

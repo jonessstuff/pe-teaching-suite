@@ -17,6 +17,7 @@ const ORIGINS = {
 const TOOLS = [
   { value: '3d_printer', label: '3D printer' },
   { value: 'laser_cutter', label: 'Laser cutter / engraver' },
+  { value: 'screen_printing', label: 'Screen printing' },
   { value: 'vinyl_cutter', label: 'Vinyl cutter' },
   { value: 'robotics', label: 'Robotics kit (Dash / Sphero / similar)' },
   { value: 'hand_tools', label: 'Basic hand tools' },
