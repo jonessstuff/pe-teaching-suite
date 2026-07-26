@@ -21,6 +21,10 @@ function getArtStandardsGuidance(stateName) {
  * @param {string}  [input.priorSessionsSummary] compact text summary of already-generated stages
  * @returns {{ system: string, user: string }}
  */
+// Elementary hands-on/kinesthetic lens (K-2/3-5 toggle) — favors manipulatives,
+// movement, and tactile work over worksheet/seatwork.
+const HANDS_ON_DIRECTIVE = `\n\nHANDS-ON / KINESTHETIC EMPHASIS (elementary): Make the PRIMARY mode of learning hands-on, kinesthetic, and movement-based — NOT worksheets or seatwork. Favor manipulatives and physical objects (counters, tiles, cards, blocks, real materials), whole-body movement and gesture, tactile exploration, sorting / building / acting-out, learning stations, and partner or group activities where students are up and doing. The MAIN activity must be concrete and physical (e.g., physical objects for counting / sorting / fraction work in math, movement- or gesture-based vocabulary and word work in reading and language, hands-on building and exploration in science, manipulating real materials otherwise). Actively STEER AWAY from paper-based independent worksheets as the core task — keep any written recording brief and secondary to the physical doing. Keep it developmentally appropriate for young learners' attention spans and motor skills.`
+
 export function buildArtLessonPrompt({
   gradeBands = [],
   topic = "",
@@ -33,6 +37,7 @@ export function buildArtLessonPrompt({
   totalSessions = 0,
   priorSessionsSummary = "",
   includeELL = false,
+  handsOn = false,
 }) {
   const stateName = resolveStateName(state)
   const gradeStr = gradeBands
@@ -146,7 +151,7 @@ CRITICAL requirements for this stage — read carefully:
 - This is the FINAL stage: independent_practice is for completing the artwork; closure must bring the project to a satisfying conclusion (artwork display, gallery walk, written artist statement prompt, or peer appreciation protocol — NOT a preview of another session)
 - teacher_prep must include preparation for displaying or collecting finished work` : sessionNumber > 0 && sessionNumber < totalSessions ? `
 - Closure must end with a specific preview of what students will do in Stage ${sessionNumber + 1}
-- teacher_prep must include how to store in-progress student work between sessions` : ""}` : ""}${includeELL ? `\n\nELL ACCOMMODATIONS: This lesson will be taught to a class that includes English Language Learners. In addition to all fields in the schema above, add an "ell_accommodations" object to the JSON with these subfields:\n- language_objectives: 2–3 strings in format "Students will [language skill] in order to [content purpose]"\n- tiered_vocabulary: { tier_1: [everyday words students likely know], tier_2: [academic cross-subject vocabulary], tier_3: [content-specific art vocabulary unique to this lesson] } — each value is an array of strings\n- sentence_frames: 4–6 strings, each labeled with the specific art lesson context (e.g. "During the demonstration: 'I notice that the teacher ___'", "During the share: 'In my artwork I used ___ to show ___'")\n- visual_supports: 4–6 specific, concrete suggestions for visual supports, gesture cues, or picture reference cards tied to this lesson's techniques and materials\n- simplified_instructions: single string — 2–3 short sentences describing the core studio task at a 2nd-grade reading level, no idioms, no figurative language` : ""}`
+- teacher_prep must include how to store in-progress student work between sessions` : ""}` : ""}${includeELL ? `\n\nELL ACCOMMODATIONS: This lesson will be taught to a class that includes English Language Learners. In addition to all fields in the schema above, add an "ell_accommodations" object to the JSON with these subfields:\n- language_objectives: 2–3 strings in format "Students will [language skill] in order to [content purpose]"\n- tiered_vocabulary: { tier_1: [everyday words students likely know], tier_2: [academic cross-subject vocabulary], tier_3: [content-specific art vocabulary unique to this lesson] } — each value is an array of strings\n- sentence_frames: 4–6 strings, each labeled with the specific art lesson context (e.g. "During the demonstration: 'I notice that the teacher ___'", "During the share: 'In my artwork I used ___ to show ___'")\n- visual_supports: 4–6 specific, concrete suggestions for visual supports, gesture cues, or picture reference cards tied to this lesson's techniques and materials\n- simplified_instructions: single string — 2–3 short sentences describing the core studio task at a 2nd-grade reading level, no idioms, no figurative language` : ""}${handsOn ? HANDS_ON_DIRECTIVE : ""}`
 
   const user = `Generate a complete elementary art ${isMultiStage ? `project stage (${stageLabel})` : "lesson"} with these parameters:
 

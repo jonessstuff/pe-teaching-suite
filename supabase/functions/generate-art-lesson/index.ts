@@ -28,6 +28,7 @@ Deno.serve(async (req: Request) => {
     totalSessions,
     priorSessionsSummary,
     includeELL,
+    handsOn,
   } = body ?? {}
 
   if (!Array.isArray(gradeBands) || (gradeBands as number[]).length === 0) {
@@ -49,6 +50,7 @@ Deno.serve(async (req: Request) => {
       totalSessions: Number(totalSessions) || 0,
       priorSessionsSummary: (priorSessionsSummary as string) ?? "",
       includeELL: (includeELL as boolean) === true,
+      handsOn: (handsOn as boolean) === true,
     })
 
     // Art lessons are verbose (Teacher Prep + 7 phases + detailed supplies list).

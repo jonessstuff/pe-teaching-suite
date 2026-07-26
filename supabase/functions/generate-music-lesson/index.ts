@@ -25,6 +25,7 @@ Deno.serve(async (req: Request) => {
     targetStandard,
     state,
     includeELL,
+    handsOn,
   } = body ?? {}
 
   if (!Array.isArray(gradeBands) || (gradeBands as number[]).length === 0) {
@@ -41,6 +42,7 @@ Deno.serve(async (req: Request) => {
       targetStandard: (targetStandard as string) ?? "",
       state: (state as string) ?? "",
       includeELL: (includeELL as boolean) === true,
+      handsOn: (handsOn as boolean) === true,
     })
 
     // Music lessons need room for multi-grade-band content across all 5 phases.

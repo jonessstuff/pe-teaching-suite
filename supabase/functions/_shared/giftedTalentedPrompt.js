@@ -62,6 +62,11 @@ function bandContextLine(band) {
  *
  * @returns {{ system: string, user: string }}
  */
+// Elementary hands-on/kinesthetic lens (K-2/3-5 toggle) — favors manipulatives,
+// movement, and tactile work over worksheet/seatwork. Applied to the differentiate
+// and enrich modes (the support mode is advisory guidance, not a lesson).
+const HANDS_ON_DIRECTIVE = `\n\nHANDS-ON / KINESTHETIC EMPHASIS (elementary): Deliver the depth and challenge through hands-on, kinesthetic, and movement-based work — NOT worksheets or seatwork. Favor manipulatives and physical objects, model-building and design, investigations, tactile exploration, sorting / building / acting-out, movement, and open-ended making, plus partner or group work where students are up and doing. The MAIN task should be concrete and physical while still raising depth, complexity, and cognitive demand (rigor comes from the thinking, not from paper). Actively STEER AWAY from paper-based independent worksheets as the core task — keep any written recording brief and secondary to the physical doing. Keep it developmentally appropriate for young learners' attention spans and motor skills.`
+
 export function buildGiftedTalentedPrompt(input) {
   const { mode } = input
   if (mode === "enrich") return buildEnrichPrompt(input)
@@ -75,6 +80,7 @@ function buildDifferentiatePrompt({
   topic = "",
   contentArea = "",
   teacherNotes = "",
+  handsOn = false,
 }) {
   const band = resolveBand(gradeBand)
 
@@ -120,7 +126,7 @@ Field notes:
 - assessment: how to assess the deeper thinking — rubric focus on reasoning and transfer, not recall.
 - social_emotional_note: one focused note on a relevant SE consideration for THIS work (e.g., perfectionism during open-ended products, asynchronous development, engaging an underachiever, supporting a 2e learner's access).
 - standards_alignment: 2–4 entries citing NAGC (by standard area) and/or NAGC-CEC; framework field must be exactly "NAGC" or "NAGC-CEC".
-- ${STATE_DISCLAIMER}`
+- ${STATE_DISCLAIMER}${handsOn ? HANDS_ON_DIRECTIVE : ""}`
 
   const user = `Build a Depth & Complexity differentiation for gifted / high-ability learners:
 
@@ -139,6 +145,7 @@ function buildEnrichPrompt({
   topic = "",
   contentArea = "",
   teacherNotes = "",
+  handsOn = false,
 }) {
   const band = resolveBand(gradeBand)
 
@@ -177,7 +184,7 @@ Field notes:
 - recommended_products: 3–5 authentic products/outcomes.
 - social_emotional_note: one relevant SE consideration (e.g., peer fit after acceleration, perfectionism, underachievement re-engagement, 2e access).
 - standards_alignment: 2–4 entries; framework exactly "NAGC" or "NAGC-CEC".
-- ${STATE_DISCLAIMER}`
+- ${STATE_DISCLAIMER}${handsOn ? HANDS_ON_DIRECTIVE : ""}`
 
   const user = `Suggest enrichment and acceleration options for gifted learners:
 

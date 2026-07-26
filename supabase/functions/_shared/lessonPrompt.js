@@ -62,6 +62,11 @@ FIELD USAGE FOR STRENGTH & CONDITIONING:
  * @param {{ name_or_initials: string, accommodation_notes: string }[]} [input.students]
  * @returns {{ system: string, user: string }}
  */
+// Cross-cutting elementary lens: when the teacher enables the "Hands-On /
+// Kinesthetic" toggle (K-2 / 3-5 only), this directive steers the lesson toward
+// manipulatives, movement, and tactile work and away from worksheet/seatwork.
+export const HANDS_ON_DIRECTIVE = `\n\nHANDS-ON / KINESTHETIC EMPHASIS (elementary): Make the PRIMARY mode of learning hands-on, kinesthetic, and movement-based — NOT worksheets or seatwork. Favor manipulatives and physical objects (counters, tiles, cards, blocks, real materials), whole-body movement and gesture, tactile exploration, sorting / building / acting-out, learning stations, and partner or group activities where students are up and doing. The MAIN activity must be concrete and physical (e.g., physical objects for counting / sorting / fraction work in math, movement- or gesture-based vocabulary and word work in reading and language, hands-on building and exploration in science, manipulating real materials otherwise). Actively STEER AWAY from paper-based independent worksheets as the core task — keep any written recording brief and secondary to the physical doing. Keep it developmentally appropriate for young learners' attention spans and motor skills.`
+
 export function buildLessonGenerationPrompt(input) {
   const {
     gradeBands = [],
@@ -77,6 +82,7 @@ export function buildLessonGenerationPrompt(input) {
     stationCount = 3,
     students = [],
     includeELL = false,
+    handsOn = false,
   } = input;
 
   const stateName = resolveStateName(state);
@@ -146,7 +152,7 @@ Example: "\\n\\nACCOMMODATION — Jamie: during the kickball batting drill, allo
 Do NOT blend student accommodations into the middle of a paragraph. They must appear as distinctly labeled lines at the end of the modifications text, one per student.
 
 Students requiring accommodations:
-${students.map((s) => `- ${s.name_or_initials}: ${s.accommodation_notes}`).join("\n")}` : ""}${includeELL ? `\n\nELL ACCOMMODATIONS: This lesson will be taught to a class that includes English Language Learners. In addition to all fields in the schema above, add an "ell_accommodations" object to the JSON with these subfields:\n- language_objectives: 2–3 strings in format "Students will [language skill] in order to [content purpose]"\n- tiered_vocabulary: { tier_1: [everyday words students likely know], tier_2: [academic cross-subject vocabulary], tier_3: [content-specific vocabulary unique to this lesson] } — each value is an array of strings\n- sentence_frames: 4–6 strings, each labeled with the specific lesson context (e.g. "During partner practice: 'I noticed that you ___'", "When explaining your work: 'I chose ___ because ___'")\n- visual_supports: 4–6 specific, concrete suggestions for visual supports, gestures, or realia tied to this lesson's actual activities\n- simplified_instructions: single string — 2–3 short sentences describing the core task at a 2nd-grade reading level, no idioms, no figurative language` : ""}`;
+${students.map((s) => `- ${s.name_or_initials}: ${s.accommodation_notes}`).join("\n")}` : ""}${includeELL ? `\n\nELL ACCOMMODATIONS: This lesson will be taught to a class that includes English Language Learners. In addition to all fields in the schema above, add an "ell_accommodations" object to the JSON with these subfields:\n- language_objectives: 2–3 strings in format "Students will [language skill] in order to [content purpose]"\n- tiered_vocabulary: { tier_1: [everyday words students likely know], tier_2: [academic cross-subject vocabulary], tier_3: [content-specific vocabulary unique to this lesson] } — each value is an array of strings\n- sentence_frames: 4–6 strings, each labeled with the specific lesson context (e.g. "During partner practice: 'I noticed that you ___'", "When explaining your work: 'I chose ___ because ___'")\n- visual_supports: 4–6 specific, concrete suggestions for visual supports, gestures, or realia tied to this lesson's actual activities\n- simplified_instructions: single string — 2–3 short sentences describing the core task at a 2nd-grade reading level, no idioms, no figurative language` : ""}${handsOn ? HANDS_ON_DIRECTIVE : ""}`;
 
   const user = `Generate a complete lesson with these parameters:
 

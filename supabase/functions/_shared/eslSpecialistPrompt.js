@@ -61,6 +61,10 @@ const JSON_ONLY = `You must return ONLY a single JSON object — no markdown fen
  * @param {string}  [input.teacherNotes]
  * @returns {{ system: string, user: string }}
  */
+// Elementary hands-on/kinesthetic lens (K-2/3-5 toggle) — favors manipulatives,
+// movement, and tactile work over worksheet/seatwork (strong fit for TPR-style ELD).
+const HANDS_ON_DIRECTIVE = `\n\nHANDS-ON / KINESTHETIC EMPHASIS (elementary): Make the PRIMARY mode of learning hands-on, kinesthetic, and movement-based — NOT worksheets or seatwork. Favor Total Physical Response (TPR), gesture and movement for vocabulary and language practice, manipulatives and realia (real objects, picture cards to sort/act with, props), tactile exploration, acting-out and role-play, learning stations, and partner or group activities where students are up and doing. The MAIN language-practice activity must be concrete and physical (e.g., movement- or gesture-based vocabulary, sorting realia, acting out a dialogue). Actively STEER AWAY from paper-based independent worksheets as the core task — keep any written recording brief and secondary to the physical doing. Keep it developmentally appropriate for young learners' attention spans and motor skills.`
+
 export function buildEslSpecialistPrompt({
   topic = "",
   gradeBand = "3-5",
@@ -69,6 +73,7 @@ export function buildEslSpecialistPrompt({
   durationMinutes = 45,
   homeLanguages = "",
   teacherNotes = "",
+  handsOn = false,
 }) {
   const band = GRADE_BANDS[gradeBand] ?? GRADE_BANDS["3-5"]
   const lvl = resolveLevel(proficiencyLevel)
@@ -121,7 +126,7 @@ Field notes:
 - standards_alignment: 2–4 entries; framework field exactly "WIDA ELD" or "SIOP"; domain = the language domain (Listening/Speaking/Reading/Writing) or the relevant WIDA ELD Standard; text = the practice/standard this reflects. If unsure of an exact WIDA code, describe it and append "(verify against your state's ELP standards)".
 - ${STATE_NOTE}
 
-LENGTH DISCIPLINE: complete JSON (every field present, all four domains filled) over exhaustive detail. A response cut off before the closing brace is a FAILED response.`
+LENGTH DISCIPLINE: complete JSON (every field present, all four domains filled) over exhaustive detail. A response cut off before the closing brace is a FAILED response.${handsOn ? HANDS_ON_DIRECTIVE : ""}`
 
   const user = `Generate an English language development lesson:
 

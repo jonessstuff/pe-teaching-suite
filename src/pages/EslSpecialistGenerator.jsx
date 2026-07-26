@@ -42,6 +42,9 @@ export default function EslSpecialistGenerator() {
   const [durationMinutes, setDurationMinutes] = useState(45)
   const [homeLanguages, setHomeLanguages] = useState('')
   const [teacherNotes, setTeacherNotes] = useState('')
+  const [handsOn, setHandsOn] = useState(false)
+  // Hands-on/kinesthetic toggle surfaces only for elementary (K–2 / 3–5) bands.
+  const showHandsOn = gradeBand === 'k-2' || gradeBand === '3-5'
 
   const [result, setResult] = useState(null)
   const [savedId, setSavedId] = useState(null)
@@ -55,7 +58,7 @@ export default function EslSpecialistGenerator() {
     setSavedId(null)
 
     try {
-      const input = { topic, gradeBand, proficiencyLevel, contentArea, durationMinutes, homeLanguages, teacherNotes }
+      const input = { topic, gradeBand, proficiencyLevel, contentArea, durationMinutes, homeLanguages, teacherNotes, handsOn: showHandsOn && handsOn }
       const generated = await generateEslSpecialist(input)
       setResult(generated)
 
@@ -232,6 +235,26 @@ export default function EslSpecialistGenerator() {
             className="input-field min-h-[64px]"
           />
         </div>
+
+        {showHandsOn && (
+          <div className="card p-6 space-y-3">
+            <h2 className="text-sm font-semibold text-ink-200">Hands-on / kinesthetic</h2>
+            <label className="flex cursor-pointer items-start gap-3">
+              <input
+                type="checkbox"
+                checked={handsOn}
+                onChange={(e) => setHandsOn(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-fuchsia-500"
+              />
+              <div>
+                <span className="text-sm text-ink-300">Hands-on / kinesthetic emphasis</span>
+                <p className="mt-0.5 text-xs text-ink-500">
+                  Favors TPR, movement, realia &amp; manipulatives over worksheet/seatwork. Elementary (K–2 / 3–5) only.
+                </p>
+              </div>
+            </label>
+          </div>
+        )}
 
         {error && (
           <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-ink-100">

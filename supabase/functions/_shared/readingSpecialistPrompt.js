@@ -70,6 +70,10 @@ const JSON_ONLY = `You must return ONLY a single JSON object — no markdown fen
  * @param {string}  [input.teacherNotes]
  * @returns {{ system: string, user: string }}
  */
+// Elementary hands-on/kinesthetic lens (K-2/3-5 toggle) — favors manipulatives,
+// movement, and tactile work over worksheet/seatwork.
+const HANDS_ON_DIRECTIVE = `\n\nHANDS-ON / KINESTHETIC EMPHASIS (elementary): Make the PRIMARY mode of learning hands-on, kinesthetic, and movement-based — NOT worksheets or seatwork. Favor manipulatives and physical objects (letter tiles, magnetic letters, cards, counters, blocks, real materials), whole-body movement and gesture, tactile exploration (sky-writing, sand/salt trays, tapping sounds), sorting / building / acting-out, and partner or small-group activities where students are up and doing. The MAIN activity must be concrete and physical (e.g., movement- or gesture-based phoneme and word work, building words with tiles, acting out vocabulary and comprehension). Actively STEER AWAY from paper-based independent worksheets as the core task — keep any written recording brief and secondary to the physical doing. Keep it developmentally appropriate for young learners' attention spans and motor skills.`
+
 export function buildReadingSpecialistPrompt({
   skillArea = "Phonics & Word Recognition (Decoding)",
   gradeBand = "3-5",
@@ -78,6 +82,7 @@ export function buildReadingSpecialistPrompt({
   durationMinutes = 30,
   groupSize = "Small group (3–5)",
   teacherNotes = "",
+  handsOn = false,
 }) {
   const band = resolveBand(gradeBand)
 
@@ -129,7 +134,7 @@ Field notes:
 - standards_alignment: 2–4 entries; framework exactly "IDA KPS"; domain = the relevant IDA domain (e.g., "Phonological and Phonemic Awareness", "Phonics and Word Recognition", "Fluency", "Vocabulary", "Comprehension", "Written Expression", "Knowledge of Dyslexia"); text = the practice this lesson demonstrates.
 - ${STATE_DISCLAIMER}
 
-LENGTH DISCIPLINE: A COMPLETE lesson (every field present, JSON closed) matters more than exhaustive detail. Keep the instructional_sequence to 5–7 tight steps and each text field focused (a few sentences). A response that runs long and is cut off before the closing brace is a FAILED response.`
+LENGTH DISCIPLINE: A COMPLETE lesson (every field present, JSON closed) matters more than exhaustive detail. Keep the instructional_sequence to 5–7 tight steps and each text field focused (a few sentences). A response that runs long and is cut off before the closing brace is a FAILED response.${handsOn ? HANDS_ON_DIRECTIVE : ""}`
 
   const user = `Generate a Structured Literacy lesson/intervention with these parameters:
 

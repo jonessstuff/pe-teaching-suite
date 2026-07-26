@@ -81,6 +81,9 @@ export default function ArtGenerator() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [includeELL, setIncludeELL] = useState(false)
+  const [handsOn, setHandsOn] = useState(false)
+  // Hands-on/kinesthetic toggle surfaces only for elementary (K–5) grades.
+  const showHandsOn = gradeBands.some((g) => g <= 5)
 
   const addMaterial = () => setMaterials((prev) => [...prev, ''])
   const removeMaterial = (i) => setMaterials((prev) => prev.filter((_, idx) => idx !== i))
@@ -108,6 +111,7 @@ export default function ArtGenerator() {
         sessionNumber: isMultiStage ? sessionNumber : 0,
         totalSessions: isMultiStage ? totalSessions : 0,
         includeELL,
+        handsOn: showHandsOn && handsOn,
       })
 
       const saved = await createLesson(lessonObject, { aiModel: 'claude-sonnet-4-6' })
@@ -441,6 +445,26 @@ export default function ArtGenerator() {
             </div>
           </label>
         </div>
+
+        {showHandsOn && (
+          <div className="card p-6 space-y-3">
+            <h2 className="text-sm font-semibold text-ink-200">Hands-on / kinesthetic</h2>
+            <label className="flex cursor-pointer items-start gap-3">
+              <input
+                type="checkbox"
+                checked={handsOn}
+                onChange={(e) => setHandsOn(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-emerald-500"
+              />
+              <div>
+                <span className="text-sm text-ink-300">Hands-on / kinesthetic emphasis</span>
+                <p className="mt-0.5 text-xs text-ink-500">
+                  Favors manipulatives, movement &amp; tactile activities over worksheet/seatwork. Elementary (K–5) only.
+                </p>
+              </div>
+            </label>
+          </div>
+        )}
 
         {error && (
           <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-ink-100">

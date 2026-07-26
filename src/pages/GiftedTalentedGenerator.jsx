@@ -47,6 +47,11 @@ export default function GiftedTalentedGenerator() {
   const [focus, setFocus] = useState(SUPPORT_FOCUS_OPTIONS[0])
   const [situation, setSituation] = useState('')
 
+  const [handsOn, setHandsOn] = useState(false)
+  // Hands-on/kinesthetic toggle: differentiate & enrich modes at elementary
+  // (K–2 / 3–5) only. The advisory "support" mode is out of scope.
+  const showHandsOn = mode !== 'support' && (gradeBand === 'k-2' || gradeBand === '3-5')
+
   const [result, setResult] = useState(null)
   const [savedId, setSavedId] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -62,7 +67,7 @@ export default function GiftedTalentedGenerator() {
       const input =
         mode === 'support'
           ? { mode, gradeBand, focus, situation }
-          : { mode, gradeBand, topic, contentArea, teacherNotes }
+          : { mode, gradeBand, topic, contentArea, teacherNotes, handsOn: showHandsOn && handsOn }
 
       const generated = await generateGiftedTalented(input)
       setResult(generated)
@@ -262,6 +267,26 @@ export default function GiftedTalentedGenerator() {
                 className="input-field min-h-[64px]"
               />
             </div>
+          </div>
+        )}
+
+        {showHandsOn && (
+          <div className="card p-6 space-y-3">
+            <h2 className="text-sm font-semibold text-ink-200">Hands-on / kinesthetic</h2>
+            <label className="flex cursor-pointer items-start gap-3">
+              <input
+                type="checkbox"
+                checked={handsOn}
+                onChange={(e) => setHandsOn(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-amber-500"
+              />
+              <div>
+                <span className="text-sm text-ink-300">Hands-on / kinesthetic emphasis</span>
+                <p className="mt-0.5 text-xs text-ink-500">
+                  Delivers depth through building, investigation &amp; movement over worksheet/seatwork. Elementary (K–2 / 3–5) only.
+                </p>
+              </div>
+            </label>
           </div>
         )}
 

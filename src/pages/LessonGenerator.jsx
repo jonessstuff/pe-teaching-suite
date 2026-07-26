@@ -38,6 +38,9 @@ export default function LessonGenerator() {
   const [useStations, setUseStations] = useState(false)
   const [numStations, setNumStations] = useState(3)
   const [includeELL, setIncludeELL] = useState(false)
+  const [handsOn, setHandsOn] = useState(false)
+  // Hands-on/kinesthetic toggle: lesson mode + elementary (K–5) grades only.
+  const showHandsOn = mode === 'lesson' && gradeBands.some((g) => g <= 5)
 
   const [periods, setPeriods] = useState([])
   const [selectedPeriodId, setSelectedPeriodId] = useState('')
@@ -220,6 +223,7 @@ export default function LessonGenerator() {
           durationMinutes: Number(duration),
           students: studentAccommodations,
           includeELL,
+          handsOn: showHandsOn && handsOn,
         })
 
         const saved = await createLesson(lessonObject, { aiModel: 'claude-sonnet-4-6' })
@@ -747,6 +751,25 @@ export default function LessonGenerator() {
               </div>
             </label>
           </div>
+
+          {showHandsOn && (
+            <div className="space-y-3">
+              <label className="flex cursor-pointer items-start gap-3">
+                <input
+                  type="checkbox"
+                  checked={handsOn}
+                  onChange={(e) => setHandsOn(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 shrink-0 accent-emerald-500"
+                />
+                <div>
+                  <span className="text-sm font-medium text-ink-200">Hands-on / kinesthetic emphasis</span>
+                  <p className="mt-0.5 text-xs text-ink-400">
+                    Favors manipulatives, movement &amp; tactile activities over worksheet/seatwork. Elementary (K–5) only.
+                  </p>
+                </div>
+              </label>
+            </div>
+          )}
         </FormSection>
 
         {/* Submit */}

@@ -18,6 +18,10 @@ function getMusicStandardsGuidance(stateName) {
  * @param {string}  [input.state]              two-letter abbreviation
  * @returns {{ system: string, user: string }}
  */
+// Elementary hands-on/kinesthetic lens (K-2/3-5 toggle) — favors manipulatives,
+// movement, and tactile work over worksheet/seatwork.
+const HANDS_ON_DIRECTIVE = `\n\nHANDS-ON / KINESTHETIC EMPHASIS (elementary): Make the PRIMARY mode of learning hands-on, kinesthetic, and movement-based — NOT worksheets or seatwork. Favor manipulatives and physical objects (counters, tiles, cards, blocks, real materials), whole-body movement and gesture, tactile exploration, sorting / building / acting-out, learning stations, and partner or group activities where students are up and doing. The MAIN activity must be concrete and physical (e.g., physical objects for counting / sorting / fraction work in math, movement- or gesture-based vocabulary and word work in reading and language, hands-on building and exploration in science, manipulating real materials otherwise). Actively STEER AWAY from paper-based independent worksheets as the core task — keep any written recording brief and secondary to the physical doing. Keep it developmentally appropriate for young learners' attention spans and motor skills.`
+
 export function buildMusicLessonPrompt({
   gradeBands = [],
   topic = "",
@@ -31,6 +35,7 @@ export function buildMusicLessonPrompt({
   priorSessionsSummary = "",
   unitName = "",
   includeELL = false,
+  handsOn = false,
 }) {
   const stateName = resolveStateName(state)
   const gradeStr = gradeBands
@@ -136,7 +141,7 @@ CRITICAL requirements for this session:
 - The Warm-Up MUST directly build on the musical concept from the prior session
 - Active Music Making must progress the concept further — do not repeat the same activity from prior sessions` : ""}${sessionNumber === totalSessions && totalSessions > 1 ? `
 - This is the FINAL session: closure must be a culminating activity — student performance, concept review game, or musical reflection protocol — NOT a preview of another session` : sessionNumber > 0 && sessionNumber < totalSessions ? `
-- Closure must end with a specific preview of the musical concept or activity planned for Session ${sessionNumber + 1}` : ""}` : ""}${includeELL ? `\n\nELL ACCOMMODATIONS: This lesson will be taught to a class that includes English Language Learners. In addition to all fields in the schema above, add an "ell_accommodations" object to the JSON with these subfields:\n- language_objectives: 2–3 strings in format "Students will [language skill] in order to [content purpose]"\n- tiered_vocabulary: { tier_1: [everyday words students likely know], tier_2: [academic cross-subject vocabulary], tier_3: [content-specific music vocabulary unique to this lesson] } — each value is an array of strings\n- sentence_frames: 4–6 strings, each labeled with the specific music lesson context (e.g. "During the listening example: 'I hear ___'", "During active music making: 'My body shows the beat by ___'")\n- visual_supports: 4–6 specific, concrete suggestions for visual supports, gesture cues, or picture cards tied to this lesson's musical concepts and activities\n- simplified_instructions: single string — 2–3 short sentences describing the core activity at a 2nd-grade reading level, no idioms, no figurative language` : ""}`
+- Closure must end with a specific preview of the musical concept or activity planned for Session ${sessionNumber + 1}` : ""}` : ""}${includeELL ? `\n\nELL ACCOMMODATIONS: This lesson will be taught to a class that includes English Language Learners. In addition to all fields in the schema above, add an "ell_accommodations" object to the JSON with these subfields:\n- language_objectives: 2–3 strings in format "Students will [language skill] in order to [content purpose]"\n- tiered_vocabulary: { tier_1: [everyday words students likely know], tier_2: [academic cross-subject vocabulary], tier_3: [content-specific music vocabulary unique to this lesson] } — each value is an array of strings\n- sentence_frames: 4–6 strings, each labeled with the specific music lesson context (e.g. "During the listening example: 'I hear ___'", "During active music making: 'My body shows the beat by ___'")\n- visual_supports: 4–6 specific, concrete suggestions for visual supports, gesture cues, or picture cards tied to this lesson's musical concepts and activities\n- simplified_instructions: single string — 2–3 short sentences describing the core activity at a 2nd-grade reading level, no idioms, no figurative language` : ""}${handsOn ? HANDS_ON_DIRECTIVE : ""}`
 
   const user = `Generate a complete elementary general music lesson${isMultiSession ? ` (${sessionLabel})` : ""} with these parameters:
 

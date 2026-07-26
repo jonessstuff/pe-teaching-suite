@@ -48,6 +48,11 @@ export default function SpecialEducationGenerator() {
   // coteaching
   const [genEdTopic, setGenEdTopic] = useState('')
 
+  const [handsOn, setHandsOn] = useState(false)
+  // Hands-on/kinesthetic toggle: multitier & co-teaching modes at elementary
+  // (K–2 / 3–5) only. The functional mode is secondary and out of scope.
+  const showHandsOn = (mode === 'multitier' || mode === 'coteaching') && (gradeBand === 'k-2' || gradeBand === '3-5')
+
   const [result, setResult] = useState(null)
   const [savedId, setSavedId] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -71,8 +76,8 @@ export default function SpecialEducationGenerator() {
         mode === 'functional'
           ? { mode, gradeBand, skillArea, focus, teacherNotes }
           : mode === 'coteaching'
-            ? { mode, gradeBand, genEdTopic, contentArea, teacherNotes }
-            : { mode, gradeBand, topic, contentArea, teacherNotes }
+            ? { mode, gradeBand, genEdTopic, contentArea, teacherNotes, handsOn: showHandsOn && handsOn }
+            : { mode, gradeBand, topic, contentArea, teacherNotes, handsOn: showHandsOn && handsOn }
 
       const generated = await generateSpecialEducation(input)
       setResult(generated)
@@ -311,6 +316,26 @@ export default function SpecialEducationGenerator() {
             />
           </div>
         </div>
+
+        {showHandsOn && (
+          <div className="card p-6 space-y-3">
+            <h2 className="text-sm font-semibold text-ink-200">Hands-on / kinesthetic</h2>
+            <label className="flex cursor-pointer items-start gap-3">
+              <input
+                type="checkbox"
+                checked={handsOn}
+                onChange={(e) => setHandsOn(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-violet-500"
+              />
+              <div>
+                <span className="text-sm text-ink-300">Hands-on / kinesthetic emphasis</span>
+                <p className="mt-0.5 text-xs text-ink-500">
+                  Favors manipulatives, movement &amp; tactile access over worksheet/seatwork. Elementary (K–2 / 3–5) only.
+                </p>
+              </div>
+            </label>
+          </div>
+        )}
 
         {error && (
           <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-ink-100">

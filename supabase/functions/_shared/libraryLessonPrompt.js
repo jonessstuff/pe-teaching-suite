@@ -22,6 +22,10 @@ function getLibraryStandardsGuidance(stateName) {
  * @param {string}  [input.priorSessionsSummary] compact text summary of already-generated sessions
  * @returns {{ system: string, user: string }}
  */
+// Elementary hands-on/kinesthetic lens (K-2/3-5 toggle) — favors manipulatives,
+// movement, and tactile work over worksheet/seatwork.
+const HANDS_ON_DIRECTIVE = `\n\nHANDS-ON / KINESTHETIC EMPHASIS (elementary): Make the PRIMARY mode of learning hands-on, kinesthetic, and movement-based — NOT worksheets or seatwork. Favor manipulatives and physical objects (counters, tiles, cards, blocks, real materials), whole-body movement and gesture, tactile exploration, sorting / building / acting-out, learning stations, and partner or group activities where students are up and doing. The MAIN activity must be concrete and physical (e.g., physical objects for counting / sorting / fraction work in math, movement- or gesture-based vocabulary and word work in reading and language, hands-on building and exploration in science, manipulating real materials otherwise). Actively STEER AWAY from paper-based independent worksheets as the core task — keep any written recording brief and secondary to the physical doing. Keep it developmentally appropriate for young learners' attention spans and motor skills.`
+
 export function buildLibraryLessonPrompt({
   gradeBands = [],
   topic = "",
@@ -35,6 +39,7 @@ export function buildLibraryLessonPrompt({
   totalSessions = 0,
   priorSessionsSummary = "",
   includeELL = false,
+  handsOn = false,
 }) {
   const stateName = resolveStateName(state)
   const gradeStr = gradeBands
@@ -131,7 +136,7 @@ CRITICAL requirements for this session — read carefully:
 - Direct instruction MUST advance the skill beyond what was already taught — do not re-teach concepts already covered
 - The practice activity MUST be noticeably more complex or more independent than the prior session's activity` : ""}${sessionNumber === totalSessions && totalSessions > 1 ? `
 - This is the FINAL session of the unit: closure must bring the unit to a satisfying conclusion (gallery share, student-choice book selection, synthesis reflection, or a brief celebration of learning across all sessions) — NOT a preview of another session` : sessionNumber > 0 && sessionNumber < totalSessions ? `
-- Closure must preview specifically what is coming in Session ${sessionNumber + 1}` : ""}` : ""}${includeELL ? `\n\nELL ACCOMMODATIONS: This lesson will be taught to a class that includes English Language Learners. In addition to all fields in the schema above, add an "ell_accommodations" object to the JSON with these subfields:\n- language_objectives: 2–3 strings in format "Students will [language skill] in order to [content purpose]"\n- tiered_vocabulary: { tier_1: [everyday words students likely know], tier_2: [academic cross-subject vocabulary], tier_3: [content-specific vocabulary unique to this lesson] } — each value is an array of strings\n- sentence_frames: 4–6 strings, each labeled with the specific lesson context (e.g. "During partner practice: 'I noticed that you ___'", "When sharing what you found: 'I learned that ___'")\n- visual_supports: 4–6 specific, concrete suggestions for visual supports, gestures, or realia tied to this lesson's actual activities\n- simplified_instructions: single string — 2–3 short sentences describing the core task at a 2nd-grade reading level, no idioms, no figurative language` : ""}`
+- Closure must preview specifically what is coming in Session ${sessionNumber + 1}` : ""}` : ""}${includeELL ? `\n\nELL ACCOMMODATIONS: This lesson will be taught to a class that includes English Language Learners. In addition to all fields in the schema above, add an "ell_accommodations" object to the JSON with these subfields:\n- language_objectives: 2–3 strings in format "Students will [language skill] in order to [content purpose]"\n- tiered_vocabulary: { tier_1: [everyday words students likely know], tier_2: [academic cross-subject vocabulary], tier_3: [content-specific vocabulary unique to this lesson] } — each value is an array of strings\n- sentence_frames: 4–6 strings, each labeled with the specific lesson context (e.g. "During partner practice: 'I noticed that you ___'", "When sharing what you found: 'I learned that ___'")\n- visual_supports: 4–6 specific, concrete suggestions for visual supports, gestures, or realia tied to this lesson's actual activities\n- simplified_instructions: single string — 2–3 short sentences describing the core task at a 2nd-grade reading level, no idioms, no figurative language` : ""}${handsOn ? HANDS_ON_DIRECTIVE : ""}`
 
   const user = `Generate a complete library/media ${sessionNumber > 0 ? `unit session (Session ${sessionNumber} of ${totalSessions})` : "lesson"} with these parameters:
 

@@ -71,6 +71,11 @@ const JSON_ONLY = `You must return ONLY a single JSON object — no markdown fen
  * @param {string}  [input.teacherNotes]
  * @returns {{ system: string, user: string }}
  */
+// Elementary hands-on/kinesthetic lens (K-2/3-5 toggle) — favors manipulatives,
+// movement, and tactile work over worksheet/seatwork. (Fits the module's CRA
+// sequence: keep the lesson in the Concrete/Representational modes.)
+const HANDS_ON_DIRECTIVE = `\n\nHANDS-ON / KINESTHETIC EMPHASIS (elementary): Make the PRIMARY mode of learning hands-on, kinesthetic, and movement-based — NOT worksheets or seatwork. Center the lesson on the CONCRETE stage of CRA: manipulatives and physical objects (counters, base-ten blocks, fraction tiles/bars, cards, number lines students walk, real materials), whole-body movement and gesture, tactile exploration, sorting / building / acting-out, learning stations, and partner or group work where students are up and doing. The MAIN activity must be a concrete, physical one (e.g., physical objects for counting / sorting / fraction work, folding and cutting to compare fractions, movement-based skip counting). Actively STEER AWAY from paper-based independent worksheets as the core task — keep any written recording brief and secondary to the physical doing. Keep it developmentally appropriate for young learners' attention spans and motor skills.`
+
 export function buildMathSpecialistPrompt({
   topic = "",
   gradeBand = "3-5",
@@ -80,6 +85,7 @@ export function buildMathSpecialistPrompt({
   durationMinutes = 45,
   studentContext = "",
   teacherNotes = "",
+  handsOn = false,
 }) {
   const band = resolveBand(gradeBand)
   const settingEmphasis =
@@ -140,7 +146,7 @@ Field notes:
 
 ${settingEmphasis}
 
-LENGTH DISCIPLINE: A COMPLETE lesson (every field present, JSON closed) matters more than exhaustive detail. Keep each text field focused (a few sentences) and lists to the counts requested. A response cut off before the closing brace is a FAILED response.`
+LENGTH DISCIPLINE: A COMPLETE lesson (every field present, JSON closed) matters more than exhaustive detail. Keep each text field focused (a few sentences) and lists to the counts requested. A response cut off before the closing brace is a FAILED response.${handsOn ? HANDS_ON_DIRECTIVE : ""}`
 
   const user = `Generate a Math Specialist lesson with these parameters:
 

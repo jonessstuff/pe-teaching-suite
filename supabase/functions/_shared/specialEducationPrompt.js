@@ -43,6 +43,11 @@ const MODALITY_GUIDANCE = `response_modalities must offer genuinely DIFFERENT wa
 
 const JSON_ONLY = `You must return ONLY a single JSON object — no markdown fences, no commentary, no preamble.`
 
+// Elementary hands-on/kinesthetic lens (K-2/3-5 toggle) — favors manipulatives,
+// movement, and tactile work over worksheet/seatwork. Applied to the multitier
+// and co-teaching modes (the functional mode is secondary and out of scope).
+const HANDS_ON_DIRECTIVE = `\n\nHANDS-ON / KINESTHETIC EMPHASIS (elementary): Make the PRIMARY mode of learning hands-on, kinesthetic, and movement-based — NOT worksheets or seatwork. Favor manipulatives and physical objects (counters, tiles, cards, blocks, real materials), whole-body movement and gesture, tactile exploration, sorting / building / acting-out, learning stations, and partner or group activities where students are up and doing. The MAIN activity (and, for tiered work, the access options) should be concrete and physical (e.g., physical objects for counting / sorting / fraction work, movement- or gesture-based vocabulary, building and manipulating real materials). Actively STEER AWAY from paper-based independent worksheets as the core task — keep any written recording brief and secondary to the physical doing. Keep it developmentally appropriate for young learners' attention spans and motor skills.`
+
 export function buildSpecialEducationPrompt(input) {
   const mode = input?.mode
   if (mode === "functional") return buildFunctionalPrompt(input)
@@ -56,6 +61,7 @@ function buildMultiTierPrompt({
   contentArea = "",
   gradeBand = "3-5",
   teacherNotes = "",
+  handsOn = false,
 }) {
   const band = resolveBand(gradeBand)
 
@@ -98,7 +104,7 @@ Field notes:
 - standards_alignment: 2–4 entries; framework exactly "CEC" or "UDL".
 - ${band.label === "6–8" || band.label === "9–12" ? "AGE NOTE: these are teenage students — keep every tier, example, and material age-respectful and dignified." : "Keep materials concrete and supportive."}
 
-LENGTH DISCIPLINE: Every field present and JSON closed matters more than length. Keep the 4 tiers tight and each field focused. A response cut off before the closing brace is a FAILED response.`
+LENGTH DISCIPLINE: Every field present and JSON closed matters more than length. Keep the 4 tiers tight and each field focused. A response cut off before the closing brace is a FAILED response.${handsOn ? HANDS_ON_DIRECTIVE : ""}`
 
   const user = `Generate a self-contained multi-tier lesson:
 
@@ -183,6 +189,7 @@ function buildCoTeachingPrompt({
   contentArea = "",
   gradeBand = "6-8",
   teacherNotes = "",
+  handsOn = false,
 }) {
   const band = resolveBand(gradeBand)
 
@@ -224,7 +231,7 @@ Field notes:
 - quick_wins: 3–4 fastest-to-implement supports for a teacher walking into the room with little prep time.
 - standards_alignment: 2–4 entries; framework exactly "CEC", "UDL", or "Co-Teaching (Friend)".
 
-LENGTH DISCIPLINE: Every field present and JSON closed. Keep it tight and quick-reference in tone. A truncated response is a FAILED response.`
+LENGTH DISCIPLINE: Every field present and JSON closed. Keep it tight and quick-reference in tone. A truncated response is a FAILED response.${handsOn ? HANDS_ON_DIRECTIVE : ""}`
 
   const user = `Generate push-in / co-teaching support for a general-education lesson:
 
