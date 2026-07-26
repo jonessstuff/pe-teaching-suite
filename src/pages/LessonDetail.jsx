@@ -5,9 +5,8 @@ import { ArrowLeft, Loader2, Printer, ChevronLeft, ChevronRight, Copy, Pencil, C
 import { getLesson, listLessons, updateLesson, deleteLesson, deleteUnit, duplicateLesson, updateTags } from '../services/lessonsService'
 import { createShare, getShare, deleteShare } from '../services/sharingService'
 import { track } from '../lib/analytics'
-import PlanBookRenderer from '../components/renderers/PlanBookRenderer'
 import AdaptivePERenderer from '../components/renderers/AdaptivePERenderer'
-import CtePlanRenderer from '../components/renderers/CtePlanRenderer'
+import LessonBody from '../components/lesson/lessonBodyRenderers'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 import { useTrial } from '../context/TrialContext'
 
@@ -210,7 +209,6 @@ export default function LessonDetail() {
 
   const lo = lesson.lesson_object
   const isAPE = lo?.subject === 'Adaptive PE'
-  const isCTE = lo?.subject === 'CTE'
 
   const currentIndex = unitLessons.findIndex((l) => l.id === id)
   const prevLesson = currentIndex > 0 ? unitLessons[currentIndex - 1] : null
@@ -403,16 +401,9 @@ export default function LessonDetail() {
           onCancel={() => setEditingContent(false)}
           saving={savingContent}
         />
-      ) : isCTE ? (
-        <CtePlanRenderer
-          lesson={{
-            ...lo,
-            scheduled_date: lesson.scheduled_date,
-            period_label: lesson.period_label,
-          }}
-        />
       ) : (
-        <PlanBookRenderer
+        <LessonBody
+          subject={lo?.subject}
           lesson={{
             ...lo,
             scheduled_date: lesson.scheduled_date,
