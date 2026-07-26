@@ -19,11 +19,21 @@ const GRADES = [
   { label: '12', value: 12 },
 ]
 
+// STEM lessons reformat differently per focus area (different standards frameworks),
+// so we ask which one rather than guessing from the paste.
+const STEM_FOCUS_AREAS = [
+  { value: 'engineering', label: 'Engineering Design' },
+  { value: 'coding', label: 'Coding & CS' },
+  { value: 'science', label: 'Science Investigation' },
+  { value: 'maker', label: 'Maker / Tinkering' },
+]
+
 export default function ImportLesson() {
   const navigate = useNavigate()
   const [subject, setSubject] = useState('PE & Health')
   const [gradeBand, setGradeBand] = useState(5)
   const [targetLanguage, setTargetLanguage] = useState('')
+  const [stemFocusArea, setStemFocusArea] = useState('engineering')
   const [rawText, setRawText] = useState('')
   const [status, setStatus] = useState('idle')
   const [error, setError] = useState(null)
@@ -39,7 +49,7 @@ export default function ImportLesson() {
     setError(null)
 
     try {
-      const lessonObject = await generateImportedLesson({ rawText, subject, gradeBand, targetLanguage: targetLanguage.trim() })
+      const lessonObject = await generateImportedLesson({ rawText, subject, gradeBand, targetLanguage: targetLanguage.trim(), stemFocusArea })
       const saved = await createLesson(lessonObject)
       navigate(`/lessons/${saved.id}`)
     } catch (err) {
@@ -111,6 +121,29 @@ export default function ImportLesson() {
               placeholder="e.g. Spanish, French, Mandarin"
               className="w-full max-w-xs rounded-xl border border-ink-700 bg-white dark:bg-ink-800 px-4 py-2.5 text-sm text-ink-50 placeholder:text-ink-700 dark:placeholder:text-ink-600 outline-none focus:border-rose-500"
             />
+          </div>
+        )}
+
+        {/* STEM: focus area (different focus areas use different standards frameworks) */}
+        {subject === 'STEM' && (
+          <div>
+            <label className="block text-sm font-medium text-ink-300 mb-2">STEM focus area</label>
+            <div className="flex flex-wrap gap-2">
+              {STEM_FOCUS_AREAS.map(({ value, label }) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setStemFocusArea(value)}
+                  className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${
+                    stemFocusArea === value
+                      ? 'border-rose-500 bg-rose-500/15 text-rose-400'
+                      : 'border-ink-700 text-ink-500 hover:border-ink-500 hover:text-ink-200'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 

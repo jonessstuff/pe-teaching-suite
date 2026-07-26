@@ -1,9 +1,9 @@
 // Import & Enhance — reformat a teacher's pasted lesson into a structured,
 // standards-aligned lesson object.
 //
-// The original six modules (PE, Adaptive PE, Art, Music, Library, STEM) reformat
-// into the PE-style PlanBook schema (buildPlanBookImportPrompt below). The newer
-// content-lesson modules each have their OWN output shape (World Languages' 5 Cs,
+// PE & Adaptive PE reformat into the PE-style PlanBook schema
+// (buildPlanBookImportPrompt below). Every other content module — Art, Music,
+// Library, STEM, and the newer specialists — has its OWN output shape (5 Cs,
 // Theater/Dance's Artistic Processes, JROTC's LET structure, …). Rather than
 // re-author and maintain those schemas here (which would drift from each
 // generator), we REUSE each module's own generator system prompt — it already
@@ -24,6 +24,10 @@ import { buildElementaryTechPrompt } from "./elementaryTechPrompt.js";
 import { buildEslSpecialistPrompt } from "./eslSpecialistPrompt.js";
 import { buildGiftedTalentedPrompt } from "./giftedTalentedPrompt.js";
 import { buildSpecialEducationPrompt } from "./specialEducationPrompt.js";
+import { buildArtLessonPrompt } from "./artLessonPrompt.js";
+import { buildMusicLessonPrompt } from "./musicLessonPrompt.js";
+import { buildLibraryLessonPrompt } from "./libraryLessonPrompt.js";
+import { buildStemLessonPrompt } from "./stemLessonPrompt.js";
 
 // Numeric K-12 grade → the band string the newer builders expect.
 function numToBand(n) {
@@ -60,6 +64,14 @@ ${rawText}
 // Languages, whose example vocabulary carries accented / apostrophe text that
 // trips the tolerant prose-JSON parser.
 const MODULE_SYSTEM = {
+  // Specials with their own renderer shape. Art/Music/Library/STEM take a numeric
+  // gradeBands array (like PE); the newer modules take a band string.
+  "Art": ({ num }) => ({ system: buildArtLessonPrompt({ gradeBands: [num] }).system }),
+  "Music": ({ num }) => ({ system: buildMusicLessonPrompt({ gradeBands: [num] }).system }),
+  "Library & Media": ({ num }) => ({ system: buildLibraryLessonPrompt({ gradeBands: [num] }).system }),
+  "STEM": ({ num, stemFocus }) => ({
+    system: buildStemLessonPrompt({ gradeBands: [num], focusArea: stemFocus || "engineering" }).system,
+  }),
   "Theater": ({ band }) => ({ system: buildTheaterPrompt({ gradeBand: band }).system }),
   "Dance": ({ band }) => ({ system: buildDancePrompt({ gradeBand: band }).system }),
   "World Languages": ({ band, targetLanguage }) => ({
@@ -80,15 +92,16 @@ const MODULE_SYSTEM = {
   }),
 };
 
-export function buildImportedLessonPrompt({ rawText, subject, gradeBand, targetLanguage }) {
+export function buildImportedLessonPrompt({ rawText, subject, gradeBand, targetLanguage, stemFocusArea }) {
   const moduleSystem = MODULE_SYSTEM[subject];
   if (moduleSystem) {
+    const num = gradeBand;
     const band = numToBand(gradeBand);
-    const { system, schema } = moduleSystem({ band, targetLanguage });
+    const { system, schema } = moduleSystem({ num, band, targetLanguage, stemFocus: stemFocusArea });
     return { system, user: importUser(subject, rawText), schema };
   }
-  // Original six (PE, Adaptive PE, Art, Music, Library, STEM) + any unmapped
-  // subject fall back to the PE-style PlanBook import.
+  // PE & Adaptive PE (and any unmapped subject) fall back to the PlanBook import,
+  // whose schema PlanBookRenderer reads directly.
   return buildPlanBookImportPrompt({ rawText, subject, gradeBand });
 }
 

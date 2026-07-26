@@ -769,9 +769,9 @@ export async function generateFitnessTestPrep({ gradeBands, testName, component,
   return data
 }
 
-export async function generateImportedLesson({ rawText, subject, gradeBand, targetLanguage }) {
+export async function generateImportedLesson({ rawText, subject, gradeBand, targetLanguage, stemFocusArea }) {
   const { data, error } = await supabase.functions.invoke('generate-imported-lesson', {
-    body: { rawText, subject, gradeBand, targetLanguage },
+    body: { rawText, subject, gradeBand, targetLanguage, stemFocusArea },
   })
   if (error) throw error
   return data
