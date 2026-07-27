@@ -403,7 +403,7 @@ function GradeBandBlock({ grade, subtitle, children }) {
 
 function InstructionBlock({ label, text }) {
   return (
-    <div className="mb-4">
+    <div className="phase-block mb-4">
       <p className="text-sm font-semibold text-ink-200">{label}</p>
       <p className="mt-0.5 text-ink-300 whitespace-pre-line">{text}</p>
     </div>

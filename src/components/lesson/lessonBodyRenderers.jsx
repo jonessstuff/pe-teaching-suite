@@ -11,7 +11,8 @@
 //
 // Every lesson renderer takes a uniform `{ lesson }` prop, so dispatch is a
 // simple lookup. Unknown/base PE subjects fall back to PlanBookRenderer.
-import { createElement } from 'react'
+import { createElement, useMemo } from 'react'
+import { stripHedges } from '../LessonPrintFix'
 import PlanBookRenderer from '../renderers/PlanBookRenderer'
 import CtePlanRenderer from '../renderers/CtePlanRenderer'
 import ArtPlanRenderer from '../renderers/ArtPlanRenderer'
@@ -96,13 +97,42 @@ function resolveRenderer(subject, lesson) {
   return LESSON_RENDERERS[subject] ?? PlanBookRenderer
 }
 
+// Generator disclaimer-note fields (state_verification_note, and any
+// *_verification_note) are whole hedge notes, not parentheticals — drop them at
+// display so already-saved lessons print clean. New lessons are fixed at the
+// prompt level; the DB copy is untouched.
+const DROP_KEY = /(^|_)state_verification_note$|_verification_note$/i
+
+/**
+ * Display-time hedge cleanup for ALREADY-SAVED lessons. Deep-clones the lesson,
+ * runs stripHedges() on every string (removing trailing generator parentheticals
+ * like "(verify against official standards)"), and drops verification-note fields
+ * — for every module, in ONE place, never written back to the database. Standards
+ * render per-renderer, so this is the single shared choke point they all share.
+ * Exported so the Adaptive PE path (rendered outside LessonBody) can reuse it.
+ */
+export function cleanLessonForDisplay(value) {
+  if (typeof value === 'string') return stripHedges(value)
+  if (Array.isArray(value)) return value.map(cleanLessonForDisplay)
+  if (value && typeof value === 'object') {
+    const out = {}
+    for (const [k, v] of Object.entries(value)) {
+      if (typeof v === 'string' && DROP_KEY.test(k)) continue // drop disclaimer note
+      out[k] = cleanLessonForDisplay(v)
+    }
+    return out
+  }
+  return value
+}
+
 /**
  * Renders a saved lesson's body with the renderer that matches its subject,
  * falling back to PlanBookRenderer for base PE subjects (or any unmapped one).
  */
 export default function LessonBody({ subject, lesson }) {
+  const cleaned = useMemo(() => cleanLessonForDisplay(lesson), [lesson])
   // createElement (not JSX <Renderer/>) because the component is chosen
   // dynamically from a stable module-level map — the react-hooks
   // static-components rule flags a capitalized component const used as JSX.
-  return createElement(resolveRenderer(subject, lesson), { lesson })
+  return createElement(resolveRenderer(subject, cleaned), { lesson: cleaned })
 }

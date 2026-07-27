@@ -1,0 +1,70 @@
+/*
+ * Global print styles for lesson printing across ALL modules.
+ * Imported once in main.jsx. Do NOT add per-renderer print rules.
+ *
+ * Fixes (from a real print test):
+ *  - hide the app chrome (both <nav>s, footer, anything .no-print/[data-no-print])
+ *  - zero the app's margins/padding and force a white background
+ *  - keep PHASE blocks, sections, lists, and list items from splitting across pages
+ *  - keep headings with the content that follows them
+ *  - reveal the injected .lesson-print-header (title + meta) only when printing
+ */
+
+@page {
+  margin: 0.6in;
+}
+
+/* Hidden on screen; revealed in @media print below. */
+.lesson-print-header {
+  display: none;
+}
+
+@media print {
+  /* App chrome: the sidebar <nav> and the fixed bottom <nav> are both <nav>
+     elements (no dedicated class), so `nav` covers both. */
+  nav,
+  footer,
+  .bottom-nav,
+  .no-print,
+  [data-no-print] {
+    display: none !important;
+  }
+
+  html,
+  body,
+  #root,
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+  }
+
+  body {
+    color: #000000;
+  }
+
+  /* Don't split these across a page break. `.phase-block`/`.lesson-section`
+     are applied to the shared phase/instruction block wrappers; the element
+     selectors do the rest (40 renderers use <section>; lists cover numbered
+     steps). */
+  .phase-block,
+  .lesson-section,
+  section,
+  ul,
+  ol,
+  li,
+  h1, h2, h3, h4, h5, h6 {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Keep a heading attached to the block it introduces. */
+  h1, h2, h3, h4, h5, h6 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .lesson-print-header {
+    display: block;
+  }
+}

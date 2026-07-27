@@ -204,7 +204,7 @@ function Topbar({ showSidebar }) {
 function BottomTabBar() {
   const tabItems = NAV_ITEMS.filter(({ mobileHidden }) => !mobileHidden)
   return (
-    <nav className="md:hidden fixed bottom-0 inset-x-0 z-50 flex border-t border-ink-900 bg-white dark:bg-ink-950">
+    <nav data-no-print className="bottom-nav md:hidden fixed bottom-0 inset-x-0 z-50 flex border-t border-ink-900 bg-white dark:bg-ink-950">
       {tabItems.map(({ to, label, mobileLabel, icon: Icon, end }) => (
         <NavLink
           key={to}

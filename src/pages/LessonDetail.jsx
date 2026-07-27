@@ -6,7 +6,8 @@ import { getLesson, listLessons, updateLesson, deleteLesson, deleteUnit, duplica
 import { createShare, getShare, deleteShare } from '../services/sharingService'
 import { track } from '../lib/analytics'
 import AdaptivePERenderer from '../components/renderers/AdaptivePERenderer'
-import LessonBody from '../components/lesson/lessonBodyRenderers'
+import LessonBody, { cleanLessonForDisplay } from '../components/lesson/lessonBodyRenderers'
+import LessonPrintFix from '../components/LessonPrintFix'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 import { useTrial } from '../context/TrialContext'
 
@@ -387,12 +388,19 @@ export default function LessonDetail() {
         </div>
       )}
 
+      {/* Print-only header (title + meta) for every module's lesson, and the
+          document.title swap so the browser print header shows the lesson name.
+          One insertion point for all ~30 modules — see LessonPrintFix. */}
+      <LessonPrintFix lesson={lesson} />
+
       {!isAPE && (
         <SecondaryToolsPanel savedId={id} lessonObject={lo} subject={lesson.subject} />
       )}
 
       {isAPE ? (
-        <AdaptivePERenderer lesson={lo} />
+        // Adaptive PE renders outside LessonBody, so apply the same display-time
+        // hedge/verification-note cleanup here for parity with every other module.
+        <AdaptivePERenderer lesson={cleanLessonForDisplay(lo)} />
       ) : editingContent ? (
         <LessonEditForm
           form={contentForm}

@@ -7,6 +7,7 @@ import { releaseSession } from '../services/sessionService'
 import { clearActivity } from '../services/inactivityService'
 import { US_STATES } from '../constants/usStates'
 import TeachingAreasField from '../components/TeachingAreasField'
+import { PrintTeacherInfoToggle } from '../components/LessonPrintFix'
 import { getMyCode } from '../services/referralService'
 import { useTrial } from '../context/TrialContext'
 import { EXPORT_CAP, UPGRADE_URL } from '../services/trialService'
@@ -349,6 +350,15 @@ export default function Settings() {
           <p className="text-xs text-ink-500">Your referral code: <strong className="text-ink-300">{referralCode}</strong></p>
         </div>
       )}
+
+      {/* Printing */}
+      <div className="card p-6 space-y-4">
+        <h2 className="font-semibold text-ink-50">Printing</h2>
+        <p className="text-sm text-ink-400">
+          Printed lessons show the lesson title and details at the top. You can optionally add your name.
+        </p>
+        <PrintTeacherInfoToggle />
+      </div>
 
       {/* District report link */}
       <div className="card p-6 space-y-3">
