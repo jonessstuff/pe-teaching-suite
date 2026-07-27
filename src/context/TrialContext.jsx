@@ -12,13 +12,20 @@ function isStatusFresh(profile) {
   return !!syncedAt && Date.now() - new Date(syncedAt).getTime() < STATUS_FRESH_MS
 }
 
-// Invoke the Edge Function that reads the live Stripe subscription status and
-// caches it onto the profile row. Returns the freshly re-fetched profile, or
-// null on failure (callers keep the cached profile in that case).
+// Invoke the Edge Function that reads the live Stripe subscription status.
+// It ALSO tries to cache the status onto the profile row, but the cache columns
+// (subscription_status, stripe_customer_id, subscription_synced_at, …) don't
+// exist on this DB (migrations 0019/0020 were never applied), so that write is a
+// silent no-op. We therefore TRUST THE FUNCTION'S LIVE RESPONSE and merge it onto
+// the profile in memory, so deriveTrialState sees the real Stripe status instead
+// of reading a missing column (which always came back null → every paying user
+// past their 7-day window was gated). Returns the merged profile.
 async function syncSubscriptionStatus() {
-  const { error } = await supabase.functions.invoke('get-subscription-status', { body: {} })
+  const { data, error } = await supabase.functions.invoke('get-subscription-status', { body: {} })
   if (error) throw error
-  return getProfile()
+  const profile = await getProfile()
+  if (!data) return profile
+  return { ...profile, subscription_status: data.status ?? null, trial_ends_at: data.trialEndsAt ?? null }
 }
 
 // Paywall reasons: 'export-cap' | 'gated-feature' | 'trial-expired' | null
