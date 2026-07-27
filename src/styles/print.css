@@ -1,13 +1,6 @@
 /*
  * Global print styles for lesson printing across ALL modules.
  * Imported once in main.jsx. Do NOT add per-renderer print rules.
- *
- * Fixes (from a real print test):
- *  - hide the app chrome (both <nav>s, footer, anything .no-print/[data-no-print])
- *  - zero the app's margins/padding and force a white background
- *  - keep PHASE blocks, sections, lists, and list items from splitting across pages
- *  - keep headings with the content that follows them
- *  - reveal the injected .lesson-print-header (title + meta) only when printing
  */
 
 @page {
@@ -41,24 +34,54 @@
 
   body {
     color: #000000;
+    line-height: 1.3;
   }
 
-  /* Don't split these across a page break. `.phase-block`/`.lesson-section`
-     are applied to the shared phase/instruction block wrappers; the element
-     selectors do the rest (40 renderers use <section>; lists cover numbered
-     steps). */
+  /* ── Fill the page (don't burn paper on multi-lesson prints) ─────────────── */
+  p,
+  li {
+    line-height: 1.3 !important;
+    margin-top: 0.08em;
+    margin-bottom: 0.08em;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 0.3em;
+    margin-bottom: 0.12em;
+  }
+  ul, ol {
+    margin: 0.15em 0;
+  }
+  /* Collapse Tailwind's big vertical rhythm to a tight, uniform gap. */
+  .space-y-8 > * + *,
+  .space-y-6 > * + *,
+  .space-y-5 > * + *,
+  .space-y-4 > * + * {
+    margin-top: 0.5rem !important;
+  }
+  /* Drop the on-screen card chrome (p-8 padding, border, shadow) in print. */
+  .card {
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  .phase-block {
+    margin-bottom: 0.4rem !important;
+  }
+
+  /* ── Keep-together — ONLY elements guaranteed shorter than a page ────────────
+     `section` and `ul`/`ol` are intentionally EXCLUDED: a block taller than a
+     single page CANNOT honor break-inside:avoid, so Safari clips everything after
+     it (this was the bug — the Accommodations section ran past one page and
+     wiped Materials/Location/Vocabulary/Videos + left a blank page). Individual
+     list items, phase blocks, and headings are always short, so the rule is safe
+     on them: list items never split mid-item, phases stay whole, and headings
+     stay with the content that follows. */
   .phase-block,
-  .lesson-section,
-  section,
-  ul,
-  ol,
   li,
   h1, h2, h3, h4, h5, h6 {
     break-inside: avoid;
     page-break-inside: avoid;
   }
-
-  /* Keep a heading attached to the block it introduces. */
   h1, h2, h3, h4, h5, h6 {
     break-after: avoid;
     page-break-after: avoid;
