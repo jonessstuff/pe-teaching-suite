@@ -40,6 +40,7 @@ import Settings from './pages/Settings'
 import Login from './pages/Login'
 import Landing from './pages/Landing'
 import ResetPassword from './pages/ResetPassword'
+import Welcome from './pages/Welcome'
 import MyBinders from './pages/MyBinders'
 import AssessmentBank from './pages/AssessmentBank'
 import StandardsTracker from './pages/StandardsTracker'
@@ -289,6 +290,7 @@ function App() {
             : <Landing />} />
           <Route path="/login" element={<Login authError={authError} onClearAuthError={() => { setAuthError(null); setDisplaced(false) }} />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/welcome" element={<Welcome />} />
           <Route path="/shared/:token" element={<SharedLesson />} />
           <Route path="/try" element={<TryFreeLesson />} />
           <Route path="/free-lesson/:token" element={<FreeLessonView />} />
@@ -303,6 +305,7 @@ function App() {
       <BrowserRouter>
       <Routes>
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/welcome" element={<Welcome />} />
         <Route path="/" element={<AppShell />}>
           <Route index element={<ModulePicker />} />
           <Route path="pe-health" element={<Dashboard />} />
