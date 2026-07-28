@@ -22,6 +22,7 @@ const PHASE_LABELS = {
   cosmetology: ['Client / Scenario Hook', 'Concept Instruction', 'Skill Demonstration', 'Hands-On Application (Supervised)', 'Reflection & Career / Licensing Connection'],
   business_law: ['Case / Scenario Hook', 'Concept Instruction', 'Applied Example / Guided Practice', 'Hands-On Case Analysis', 'Reflection & Career Connection'],
   sports_entertainment: ['Industry Hook', 'Concept Instruction', 'Applied Example / Guided Practice', 'Hands-On Marketing Application', 'Reflection & Career Connection'],
+  exercise_science: ['Scenario Hook', 'Concept Instruction', 'Skill Demonstration / Guided Practice', 'Hands-On Application (Supervised)', 'Reflection & Career Connection'],
 }
 
 const PATHWAY_LABELS = {
@@ -45,6 +46,7 @@ const PATHWAY_LABELS = {
   cosmetology: 'Cosmetology / Personal Care Services',
   business_law: 'Business Law',
   sports_entertainment: 'Sports & Entertainment Marketing',
+  exercise_science: 'Exercise Science / Sports Medicine',
 }
 
 const LEVEL_LABELS = {

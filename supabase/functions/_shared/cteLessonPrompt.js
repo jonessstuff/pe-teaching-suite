@@ -36,6 +36,7 @@ const PATHWAY_LABELS = {
   cosmetology: "Cosmetology / Personal Care Services",
   business_law: "Business Law",
   sports_entertainment: "Sports & Entertainment Marketing",
+  exercise_science: "Exercise Science / Sports Medicine",
 }
 
 function tierLevelLabel(tier, level) {
@@ -173,6 +174,13 @@ Content areas to prioritize, organized around the three NBEA strands: (a) Basics
 Then include entries from this where the lesson content maps to it:
 - National Standards for Business Education (NBEA), Marketing strand — the underlying marketing content standards these sports/entertainment applications build on. Framework field: "NBEA Marketing".
 Content areas to prioritize: (a) Sports marketing fundamentals — marketing concepts applied to sporting events, athletes, sports facilities, sporting goods, personal training, and sports information; (b) Entertainment marketing — marketing for concerts, festivals, trade shows, product launches, and the film/TV/music industries; (c) Branding, sponsorship & endorsements — logos, trademarks, co-branding, athlete/celebrity endorsement deals, and sponsorship structures; and (d) Event marketing & promotion — promotional strategy, ticket sales, event-planning basics, and publicity/public relations for sports and entertainment properties. Keep the identity on the sports and entertainment industries specifically, not generic marketing.`,
+    exercise_science: `Primary frameworks for Exercise Science / Sports Medicine — a nationally recognized pathway in the health-science family, DISTINCT from the general Health Science pathway (some states nest it under Health Science, others treat it as standalone; keep the identity on movement, exercise, athletic training, and sports-medicine careers). Lead the competency list with entries from these, and treat the state CTE task list above as the state verification layer for them:
+- NASM (National Academy of Sports Medicine) — the recognized industry-credential anchor for this field; the course builds toward the NASM Certified Personal Trainer (NASM-CPT) credential. Align competencies (fitness assessment, exercise programming, anatomy/kinesiology, program design) to NASM standards. Framework field: "NASM". Note NASM-CPT is typically an 18+/post-secondary certification — treat it as a career goal students build toward, not one earned in a high-school course.
+- HOSA — Future Health Professionals — the pathway CTSO (the same CTSO family as Health Science); align applied tasks, projects, and career exploration to relevant HOSA competitive events (e.g., Sports Medicine, Physical Therapy, CPR/First Aid). Framework field: "HOSA".
+Then include entries from this where the lesson content maps to it:
+- National Health Science Standards (NCHSE) — where anatomy & physiology, medical terminology, therapeutic-career, and safety content maps to the broader health-science foundations. Framework field: "NCHSE".
+CPR / FIRST AID / AED — CRITICAL FRAMING (see the SAFETY & CERTIFICATION directive in this prompt): this field commonly includes CPR/First Aid/AED, but ACTUAL hands-on certification in these life-saving skills requires a certified instructor and approved provider (American Red Cross, American Heart Association, etc.) and CANNOT be conferred by a generated lesson. Frame any CPR/First Aid/AED content as knowledge/awareness that SUPPORTS (never replaces) formal certification training.
+Content areas to prioritize: (a) Sports medicine team & therapeutic careers — the roles of the sports-medicine team (coach, athletic trainer, team physician, allied health) and career exploration across Athletic Training, Physical Therapy (PT/PTA), Occupational Therapy (OT/OTA), and Exercise Physiology; (b) Anatomy, physiology & kinesiology — body systems relevant to movement and exercise, applied to sports/exercise contexts; (c) Injury prevention & care — injury-prevention principles, basic taping/wrapping AWARENESS, and the healing/rehabilitation process (knowledge-level, NOT hands-on clinical certification); and (d) Fitness, nutrition & performance — sport-nutrition basics, exercise-programming concepts, and sport-psychology / performance-enhancement awareness. Keep the identity on exercise science and sports medicine, and keep any hands-on physical or clinical skill at the awareness/supervised level.`,
   }[pathway] ?? ""
 
   const rigorNote =
@@ -214,6 +222,7 @@ function getCredentialFocus(pathway) {
     cosmetology: ["A state cosmetology (or separate esthetics / nail-technician / barbering) LICENSE — the credential required to practice, earned by completing the state-mandated training hours and passing the NIC (or state) written and practical exams", "NIC national theory & practical exam readiness (used by 38+ states)", "SkillsUSA competitive-event recognition (Cosmetology, Esthetics, Nail Care). NOTE: required license hours and license categories vary significantly by state — verify with the state board."],
     business_law: ["FBLA competitive-event recognition (Business Law)", "DECA competitive-event recognition (Business Law & Ethics Team Decision-Making)", "A business-law & ethics portfolio and case-analysis work (this content area has no single dominant student credential — demonstrated legal-literacy and ethical-reasoning skill carry it); general NBEA/MBAResearch business assessments where offered"],
     sports_entertainment: ["Precision Exams (YouScience) Sports and Entertainment Marketing (Exam 416) industry certification", "DECA competitive-event recognition (Sports and Entertainment Marketing Team Decision Making; Sports and Entertainment Marketing Series)", "A sports/entertainment marketing portfolio — a sponsorship or endorsement pitch, a promotion/event-marketing plan, or a branding concept"],
+    exercise_science: ["NASM Certified Personal Trainer (NASM-CPT) — the industry credential this course builds toward (typically earned at 18+/post-secondary)", "HOSA competitive-event & program recognition (e.g., Sports Medicine, Physical Therapy)", "CPR / First Aid / AED certification — earned ONLY through a certified instructor and approved provider (American Red Cross / American Heart Association), never the generated course itself; the lesson builds supporting knowledge only"],
   }[pathway] ?? []
 }
 
@@ -659,6 +668,28 @@ function getPhaseDescriptions(pathway) {
         desc: "Students reflect on how today's skill fits a real sports/entertainment marketing career (team/league marketing, agency, venue, event promotion, brand sponsorship), share their plan or decision, and name one marketing principle they'd apply. Connect the skill to a DECA SEM event and to an internship or job-shadow opportunity with a franchise, venue, or entertainment company. End with a brief exit ticket. 5–8 minutes.",
       },
     },
+    exercise_science: {
+      warm_up: {
+        name: "Scenario Hook",
+        desc: "Open with a concrete sports-medicine or exercise scenario — an athlete's injury on the field, a personal-training client's fitness goal, a rehab milestone, or a nutrition/performance question. Students react as a member of the sports-medicine team would: what's happening in the body, who on the team responds, and what's the goal? Keep it educational and awareness-level. Connect to a real role or career. 5–8 minutes.",
+      },
+      whole_group_instruction: {
+        name: "Concept Instruction",
+        desc: "Teach the core exercise-science / sports-medicine concept directly using correct vocabulary (e.g., anatomical planes, muscle actions, RICE, range of motion, kinesiology terms, macronutrients, target heart rate, sports-medicine team roles). Ground it in the relevant NASM or HOSA/NCHSE standard. For ANY CPR/first-aid/AED or hands-on skill, frame it as knowledge that SUPPORTS formal certification — never a substitute. Address a common misconception and check understanding. 8–12 minutes.",
+      },
+      fitness_activities: {
+        name: "Skill Demonstration / Guided Practice",
+        desc: "Model the concept step by step in an educational, awareness-level way — identifying muscles/joints in a movement, walking through an injury-prevention or RICE sequence, demonstrating a taping/wrapping technique for AWARENESS (not certification), or reading a simple exercise-program or nutrition plan. Name each step and the principle behind it; any physical demonstration is supervised and low-risk. Students watch, then try a low-risk step with teacher support. 5–10 minutes.",
+      },
+      independent_practice: {
+        name: "Hands-On Application (Supervised)",
+        desc: "Students apply the skill in a realistic, SUPERVISED, awareness-level task: map the sports-medicine team's roles for a scenario, analyze a movement using anatomy/kinesiology, design a basic exercise or injury-prevention plan, evaluate a sport-nutrition choice, or practice a taping/wrapping technique for AWARENESS on a peer or manikin ONLY where school policy allows and under supervision. Keep everything knowledge/awareness-level — no clinical treatment, no certification claim. Describe exactly what students do, what a strong result looks like, and what the teacher observes/coaches. Include a checklist or rubric aligned to a NASM or HOSA standard. 15–20 minutes.",
+      },
+      closure: {
+        name: "Reflection & Career Connection",
+        desc: "Students reflect on how today's concept fits a real sports-medicine or exercise-science career (athletic trainer, PT/PTA, OT/OTA, exercise physiologist, personal trainer), share a finding or plan, and name one principle they'd apply. Connect the skill to the NASM-CPT / HOSA pathway and to a job-shadow or internship (athletic training room, clinic, fitness facility). Remind students that CPR/first-aid/AED and clinical skills require certified instruction. End with a brief exit ticket. 5–8 minutes.",
+      },
+    },
   }
   return map[pathway] ?? map.hospitality
 }
@@ -770,6 +801,11 @@ function getPathwaySequence(pathway) {
       { level: "concentrator", course: "Sports & Entertainment Marketing / Promotion & Sponsorship", description: "Applied study to Precision Exams (416) and DECA standards — sports and entertainment marketing strategy, branding and licensing, sponsorship and endorsement structures, and event marketing/promotion and ticket sales, with DECA SEM competitive-event and case-study alignment." },
       { level: "completer", course: "Advanced / Capstone, DECA & Work-Based Learning", description: "Capstone campaign or event-marketing project, a sports/entertainment marketing portfolio, Precision Exams (416) certification, DECA SEM competitive events, and work-based learning through an internship or job shadow with a sports franchise, event venue, or entertainment company." },
     ],
+    exercise_science: [
+      { level: "introductory", course: "Introduction to Exercise Science / Sports Medicine", description: "Foundations — the sports-medicine team and therapeutic careers (athletic training, PT, OT, exercise physiology), introductory anatomy/physiology/kinesiology for movement, injury-prevention awareness, and fitness/nutrition basics (knowledge-level; CPR/first aid supports but does not replace certified training)." },
+      { level: "concentrator", course: "Sports Medicine / Exercise Science II", description: "Applied study to NASM and HOSA/NCHSE standards — kinesiology and body systems in exercise, injury-prevention and the rehabilitation process, taping/wrapping AWARENESS, exercise programming, and sport nutrition and psychology, with HOSA competitive-event alignment. Any hands-on skill is awareness-level and supervised." },
+      { level: "completer", course: "Advanced Sports Medicine / Capstone, HOSA & Work-Based Learning", description: "Capstone project or case study, a sports-medicine/exercise-science portfolio, progress toward the NASM-CPT credential (typically 18+/post-secondary), CPR/First Aid/AED certification through a certified instructor, HOSA competitive events, and work-based learning through job shadowing (athletic trainers, PTs) or an internship in an athletic training room, clinic, or fitness facility." },
+    ],
   }[pathway] ?? []
 }
 
@@ -778,7 +814,7 @@ function getPathwaySequence(pathway) {
 // Work-Based Learning (HQWBL) model, which recognizes a broader set of 12 methods than
 // the internship/shadow/speaker default.
 function getWblGuidance(pathway) {
-  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing" || pathway === "engineering_tech" || pathway === "business_mgmt" || pathway === "agriculture" || pathway === "construction" || pathway === "arts_av" || pathway === "government" || pathway === "law_safety" || pathway === "cosmetology" || pathway === "business_law" || pathway === "sports_entertainment") {
+  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing" || pathway === "engineering_tech" || pathway === "business_mgmt" || pathway === "agriculture" || pathway === "construction" || pathway === "arts_av" || pathway === "government" || pathway === "law_safety" || pathway === "cosmetology" || pathway === "business_law" || pathway === "sports_entertainment" || pathway === "exercise_science") {
     const emphasis = pathway === "health_science"
       ? " Clinical experience is especially relevant for this pathway — prioritize clinical/hospital placements, patient-care rotations, and health-agency service learning where appropriate."
       : pathway === "education"
@@ -809,7 +845,9 @@ function getWblGuidance(pathway) {
                                 ? " Internship and mentorship are especially relevant for this pathway — prioritize internships and job shadowing in law offices, HR departments, and business-compliance / regulatory roles; and mentorship from attorneys, paralegals, HR professionals, or compliance officers, alongside service learning (e.g., a consumer-education / know-your-rights project) and FBLA/DECA case-study and role-play competition as authentic, program-based WBL. Keep every placement OBSERVATIONAL and educational — career exploration only, never the practice of law or giving legal advice."
                                 : pathway === "sports_entertainment"
                                   ? " Internship and job shadowing are especially relevant for this pathway — prioritize internships and job shadows with sports franchises and teams, event venues and arenas, entertainment and event-promotion companies, marketing/sponsorship agencies, and school/college athletic departments; plus mentorship from sports/entertainment marketers, and a school-based enterprise (marketing and promoting real school athletic events, spirit merchandise, or performances) as authentic WBL. DECA Sports and Entertainment Marketing competitive events also serve as program-based work-based learning."
-                                  : ""
+                                  : pathway === "exercise_science"
+                                    ? " Job shadowing and internship are especially relevant for this pathway — prioritize job shadows with athletic trainers, physical therapists (PT/PTA), occupational therapists, and exercise physiologists, and internships in athletic training rooms, physical-therapy/rehab clinics, fitness and performance facilities, and school/college athletic departments, alongside mentorship from sports-medicine professionals and clinical/field observation. Every placement is OBSERVATIONAL and supervised — students do not perform clinical treatment, and any CPR/first-aid/AED or clinical skill is learned only through certified instruction."
+                                    : ""
     return `\nThis pathway follows Virginia's High-Quality Work-Based Learning (HQWBL) model, which recognizes 12 methods: job shadowing, service learning, mentorship, externship, school-based enterprise, internship, entrepreneurship, clinical experience, cooperative education, youth registered apprenticeship, registered apprenticeship, and supervised agricultural experience. When filling the fields below, draw the most lesson-appropriate ideas from this broader set (not only internships/shadows) — e.g., service learning with a community agency, a clinical experience, a school-based enterprise, or a mentorship — and fold them into the internships and job_shadows arrays as fits this lesson's content and tier.${emphasis}`
   }
   return ""
@@ -850,6 +888,11 @@ SAFETY (safety_notes field) — CRITICAL FOR THIS PATHWAY: Cosmetology / persona
     return `
 
 PROFESSIONAL & EDUCATIONAL BOUNDARY (safety_notes field) — CRITICAL FOR THIS PATHWAY: This is BUSINESS and CIVICS education about how the legal system and business law WORK — it is NOT legal advice and NOT training to practice law. Keep ALL content educational and conceptual (concepts, how systems and rules work, why they matter to businesses, consumers, and employees, and ethics/case analysis). Do NOT provide legal advice, do NOT give step-by-step instructions for handling a real legal dispute or drafting binding legal documents, and make clear that a real legal question requires a licensed attorney. Frame all case studies and role-plays as EDUCATIONAL analysis, never real-world legal action. The FIRST item in safety_notes MUST be this boundary statement, verbatim: "This lesson plan supports classroom business and legal-literacy education only. It is not legal advice and does not train students to practice law or to handle real legal disputes. For any actual legal question, consult a licensed attorney, and follow your program's and district's policies."`
+  }
+  if (pathway === "exercise_science") {
+    return `
+
+SAFETY & CERTIFICATION BOUNDARY (safety_notes field) — CRITICAL FOR THIS PATHWAY: This is educational, awareness-level exercise-science / sports-medicine content — NOT clinical training and NOT a substitute for professional certification. CPR, First Aid, and AED are life-saving skills that can ONLY be certified through a certified instructor and an approved provider (American Red Cross, American Heart Association, etc.) — a generated lesson can build supporting knowledge but CANNOT confer certification; state this clearly wherever CPR/first-aid/AED appears. Injury care, taping/wrapping, rehabilitation, and any clinical or hands-on athletic-training skill are AWARENESS-level only and must NOT be presented as treatment students can perform on real injuries. Any physical activity, exercise, or fitness testing must be voluntary, medically cleared, properly supervised, and paced with hydration/rest (treat physical-exertion risk with the same seriousness as a PE or clinical lesson). Keep hands-on practice to demonstration/simulation on peers or manikins ONLY where school policy allows and under supervision. The FIRST item in safety_notes MUST be this boundary statement, verbatim: "This lesson plan supports classroom, awareness-level exercise-science and sports-medicine education only. It is not clinical training and does not certify students in CPR, First Aid, AED, athletic training, or any medical skill. CPR/First Aid/AED and clinical certification require a certified instructor and approved provider; any hands-on or physical activity requires proper supervision, medical clearance, and your program's and district's safety policies."`
   }
   return ""
 }
@@ -978,7 +1021,7 @@ export function buildCteLessonSchema(includeELL = false) {
 
 /**
  * @param {Object} input
- * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'|'engineering_tech'|'business_mgmt'|'agriculture'|'construction'|'arts_av'|'government'|'law_safety'|'cosmetology'|'business_law'|'sports_entertainment'} input.pathway
+ * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'|'engineering_tech'|'business_mgmt'|'agriculture'|'construction'|'arts_av'|'government'|'law_safety'|'cosmetology'|'business_law'|'sports_entertainment'|'exercise_science'} input.pathway
  * @param {'ms'|'hs'} input.tier
  * @param {'introductory'|'concentrator'|'completer'|''} [input.level]  required when tier === 'hs'
  * @param {string}  input.topic

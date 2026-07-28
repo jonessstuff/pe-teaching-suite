@@ -119,6 +119,7 @@ export const CTE_PATHWAYS = [
   { value: 'cosmetology', label: 'Cosmetology / Personal Care Services' },
   { value: 'business_law', label: 'Business Law' },
   { value: 'sports_entertainment', label: 'Sports & Entertainment Marketing' },
+  { value: 'exercise_science', label: 'Exercise Science / Sports Medicine' },
 ]
 export const CTE_LEVELS = [
   { value: 'introductory', label: 'Introductory' },
