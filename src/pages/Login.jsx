@@ -83,6 +83,10 @@ export default function Login({ authError, onClearAuthError }) {
         method: 'email',
         ...(referralCode ? { referral_code: referralCode } : {}),
       })
+      // NOTE: the owner "new signup" notification fires SERVER-SIDE via a database
+      // trigger on auth.users insert (migration 0034) → notify-signup Edge Function.
+      // Kept off the client on purpose so a stale/cached bundle or a non-web signup
+      // path can never miss it.
       setStatus('idle')
       setMessage('Check your email to confirm your account.')
       return
