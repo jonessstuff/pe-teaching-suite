@@ -20,6 +20,7 @@ const PHASE_LABELS = {
   government: ['Civic Hook', 'Concept Instruction', 'Applied Example / Guided Practice', 'Hands-On Civic Application', 'Reflection & Career Connection'],
   law_safety: ['Case / Scenario Hook', 'Concept Instruction', 'Applied Example / Guided Practice', 'Hands-On Exploration Application', 'Reflection & Career Connection'],
   cosmetology: ['Client / Scenario Hook', 'Concept Instruction', 'Skill Demonstration', 'Hands-On Application (Supervised)', 'Reflection & Career / Licensing Connection'],
+  business_law: ['Case / Scenario Hook', 'Concept Instruction', 'Applied Example / Guided Practice', 'Hands-On Case Analysis', 'Reflection & Career Connection'],
 }
 
 const PATHWAY_LABELS = {
@@ -41,6 +42,7 @@ const PATHWAY_LABELS = {
   government: 'Government & Public Administration',
   law_safety: 'Law, Public Safety, Corrections & Security',
   cosmetology: 'Cosmetology / Personal Care Services',
+  business_law: 'Business Law',
 }
 
 const LEVEL_LABELS = {

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Wrench, Factory, Cpu, Building2, Sprout, HardHat, Clapperboard, Scale, Shield, Scissors, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink, ChevronDown } from 'lucide-react'
+import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Wrench, Factory, Cpu, Building2, Sprout, HardHat, Clapperboard, Scale, Shield, Scissors, Gavel, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink, ChevronDown } from 'lucide-react'
 import { generateCteLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
@@ -116,14 +116,20 @@ const PATHWAYS = [
     description: 'Hair, skin & nail services, infection control & safety, and the path to state licensure (NIC / SkillsUSA) — hours vary by state',
     icon: Scissors,
   },
+  {
+    value: 'business_law',
+    label: 'Business Law',
+    description: 'How business & the legal system work — contracts, consumer & employment law, and business ethics (NBEA / FBLA / DECA; educational, not legal advice)',
+    icon: Gavel,
+  },
 ]
 
-// The 18 pathways grouped into 6 logical categories for scannability. Career
+// The 19 pathways grouped into 6 logical categories for scannability. Career
 // Readiness is pinned first as the foundational entry point. Order within each
 // group is intentional. Every pathway value MUST appear in exactly one group.
 const PATHWAY_GROUPS = [
   { label: 'Career Foundations', values: ['career_readiness'] },
-  { label: 'Business, Finance & Marketing', values: ['finance', 'marketing', 'business_mgmt', 'hospitality'] },
+  { label: 'Business, Finance & Marketing', values: ['finance', 'marketing', 'business_mgmt', 'business_law', 'hospitality'] },
   { label: 'Health & Human Services', values: ['health_science', 'human_services', 'education', 'cosmetology'] },
   { label: 'Technology & Engineering', values: ['information_technology', 'engineering_tech'] },
   { label: 'Skilled Trades & Industrial', values: ['transportation', 'manufacturing', 'construction', 'agriculture'] },
@@ -160,6 +166,7 @@ const TOPIC_PLACEHOLDERS = {
   government: 'e.g. How a bill becomes law, Levels of government (local/state/federal), How public agencies are managed, Public budgeting & taxation basics, Analyzing a local policy issue, Intro to public-service careers',
   law_safety: 'e.g. How the justice system works, Law-enforcement career paths, Court procedures overview, Legal careers (paralegal/attorney), Corrections overview, Firefighter career path & fire behavior, Ethics & professionalism',
   cosmetology: 'e.g. Infection control & disinfection, Sectioning & parting the hair, Basic haircut/styling technique, Patch testing before color, Manicure setup & sanitation, Facial steps & skin analysis, The path to state licensure (hours vary by state)',
+  business_law: 'e.g. Elements of a valid contract, Breach of contract & remedies, Consumer protection basics, Civil vs. criminal law, Court system structure, Employment at-will & agency, A business ethics case study (FBLA/DECA-style)',
 }
 
 const MATERIAL_PLACEHOLDERS = {
@@ -342,6 +349,15 @@ const MATERIAL_PLACEHOLDERS = {
     'e.g. Product SDS sheets & patch-test log',
     'e.g. State-board sanitation & licensing-hours reference',
   ],
+  business_law: [
+    'e.g. Business-law case-study / scenario handouts',
+    'e.g. Sample contract with clauses to analyze',
+    'e.g. Court-system / civil-vs-criminal reference chart',
+    'e.g. FBLA/DECA Business Law & Ethics case & rubric',
+    'e.g. Consumer-protection / employment-rights handout',
+    'e.g. Ethics decision-making framework template',
+    'e.g. Laptops/Chromebooks for case research',
+  ],
 }
 
 export default function CteGenerator() {
@@ -518,21 +534,21 @@ export default function CteGenerator() {
           </div>
         </div>
         <p className="text-sm text-ink-400 mt-3">
-          Generate a complete Career &amp; Technical Education lesson across eighteen pathways —
+          Generate a complete Career &amp; Technical Education lesson across nineteen pathways —
           all 16 national CTE clusters: Hospitality &amp; Tourism, Finance, Marketing, Human
           Services / FCS, Health Science, Education &amp; Training, Career Readiness (MS
           foundations), Information Technology, Transportation, Distribution &amp; Logistics,
           Manufacturing, STEM / Engineering &amp; Technology, Business Management &amp;
           Administration, Agriculture, Food &amp; Natural Resources, Architecture &amp; Construction,
           Arts, A/V Technology &amp; Communications, Government &amp; Public Administration, Law,
-          Public Safety, Corrections &amp; Security, or Cosmetology / Personal Care Services — with
-          work-based learning and career pathway context built in.
+          Public Safety, Corrections &amp; Security, Cosmetology / Personal Care Services, or
+          Business Law — with work-based learning and career pathway context built in.
         </p>
       </div>
 
       <form onSubmit={handleGenerate} className="space-y-6">
 
-        {/* Pathway selector — 18 pathways grouped into 6 collapsible categories */}
+        {/* Pathway selector — 19 pathways grouped into 6 collapsible categories */}
         <div className="space-y-3">
           <h2 className="text-sm font-semibold text-ink-200">Pathway</h2>
           <div className="space-y-2">
@@ -776,6 +792,7 @@ export default function CteGenerator() {
                 pathway === 'government'      ? 'e.g. Explain how a local government makes a policy decision (CCTC GV — Governance)' :
                 pathway === 'law_safety'      ? 'e.g. Trace how a case moves through the court system (CCTC LW — exploration)' :
                 pathway === 'cosmetology'     ? 'e.g. Disinfect implements to state-board standard (NIC — Infection Control & Safety)' :
+                pathway === 'business_law'    ? 'e.g. Identify the elements of a valid contract (NBEA Business Law — Contract Law)' :
                                                 'e.g. Identify a target market (DECA PI)'
               }
               value={targetCompetency}

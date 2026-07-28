@@ -47,7 +47,7 @@ const GROUPS = [
     label: 'Career & Technical Education',
     modules: [
       { key: 'cte', to: '/cte', label: 'CTE', Icon: Briefcase, wrap: 'bg-pink-500/20', color: 'text-pink-400', hover: 'hover:border-pink-400/40',
-        desc: 'Career & Technical Education for MS–HS — Hospitality & Tourism, Finance, Marketing, Human Services / FCS, Health Science, Education & Training, Career Readiness, Information Technology, Transportation, Distribution & Logistics, Manufacturing, STEM / Engineering & Technology, Business Management & Administration, Agriculture, Food & Natural Resources, Architecture & Construction, Arts, A/V Technology & Communications, Government & Public Administration, Law, Public Safety, Corrections & Security, and Cosmetology / Personal Care Services pathways' },
+        desc: 'Career & Technical Education for MS–HS — Hospitality & Tourism, Finance, Marketing, Human Services / FCS, Health Science, Education & Training, Career Readiness, Information Technology, Transportation, Distribution & Logistics, Manufacturing, STEM / Engineering & Technology, Business Management & Administration, Agriculture, Food & Natural Resources, Architecture & Construction, Arts, A/V Technology & Communications, Government & Public Administration, Law, Public Safety, Corrections & Security, Cosmetology / Personal Care Services, and Business Law pathways' },
     ],
   },
   {

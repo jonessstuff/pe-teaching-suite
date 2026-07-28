@@ -34,6 +34,7 @@ const PATHWAY_LABELS = {
   government: "Government & Public Administration",
   law_safety: "Law, Public Safety, Corrections & Security",
   cosmetology: "Cosmetology / Personal Care Services",
+  business_law: "Business Law",
 }
 
 function tierLevelLabel(tier, level) {
@@ -159,6 +160,12 @@ Then include entries from this where the lesson content maps to it:
 - SkillsUSA — the CTSO most closely associated with this cluster (national, parallel to HOSA / DECA / FBLA). Align applied tasks, professionalism, and competition-style skills to relevant SkillsUSA Cosmetology, Esthetics, and Nail Care competitive events. Framework field: "SkillsUSA".
 CRITICAL STATE-LICENSURE-HOURS DISCLAIMER — TREAT THIS AS MORE IMPORTANT AND MORE PROMINENT THAN THE STANDARD "verify your state" note: required training hours for a cosmetology license VARY ENORMOUSLY BY STATE — from roughly 1,000 to 2,100+ hours, a difference of many hundreds (in some cases over a thousand) of hours depending on the state board — and many states license esthetics, nail technology, and barbering SEPARATELY, each with its own required hours. The lesson MUST explicitly and prominently flag this: state clearly that students must verify their OWN state board of cosmetology's exact required hours, license categories, approved curriculum, and written/practical exam requirements, and that this lesson does NOT certify or count hours toward licensure. Never present a specific hour figure as nationally applicable. Surface this disclaimer in the licensing-awareness content, and echo it in safety_notes where hands-on service is involved.
 Content areas to prioritize: (a) Hair Services — cutting, styling, chemical texture services (permanent waving / relaxing), and hair-coloring basics; (b) Skin Care & Esthetics — facials, makeup application, and waxing basics; (c) Nail Care — manicure and pedicure basics; (d) Infection Control & Safety — sanitation and disinfection, safe chemical handling, and blood-exposure / first-aid protocols (see the SAFETY directive in this prompt); and (e) Licensing-Pathway Awareness — the state licensing process overview, the NIC written and practical exam structure, and the difference between the apprenticeship route and the school-based route to licensure. Frame ALL hands-on chemical and sharp-tool work as done only under required supervision, PPE, and ventilation.`,
+    business_law: `Primary framework for Business Law. IMPORTANT — this is BUSINESS and CIVICS education, NOT legal advice and NOT pre-law training to practice law: keep ALL content educational and conceptual (how the legal system and business law work, why they matter to businesses/consumers/employees, and ethics), and do NOT provide legal advice or instructions for handling a real legal dispute (see the PROFESSIONAL-BOUNDARY directive in this prompt). Lead the competency list with entries from this, and treat the state CTE task list above as the state verification layer for it:
+- NBEA (National Business Education Association) National Standards for Business Education — Business Law strand — the primary content framework, organized around three core strands: (1) Basics of the Law — the relationship between ethics and law, sources of law, the structure of the court system (federal and state), and procedural vs. substantive law; (2) Contract Law, Sales & Consumer Law — contract formation and breach, sales law, and consumer-protection law; and (3) Agency & Employment — agency relationships and employment law as it relates to business conduct. Framework field: "NBEA". Describe the standard/competency clearly; only cite an NBEA code when genuinely confident, otherwise describe it and omit the code.
+Then include entries from these where the lesson content maps to them:
+- FBLA (Future Business Leaders of America) — the CTSO with a dedicated Business Law competitive event; align applied tasks and case analysis to it. Framework field: "FBLA".
+- DECA — the CTSO with a dedicated Business Law & Ethics Team Decision-Making event; align case-study and role-play tasks to its performance-indicator / decision-making format. Framework field: "DECA".
+Content areas to prioritize, organized around the three NBEA strands: (a) Basics of the Law — legal-system structure, federal/state court systems, the relationship between ethics and law, and criminal vs. civil law basics; (b) Contract Law, Sales & Consumer Law — contract formation, breach of contract, consumer-protection law, and sales-law basics; (c) Agency & Employment Law — employer/employee relationships, agency relationships, and workplace legal basics; and (d) Business ethics & case-study analysis — analyzing real-world ethical dilemmas using FBLA/DECA-style case-study and role-play formats. Keep the identity on how business law and the legal system WORK and why they matter to businesses, consumers, and employees — educational and conceptual, NEVER legal advice or instructions for a real dispute.`,
   }[pathway] ?? ""
 
   const rigorNote =
@@ -198,6 +205,7 @@ function getCredentialFocus(pathway) {
     government: ["A public-service / civics portfolio and projects (this cluster has no single dominant credential — content and demonstrated civic skill carry it)", "Recognition through civics & youth-government programs (e.g., YMCA Youth & Government, We the People, Model UN)", "General workplace/administrative certificates where offered (e.g., Microsoft Office Specialist)"],
     law_safety: ["A career-exploration & professionalism/ethics portfolio (this cluster's HS programs of study vary; no single dominant student credential)", "General/entry credentials tied to a program of study where offered (e.g., CPR/First Aid for fire-service exploration; OSHA general awareness)", "Recognition through related programs — exploration only (e.g., mock trial, Explorers/cadet or fire-cadet programs)"],
     cosmetology: ["A state cosmetology (or separate esthetics / nail-technician / barbering) LICENSE — the credential required to practice, earned by completing the state-mandated training hours and passing the NIC (or state) written and practical exams", "NIC national theory & practical exam readiness (used by 38+ states)", "SkillsUSA competitive-event recognition (Cosmetology, Esthetics, Nail Care). NOTE: required license hours and license categories vary significantly by state — verify with the state board."],
+    business_law: ["FBLA competitive-event recognition (Business Law)", "DECA competitive-event recognition (Business Law & Ethics Team Decision-Making)", "A business-law & ethics portfolio and case-analysis work (this content area has no single dominant student credential — demonstrated legal-literacy and ethical-reasoning skill carry it); general NBEA/MBAResearch business assessments where offered"],
   }[pathway] ?? []
 }
 
@@ -599,6 +607,28 @@ function getPhaseDescriptions(pathway) {
         desc: "Students reflect on how today's skill fits a real personal-care career and the path to licensure, name one infection-control or safety practice they will always follow, and connect the skill to the NIC exam domain it supports. Remind students that required license hours, categories, and exam requirements VARY BY STATE and must be verified with their own state board. End with a brief exit ticket. 5–8 minutes.",
       },
     },
+    business_law: {
+      warm_up: {
+        name: "Case / Scenario Hook",
+        desc: "Open with a concrete, age-appropriate business-law scenario — a contract dispute, a consumer-protection situation, a workplace/employment question, or a business-ethics dilemma. Students react as an informed business person or consumer would: what's the legal or ethical issue, who's involved, and what does the law/ethics framework say? Keep it educational and conceptual — no legal advice. Connect to a real business or consumer situation. 5–8 minutes.",
+      },
+      whole_group_instruction: {
+        name: "Concept Instruction",
+        desc: "Teach the core business-law concept directly using correct vocabulary (e.g., offer/acceptance/consideration, breach, civil vs. criminal, jurisdiction, agency, at-will employment, consumer protection). Ground it in the relevant NBEA Business Law strand. Emphasize how the concept applies to real business conduct and why it matters, and keep it conceptual — how the law WORKS, not legal advice. Address a common misconception and check understanding. 8–12 minutes.",
+      },
+      fitness_activities: {
+        name: "Applied Example / Guided Practice",
+        desc: "Model the reasoning step by step in an educational way — walking a contract through formation and a possible breach, tracing a consumer-protection or employment situation against the relevant rule, or analyzing an ethics dilemma against a decision framework. Name each step and the legal/ethical principle behind it; keep it analytical and conceptual, not advice for a real dispute. Students watch, then work one example with teacher support. 5–10 minutes.",
+      },
+      independent_practice: {
+        name: "Hands-On Case Analysis",
+        desc: "Students apply the skill in a realistic, EDUCATIONAL task: analyze a business-law case or scenario, run an FBLA/DECA-style case-study or role-play (business ethics / decision-making), evaluate a sample contract clause, or map a workplace/consumer situation to the relevant rule and recommend a BUSINESS (not legal) course of action. Keep everything conceptual — no legal advice. Describe exactly what students do, what a strong result looks like, and what the teacher observes/coaches. Include a checklist or rubric aligned to an NBEA Business Law strand or an FBLA/DECA event. 15–20 minutes.",
+      },
+      closure: {
+        name: "Reflection & Career Connection",
+        desc: "Students reflect on how today's concept applies to running or working in a real business and to consumers, share a decision or finding, and name one legal-literacy or ethics principle they'd apply. Connect the skill to a business-law/ethics career pathway (paralegal, compliance, HR, business owner) and an FBLA/DECA event, and to an internship or mentorship opportunity. End with a brief exit ticket. 5–8 minutes.",
+      },
+    },
   }
   return map[pathway] ?? map.hospitality
 }
@@ -700,6 +730,11 @@ function getPathwaySequence(pathway) {
       { level: "concentrator", course: "Cosmetology I–II / Hair, Skin & Nail Services", description: "Applied services aligned to NIC content domains — hair cutting/styling plus chemical-texture and color basics; skin/esthetics (facials, makeup, waxing) and nail (manicure/pedicure) fundamentals; the chemistry and anatomy/physiology behind services; and sanitation/disinfection to state-board standard, with SkillsUSA alignment. All hands-on work supervised, with required PPE." },
       { level: "completer", course: "Cosmetology Capstone / Licensure Prep, SkillsUSA & Work-Based Learning", description: "Capstone service competency and NIC written/practical exam preparation, accumulation of state-required clinical/lab hours toward licensure (hours vary by state — verify with the state board), SkillsUSA competitive events, and work-based learning through a salon/spa apprenticeship, cooperative education, or supervised placement." },
     ],
+    business_law: [
+      { level: "introductory", course: "Introduction to Business Law", description: "Foundations — an overview of the legal system and court structure, the relationship between ethics and law, civil vs. criminal law, and an introduction to contracts, consumer protection, and employment basics as they affect businesses and consumers (educational, not legal advice)." },
+      { level: "concentrator", course: "Business Law / Legal Environment of Business", description: "Applied business-law study to NBEA standards — contract formation and breach, sales and consumer-protection law, agency and employment law, and business-ethics case analysis, with FBLA/DECA competitive-event and case-study alignment. Conceptual and analytical, not legal advice." },
+      { level: "completer", course: "Advanced Business Law / Capstone, FBLA/DECA & Work-Based Learning", description: "Capstone case-analysis or business-ethics project, a business-law/ethics portfolio, FBLA (Business Law) and DECA (Business Law & Ethics) competitive events, and work-based learning through an internship or mentorship in a law office, HR department, or business-compliance role." },
+    ],
   }[pathway] ?? []
 }
 
@@ -708,7 +743,7 @@ function getPathwaySequence(pathway) {
 // Work-Based Learning (HQWBL) model, which recognizes a broader set of 12 methods than
 // the internship/shadow/speaker default.
 function getWblGuidance(pathway) {
-  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing" || pathway === "engineering_tech" || pathway === "business_mgmt" || pathway === "agriculture" || pathway === "construction" || pathway === "arts_av" || pathway === "government" || pathway === "law_safety" || pathway === "cosmetology") {
+  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing" || pathway === "engineering_tech" || pathway === "business_mgmt" || pathway === "agriculture" || pathway === "construction" || pathway === "arts_av" || pathway === "government" || pathway === "law_safety" || pathway === "cosmetology" || pathway === "business_law") {
     const emphasis = pathway === "health_science"
       ? " Clinical experience is especially relevant for this pathway — prioritize clinical/hospital placements, patient-care rotations, and health-agency service learning where appropriate."
       : pathway === "education"
@@ -735,7 +770,9 @@ function getWblGuidance(pathway) {
                             ? " Job shadowing, mentorship, and internship are especially relevant for this pathway — prioritize job shadowing and, where appropriate and available, supervised ride-alongs; mentorship from professionals (officers, attorneys, corrections/probation staff, firefighters); and internships with courts, fire departments, law offices, or public-safety agencies, alongside service learning. Every placement must be age-appropriate, supervised, and OBSERVATIONAL (career exploration only — never operational participation); ride-alongs and any fire-service activity follow the agency's policies, waivers, and safety requirements."
                             : pathway === "cosmetology"
                               ? " Apprenticeship and cooperative education are especially relevant for this pathway — many states offer an APPRENTICESHIP ROUTE to a cosmetology/personal-care license alongside the school-based route, so prioritize registered/state-approved salon, spa, or barbershop apprenticeships; cooperative-education placements in a licensed salon/spa; mentorship with a licensed professional; and a school-based enterprise (a supervised student salon/clinic) where the program runs one, alongside job shadowing. Any client-facing or hands-on placement must follow the state board's supervision, sanitation, and licensing rules and the site's safety requirements. Note that the apprenticeship route's required hours and rules vary by state."
-                              : ""
+                              : pathway === "business_law"
+                                ? " Internship and mentorship are especially relevant for this pathway — prioritize internships and job shadowing in law offices, HR departments, and business-compliance / regulatory roles; and mentorship from attorneys, paralegals, HR professionals, or compliance officers, alongside service learning (e.g., a consumer-education / know-your-rights project) and FBLA/DECA case-study and role-play competition as authentic, program-based WBL. Keep every placement OBSERVATIONAL and educational — career exploration only, never the practice of law or giving legal advice."
+                                : ""
     return `\nThis pathway follows Virginia's High-Quality Work-Based Learning (HQWBL) model, which recognizes 12 methods: job shadowing, service learning, mentorship, externship, school-based enterprise, internship, entrepreneurship, clinical experience, cooperative education, youth registered apprenticeship, registered apprenticeship, and supervised agricultural experience. When filling the fields below, draw the most lesson-appropriate ideas from this broader set (not only internships/shadows) — e.g., service learning with a community agency, a clinical experience, a school-based enterprise, or a mentorship — and fold them into the internships and job_shadows arrays as fits this lesson's content and tier.${emphasis}`
   }
   return ""
@@ -771,6 +808,11 @@ SAFETY & PROFESSIONAL BOUNDARY (safety_notes field) — CRITICAL FOR THIS PATHWA
     return `
 
 SAFETY (safety_notes field) — CRITICAL FOR THIS PATHWAY: Cosmetology / personal-care services involve REAL physical and health risk — chemical burns and injury from relaxers, permanent-wave solutions, and hair color/lighteners; allergic and irritant reactions that REQUIRE a patch/predisposition test before color and chemical services; infection transmission and BLOODBORNE-PATHOGEN exposure (nicks, cuts, broken skin) that demand strict sanitation, disinfection of implements in an EPA-registered disinfectant, and a defined blood-exposure/first-aid procedure; cuts from shears, razors, and nippers; burns from thermal styling tools (flat/curling irons, blow dryers) and hot wax; eye and respiratory irritation from chemical fumes, aerosols, and nail-product vapors; and slips on wet floors. Treat safety with the SAME seriousness as a health-science clinical lesson — never generic "be careful." Populate the safety_notes array with SPECIFIC, lesson-relevant hazards and their controls (e.g., always patch-test before color/chemical services; read and follow the product SDS and manufacturer directions and never over-process/over-time a chemical service; PPE — gloves, cape/apron, and eye protection for chemical work; disinfect all multi-use implements and discard single-use items; a blood-exposure procedure — stop, glove, clean, cover, then disinfect the station and follow the exposure/first-aid plan; adequate ventilation for chemical and nail services; guarded handling of shears/razors and hot tools; and keeping the floor and station clean and dry), and foreground the relevant safety point inside the Concept Instruction, Skill Demonstration, and Hands-On phases. Keep any hands-on service on mannequins/training heads (or peers ONLY where school policy allows) under required supervision and PPE. The FIRST item in safety_notes MUST be this boundary statement, verbatim: "This lesson plan supports classroom and lab PLANNING only. It is not a substitute for your program's required safety, sanitation, and supervision or its equipment/PPE, and it does not certify or count hours toward licensure. Required training hours, license categories, and exam requirements vary significantly by state — follow your school's and district's policies and your state board of cosmetology's rules and any applicable OSHA / infection-control (bloodborne-pathogen) requirements before any hands-on or client work."`
+  }
+  if (pathway === "business_law") {
+    return `
+
+PROFESSIONAL & EDUCATIONAL BOUNDARY (safety_notes field) — CRITICAL FOR THIS PATHWAY: This is BUSINESS and CIVICS education about how the legal system and business law WORK — it is NOT legal advice and NOT training to practice law. Keep ALL content educational and conceptual (concepts, how systems and rules work, why they matter to businesses, consumers, and employees, and ethics/case analysis). Do NOT provide legal advice, do NOT give step-by-step instructions for handling a real legal dispute or drafting binding legal documents, and make clear that a real legal question requires a licensed attorney. Frame all case studies and role-plays as EDUCATIONAL analysis, never real-world legal action. The FIRST item in safety_notes MUST be this boundary statement, verbatim: "This lesson plan supports classroom business and legal-literacy education only. It is not legal advice and does not train students to practice law or to handle real legal disputes. For any actual legal question, consult a licensed attorney, and follow your program's and district's policies."`
   }
   return ""
 }
@@ -899,7 +941,7 @@ export function buildCteLessonSchema(includeELL = false) {
 
 /**
  * @param {Object} input
- * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'|'engineering_tech'|'business_mgmt'|'agriculture'|'construction'|'arts_av'|'government'|'law_safety'|'cosmetology'} input.pathway
+ * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'|'engineering_tech'|'business_mgmt'|'agriculture'|'construction'|'arts_av'|'government'|'law_safety'|'cosmetology'|'business_law'} input.pathway
  * @param {'ms'|'hs'} input.tier
  * @param {'introductory'|'concentrator'|'completer'|''} [input.level]  required when tier === 'hs'
  * @param {string}  input.topic

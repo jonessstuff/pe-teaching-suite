@@ -24,6 +24,7 @@ const PATHWAY_FILTERS = [
   { value: 'government', label: 'Government & Public Administration' },
   { value: 'law_safety', label: 'Law, Public Safety, Corrections & Security' },
   { value: 'cosmetology', label: 'Cosmetology / Personal Care Services' },
+  { value: 'business_law', label: 'Business Law' },
 ]
 
 export default function CteLessonLibrary() {
