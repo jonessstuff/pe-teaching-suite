@@ -118,6 +118,7 @@ export const CTE_PATHWAYS = [
   { value: 'law_safety', label: 'Law, Public Safety, Corrections & Security' },
   { value: 'cosmetology', label: 'Cosmetology / Personal Care Services' },
   { value: 'business_law', label: 'Business Law' },
+  { value: 'sports_entertainment', label: 'Sports & Entertainment Marketing' },
 ]
 export const CTE_LEVELS = [
   { value: 'introductory', label: 'Introductory' },

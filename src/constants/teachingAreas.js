@@ -58,4 +58,5 @@ export const CTE_PATHWAYS = [
   { key: 'law_safety', label: 'Law, Public Safety, Corrections & Security' },
   { key: 'cosmetology', label: 'Cosmetology / Personal Care Services' },
   { key: 'business_law', label: 'Business Law' },
+  { key: 'sports_entertainment', label: 'Sports & Entertainment Marketing' },
 ]

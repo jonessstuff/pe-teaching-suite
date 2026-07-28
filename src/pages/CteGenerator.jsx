@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Wrench, Factory, Cpu, Building2, Sprout, HardHat, Clapperboard, Scale, Shield, Scissors, Gavel, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink, ChevronDown } from 'lucide-react'
+import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Wrench, Factory, Cpu, Building2, Sprout, HardHat, Clapperboard, Scale, Shield, Scissors, Gavel, Ticket, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink, ChevronDown } from 'lucide-react'
 import { generateCteLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
@@ -122,14 +122,20 @@ const PATHWAYS = [
     description: 'How business & the legal system work — contracts, consumer & employment law, and business ethics (NBEA / FBLA / DECA; educational, not legal advice)',
     icon: Gavel,
   },
+  {
+    value: 'sports_entertainment',
+    label: 'Sports & Entertainment Marketing',
+    description: 'Marketing for sports & entertainment — teams, athletes, events, branding, sponsorship & endorsements (Precision Exams 416 / DECA SEM)',
+    icon: Ticket,
+  },
 ]
 
-// The 19 pathways grouped into 6 logical categories for scannability. Career
+// The 20 pathways grouped into 6 logical categories for scannability. Career
 // Readiness is pinned first as the foundational entry point. Order within each
 // group is intentional. Every pathway value MUST appear in exactly one group.
 const PATHWAY_GROUPS = [
   { label: 'Career Foundations', values: ['career_readiness'] },
-  { label: 'Business, Finance & Marketing', values: ['finance', 'marketing', 'business_mgmt', 'business_law', 'hospitality'] },
+  { label: 'Business, Finance & Marketing', values: ['finance', 'marketing', 'sports_entertainment', 'business_mgmt', 'business_law', 'hospitality'] },
   { label: 'Health & Human Services', values: ['health_science', 'human_services', 'education', 'cosmetology'] },
   { label: 'Technology & Engineering', values: ['information_technology', 'engineering_tech'] },
   { label: 'Skilled Trades & Industrial', values: ['transportation', 'manufacturing', 'construction', 'agriculture'] },
@@ -167,6 +173,7 @@ const TOPIC_PLACEHOLDERS = {
   law_safety: 'e.g. How the justice system works, Law-enforcement career paths, Court procedures overview, Legal careers (paralegal/attorney), Corrections overview, Firefighter career path & fire behavior, Ethics & professionalism',
   cosmetology: 'e.g. Infection control & disinfection, Sectioning & parting the hair, Basic haircut/styling technique, Patch testing before color, Manicure setup & sanitation, Facial steps & skin analysis, The path to state licensure (hours vary by state)',
   business_law: 'e.g. Elements of a valid contract, Breach of contract & remedies, Consumer protection basics, Civil vs. criminal law, Court system structure, Employment at-will & agency, A business ethics case study (FBLA/DECA-style)',
+  sports_entertainment: 'e.g. Build a sponsorship pitch, Athlete/celebrity endorsement deals, Promote a concert or festival, Ticket-pricing & promotion strategy, Co-branding & licensing, Event marketing plan, DECA SEM role-play prep',
 }
 
 const MATERIAL_PLACEHOLDERS = {
@@ -358,6 +365,15 @@ const MATERIAL_PLACEHOLDERS = {
     'e.g. Ethics decision-making framework template',
     'e.g. Laptops/Chromebooks for case research',
   ],
+  sports_entertainment: [
+    'e.g. DECA SEM case study / role-play scenarios',
+    'e.g. Real sponsorship & endorsement examples',
+    'e.g. Sponsorship / promotion plan template',
+    'e.g. Sample team, event, or athlete brand kits',
+    'e.g. Ticket-pricing & promotion worksheet',
+    'e.g. Poster/flyer or design tool for a mock campaign',
+    'e.g. Laptops/Chromebooks for market research',
+  ],
 }
 
 export default function CteGenerator() {
@@ -534,21 +550,22 @@ export default function CteGenerator() {
           </div>
         </div>
         <p className="text-sm text-ink-400 mt-3">
-          Generate a complete Career &amp; Technical Education lesson across nineteen pathways —
+          Generate a complete Career &amp; Technical Education lesson across twenty pathways —
           all 16 national CTE clusters: Hospitality &amp; Tourism, Finance, Marketing, Human
           Services / FCS, Health Science, Education &amp; Training, Career Readiness (MS
           foundations), Information Technology, Transportation, Distribution &amp; Logistics,
           Manufacturing, STEM / Engineering &amp; Technology, Business Management &amp;
           Administration, Agriculture, Food &amp; Natural Resources, Architecture &amp; Construction,
           Arts, A/V Technology &amp; Communications, Government &amp; Public Administration, Law,
-          Public Safety, Corrections &amp; Security, Cosmetology / Personal Care Services, or
-          Business Law — with work-based learning and career pathway context built in.
+          Public Safety, Corrections &amp; Security, Cosmetology / Personal Care Services,
+          Business Law, or Sports &amp; Entertainment Marketing — with work-based learning and
+          career pathway context built in.
         </p>
       </div>
 
       <form onSubmit={handleGenerate} className="space-y-6">
 
-        {/* Pathway selector — 19 pathways grouped into 6 collapsible categories */}
+        {/* Pathway selector — 20 pathways grouped into 6 collapsible categories */}
         <div className="space-y-3">
           <h2 className="text-sm font-semibold text-ink-200">Pathway</h2>
           <div className="space-y-2">
@@ -793,6 +810,7 @@ export default function CteGenerator() {
                 pathway === 'law_safety'      ? 'e.g. Trace how a case moves through the court system (CCTC LW — exploration)' :
                 pathway === 'cosmetology'     ? 'e.g. Disinfect implements to state-board standard (NIC — Infection Control & Safety)' :
                 pathway === 'business_law'    ? 'e.g. Identify the elements of a valid contract (NBEA Business Law — Contract Law)' :
+                pathway === 'sports_entertainment' ? 'e.g. Explain how a sponsorship creates value for a sports property (Precision Exams 416 / DECA SEM)' :
                                                 'e.g. Identify a target market (DECA PI)'
               }
               value={targetCompetency}

@@ -35,6 +35,7 @@ const PATHWAY_LABELS = {
   law_safety: "Law, Public Safety, Corrections & Security",
   cosmetology: "Cosmetology / Personal Care Services",
   business_law: "Business Law",
+  sports_entertainment: "Sports & Entertainment Marketing",
 }
 
 function tierLevelLabel(tier, level) {
@@ -166,6 +167,12 @@ Then include entries from these where the lesson content maps to them:
 - FBLA (Future Business Leaders of America) — the CTSO with a dedicated Business Law competitive event; align applied tasks and case analysis to it. Framework field: "FBLA".
 - DECA — the CTSO with a dedicated Business Law & Ethics Team Decision-Making event; align case-study and role-play tasks to its performance-indicator / decision-making format. Framework field: "DECA".
 Content areas to prioritize, organized around the three NBEA strands: (a) Basics of the Law — legal-system structure, federal/state court systems, the relationship between ethics and law, and criminal vs. civil law basics; (b) Contract Law, Sales & Consumer Law — contract formation, breach of contract, consumer-protection law, and sales-law basics; (c) Agency & Employment Law — employer/employee relationships, agency relationships, and workplace legal basics; and (d) Business ethics & case-study analysis — analyzing real-world ethical dilemmas using FBLA/DECA-style case-study and role-play formats. Keep the identity on how business law and the legal system WORK and why they matter to businesses, consumers, and employees — educational and conceptual, NEVER legal advice or instructions for a real dispute.`,
+    sports_entertainment: `Primary frameworks for Sports & Entertainment Marketing — a nationally recognized, standalone marketing course that applies marketing specifically to the SPORTS and ENTERTAINMENT industries, DISTINCT from the general Marketing pathway (keep the identity on sports properties, athletes, events, venues, and entertainment brands — not generic retail products). CLUSTER-PLACEMENT NOTE: this course's cluster placement VARIES BY STATE — some states (including Virginia) place it under Hospitality & Tourism, while nationally it is more commonly associated with the Marketing cluster; note this and tell teachers to verify their own state's cluster/course placement. Lead the competency list with entries from these, and treat the state CTE task list above as the state verification layer for them:
+- Precision Exams (by YouScience) — Sports and Entertainment Marketing, Exam 416 — the recognized industry-skills certification this course builds toward; align competencies to its standards and objectives. Framework field: "Precision Exams". Describe the objective clearly; only cite a specific 416 objective number when genuinely confident.
+- DECA — the CTSO for this cluster; align applied tasks, case studies, and role-plays to the Sports and Entertainment Marketing Team Decision Making (SETDM) event and the Sports and Entertainment Marketing Series (SEM), and to the relevant DECA performance indicators. Framework field: "DECA".
+Then include entries from this where the lesson content maps to it:
+- National Standards for Business Education (NBEA), Marketing strand — the underlying marketing content standards these sports/entertainment applications build on. Framework field: "NBEA Marketing".
+Content areas to prioritize: (a) Sports marketing fundamentals — marketing concepts applied to sporting events, athletes, sports facilities, sporting goods, personal training, and sports information; (b) Entertainment marketing — marketing for concerts, festivals, trade shows, product launches, and the film/TV/music industries; (c) Branding, sponsorship & endorsements — logos, trademarks, co-branding, athlete/celebrity endorsement deals, and sponsorship structures; and (d) Event marketing & promotion — promotional strategy, ticket sales, event-planning basics, and publicity/public relations for sports and entertainment properties. Keep the identity on the sports and entertainment industries specifically, not generic marketing.`,
   }[pathway] ?? ""
 
   const rigorNote =
@@ -206,6 +213,7 @@ function getCredentialFocus(pathway) {
     law_safety: ["A career-exploration & professionalism/ethics portfolio (this cluster's HS programs of study vary; no single dominant student credential)", "General/entry credentials tied to a program of study where offered (e.g., CPR/First Aid for fire-service exploration; OSHA general awareness)", "Recognition through related programs — exploration only (e.g., mock trial, Explorers/cadet or fire-cadet programs)"],
     cosmetology: ["A state cosmetology (or separate esthetics / nail-technician / barbering) LICENSE — the credential required to practice, earned by completing the state-mandated training hours and passing the NIC (or state) written and practical exams", "NIC national theory & practical exam readiness (used by 38+ states)", "SkillsUSA competitive-event recognition (Cosmetology, Esthetics, Nail Care). NOTE: required license hours and license categories vary significantly by state — verify with the state board."],
     business_law: ["FBLA competitive-event recognition (Business Law)", "DECA competitive-event recognition (Business Law & Ethics Team Decision-Making)", "A business-law & ethics portfolio and case-analysis work (this content area has no single dominant student credential — demonstrated legal-literacy and ethical-reasoning skill carry it); general NBEA/MBAResearch business assessments where offered"],
+    sports_entertainment: ["Precision Exams (YouScience) Sports and Entertainment Marketing (Exam 416) industry certification", "DECA competitive-event recognition (Sports and Entertainment Marketing Team Decision Making; Sports and Entertainment Marketing Series)", "A sports/entertainment marketing portfolio — a sponsorship or endorsement pitch, a promotion/event-marketing plan, or a branding concept"],
   }[pathway] ?? []
 }
 
@@ -629,6 +637,28 @@ function getPhaseDescriptions(pathway) {
         desc: "Students reflect on how today's concept applies to running or working in a real business and to consumers, share a decision or finding, and name one legal-literacy or ethics principle they'd apply. Connect the skill to a business-law/ethics career pathway (paralegal, compliance, HR, business owner) and an FBLA/DECA event, and to an internship or mentorship opportunity. End with a brief exit ticket. 5–8 minutes.",
       },
     },
+    sports_entertainment: {
+      warm_up: {
+        name: "Industry Hook",
+        desc: "Open with a real sports or entertainment marketing moment — a viral sponsorship, an athlete endorsement deal, a concert/festival promotion, a team's ticket campaign, or a product-launch tie-in. Students react as a marketer would: what's the property, who's the target audience, and what's the marketing goal? Connect to a real team, brand, venue, or event. 5–8 minutes.",
+      },
+      whole_group_instruction: {
+        name: "Concept Instruction",
+        desc: "Teach the core sports/entertainment marketing concept directly using correct vocabulary (e.g., the marketing mix applied to a property, sponsorship vs. endorsement, co-branding, licensing, gate vs. media revenue, target market, promotional mix). Ground it in the relevant Precision Exams 416 objective or DECA performance indicator. Address a common misconception and check understanding. 8–12 minutes.",
+      },
+      fitness_activities: {
+        name: "Applied Example / Guided Practice",
+        desc: "Model the skill step by step with a real sports/entertainment scenario — analyzing a sponsorship fit, mapping a promotional plan for an event, positioning an athlete's personal brand, or evaluating a ticket-pricing/promotion strategy. Name each step and the marketing principle behind it. Students watch, then work one example with teacher support. 5–10 minutes.",
+      },
+      independent_practice: {
+        name: "Hands-On Marketing Application",
+        desc: "Students apply the skill in a realistic, DECA-style task: build a sponsorship or endorsement pitch, design a promotion/event-marketing plan for a real (or realistic) property, develop a branding/logo-and-licensing concept, or run an SEM role-play / case-study decision. Describe exactly what students do, what a strong result looks like, and what the teacher observes/coaches. Include a checklist or rubric aligned to a Precision Exams 416 objective or a DECA SEM event. 15–20 minutes.",
+      },
+      closure: {
+        name: "Reflection & Career Connection",
+        desc: "Students reflect on how today's skill fits a real sports/entertainment marketing career (team/league marketing, agency, venue, event promotion, brand sponsorship), share their plan or decision, and name one marketing principle they'd apply. Connect the skill to a DECA SEM event and to an internship or job-shadow opportunity with a franchise, venue, or entertainment company. End with a brief exit ticket. 5–8 minutes.",
+      },
+    },
   }
   return map[pathway] ?? map.hospitality
 }
@@ -735,6 +765,11 @@ function getPathwaySequence(pathway) {
       { level: "concentrator", course: "Business Law / Legal Environment of Business", description: "Applied business-law study to NBEA standards — contract formation and breach, sales and consumer-protection law, agency and employment law, and business-ethics case analysis, with FBLA/DECA competitive-event and case-study alignment. Conceptual and analytical, not legal advice." },
       { level: "completer", course: "Advanced Business Law / Capstone, FBLA/DECA & Work-Based Learning", description: "Capstone case-analysis or business-ethics project, a business-law/ethics portfolio, FBLA (Business Law) and DECA (Business Law & Ethics) competitive events, and work-based learning through an internship or mentorship in a law office, HR department, or business-compliance role." },
     ],
+    sports_entertainment: [
+      { level: "introductory", course: "Introduction to Sports & Entertainment Marketing", description: "Foundations — how marketing applies to sports and entertainment properties (teams, athletes, events, venues, entertainment brands), the marketing mix in this context, an overview of branding/sponsorship/endorsements, and career awareness across the industry." },
+      { level: "concentrator", course: "Sports & Entertainment Marketing / Promotion & Sponsorship", description: "Applied study to Precision Exams (416) and DECA standards — sports and entertainment marketing strategy, branding and licensing, sponsorship and endorsement structures, and event marketing/promotion and ticket sales, with DECA SEM competitive-event and case-study alignment." },
+      { level: "completer", course: "Advanced / Capstone, DECA & Work-Based Learning", description: "Capstone campaign or event-marketing project, a sports/entertainment marketing portfolio, Precision Exams (416) certification, DECA SEM competitive events, and work-based learning through an internship or job shadow with a sports franchise, event venue, or entertainment company." },
+    ],
   }[pathway] ?? []
 }
 
@@ -743,7 +778,7 @@ function getPathwaySequence(pathway) {
 // Work-Based Learning (HQWBL) model, which recognizes a broader set of 12 methods than
 // the internship/shadow/speaker default.
 function getWblGuidance(pathway) {
-  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing" || pathway === "engineering_tech" || pathway === "business_mgmt" || pathway === "agriculture" || pathway === "construction" || pathway === "arts_av" || pathway === "government" || pathway === "law_safety" || pathway === "cosmetology" || pathway === "business_law") {
+  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing" || pathway === "engineering_tech" || pathway === "business_mgmt" || pathway === "agriculture" || pathway === "construction" || pathway === "arts_av" || pathway === "government" || pathway === "law_safety" || pathway === "cosmetology" || pathway === "business_law" || pathway === "sports_entertainment") {
     const emphasis = pathway === "health_science"
       ? " Clinical experience is especially relevant for this pathway — prioritize clinical/hospital placements, patient-care rotations, and health-agency service learning where appropriate."
       : pathway === "education"
@@ -772,7 +807,9 @@ function getWblGuidance(pathway) {
                               ? " Apprenticeship and cooperative education are especially relevant for this pathway — many states offer an APPRENTICESHIP ROUTE to a cosmetology/personal-care license alongside the school-based route, so prioritize registered/state-approved salon, spa, or barbershop apprenticeships; cooperative-education placements in a licensed salon/spa; mentorship with a licensed professional; and a school-based enterprise (a supervised student salon/clinic) where the program runs one, alongside job shadowing. Any client-facing or hands-on placement must follow the state board's supervision, sanitation, and licensing rules and the site's safety requirements. Note that the apprenticeship route's required hours and rules vary by state."
                               : pathway === "business_law"
                                 ? " Internship and mentorship are especially relevant for this pathway — prioritize internships and job shadowing in law offices, HR departments, and business-compliance / regulatory roles; and mentorship from attorneys, paralegals, HR professionals, or compliance officers, alongside service learning (e.g., a consumer-education / know-your-rights project) and FBLA/DECA case-study and role-play competition as authentic, program-based WBL. Keep every placement OBSERVATIONAL and educational — career exploration only, never the practice of law or giving legal advice."
-                                : ""
+                                : pathway === "sports_entertainment"
+                                  ? " Internship and job shadowing are especially relevant for this pathway — prioritize internships and job shadows with sports franchises and teams, event venues and arenas, entertainment and event-promotion companies, marketing/sponsorship agencies, and school/college athletic departments; plus mentorship from sports/entertainment marketers, and a school-based enterprise (marketing and promoting real school athletic events, spirit merchandise, or performances) as authentic WBL. DECA Sports and Entertainment Marketing competitive events also serve as program-based work-based learning."
+                                  : ""
     return `\nThis pathway follows Virginia's High-Quality Work-Based Learning (HQWBL) model, which recognizes 12 methods: job shadowing, service learning, mentorship, externship, school-based enterprise, internship, entrepreneurship, clinical experience, cooperative education, youth registered apprenticeship, registered apprenticeship, and supervised agricultural experience. When filling the fields below, draw the most lesson-appropriate ideas from this broader set (not only internships/shadows) — e.g., service learning with a community agency, a clinical experience, a school-based enterprise, or a mentorship — and fold them into the internships and job_shadows arrays as fits this lesson's content and tier.${emphasis}`
   }
   return ""
@@ -941,7 +978,7 @@ export function buildCteLessonSchema(includeELL = false) {
 
 /**
  * @param {Object} input
- * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'|'engineering_tech'|'business_mgmt'|'agriculture'|'construction'|'arts_av'|'government'|'law_safety'|'cosmetology'|'business_law'} input.pathway
+ * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'|'engineering_tech'|'business_mgmt'|'agriculture'|'construction'|'arts_av'|'government'|'law_safety'|'cosmetology'|'business_law'|'sports_entertainment'} input.pathway
  * @param {'ms'|'hs'} input.tier
  * @param {'introductory'|'concentrator'|'completer'|''} [input.level]  required when tier === 'hs'
  * @param {string}  input.topic
