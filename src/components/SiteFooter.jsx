@@ -2,7 +2,10 @@ import { useState } from 'react'
 import { Mail, Lightbulb, X, Loader2, Check } from 'lucide-react'
 import { submitSuggestion } from '../services/suggestionsService'
 
-const CONTACT_EMAIL = 'hello@plansk12.com'
+// Contact goes to hello@ (the branded address) and Cc's plansk12.com@gmail.com —
+// the same inbox that receives signup/suggestion notifications — so every contact
+// message lands where they're actually monitored.
+const CONTACT_MAILTO = 'mailto:hello@plansk12.com?cc=plansk12.com@gmail.com'
 
 // Site-wide footer: a Contact mailto and a "Suggest a feature" box (logged-in
 // users). Rendered once in AppShell so it appears under every in-app page.
@@ -17,7 +20,7 @@ export default function SiteFooter() {
           <p>© {year} PlansK12</p>
           <div className="flex items-center gap-4">
             <a
-              href={`mailto:${CONTACT_EMAIL}`}
+              href={CONTACT_MAILTO}
               className="flex items-center gap-1.5 transition-colors hover:text-ink-200"
             >
               <Mail size={14} />
