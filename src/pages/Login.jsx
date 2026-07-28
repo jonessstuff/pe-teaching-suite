@@ -1,8 +1,12 @@
 import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
-import { track, identifyUser } from '../lib/analytics'
-import TeachingAreasField from '../components/TeachingAreasField'
+
+// New accounts are created ONLY through the card-required Stripe checkout (7-day
+// trial). The in-app cardless "Sign up" form was removed so every account becomes
+// a real Stripe customer with a card on file. This page is sign-in + reset only;
+// "Don't have an account?" sends new users to the checkout.
+const CHECKOUT_URL = 'https://buy.stripe.com/5kQ5kveUR2xWh0tcoi0kE05'
 
 function PlansK12Logo() {
   return (
@@ -23,17 +27,15 @@ function PlansK12Logo() {
 }
 
 export default function Login({ authError, onClearAuthError }) {
-  const [mode, setMode] = useState('sign_in') // 'sign_in' | 'sign_up' | 'forgot'
+  const [mode, setMode] = useState('sign_in') // 'sign_in' | 'forgot'
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [status, setStatus] = useState('idle')
   const [message, setMessage] = useState(null)
   const [forgotSent, setForgotSent] = useState(false)
-  const [teaching, setTeaching] = useState({ areas: [], ctePathways: [], other: '' })
 
   // authError comes from App.jsx state (set by the onAuthStateChange handler)
-  // and takes priority over local message state. Local message is for
-  // credential errors (wrong password, etc.) and sign-up confirmation.
+  // and takes priority over local message state.
   const displayMessage = authError || message
 
   function switchMode(newMode) {
@@ -51,50 +53,16 @@ export default function Login({ authError, onClearAuthError }) {
     setStatus('loading')
     setMessage(null)
 
-    const { data, error } =
-      mode === 'sign_in'
-        ? await supabase.auth.signInWithPassword({ email, password })
-        : await supabase.auth.signUp({
-            email,
-            password,
-            // Captured into the profile by the handle_new_user() trigger (migration 0024).
-            options: {
-              data: {
-                teaching_areas: teaching.areas,
-                cte_pathways: teaching.ctePathways,
-                teaching_other: teaching.other.trim() || null,
-              },
-            },
-          })
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
 
     if (error) {
       setStatus('idle')
       setMessage(error.message)
       return
     }
-
-    if (mode === 'sign_up') {
-      // Analytics: account creation. Identify by the new Supabase user id only
-      // (no email/name), then record the event with metadata only.
-      const newUserId = data?.user?.id
-      if (newUserId) identifyUser(newUserId)
-      const referralCode = new URLSearchParams(window.location.search).get('ref')
-      track('sign_up', {
-        method: 'email',
-        ...(referralCode ? { referral_code: referralCode } : {}),
-      })
-      // NOTE: the owner "new signup" notification fires SERVER-SIDE via a database
-      // trigger on auth.users insert (migration 0034) → notify-signup Edge Function.
-      // Kept off the client on purpose so a stale/cached bundle or a non-web signup
-      // path can never miss it.
-      setStatus('idle')
-      setMessage('Check your email to confirm your account.')
-      return
-    }
-
-    // sign_in succeeded — enforcement happens in App.jsx's onAuthStateChange
-    // handler. If claimSession() blocks this login, authError will be set
-    // as a prop on this component without it ever unmounting.
+    // Sign-in succeeded — session enforcement happens in App.jsx's
+    // onAuthStateChange handler. If claimSession() blocks this login, authError
+    // is set as a prop without this component unmounting.
   }
 
   async function handleForgotPassword(e) {
@@ -161,14 +129,8 @@ export default function Login({ authError, onClearAuthError }) {
             </>
           ) : (
             <>
-              <h1 className="mb-1 text-lg font-semibold text-ink-50">
-                {mode === 'sign_in' ? 'Sign in' : 'Create your account'}
-              </h1>
-              <p className="mb-5 text-sm text-ink-400">
-                {mode === 'sign_in'
-                  ? 'Welcome back — let’s get the week planned.'
-                  : 'Set up your single-teacher workspace.'}
-              </p>
+              <h1 className="mb-1 text-lg font-semibold text-ink-50">Sign in</h1>
+              <p className="mb-5 text-sm text-ink-400">Welcome back — let’s get the week planned.</p>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
@@ -185,15 +147,13 @@ export default function Login({ authError, onClearAuthError }) {
                 <div>
                   <div className="mb-1.5 flex items-center justify-between">
                     <label className="text-sm font-medium text-ink-200">Password</label>
-                    {mode === 'sign_in' && (
-                      <button
-                        type="button"
-                        onClick={() => switchMode('forgot')}
-                        className="text-xs text-ink-500 hover:text-ink-300 transition-colors"
-                      >
-                        Forgot password?
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      onClick={() => switchMode('forgot')}
+                      className="text-xs text-ink-500 hover:text-ink-300 transition-colors"
+                    >
+                      Forgot password?
+                    </button>
                   </div>
                   <input
                     type="password"
@@ -206,20 +166,11 @@ export default function Login({ authError, onClearAuthError }) {
                   />
                 </div>
 
-                {mode === 'sign_up' && (
-                  <div>
-                    <label className="mb-1.5 block text-sm font-medium text-ink-200">
-                      What do you teach? <span className="font-normal text-ink-500">(select all that apply)</span>
-                    </label>
-                    <TeachingAreasField value={teaching} onChange={setTeaching} />
-                  </div>
-                )}
-
                 {displayMessage && <p className="text-sm text-red-400">{displayMessage}</p>}
 
                 <button type="submit" className="btn-primary w-full" disabled={status === 'loading'}>
                   {status === 'loading' && <Loader2 size={16} className="animate-spin" />}
-                  {mode === 'sign_in' ? 'Sign in' : 'Sign up'}
+                  Sign in
                 </button>
               </form>
             </>
@@ -234,12 +185,12 @@ export default function Login({ authError, onClearAuthError }) {
             ← Back to sign in
           </button>
         ) : (
-          <button
-            onClick={() => switchMode(mode === 'sign_in' ? 'sign_up' : 'sign_in')}
-            className="mt-4 w-full text-center text-sm text-ink-400 hover:text-ink-200"
+          <a
+            href={CHECKOUT_URL}
+            className="mt-4 block w-full text-center text-sm text-ink-400 hover:text-ink-200"
           >
-            {mode === 'sign_in' ? "Don’t have an account? Sign up" : 'Already have an account? Sign in'}
-          </button>
+            Don’t have an account? Start your free trial →
+          </a>
         )}
       </div>
     </div>
