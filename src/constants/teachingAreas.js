@@ -56,4 +56,5 @@ export const CTE_PATHWAYS = [
   { key: 'arts_av', label: 'Arts, A/V Technology & Communications' },
   { key: 'government', label: 'Government & Public Administration' },
   { key: 'law_safety', label: 'Law, Public Safety, Corrections & Security' },
+  { key: 'cosmetology', label: 'Cosmetology / Personal Care Services' },
 ]
