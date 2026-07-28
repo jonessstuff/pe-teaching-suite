@@ -59,16 +59,19 @@ Deno.serve(async (req) => {
     }
 
     const lessonObject = row.lesson_object;
+    // CTE lessons use a two-tier tier/level model (no grade_bands) — they get a
+    // single tier-keyed quiz instead of per-grade-band sets.
+    const isCte = lessonObject?.subject === "CTE" || Boolean(lessonObject?.pathway);
     const gradeBands: number[] = lessonObject?.grade_bands ?? [];
 
-    if (gradeBands.length === 0) {
+    if (gradeBands.length === 0 && !isCte) {
       return errorResponse("Lesson has no grade bands — cannot generate quiz", 400);
     }
 
     const { system, user } = buildQuizPrompt(lessonObject);
 
-    // ~3000 tokens per grade band for 8-10 questions each
-    const maxTokens = Math.max(4000, 3000 * gradeBands.length);
+    // ~3000 tokens per grade band; CTE is a single tier band.
+    const maxTokens = isCte ? 6000 : Math.max(4000, 3000 * gradeBands.length);
 
     const result = await callClaudeForJson(system, user, maxTokens);
 
@@ -76,7 +79,21 @@ Deno.serve(async (req) => {
       return errorResponse("Model response missing quiz_questions object", 500);
     }
 
-    return jsonResponse({ quiz_questions: result.quiz_questions });
+    let quizQuestions = result.quiz_questions;
+    if (isCte) {
+      // Normalize to one tier-keyed band stamped with the real course label so the
+      // renderer shows the tier (e.g. "High School (Pathway) — Concentrator"),
+      // not "Grade N".
+      const firstBand = (Object.values(quizQuestions)[0] as any) ?? { questions: [] };
+      quizQuestions = {
+        cte: {
+          label: lessonObject.tier_label ?? lessonObject.pathway_label ?? "CTE",
+          questions: Array.isArray(firstBand?.questions) ? firstBand.questions : [],
+        },
+      };
+    }
+
+    return jsonResponse({ quiz_questions: quizQuestions });
   } catch (err) {
     return errorResponse((err as any)?.message ?? String(err), 500);
   }

@@ -7,6 +7,12 @@ function gradeLabel(grade) {
   return grade === 0 ? 'K' : String(grade)
 }
 
+// Grade-band lessons show "Grade N"; CTE lessons carry an explicit tier `label`
+// (e.g. "High School (Pathway) — Concentrator") and no grade number.
+function bandTitle(band) {
+  return band.label ?? `Grade ${gradeLabel(band.grade)}`
+}
+
 function QuestionTypeBadge({ type }) {
   const labels = {
     multiple_choice: 'Multiple choice',
@@ -23,8 +29,12 @@ function QuestionTypeBadge({ type }) {
 export default function QuizRenderer({ quiz_questions }) {
   const [showAnswers, setShowAnswers] = useState(false)
 
-  const bands = Object.values(quiz_questions ?? {})
-    .sort((a, b) => (a.grade === 0 ? -1 : b.grade === 0 ? 1 : a.grade - b.grade))
+  const bands = Object.entries(quiz_questions ?? {})
+    .map(([key, b]) => ({ ...b, _key: key }))
+    .sort((a, b) => {
+      if (typeof a.grade !== 'number' || typeof b.grade !== 'number') return 0
+      return a.grade === 0 ? -1 : b.grade === 0 ? 1 : a.grade - b.grade
+    })
 
   if (bands.length === 0) return null
 
@@ -33,13 +43,13 @@ export default function QuizRenderer({ quiz_questions }) {
       {/* One card per grade band — each starts on its own printed page */}
       {bands.map((band, idx) => (
         <section
-          key={band.grade}
+          key={band._key}
           className="card p-8 space-y-6"
           style={idx > 0 ? { breakBefore: 'page' } : undefined}
         >
           <div className="border-b border-ink-900 pb-4">
             <h2 className="text-xl font-semibold text-ink-50">
-              Grade {gradeLabel(band.grade)} Quiz
+              {bandTitle(band)} Quiz
             </h2>
             <p className="mt-1 text-sm text-ink-500">
               {band.questions?.length ?? 0} questions
@@ -98,9 +108,9 @@ export default function QuizRenderer({ quiz_questions }) {
         {showAnswers && (
           <div className="space-y-6 border-t border-ink-900 pt-4">
             {bands.map((band) => (
-              <div key={band.grade} className="space-y-2">
+              <div key={band._key} className="space-y-2">
                 <p className="text-sm font-semibold text-ink-200">
-                  Grade {gradeLabel(band.grade)}
+                  {bandTitle(band)}
                 </p>
                 <ol className="space-y-2">
                   {(band.questions ?? []).map((q, qi) => (
