@@ -71,7 +71,7 @@ const PATHWAYS = [
   {
     value: 'engineering_tech',
     label: 'STEM / Engineering & Technology',
-    description: 'Career-prep engineering — design process, robotics (FIRST/RECF), computing foundations & PLTW alignment',
+    description: 'Career-prep engineering — design process, robotics (FIRST/RECF), electronics, aerospace, computing foundations & PLTW alignment',
     icon: Cpu,
   },
   {
@@ -170,7 +170,7 @@ const TOPIC_PLACEHOLDERS = {
   information_technology: 'e.g. HTML/CSS & responsive design, The CIA triad & cyber threats, Network security basics, Cyber ethics & responsible disclosure, Trace a loop in pseudocode, Variables/conditionals/functions, Decomposition & debugging, Bias in algorithms (impacts of computing), AP CSP big ideas',
   transportation: 'e.g. Brake system inspection, How a 4-stroke engine works, Suspension & steering check, Reading a service manual, Shop safety & vehicle-lift operation, Intro to the transportation & logistics cluster',
   manufacturing: 'e.g. Precision measurement with calipers, Blueprint/print reading, Intro to CNC machining, Robotics & automation basics, IIoT & smart sensors, Lockout/tagout & machine safety, Materials & production processes',
-  engineering_tech: 'e.g. The engineering design process, Exploring engineering fields, Build & program a robot (FIRST/VEX), Sensors & actuators, Intro to coding & computational thinking, Prototype & iterate a design',
+  engineering_tech: 'e.g. The engineering design process, Exploring engineering fields, Build & program a robot (FIRST/VEX), Sensors & actuators, Intro to coding & computational thinking, Principles of flight & aircraft systems (aerospace), Avionics & aircraft electronics overview, Ohm\'s law & circuits / reading schematics (Electronics I), Digital electronics & troubleshooting (Electronics II)',
   business_mgmt: 'e.g. The four functions of management, Business structures (LLC vs. corporation), A management decision case, Building a basic operating budget, Org charts & workflow, Intro to entrepreneurship, Basic HR concepts, Project management & the project lifecycle (Gantt charts), Resume, portfolio & interview skills (career management), Office productivity & responsible AI tools',
   agriculture: 'e.g. Plant growth & soil basics, Crop production, Animal care & husbandry, Conservation & water quality, Agribusiness & marketing ag products, Intro to FFA & SAE projects',
   construction: 'e.g. Reading a floor plan, Framing & layout (carpentry), Series vs. parallel circuits (electrical), Welding processes & safety, Masonry bond patterns, Sheet-metal & ductwork, Heavy-equipment awareness, Roofing systems, The refrigeration cycle (HVAC-R) & EPA 608, Plumbing supply & drainage, Fall-protection safety',
