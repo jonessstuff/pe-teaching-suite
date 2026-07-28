@@ -53,7 +53,7 @@ const PATHWAYS = [
   {
     value: 'information_technology',
     label: 'Information Technology',
-    description: 'Web design (HTML/CSS, UX), IT foundations, cybersecurity basics & tech careers',
+    description: 'Web design (HTML/CSS, UX), IT foundations, and a dedicated cybersecurity strand — CIA triad, threats, network security, ethics & the CompTIA A+/Network+/Security+ path (defensive/conceptual)',
     icon: Code2,
   },
   {
@@ -167,7 +167,7 @@ const TOPIC_PLACEHOLDERS = {
   health_science: 'e.g. Taking vital signs, The cardiovascular system, Medical terminology word parts, Infection control & PPE, Patient positioning',
   education: 'e.g. Writing a measurable learning objective, Classroom management routines & procedures, Stages of child development, Delivering clear directions, Planning a read-aloud',
   career_readiness: 'e.g. Interest & strengths self-assessment, Exploring the 16 career clusters, Writing a professional email, Teamwork & communication skills, Setting a career goal, Age-appropriate resume basics',
-  information_technology: 'e.g. HTML page structure, Styling with CSS, Responsive design basics, Wireframing a web page, How the internet works, Cybersecurity & strong passwords, Building a portfolio site',
+  information_technology: 'e.g. HTML page structure, Styling with CSS, Responsive design, How the internet works, The CIA triad, Types of cyber threats (phishing/malware), Network security basics, Cyber ethics & responsible disclosure, The A+/Network+/Security+ path',
   transportation: 'e.g. Brake system inspection, How a 4-stroke engine works, Suspension & steering check, Reading a service manual, Shop safety & vehicle-lift operation, Intro to the transportation & logistics cluster',
   manufacturing: 'e.g. Precision measurement with calipers, Blueprint/print reading, Intro to CNC machining, Robotics & automation basics, IIoT & smart sensors, Lockout/tagout & machine safety, Materials & production processes',
   engineering_tech: 'e.g. The engineering design process, Exploring engineering fields, Build & program a robot (FIRST/VEX), Sensors & actuators, Intro to coding & computational thinking, Prototype & iterate a design',
@@ -814,7 +814,7 @@ export default function CteGenerator() {
                 pathway === 'health_science'  ? 'e.g. Measure and record blood pressure (NCHSE)' :
                 pathway === 'education'       ? 'e.g. Write a measurable learning objective (InTASC Standard 7)' :
                 pathway === 'career_readiness'? 'e.g. Demonstrate teamwork on a group task (Employability Skills: Effective Relationships)' :
-                pathway === 'information_technology' ? 'e.g. Build a responsive page layout with HTML/CSS (ISTE 4: Innovative Designer)' :
+                pathway === 'information_technology' ? 'e.g. Explain the CIA triad and how to defend each element (NICE / CompTIA Security+) — or a web-design objective' :
                 pathway === 'transportation'  ? 'e.g. Inspect and measure brake pad wear (ASE MLR — Brakes)' :
                 pathway === 'manufacturing'   ? 'e.g. Measure a part to tolerance with a caliper (NIMS — Measurement, Materials & Safety)' :
                 pathway === 'engineering_tech'? 'e.g. Apply the engineering design process to a constraint-based challenge (PLTW / EDP)' :
