@@ -102,6 +102,11 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
     'School Counselors', 'Intervention Planning', 'Student Support Team Activities',
   ])
   const allowQuizRubric = !NON_EVALUATIVE.has(subject)
+  // CTE lessons use the two-tier tier/level model (no grade_bands); the Quiz tool
+  // keys/sizes by grade band, so it can't build a CTE quiz. Hide Quiz (NOT Rubric,
+  // which works) for CTE until CTE quiz support (tier_label-keyed) ships.
+  const isCteLesson = subject === 'CTE' || Boolean(lo?.pathway)
+  const allowQuiz = allowQuizRubric && !isCteLesson
   const isWorldLanguages = subject === 'World Languages'
 
   async function run(setter, fn) {
@@ -337,8 +342,8 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
             </button>
           )}
 
-          {/* Quiz — hidden for non-evaluative modules */}
-          {allowQuizRubric && (!hasQuiz ? (
+          {/* Quiz — hidden for non-evaluative modules and (interim) for CTE lessons */}
+          {allowQuiz && (!hasQuiz ? (
             <button onClick={handleGenerateQuiz} disabled={generatingQuiz} className="btn-primary">
               {generatingQuiz ? <Loader2 size={16} className="animate-spin" /> : <ClipboardList size={16} />}
               Generate quiz
