@@ -41,7 +41,7 @@ const PATHWAYS = [
   {
     value: 'education',
     label: 'Education & Training',
-    description: 'Teaching profession, lesson planning, classroom management & child development',
+    description: 'Principles of education, instructional practices, human growth & development, and practicum',
     icon: GraduationCap,
   },
   {
@@ -165,7 +165,7 @@ const TOPIC_PLACEHOLDERS = {
   marketing:   'e.g. Identify a target market, Build the marketing mix for a product, Analyze a real ad campaign, DECA role-play prep',
   human_services: 'e.g. Reading a nutrition label, Building a personal budget, Age-appropriate child activities, Mock job interview & workplace readiness',
   health_science: 'e.g. Taking vital signs, The cardiovascular system, Medical terminology word parts, Infection control & PPE, Patient positioning, Dental anatomy & tooth numbering, Chairside assisting & dental instruments, Dental radiography & radiation safety',
-  education: 'e.g. Writing a measurable learning objective, Classroom management routines & procedures, Stages of child development, Delivering clear directions, Planning a read-aloud',
+  education: 'e.g. History & philosophy of education (Principles of Education), Writing a measurable learning objective, Instructional strategies & differentiation, Classroom management routines & procedures, Piaget/Erikson/Vygotsky applied to teaching, Designing a classroom observation & reflection (practicum)',
   career_readiness: 'e.g. Interest & strengths self-assessment, Exploring the 16 career clusters, Writing a professional email, Teamwork & communication skills, Setting a career goal, Age-appropriate resume basics',
   information_technology: 'e.g. HTML/CSS & responsive design, The CIA triad & cyber threats, Network security basics, Cyber ethics & responsible disclosure, Trace a loop in pseudocode, Variables/conditionals/functions, Decomposition & debugging, Bias in algorithms (impacts of computing), AP CSP big ideas',
   transportation: 'e.g. Brake system inspection, How a 4-stroke engine works, Suspension & steering check, Reading a service manual, Shop safety & vehicle-lift operation, Intro to the transportation & logistics cluster',
