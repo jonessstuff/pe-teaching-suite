@@ -11,7 +11,7 @@ const PATHWAYS = [
   {
     value: 'hospitality',
     label: 'Hospitality & Tourism',
-    description: 'Lodging, foodservice, travel & guest service',
+    description: 'Lodging, travel & guest service, plus a deep culinary-arts strand — knife skills, cooking methods, the brigade system, baking & restaurant management (ProStart/FRMCA, ServSafe, ACF)',
     icon: UtensilsCrossed,
   },
   {
@@ -160,7 +160,7 @@ const LEVELS = [
 ]
 
 const TOPIC_PLACEHOLDERS = {
-  hospitality: 'e.g. Guest service recovery, Front desk check-in procedure, Food safety & sanitation (ServSafe), Planning a destination tour',
+  hospitality: 'e.g. Knife cuts & knife safety, Dry vs. moist heat cooking methods, Mise en place, The kitchen brigade system, Menu planning & food-cost %, Baking basics (leavening), Food safety & sanitation (ServSafe), Front desk check-in, Planning a destination tour',
   finance:     'e.g. Building a monthly budget, Comparing two credit-card offers, Simple vs. compound interest, Reading a pay stub',
   marketing:   'e.g. Identify a target market, Build the marketing mix for a product, Analyze a real ad campaign, DECA role-play prep',
   human_services: 'e.g. Reading a nutrition label, Building a personal budget, Age-appropriate child activities, Mock job interview & workplace readiness',
@@ -808,7 +808,7 @@ export default function CteGenerator() {
               id="cte-competency"
               type="text"
               placeholder={
-                pathway === 'hospitality'     ? 'e.g. Demonstrate proper handwashing (ServSafe)' :
+                pathway === 'hospitality'     ? 'e.g. Demonstrate the julienne knife cut with proper technique (ProStart / FRMCA culinary techniques)' :
                 pathway === 'finance'         ? 'e.g. Calculate compound interest (Jump$tart)' :
                 pathway === 'human_services'  ? 'e.g. Plan a balanced meal (AAFCS Nutrition & Wellness)' :
                 pathway === 'health_science'  ? 'e.g. Measure and record blood pressure (NCHSE)' :
