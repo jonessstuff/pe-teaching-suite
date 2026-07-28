@@ -146,7 +146,7 @@ export default function ElementaryTechGenerator() {
             <input
               id="et-topic"
               type="text"
-              placeholder="e.g. Mouse control practice, Being kind online, Making an All About Me slide, Sequencing with a screen-free robot, Home-row typing warm-up"
+              placeholder="e.g. Mouse control practice, Being kind online, Making an All About Me slide, Sequencing with a screen-free robot, Loops & patterns in ScratchJr/Scratch, Find & fix the bug (debugging), Home-row typing warm-up"
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
               required
