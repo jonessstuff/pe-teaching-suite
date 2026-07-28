@@ -19,6 +19,7 @@ const PHASE_LABELS = {
   arts_av: ['Creative Hook', 'Concept Instruction', 'Guided Create / Demonstration', 'Hands-On Production', 'Reflection & Career Connection'],
   government: ['Civic Hook', 'Concept Instruction', 'Applied Example / Guided Practice', 'Hands-On Civic Application', 'Reflection & Career Connection'],
   law_safety: ['Case / Scenario Hook', 'Concept Instruction', 'Applied Example / Guided Practice', 'Hands-On Exploration Application', 'Reflection & Career Connection'],
+  cosmetology: ['Client / Scenario Hook', 'Concept Instruction', 'Skill Demonstration', 'Hands-On Application (Supervised)', 'Reflection & Career / Licensing Connection'],
 }
 
 const PATHWAY_LABELS = {
@@ -39,6 +40,7 @@ const PATHWAY_LABELS = {
   arts_av: 'Arts, A/V Technology & Communications',
   government: 'Government & Public Administration',
   law_safety: 'Law, Public Safety, Corrections & Security',
+  cosmetology: 'Cosmetology / Personal Care Services',
 }
 
 const LEVEL_LABELS = {

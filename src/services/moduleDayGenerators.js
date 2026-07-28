@@ -116,6 +116,7 @@ export const CTE_PATHWAYS = [
   { value: 'arts_av', label: 'Arts, A/V Technology & Communications' },
   { value: 'government', label: 'Government & Public Administration' },
   { value: 'law_safety', label: 'Law, Public Safety, Corrections & Security' },
+  { value: 'cosmetology', label: 'Cosmetology / Personal Care Services' },
 ]
 export const CTE_LEVELS = [
   { value: 'introductory', label: 'Introductory' },

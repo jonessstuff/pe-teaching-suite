@@ -33,6 +33,7 @@ const PATHWAY_LABELS = {
   arts_av: "Arts, A/V Technology & Communications",
   government: "Government & Public Administration",
   law_safety: "Law, Public Safety, Corrections & Security",
+  cosmetology: "Cosmetology / Personal Care Services",
 }
 
 function tierLevelLabel(tier, level) {
@@ -152,6 +153,12 @@ Content areas to prioritize: (a) governance — how government works, policy-mak
 - Common Career Technical Core (CCTC) — Law, Public Safety, Corrections & Security (LW) performance elements (Advance CTE), the primary content framework, including the corrections-specific pathway (LW-COR) as well as Emergency & Fire Management Services, Security & Protective Services, Legal Services, and Law Enforcement Services pathways. Framework field: "CCTC". Use the LW pathway code and performance-element numbering when confident (e.g., "LW-COR" for corrections); otherwise describe the standard and omit the code.
 This cluster's high-school programs of study typically fall into three areas — draw content from whichever fits the lesson: (1) Criminal Justice & Correction Services — how the justice system works, law-enforcement career paths, a corrections overview, and ethics & professionalism; (2) Pre-Law — American legal-system basics, a court-procedures overview, legal careers (paralegal and attorney paths), and juvenile-justice awareness; and (3) Fire Management Services — the firefighter career path, fire-behavior basics, and safety awareness (this area involves REAL physical risk — see the SAFETY directive).
 Content areas to prioritize across these programs of study: (a) criminal justice & corrections; (b) pre-law / the legal system; (c) fire management services; and (d) career exploration & professionalism — ethics, chain-of-command concepts, and the workplace skills specific to this field (integrity, stress tolerance, sound decision-making). Keep the identity on career exploration, how public-service/justice systems operate, and professional standards — never operational tactics or legal advice.`,
+    cosmetology: `Primary national framework for Cosmetology / Personal Care Services — lead the competency list with entries from this, and treat the state CTE task list above as the state verification layer for it:
+- NIC (National Interstate Council of State Boards of Cosmetology) — the national testing body whose theory and practical examinations are used by 38+ states for cosmetology and related personal-care licensure. Organize competencies around NIC's core content domains: Infection Control & Safety / Scientific Concepts; Anatomy & Physiology; Chemistry; Hair Care & Services; Skin / Esthetics Services; Nail / Manicuring Services; and State Law, Rules & Business Practices. Framework field: "NIC". Describe the domain/competency clearly; only cite a specific NIC exam-domain code or weighting if genuinely confident, otherwise describe it and omit the number.
+Then include entries from this where the lesson content maps to it:
+- SkillsUSA — the CTSO most closely associated with this cluster (national, parallel to HOSA / DECA / FBLA). Align applied tasks, professionalism, and competition-style skills to relevant SkillsUSA Cosmetology, Esthetics, and Nail Care competitive events. Framework field: "SkillsUSA".
+CRITICAL STATE-LICENSURE-HOURS DISCLAIMER — TREAT THIS AS MORE IMPORTANT AND MORE PROMINENT THAN THE STANDARD "verify your state" note: required training hours for a cosmetology license VARY ENORMOUSLY BY STATE — from roughly 1,000 to 2,100+ hours, a difference of many hundreds (in some cases over a thousand) of hours depending on the state board — and many states license esthetics, nail technology, and barbering SEPARATELY, each with its own required hours. The lesson MUST explicitly and prominently flag this: state clearly that students must verify their OWN state board of cosmetology's exact required hours, license categories, approved curriculum, and written/practical exam requirements, and that this lesson does NOT certify or count hours toward licensure. Never present a specific hour figure as nationally applicable. Surface this disclaimer in the licensing-awareness content, and echo it in safety_notes where hands-on service is involved.
+Content areas to prioritize: (a) Hair Services — cutting, styling, chemical texture services (permanent waving / relaxing), and hair-coloring basics; (b) Skin Care & Esthetics — facials, makeup application, and waxing basics; (c) Nail Care — manicure and pedicure basics; (d) Infection Control & Safety — sanitation and disinfection, safe chemical handling, and blood-exposure / first-aid protocols (see the SAFETY directive in this prompt); and (e) Licensing-Pathway Awareness — the state licensing process overview, the NIC written and practical exam structure, and the difference between the apprenticeship route and the school-based route to licensure. Frame ALL hands-on chemical and sharp-tool work as done only under required supervision, PPE, and ventilation.`,
   }[pathway] ?? ""
 
   const rigorNote =
@@ -190,6 +197,7 @@ function getCredentialFocus(pathway) {
     arts_av: ["A portfolio / demo reel of finished creative work — the primary currency of this field", "Adobe Certified Professional (e.g., Photoshop, Illustrator, Premiere Pro) where the program teaches those tools", "SkillsUSA competitive-event recognition (e.g., Graphic Communications, Television/Video Production, Photography)"],
     government: ["A public-service / civics portfolio and projects (this cluster has no single dominant credential — content and demonstrated civic skill carry it)", "Recognition through civics & youth-government programs (e.g., YMCA Youth & Government, We the People, Model UN)", "General workplace/administrative certificates where offered (e.g., Microsoft Office Specialist)"],
     law_safety: ["A career-exploration & professionalism/ethics portfolio (this cluster's HS programs of study vary; no single dominant student credential)", "General/entry credentials tied to a program of study where offered (e.g., CPR/First Aid for fire-service exploration; OSHA general awareness)", "Recognition through related programs — exploration only (e.g., mock trial, Explorers/cadet or fire-cadet programs)"],
+    cosmetology: ["A state cosmetology (or separate esthetics / nail-technician / barbering) LICENSE — the credential required to practice, earned by completing the state-mandated training hours and passing the NIC (or state) written and practical exams", "NIC national theory & practical exam readiness (used by 38+ states)", "SkillsUSA competitive-event recognition (Cosmetology, Esthetics, Nail Care). NOTE: required license hours and license categories vary significantly by state — verify with the state board."],
   }[pathway] ?? []
 }
 
@@ -569,6 +577,28 @@ function getPhaseDescriptions(pathway) {
         desc: "Students reflect on how today's work fits a real career in law, public safety, corrections, or fire service, share a decision or finding, and name one professional value (integrity, fairness, service) that matters in this field. Connect the skill to a specific career path and its education/training requirements, and to a job-shadow, ride-along, or mentorship opportunity. End with a brief exit ticket. 5–8 minutes.",
       },
     },
+    cosmetology: {
+      warm_up: {
+        name: "Client / Scenario Hook",
+        desc: "Open with a concrete salon / personal-care scenario — a client-consultation moment, a 'what would a licensed pro check first?' sanitation or safety question, a before/after service, or a short demo clip. Students react as a licensed professional would: what does the client need, and what safety/sanitation step comes first? Connect to a real service and career. 5–8 minutes.",
+      },
+      whole_group_instruction: {
+        name: "Concept Instruction",
+        desc: "Teach the core cosmetology concept directly using correct vocabulary (e.g., disinfection vs. sanitation, patch/predisposition test, hair elasticity/porosity, pH, sectioning/partings, cuticle, viscosity). Ground it in the relevant NIC content domain. ALWAYS tie the concept to its infection-control and chemical-safety implications. Address a common misconception and check understanding before any hands-on work. 8–12 minutes.",
+      },
+      fitness_activities: {
+        name: "Skill Demonstration",
+        desc: "Model the service skill step by step the way a licensed professional performs it — draping and sanitation setup, disinfected implements, sectioning, the tool/product motion, and the safety checkpoints (PPE, patch test, ventilation). Name each step and the standard behind it, and for any chemical or sharp-tool step foreground the specific hazard and its control. Students watch, then walk through the low-risk steps once with teacher support. 5–10 minutes.",
+      },
+      independent_practice: {
+        name: "Hands-On Application (Supervised)",
+        desc: "Students apply the skill in a realistic, SUPERVISED task on a mannequin/training head, hand replica, or peer ONLY where school policy allows and under required supervision and PPE — e.g., a sectioning/parting pattern, a basic cutting or styling technique, a manicure setup and sanitation routine, a facial-step sequence, or a station-disinfection procedure. Describe exactly what students do, what a competent result looks like, what the teacher observes/coaches, and the sanitation/PPE checklist. Include a rubric aligned to a NIC domain or a SkillsUSA event. 15–20 minutes.",
+      },
+      closure: {
+        name: "Reflection & Career / Licensing Connection",
+        desc: "Students reflect on how today's skill fits a real personal-care career and the path to licensure, name one infection-control or safety practice they will always follow, and connect the skill to the NIC exam domain it supports. Remind students that required license hours, categories, and exam requirements VARY BY STATE and must be verified with their own state board. End with a brief exit ticket. 5–8 minutes.",
+      },
+    },
   }
   return map[pathway] ?? map.hospitality
 }
@@ -665,6 +695,11 @@ function getPathwaySequence(pathway) {
       { level: "concentrator", course: "Criminal Justice & Corrections / Pre-Law / Fire Management Services (program of study)", description: "Applied study within a chosen program of study — how the justice system, legal system, corrections, or fire service works; court/agency roles and processes; fire-behavior and safety awareness; and field ethics and professionalism, aligned to CCTC LW standards. Educational/exploratory, not operational." },
       { level: "completer", course: "Advanced / Capstone, Career Portfolio & Work-Based Learning", description: "Capstone career-exploration or systems project, a professionalism/ethics portfolio, participation in related programs (mock trial, Explorers/cadet or fire-cadet), and work-based learning through job shadowing, ride-alongs where available, mentorship, or an internship with a court, agency, fire department, or law office." },
     ],
+    cosmetology: [
+      { level: "introductory", course: "Introduction to Cosmetology / Personal Care Services", description: "Foundations — an overview of the personal-care industry and its careers (cosmetology, esthetics, nails, barbering), infection-control and safety fundamentals, professional image and client communication, an introduction to hair, skin, and nail services, and the path to state licensure (school-based vs. apprenticeship)." },
+      { level: "concentrator", course: "Cosmetology I–II / Hair, Skin & Nail Services", description: "Applied services aligned to NIC content domains — hair cutting/styling plus chemical-texture and color basics; skin/esthetics (facials, makeup, waxing) and nail (manicure/pedicure) fundamentals; the chemistry and anatomy/physiology behind services; and sanitation/disinfection to state-board standard, with SkillsUSA alignment. All hands-on work supervised, with required PPE." },
+      { level: "completer", course: "Cosmetology Capstone / Licensure Prep, SkillsUSA & Work-Based Learning", description: "Capstone service competency and NIC written/practical exam preparation, accumulation of state-required clinical/lab hours toward licensure (hours vary by state — verify with the state board), SkillsUSA competitive events, and work-based learning through a salon/spa apprenticeship, cooperative education, or supervised placement." },
+    ],
   }[pathway] ?? []
 }
 
@@ -673,7 +708,7 @@ function getPathwaySequence(pathway) {
 // Work-Based Learning (HQWBL) model, which recognizes a broader set of 12 methods than
 // the internship/shadow/speaker default.
 function getWblGuidance(pathway) {
-  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing" || pathway === "engineering_tech" || pathway === "business_mgmt" || pathway === "agriculture" || pathway === "construction" || pathway === "arts_av" || pathway === "government" || pathway === "law_safety") {
+  if (pathway === "human_services" || pathway === "health_science" || pathway === "education" || pathway === "career_readiness" || pathway === "information_technology" || pathway === "transportation" || pathway === "manufacturing" || pathway === "engineering_tech" || pathway === "business_mgmt" || pathway === "agriculture" || pathway === "construction" || pathway === "arts_av" || pathway === "government" || pathway === "law_safety" || pathway === "cosmetology") {
     const emphasis = pathway === "health_science"
       ? " Clinical experience is especially relevant for this pathway — prioritize clinical/hospital placements, patient-care rotations, and health-agency service learning where appropriate."
       : pathway === "education"
@@ -698,7 +733,9 @@ function getWblGuidance(pathway) {
                           ? " Internship, mentorship, and service learning are especially relevant for this pathway — public service is civic and community-based, so prioritize government/civic internships (a local council, mayor's or agency office, or legislative page/intern program), mentorship from public officials and administrators, and service learning that addresses a real community need, alongside job shadowing in a public agency. Youth-government and civic programs (e.g., YMCA Youth & Government, Model UN) also serve as authentic, program-based WBL for this cluster."
                           : pathway === "law_safety"
                             ? " Job shadowing, mentorship, and internship are especially relevant for this pathway — prioritize job shadowing and, where appropriate and available, supervised ride-alongs; mentorship from professionals (officers, attorneys, corrections/probation staff, firefighters); and internships with courts, fire departments, law offices, or public-safety agencies, alongside service learning. Every placement must be age-appropriate, supervised, and OBSERVATIONAL (career exploration only — never operational participation); ride-alongs and any fire-service activity follow the agency's policies, waivers, and safety requirements."
-                            : ""
+                            : pathway === "cosmetology"
+                              ? " Apprenticeship and cooperative education are especially relevant for this pathway — many states offer an APPRENTICESHIP ROUTE to a cosmetology/personal-care license alongside the school-based route, so prioritize registered/state-approved salon, spa, or barbershop apprenticeships; cooperative-education placements in a licensed salon/spa; mentorship with a licensed professional; and a school-based enterprise (a supervised student salon/clinic) where the program runs one, alongside job shadowing. Any client-facing or hands-on placement must follow the state board's supervision, sanitation, and licensing rules and the site's safety requirements. Note that the apprenticeship route's required hours and rules vary by state."
+                              : ""
     return `\nThis pathway follows Virginia's High-Quality Work-Based Learning (HQWBL) model, which recognizes 12 methods: job shadowing, service learning, mentorship, externship, school-based enterprise, internship, entrepreneurship, clinical experience, cooperative education, youth registered apprenticeship, registered apprenticeship, and supervised agricultural experience. When filling the fields below, draw the most lesson-appropriate ideas from this broader set (not only internships/shadows) — e.g., service learning with a community agency, a clinical experience, a school-based enterprise, or a mentorship — and fold them into the internships and job_shadows arrays as fits this lesson's content and tier.${emphasis}`
   }
   return ""
@@ -729,6 +766,11 @@ SAFETY (safety_notes field) — CRITICAL FOR THIS PATHWAY: Construction and cons
     return `
 
 SAFETY & PROFESSIONAL BOUNDARY (safety_notes field) — CRITICAL FOR THIS PATHWAY: Keep ALL content in career-exploration and general-educational territory — how the justice, legal, corrections, and public-safety/fire SYSTEMS work; career paths and requirements; and ethics/professionalism. Do NOT provide legal advice; do NOT provide operational or tactical law-enforcement, corrections, or security procedures, techniques, or anything resembling operational training; and do NOT include content that could be misused. For any FIRE MANAGEMENT SERVICES content specifically, there is REAL physical risk (fire behavior, live fire/heat, hazmat, and physical-training demands) — treat that with the SAME seriousness as a health-science clinical lesson and populate safety_notes with SPECIFIC controls: never conduct live-fire, smoke, or hazmat activities in a classroom; turnout gear / SCBA and any firefighting skill are used ONLY under certified fire-service instruction; physical training must be supervised, voluntary, medically cleared, and paced with hydration/rest; and hazmat is recognize-and-report only (never handle). Keep any hands-on activity to demonstration/simulation/awareness. The FIRST item in safety_notes MUST be this boundary statement, verbatim: "This lesson plan supports classroom career exploration and general educational understanding only. It is not legal advice and does not provide operational law-enforcement, corrections, security, or firefighting tactics, procedures, or training. Any hands-on public-safety or fire-service activity requires proper certification, equipment, and supervision — follow your program's and district's policies."`
+  }
+  if (pathway === "cosmetology") {
+    return `
+
+SAFETY (safety_notes field) — CRITICAL FOR THIS PATHWAY: Cosmetology / personal-care services involve REAL physical and health risk — chemical burns and injury from relaxers, permanent-wave solutions, and hair color/lighteners; allergic and irritant reactions that REQUIRE a patch/predisposition test before color and chemical services; infection transmission and BLOODBORNE-PATHOGEN exposure (nicks, cuts, broken skin) that demand strict sanitation, disinfection of implements in an EPA-registered disinfectant, and a defined blood-exposure/first-aid procedure; cuts from shears, razors, and nippers; burns from thermal styling tools (flat/curling irons, blow dryers) and hot wax; eye and respiratory irritation from chemical fumes, aerosols, and nail-product vapors; and slips on wet floors. Treat safety with the SAME seriousness as a health-science clinical lesson — never generic "be careful." Populate the safety_notes array with SPECIFIC, lesson-relevant hazards and their controls (e.g., always patch-test before color/chemical services; read and follow the product SDS and manufacturer directions and never over-process/over-time a chemical service; PPE — gloves, cape/apron, and eye protection for chemical work; disinfect all multi-use implements and discard single-use items; a blood-exposure procedure — stop, glove, clean, cover, then disinfect the station and follow the exposure/first-aid plan; adequate ventilation for chemical and nail services; guarded handling of shears/razors and hot tools; and keeping the floor and station clean and dry), and foreground the relevant safety point inside the Concept Instruction, Skill Demonstration, and Hands-On phases. Keep any hands-on service on mannequins/training heads (or peers ONLY where school policy allows) under required supervision and PPE. The FIRST item in safety_notes MUST be this boundary statement, verbatim: "This lesson plan supports classroom and lab PLANNING only. It is not a substitute for your program's required safety, sanitation, and supervision or its equipment/PPE, and it does not certify or count hours toward licensure. Required training hours, license categories, and exam requirements vary significantly by state — follow your school's and district's policies and your state board of cosmetology's rules and any applicable OSHA / infection-control (bloodborne-pathogen) requirements before any hands-on or client work."`
   }
   return ""
 }
@@ -857,7 +899,7 @@ export function buildCteLessonSchema(includeELL = false) {
 
 /**
  * @param {Object} input
- * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'|'engineering_tech'|'business_mgmt'|'agriculture'|'construction'|'arts_av'|'government'|'law_safety'} input.pathway
+ * @param {'hospitality'|'finance'|'marketing'|'human_services'|'health_science'|'education'|'career_readiness'|'information_technology'|'transportation'|'manufacturing'|'engineering_tech'|'business_mgmt'|'agriculture'|'construction'|'arts_av'|'government'|'law_safety'|'cosmetology'} input.pathway
  * @param {'ms'|'hs'} input.tier
  * @param {'introductory'|'concentrator'|'completer'|''} [input.level]  required when tier === 'hs'
  * @param {string}  input.topic

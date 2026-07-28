@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Wrench, Factory, Cpu, Building2, Sprout, HardHat, Clapperboard, Scale, Shield, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink, ChevronDown } from 'lucide-react'
+import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Wrench, Factory, Cpu, Building2, Sprout, HardHat, Clapperboard, Scale, Shield, Scissors, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink, ChevronDown } from 'lucide-react'
 import { generateCteLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
@@ -110,15 +110,21 @@ const PATHWAYS = [
     description: 'Criminal justice & corrections, pre-law & the legal system, fire management, ethics & careers (exploration only)',
     icon: Shield,
   },
+  {
+    value: 'cosmetology',
+    label: 'Cosmetology / Personal Care Services',
+    description: 'Hair, skin & nail services, infection control & safety, and the path to state licensure (NIC / SkillsUSA) — hours vary by state',
+    icon: Scissors,
+  },
 ]
 
-// The 17 pathways grouped into 6 logical categories for scannability. Career
+// The 18 pathways grouped into 6 logical categories for scannability. Career
 // Readiness is pinned first as the foundational entry point. Order within each
 // group is intentional. Every pathway value MUST appear in exactly one group.
 const PATHWAY_GROUPS = [
   { label: 'Career Foundations', values: ['career_readiness'] },
   { label: 'Business, Finance & Marketing', values: ['finance', 'marketing', 'business_mgmt', 'hospitality'] },
-  { label: 'Health & Human Services', values: ['health_science', 'human_services', 'education'] },
+  { label: 'Health & Human Services', values: ['health_science', 'human_services', 'education', 'cosmetology'] },
   { label: 'Technology & Engineering', values: ['information_technology', 'engineering_tech'] },
   { label: 'Skilled Trades & Industrial', values: ['transportation', 'manufacturing', 'construction', 'agriculture'] },
   { label: 'Arts, Government & Public Service', values: ['arts_av', 'government', 'law_safety'] },
@@ -153,6 +159,7 @@ const TOPIC_PLACEHOLDERS = {
   arts_av: 'e.g. Design principles & typography, Designing a poster or logo, Shooting & editing a short video, Broadcast journalism & interviewing, Digital/interactive media basics, Print production & quality control',
   government: 'e.g. How a bill becomes law, Levels of government (local/state/federal), How public agencies are managed, Public budgeting & taxation basics, Analyzing a local policy issue, Intro to public-service careers',
   law_safety: 'e.g. How the justice system works, Law-enforcement career paths, Court procedures overview, Legal careers (paralegal/attorney), Corrections overview, Firefighter career path & fire behavior, Ethics & professionalism',
+  cosmetology: 'e.g. Infection control & disinfection, Sectioning & parting the hair, Basic haircut/styling technique, Patch testing before color, Manicure setup & sanitation, Facial steps & skin analysis, The path to state licensure (hours vary by state)',
 }
 
 const MATERIAL_PLACEHOLDERS = {
@@ -325,6 +332,15 @@ const MATERIAL_PLACEHOLDERS = {
     'e.g. Laptops/Chromebooks for career research',
     'e.g. Fire-safety / fire-behavior reference (awareness)',
     'e.g. Chart paper & markers',
+  ],
+  cosmetology: [
+    'e.g. Mannequin / training heads & clamps',
+    'e.g. Shears, combs, sectioning clips (sanitized)',
+    'e.g. EPA-registered disinfectant & sanitation supplies',
+    'e.g. Gloves, capes/aprons & eye protection (PPE)',
+    'e.g. Manicure/nail kit & hand replica',
+    'e.g. Product SDS sheets & patch-test log',
+    'e.g. State-board sanitation & licensing-hours reference',
   ],
 }
 
@@ -502,21 +518,21 @@ export default function CteGenerator() {
           </div>
         </div>
         <p className="text-sm text-ink-400 mt-3">
-          Generate a complete Career &amp; Technical Education lesson across seventeen pathways —
+          Generate a complete Career &amp; Technical Education lesson across eighteen pathways —
           all 16 national CTE clusters: Hospitality &amp; Tourism, Finance, Marketing, Human
           Services / FCS, Health Science, Education &amp; Training, Career Readiness (MS
           foundations), Information Technology, Transportation, Distribution &amp; Logistics,
           Manufacturing, STEM / Engineering &amp; Technology, Business Management &amp;
           Administration, Agriculture, Food &amp; Natural Resources, Architecture &amp; Construction,
-          Arts, A/V Technology &amp; Communications, Government &amp; Public Administration, or Law,
-          Public Safety, Corrections &amp; Security — with work-based learning and career pathway
-          context built in.
+          Arts, A/V Technology &amp; Communications, Government &amp; Public Administration, Law,
+          Public Safety, Corrections &amp; Security, or Cosmetology / Personal Care Services — with
+          work-based learning and career pathway context built in.
         </p>
       </div>
 
       <form onSubmit={handleGenerate} className="space-y-6">
 
-        {/* Pathway selector — 17 pathways grouped into 6 collapsible categories */}
+        {/* Pathway selector — 18 pathways grouped into 6 collapsible categories */}
         <div className="space-y-3">
           <h2 className="text-sm font-semibold text-ink-200">Pathway</h2>
           <div className="space-y-2">
@@ -759,6 +775,7 @@ export default function CteGenerator() {
                 pathway === 'arts_av'         ? 'e.g. Apply design principles to a layout (CCTC AR-VIS / Visual Arts)' :
                 pathway === 'government'      ? 'e.g. Explain how a local government makes a policy decision (CCTC GV — Governance)' :
                 pathway === 'law_safety'      ? 'e.g. Trace how a case moves through the court system (CCTC LW — exploration)' :
+                pathway === 'cosmetology'     ? 'e.g. Disinfect implements to state-board standard (NIC — Infection Control & Safety)' :
                                                 'e.g. Identify a target market (DECA PI)'
               }
               value={targetCompetency}
