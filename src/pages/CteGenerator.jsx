@@ -83,7 +83,7 @@ const PATHWAYS = [
   {
     value: 'agriculture',
     label: 'Agriculture, Food & Natural Resources',
-    description: 'AFNR — plant & animal science, natural resources & conservation, agribusiness, with SAE & FFA',
+    description: 'AFNR — plant & animal science, veterinary science, natural resources & conservation, agribusiness, with SAE & FFA',
     icon: Sprout,
   },
   {
@@ -172,7 +172,7 @@ const TOPIC_PLACEHOLDERS = {
   manufacturing: 'e.g. Precision measurement with calipers, Blueprint/print reading, Intro to CNC machining, Robotics & automation basics, IIoT & smart sensors, Lockout/tagout & machine safety, Materials & production processes',
   engineering_tech: 'e.g. The engineering design process, Exploring engineering fields, Build & program a robot (FIRST/VEX), Sensors & actuators, Intro to coding & computational thinking, Principles of flight & aircraft systems (aerospace), Avionics & aircraft electronics overview, Ohm\'s law & circuits / reading schematics (Electronics I), Digital electronics & troubleshooting (Electronics II)',
   business_mgmt: 'e.g. The four functions of management, Business structures (LLC vs. corporation), A management decision case, Building a basic operating budget, Org charts & workflow, Intro to entrepreneurship, Basic HR concepts, Project management & the project lifecycle (Gantt charts), Resume, portfolio & interview skills (career management), Office productivity & responsible AI tools',
-  agriculture: 'e.g. Plant growth & soil basics, Crop production, Animal care & husbandry, Conservation & water quality, Agribusiness & marketing ag products, Intro to FFA & SAE projects',
+  agriculture: 'e.g. Plant growth & soil basics, Crop production, Animal care & husbandry, Veterinary medical terminology, Animal handling & restraint (vet science), Vital signs (TPR) & vet nursing basics, Parasitology & disease prevention, Conservation & water quality, Agribusiness, Intro to FFA & SAE projects',
   construction: 'e.g. Reading a floor plan, Framing & layout (carpentry), Series vs. parallel circuits (electrical), Welding processes & safety, Masonry bond patterns, Sheet-metal & ductwork, Heavy-equipment awareness, Roofing systems, The refrigeration cycle (HVAC-R) & EPA 608, Plumbing supply & drainage, Fall-protection safety',
   arts_av: 'e.g. Design principles & typography, Designing a poster or logo, Shooting & editing a short video, Broadcast journalism & interviewing, Digital/interactive media basics, Print production & quality control, Page layout & grids (desktop publishing), Designing a newsletter or yearbook spread, Print-ready PDF & publication workflow',
   government: 'e.g. How a bill becomes law, Levels of government (local/state/federal), How public agencies are managed, Public budgeting & taxation basics, Analyzing a local policy issue, Intro to public-service careers',
