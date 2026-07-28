@@ -89,7 +89,7 @@ const PATHWAYS = [
   {
     value: 'construction',
     label: 'Architecture & Construction',
-    description: 'Blueprint reading & design, building systems & methods, the trades & jobsite safety — incl. a deeper HVAC-R/plumbing strand (refrigeration cycle, EPA 608 law, refrigerant-handling awareness, plumbing systems)',
+    description: 'Blueprint reading & design, building systems & methods, and the construction trades — electrical, carpentry, welding, masonry, sheet metal, heavy equipment, roofing, plumbing & HVAC-R — with jobsite safety (NCCER / SkillsUSA)',
     icon: HardHat,
   },
   {
@@ -173,7 +173,7 @@ const TOPIC_PLACEHOLDERS = {
   engineering_tech: 'e.g. The engineering design process, Exploring engineering fields, Build & program a robot (FIRST/VEX), Sensors & actuators, Intro to coding & computational thinking, Prototype & iterate a design',
   business_mgmt: 'e.g. The four functions of management, Business structures (LLC vs. corporation), A management decision case, Building a basic operating budget, Org charts & workflow, Intro to entrepreneurship, Basic HR concepts',
   agriculture: 'e.g. Plant growth & soil basics, Crop production, Animal care & husbandry, Conservation & water quality, Agribusiness & marketing ag products, Intro to FFA & SAE projects',
-  construction: 'e.g. Blueprint reading, Building systems & materials, Framing & measurement/layout, The refrigeration cycle (HVAC-R), EPA 608 certification types & law, Refrigerant recovery (awareness), Plumbing supply & DWV drainage systems, Ladder & fall-protection safety',
+  construction: 'e.g. Reading a floor plan, Framing & layout (carpentry), Series vs. parallel circuits (electrical), Welding processes & safety, Masonry bond patterns, Sheet-metal & ductwork, Heavy-equipment awareness, Roofing systems, The refrigeration cycle (HVAC-R) & EPA 608, Plumbing supply & drainage, Fall-protection safety',
   arts_av: 'e.g. Design principles & typography, Designing a poster or logo, Shooting & editing a short video, Broadcast journalism & interviewing, Digital/interactive media basics, Print production & quality control',
   government: 'e.g. How a bill becomes law, Levels of government (local/state/federal), How public agencies are managed, Public budgeting & taxation basics, Analyzing a local policy issue, Intro to public-service careers',
   law_safety: 'e.g. How the justice system works, Law-enforcement career paths, Court procedures overview, Legal careers (paralegal/attorney), Corrections overview, Firefighter career path & fire behavior, Ethics & professionalism',
