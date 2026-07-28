@@ -29,7 +29,7 @@ const PATHWAYS = [
   {
     value: 'human_services',
     label: 'Human Services / FCS',
-    description: 'Family & Consumer Sciences, independent living & workplace readiness',
+    description: 'Family & Consumer Sciences, independent living, fashion design & textiles, workplace readiness',
     icon: HeartHandshake,
   },
   {
@@ -163,7 +163,7 @@ const TOPIC_PLACEHOLDERS = {
   hospitality: 'e.g. Knife cuts & knife safety, Dry vs. moist heat cooking methods, Mise en place, The kitchen brigade system, Menu planning & food-cost %, Baking basics (leavening), Food safety & sanitation (ServSafe), Front desk check-in, Planning a destination tour',
   finance:     'e.g. Building a monthly budget, Comparing two credit-card offers, Simple vs. compound interest, Reading a pay stub, Insurance basics & policy types, Risk management & careers in insurance',
   marketing:   'e.g. Identify a target market, Build the marketing mix for a product, Analyze a real ad campaign, DECA role-play prep, The fashion cycle & fashion capitals, Retail buying & merchandising (fashion), Visual merchandising & social-media promotion, Fashion marketing careers',
-  human_services: 'e.g. Reading a nutrition label, Building a personal budget, Age-appropriate child activities, Mock job interview & workplace readiness',
+  human_services: 'e.g. Reading a nutrition label, Building a personal budget, Age-appropriate child activities, Natural vs. synthetic fibers & fabric construction, Garment construction & pattern basics, Design elements & principles in fashion, Fashion history & sustainability, Mock job interview & workplace readiness',
   health_science: 'e.g. Taking vital signs, The cardiovascular system, Medical terminology word parts, Infection control & PPE, Patient positioning, Dental anatomy & tooth numbering, Chairside assisting & dental instruments, Dental radiography & radiation safety',
   education: 'e.g. History & philosophy of education (Principles of Education), Writing a measurable learning objective, Instructional strategies & differentiation, Classroom management routines & procedures, Piaget/Erikson/Vygotsky applied to teaching, Designing a classroom observation & reflection (practicum)',
   career_readiness: 'e.g. Interest & strengths self-assessment, Exploring the 16 career clusters, Writing a professional email, Teamwork & communication skills, Setting a career goal, Age-appropriate resume basics, Keyboarding & touch-typing (digital literacy), Spreadsheet formulas & charts (computer applications), Digital footprint & source credibility (MS digital citizenship), Loops & conditionals in Scratch (MS coding)',
