@@ -102,6 +102,10 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
     'School Counselors', 'Intervention Planning', 'Student Support Team Activities',
   ])
   const allowQuizRubric = !NON_EVALUATIVE.has(subject)
+  // Observation Prep is (interim) hidden for CTE lessons: its prompt dumps the
+  // full lesson and the model refuses on the large CTE shape. Remove once the
+  // CTE-safe obs-summary ships.
+  const isCteLesson = subject === 'CTE' || Boolean(lo?.pathway)
   const isWorldLanguages = subject === 'World Languages'
 
   async function run(setter, fn) {
@@ -350,8 +354,8 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
             </button>
           ))}
 
-          {/* Observation prep */}
-          {!hasObsSummary ? (
+          {/* Observation prep — hidden (interim) for CTE lessons (model refuses on the large CTE dump) */}
+          {!isCteLesson && (!hasObsSummary ? (
             <button onClick={handleGenerateObsSummary} disabled={generatingObsSummary} className="btn-secondary">
               {generatingObsSummary ? <Loader2 size={16} className="animate-spin" /> : <ClipboardCheck size={16} />}
               Observation prep
@@ -361,7 +365,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
               <ClipboardCheck size={16} />
               Obs. prep
             </button>
-          )}
+          ))}
 
           {/* Parent note */}
           {!hasParentNote ? (
