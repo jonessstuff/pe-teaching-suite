@@ -13,7 +13,7 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js";
-import { buildObservationSummaryPrompt } from "../_shared/observationSummaryPrompt.js";
+import { buildObservationSummaryPrompt, OBSERVATION_SUMMARY_SCHEMA } from "../_shared/observationSummaryPrompt.js";
 import { callClaudeForJson } from "../_shared/anthropic.js";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
@@ -63,7 +63,13 @@ Deno.serve(async (req) => {
     const lessonObject = row.lesson_object;
 
     const { system, user } = buildObservationSummaryPrompt(lessonObject);
-    const result = await callClaudeForJson(system, user, 4000);
+    // Sonnet 4.6 false-refuses obs-summaries on sensitive-domain CTE lessons
+    // (legal, chemical/medical) — stop_reason "refusal", empty content. Haiku 4.5
+    // handles them cleanly, so route CTE lessons to it; everything else stays on
+    // the default (Sonnet).
+    const isCte = lessonObject?.subject === "CTE" || Boolean(lessonObject?.pathway);
+    const model = isCte ? "claude-haiku-4-5" : undefined;
+    const result = await callClaudeForJson(system, user, 4000, model, OBSERVATION_SUMMARY_SCHEMA);
 
     return jsonResponse({
       obs_overview: result.obs_overview ?? "",

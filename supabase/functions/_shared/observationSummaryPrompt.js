@@ -1,92 +1,106 @@
-import { serializeLessonForTools } from "./lessonSummary.js"
 import { toolDirective } from "./toolSubjectDirectives.js"
 /**
  * Observation/Evaluation prep prompt builder.
  *
- * Takes an existing LessonObject and produces a concise one-page summary
- * formatted for a principal or evaluator doing a walkthrough. Standards are
- * passed through verbatim from the lesson — the model synthesizes only the
- * overview, differentiation highlights, and observable indicators.
+ * Produces a concise one-page summary for a principal/evaluator walkthrough.
+ * Works for every subject shape (PE grade-band lessons AND CTE tier/level
+ * lessons). It sends a COMPACT summary of the lesson — deliberately NOT the full
+ * serialized lesson: the full dump (with verbatim safety/boundary content) was
+ * large enough on CTE lessons to trigger a model refusal (stop_reason
+ * "refusal", empty content). The compact, clipped flow is all a 3-part synthesis
+ * needs and keeps the request small and unambiguously benign.
  */
+
+// Structured-output schema — forces a valid, complete JSON object and further
+// reduces refusal/format risk.
+export const OBSERVATION_SUMMARY_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  required: ["obs_overview", "obs_differentiation", "obs_look_for"],
+  properties: {
+    obs_overview: { type: "string" },
+    obs_differentiation: { type: "array", items: { type: "string" } },
+    obs_look_for: { type: "array", items: { type: "string" } },
+  },
+};
+
+const clip = (s, n = 600) => (typeof s === "string" ? s.slice(0, n) : "");
 
 /**
  * @param {import("../../../src/types/lessonObject").LessonObject} lessonObject
  * @returns {{ system: string, user: string }}
  */
 export function buildObservationSummaryPrompt(lessonObject) {
-  const subject = lessonObject.subject ?? "PE"
-  const grades = (lessonObject.grade_bands ?? [])
-    .map((g) => (g === 0 ? "K" : String(g)))
-    .join("/")
+  const subject = lessonObject.subject ?? "PE";
+  const isCte = subject === "CTE" || Boolean(lessonObject.pathway);
 
-  const system = `You are an experienced ${subject} department head helping a teacher prepare a one-page observation summary for a principal or evaluator doing a walkthrough.
+  // Level line — CTE uses tier_label; everything else uses grade bands.
+  const level = isCte
+    ? (lessonObject.tier_label ?? lessonObject.pathway_label ?? "CTE")
+    : ((lessonObject.grade_bands ?? []).map((g) => (g === 0 ? "K" : String(g))).join("/") || "K–12");
 
-Your output must be professional, concise, and evaluator-friendly — written for someone with limited subject-matter expertise who needs to quickly understand what is happening in the classroom and what to look for.
+  // Learning target(s): CTE has a singular string; grade-band lessons have a
+  // { grade: text } map.
+  const targets = (typeof lessonObject.learning_target === "string" && lessonObject.learning_target)
+    ? lessonObject.learning_target
+    : (Object.entries(lessonObject.learning_targets ?? {})
+        .map(([g, t]) => `Grade ${g === "0" ? "K" : g}: ${t}`).join("\n") || "(none listed)");
 
-You must return ONLY a single JSON object — no markdown fences, no commentary — matching this exact schema:
+  const mods = Object.entries(lessonObject.modifications ?? {})
+    .map(([g, t]) => `Grade ${g === "0" ? "K" : g}: ${t}`).join("\n");
 
-{
-  "obs_overview": string,
-  "obs_differentiation": string[],
-  "obs_look_for": string[]
-}
+  const competencies = isCte
+    ? (lessonObject.competencies ?? [])
+        .map((c) => `${c.framework ? c.framework + " — " : ""}${c.text ?? c.competency ?? ""}`.trim())
+        .filter(Boolean).join("; ")
+    : "";
+
+  const skillFocus = Array.isArray(lessonObject.skill_focus)
+    ? lessonObject.skill_focus.join(", ")
+    : (lessonObject.skill_focus || "");
+
+  const system = `You are an experienced educator helping a colleague prepare a one-page observation summary for a principal or evaluator doing a walkthrough of a ${subject} lesson.
+
+Your output must be professional, concise, and evaluator-friendly — written for someone with limited subject-matter expertise who needs to quickly understand what is happening in the classroom and what to look for. ADAPT everything to THIS lesson's actual subject, content, and vocabulary — the examples below are illustrative (from a PE lesson) and must not be copied literally.
+
+You must return ONLY a single JSON object matching this exact schema:
+
+{ "obs_overview": string, "obs_differentiation": string[], "obs_look_for": string[] }
 
 Field guidance:
 
 obs_overview:
-  2-3 sentences synthesizing the full lesson arc (warm-up through closure) into a coherent picture of what is happening today and why. Write in present tense as if the evaluator is walking in mid-lesson. Name the skill or concept being taught. Do not list every activity — synthesize. Example: "Students are in the skill-building phase of a volleyball unit, working on the underhand serve using the BEEF cue. The teacher is rotating between groups providing targeted corrective feedback, while students practice in structured peer pairs."
+  2-3 sentences (maximum) synthesizing the full lesson arc into a coherent picture of what is happening today and why, in present tense as if the evaluator is walking in mid-lesson. Name the skill or concept being taught. Synthesize — don't list every activity. Illustrative: "Students are in the skill-building phase of a volleyball unit, working on the underhand serve using the BEEF cue, while the teacher rotates providing corrective feedback."
 
 obs_differentiation:
-  Array of exactly 2-3 strings. Each string is a specific, concrete example of how this lesson supports diverse learners, rewritten from the lesson's modifications/accommodations in evaluator-friendly language. Do NOT copy the modifications field verbatim — translate them into what an observer would actually see or hear. Each item should begin with an action phrase. Examples: "Lower net height available for students developing serve mechanics.", "Visual cue cards posted at each station showing the BEEF acronym for students who benefit from visual supports.", "Students with IEP accommodations are grouped with a peer buddy during independent practice."
+  Exactly 2-3 strings. Each is a specific, concrete way this lesson supports diverse learners, in evaluator-friendly language (what an observer would see or hear) — translated from the lesson's accommodations, not copied verbatim. Begin each with an action phrase.
 
 obs_look_for:
-  Array of exactly 2-3 strings. Each string is a specific, observable indicator the evaluator might notice that signals the lesson is going well. These should be concrete and classroom-specific — not generic teaching quality indicators. Reference actual skills, cues, vocabulary, or student behaviors from this lesson. Examples: "Students using the BEEF acronym unprompted during peer feedback.", "Teacher addressing students by name when delivering corrective feedback on contact point.", "At least 70% of students achieving successful serves over the net during independent practice."
+  Exactly 2-3 strings. Each is a specific, observable indicator that signals the lesson is going well — concrete and classroom-specific, referencing this lesson's actual skills, vocabulary, or student behaviors, not generic teaching-quality statements.
 
 Critical rules:
-- obs_overview must be 2-3 sentences maximum. Do not exceed this.
-- obs_differentiation must have exactly 2-3 items (strings, not objects).
-- obs_look_for must have exactly 2-3 items (strings, not objects).
-- Do not mention standards in any field — those are displayed separately from the lesson data.
-- Use active, present-tense, observable language throughout.
-- Do not include any fields not listed in the schema above.`
+- obs_overview is 2-3 sentences max. obs_differentiation and obs_look_for each have exactly 2-3 string items.
+- Do not mention standards/competencies (they are displayed separately).
+- Use active, present-tense, observable language. Include no fields beyond the schema.`;
 
-  const modificationsText = Object.entries(lessonObject.modifications ?? {})
-    .map(([grade, text]) => `Grade ${grade === "0" ? "K" : grade}: ${text}`)
-    .join("\n")
-
-  const learningTargetsText = Object.entries(lessonObject.learning_targets ?? {})
-    .map(([grade, text]) => `Grade ${grade === "0" ? "K" : grade}: ${text}`)
-    .join("\n")
-
-  const user = `Here is the lesson to summarize for an evaluator walkthrough (Grade ${grades || "K–12"}, ${subject}):
+  const user = `Summarize this ${subject} lesson for an evaluator walkthrough.
 
 Title: ${lessonObject.title ?? ""}
-Unit: ${lessonObject.unit ?? ""}
-Duration: ${lessonObject.duration_minutes ?? 45} minutes
-Class size: ${lessonObject.class_size ?? ""}
-Location: ${lessonObject.location ?? ""}
-Skill focus: ${(lessonObject.skill_focus ?? []).join(", ")}
+${isCte ? "Pathway / level" : "Grade(s)"}: ${level}${isCte && lessonObject.pathway_label ? ` — ${lessonObject.pathway_label}` : ""}
+Duration: ${lessonObject.duration_minutes ?? 45} min | Class size: ${lessonObject.class_size ?? ""}
+${skillFocus ? `Skill focus: ${skillFocus}\n` : ""}Learning target(s): ${targets}
 
-LESSON FLOW:
-Warm-up: ${lessonObject.warm_up ?? ""}
+LESSON FLOW (condensed):
+- Opener / warm-up: ${clip(lessonObject.warm_up)}
+- Instruction: ${clip(lessonObject.whole_group_instruction)}
+- Demonstration / guided practice: ${clip(lessonObject.fitness_activities)}
+- Independent / applied practice: ${clip(lessonObject.independent_practice)}
+- Closure: ${clip(lessonObject.closure)}
 
-Fitness activities: ${lessonObject.fitness_activities ?? ""}
+Accommodations / differentiation: ${mods || "(none listed)"}
+New vocabulary: ${(lessonObject.new_vocabulary ?? []).join(", ") || "(none listed)"}
 
-Whole group instruction: ${lessonObject.whole_group_instruction ?? ""}
+Return the JSON object now.`;
 
-Independent practice: ${lessonObject.independent_practice ?? ""}
-
-Closure: ${lessonObject.closure ?? ""}
-
-LEARNING TARGETS:
-${learningTargetsText || "(none listed)"}
-
-MODIFICATIONS / ACCOMMODATIONS:
-${modificationsText || "(none listed)"}
-
-VOCABULARY (new): ${(lessonObject.new_vocabulary ?? []).join(", ") || "(none listed)"}
-
-Return the JSON object now.`
-
-  return { system, user: user + `\n\nFULL LESSON DETAIL (authoritative source of truth for this lesson):\n${serializeLessonForTools(lessonObject)}` + toolDirective("observationSummary", lessonObject.subject) }
+  return { system, user: user + toolDirective("observationSummary", subject) };
 }
