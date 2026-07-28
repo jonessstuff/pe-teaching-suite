@@ -50,6 +50,7 @@ export const SUBJECT_TAB_STYLES = {
   'Teacher of the Deaf & Hard of Hearing': 'bg-magenta-500/20 text-ink-50',
   'Student Support Team Activities': 'bg-plum-500/20 text-ink-50',
   'Early Childhood': 'bg-grass-500/20 text-ink-50',
+  'Early Childhood Special Education': 'bg-sage-500/20 text-ink-50',
   'Intervention Planning': 'bg-stone-500/20 text-ink-50',
   'Staff PD & Meeting Planning': 'bg-gold-500/20 text-ink-50',
   'Instructional Coaching': 'bg-mocha-500/20 text-ink-50',
@@ -102,6 +103,7 @@ export const MODULES = [
   { label: 'Teacher of the Deaf & Hard of Hearing', subjects: ['Teacher of the Deaf & Hard of Hearing'] },
   { label: 'Student Support Team Activities', subjects: ['Student Support Team Activities'] },
   { label: 'Early Childhood / Pre-K', subjects: ['Early Childhood'] },
+  { label: 'Early Childhood Special Education', subjects: ['Early Childhood Special Education'] },
   { label: 'Intervention Planning', subjects: ['Intervention Planning'] },
   { label: 'Staff PD & Meeting Planning', subjects: ['Staff PD & Meeting Planning'] },
   { label: 'Instructional Coaching', subjects: ['Instructional Coaching'] },
@@ -185,13 +187,8 @@ export const AVAILABLE_MODULE_ACCENTS = [
   //
   // ── 2026-07 palette expansion pass 4 (custom scales in tailwind.config.js) ──
   // Four muted/desaturated hues in the least-crowded remaining pockets; each needs a
-  // distinct module icon to disambiguate a near-hue. (denim consumed → JROTC.)
-  {
-    key: 'sage', label: 'Sage (muted grey-green)',
-    tab: 'bg-sage-500/20 text-ink-50', iconTint: 'bg-sage-500/15',
-    accentText: 'text-sage-400', hoverBorder: 'hover:border-sage-400/40',
-    cardBorder: 'border-sage-400', callout: 'border-sage-500/30 bg-sage-500/10',
-  },
+  // distinct module icon to disambiguate a near-hue. (denim consumed → JROTC;
+  // sage consumed → Early Childhood Special Education.)
   {
     key: 'clay', label: 'Clay (terracotta / earthenware)',
     tab: 'bg-clay-500/20 text-ink-50', iconTint: 'bg-clay-500/15',

@@ -2,7 +2,7 @@ import {
   Drama, Hand, Wind, Globe, Award, Monitor, Compass, Languages, Sparkles,
   BookOpen, Calculator, HeartHandshake, Blocks, PartyPopper, Target, Layers,
   Users, Presentation, Handshake, PersonStanding, Speech, ScanEye, Ear,
-  Briefcase,
+  Briefcase, Baby,
 } from 'lucide-react'
 
 // Per-module config for the reusable <ModuleHome> shell.
@@ -56,6 +56,7 @@ const ACCENTS = {
   plum:       { well: 'bg-plum-500/15',       text: 'text-plum-400',       hover: 'hover:border-plum-400/40',       arrow: 'group-hover:text-plum-400' },
   steel:      { well: 'bg-steel-500/15',      text: 'text-steel-400',      hover: 'hover:border-steel-400/40',      arrow: 'group-hover:text-steel-400' },
   pink:       { well: 'bg-pink-500/15',       text: 'text-pink-400',       hover: 'hover:border-pink-400/40',       arrow: 'group-hover:text-pink-400' },
+  sage:       { well: 'bg-sage-500/15',       text: 'text-sage-400',       hover: 'hover:border-sage-400/40',       arrow: 'group-hover:text-sage-400' },
 }
 const accent = (c) => ACCENTS[c]
 
@@ -170,6 +171,13 @@ export const MODULE_HOMES = {
     generatePath: '/early-childhood/generate', generateTitle: 'Generate a play-based plan',
     generateDesc: 'Learning centers, circle time & whole-child domains (toddlers–TK)',
     browseTitle: 'Browse my plans', browseNoun: 'plan', cards: LITE_SUB,
+  },
+  ecse: {
+    subject: 'Early Childhood Special Education', moduleLabel: 'Early Childhood Special Education', title: 'Early Childhood Special Education', Icon: Baby, accent: accent('sage'),
+    tagline: 'Play-based, embedded-instruction support for young children with disabilities/delays (birth–5) — DEC Recommended Practices',
+    generatePath: '/ecse/generate', generateTitle: 'Generate an embedded support plan',
+    generateDesc: 'Naturalistic learning embedded in play & routines — birth–3 (IFSP) & preschool (IEP)',
+    browseTitle: 'Browse my plans', browseNoun: 'plan', cards: PRO,
   },
   'after-school-clubs': {
     subject: 'After-School Clubs', moduleLabel: 'After-School Clubs', title: 'After-School Clubs', Icon: PartyPopper, accent: accent('coral'),

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Library, Palette, Music, Drama, Wind, FlaskConical, Monitor, Award, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, Handshake, PersonStanding, ScanEye, Ear, PartyPopper, Target, Globe, Users, Blocks, Layers, Presentation, Star, ArrowRight } from 'lucide-react'
+import { Library, Palette, Music, Drama, Wind, FlaskConical, Monitor, Award, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, Handshake, PersonStanding, ScanEye, Ear, PartyPopper, Target, Globe, Users, Blocks, Baby, Layers, Presentation, Star, ArrowRight } from 'lucide-react'
 import { useDisplayName, getTimeGreeting } from '../hooks/useDisplayName'
 import { useFavorites } from '../hooks/useFavorites'
 
@@ -41,6 +41,8 @@ const GROUPS = [
     modules: [
       { key: 'early-childhood', to: '/early-childhood', label: 'Early Childhood / Pre-K', Icon: Blocks, wrap: 'bg-grass-500/15', color: 'text-grass-400', hover: 'hover:border-grass-400/40',
         desc: 'Play-based learning centers & guided-play invitations for the whole child — NAEYC DAP, NAEYC Professional Standards & Head Start ELOF (toddlers–TK)' },
+      { key: 'ecse', to: '/ecse', label: 'Early Childhood Special Education', Icon: Baby, wrap: 'bg-sage-500/15', color: 'text-sage-400', hover: 'hover:border-sage-400/40',
+        desc: 'Play-based, embedded-instruction support for young children with disabilities/delays (birth–5) — DEC Recommended Practices, NAEYC DAP & CEC; birth–3 (IFSP) & preschool (IEP), ideas to adapt to the child’s plan' },
     ],
   },
   {

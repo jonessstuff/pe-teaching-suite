@@ -385,6 +385,11 @@ export default function Landing() {
                 color="grass"
                 description="Play-based learning centers & guided-play invitations for the whole child — NAEYC Developmentally Appropriate Practice, NAEYC Professional Standards & Head Start ELOF, toddlers through TK."
               />
+              <ModuleCard
+                name="Early Childhood Special Education"
+                color="sage"
+                description="Play-based, embedded-instruction support for young children with disabilities or delays (birth–5) — DEC Recommended Practices, NAEYC DAP & CEC. Naturalistic learning across play & routines for birth–3 (IFSP) and preschool (IEP); ideas to adapt to the child's plan, never IEP/IFSP goals or a diagnosis."
+              />
             </ModuleGroup>
 
             <ModuleGroup label="Career & Technical Education">

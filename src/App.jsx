@@ -64,6 +64,7 @@ import MakerProjectGenerator from './pages/MakerProjectGenerator'
 import SpecialEducationGenerator from './pages/SpecialEducationGenerator'
 import EslSpecialistGenerator from './pages/EslSpecialistGenerator'
 import EarlyChildhoodGenerator from './pages/EarlyChildhoodGenerator'
+import EcseGenerator from './pages/EcseGenerator'
 import InterventionGenerator from './pages/InterventionGenerator'
 import StaffPdGenerator from './pages/StaffPdGenerator'
 import InstructionalCoachingGenerator from './pages/InstructionalCoachingGenerator'
@@ -346,6 +347,8 @@ function App() {
           <Route path="esl-specialist/generate" element={<EslSpecialistGenerator />} />
           <Route path="early-childhood" element={<ModuleHome config={MODULE_HOMES['early-childhood']} />} />
           <Route path="early-childhood/generate" element={<EarlyChildhoodGenerator />} />
+          <Route path="ecse" element={<ModuleHome config={MODULE_HOMES['ecse']} />} />
+          <Route path="ecse/generate" element={<EcseGenerator />} />
           <Route path="intervention" element={<ModuleHome config={MODULE_HOMES['intervention']} />} />
           <Route path="intervention/generate" element={<InterventionGenerator />} />
           <Route path="staff-pd" element={<ModuleHome config={MODULE_HOMES['staff-pd']} />} />
