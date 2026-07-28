@@ -744,6 +744,9 @@ export default function Landing() {
           <div className="text-sm text-ink-500">
             <p>© 2026 PlansK12</p>
             <p className="mt-0.5">Built for the teachers everyone forgets about.</p>
+            <a href="mailto:hello@plansk12.com" className="mt-1 inline-block text-accent-500 transition-colors hover:text-accent-400">
+              Contact us
+            </a>
           </div>
         </div>
       </footer>

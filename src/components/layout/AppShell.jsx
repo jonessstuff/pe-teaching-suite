@@ -16,6 +16,7 @@ import { useTrial } from '../../context/TrialContext'
 import PaywallModal from '../PaywallModal'
 import TrialWatermark from '../TrialWatermark'
 import WhatsNewBanner from '../WhatsNewBanner'
+import SiteFooter from '../SiteFooter'
 
 const PE_ROUTE_PREFIXES = [
   '/pe-health',
@@ -54,6 +55,7 @@ export default function AppShell() {
           <div className="mx-auto max-w-6xl">
             <WhatsNewBanner />
             <Outlet />
+            <SiteFooter />
           </div>
         </main>
       </div>
