@@ -17,7 +17,7 @@ const PATHWAYS = [
   {
     value: 'finance',
     label: 'Finance',
-    description: 'Personal finance, banking, accounting & investing',
+    description: 'Personal finance, banking, accounting, investing & insurance',
     icon: Landmark,
   },
   {
@@ -161,7 +161,7 @@ const LEVELS = [
 
 const TOPIC_PLACEHOLDERS = {
   hospitality: 'e.g. Knife cuts & knife safety, Dry vs. moist heat cooking methods, Mise en place, The kitchen brigade system, Menu planning & food-cost %, Baking basics (leavening), Food safety & sanitation (ServSafe), Front desk check-in, Planning a destination tour',
-  finance:     'e.g. Building a monthly budget, Comparing two credit-card offers, Simple vs. compound interest, Reading a pay stub',
+  finance:     'e.g. Building a monthly budget, Comparing two credit-card offers, Simple vs. compound interest, Reading a pay stub, Insurance basics & policy types, Risk management & careers in insurance',
   marketing:   'e.g. Identify a target market, Build the marketing mix for a product, Analyze a real ad campaign, DECA role-play prep',
   human_services: 'e.g. Reading a nutrition label, Building a personal budget, Age-appropriate child activities, Mock job interview & workplace readiness',
   health_science: 'e.g. Taking vital signs, The cardiovascular system, Medical terminology word parts, Infection control & PPE, Patient positioning',
@@ -171,7 +171,7 @@ const TOPIC_PLACEHOLDERS = {
   transportation: 'e.g. Brake system inspection, How a 4-stroke engine works, Suspension & steering check, Reading a service manual, Shop safety & vehicle-lift operation, Intro to the transportation & logistics cluster',
   manufacturing: 'e.g. Precision measurement with calipers, Blueprint/print reading, Intro to CNC machining, Robotics & automation basics, IIoT & smart sensors, Lockout/tagout & machine safety, Materials & production processes',
   engineering_tech: 'e.g. The engineering design process, Exploring engineering fields, Build & program a robot (FIRST/VEX), Sensors & actuators, Intro to coding & computational thinking, Prototype & iterate a design',
-  business_mgmt: 'e.g. The four functions of management, Business structures (LLC vs. corporation), A management decision case, Building a basic operating budget, Org charts & workflow, Intro to entrepreneurship, Basic HR concepts',
+  business_mgmt: 'e.g. The four functions of management, Business structures (LLC vs. corporation), A management decision case, Building a basic operating budget, Org charts & workflow, Intro to entrepreneurship, Basic HR concepts, Project management & the project lifecycle (Gantt charts), Resume, portfolio & interview skills (career management), Office productivity & responsible AI tools',
   agriculture: 'e.g. Plant growth & soil basics, Crop production, Animal care & husbandry, Conservation & water quality, Agribusiness & marketing ag products, Intro to FFA & SAE projects',
   construction: 'e.g. Reading a floor plan, Framing & layout (carpentry), Series vs. parallel circuits (electrical), Welding processes & safety, Masonry bond patterns, Sheet-metal & ductwork, Heavy-equipment awareness, Roofing systems, The refrigeration cycle (HVAC-R) & EPA 608, Plumbing supply & drainage, Fall-protection safety',
   arts_av: 'e.g. Design principles & typography, Designing a poster or logo, Shooting & editing a short video, Broadcast journalism & interviewing, Digital/interactive media basics, Print production & quality control',
