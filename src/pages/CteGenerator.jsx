@@ -89,7 +89,7 @@ const PATHWAYS = [
   {
     value: 'construction',
     label: 'Architecture & Construction',
-    description: 'Blueprint reading & design, building systems & methods, the trades (electrical/HVAC/plumbing/carpentry) & jobsite safety',
+    description: 'Blueprint reading & design, building systems & methods, the trades & jobsite safety — incl. a deeper HVAC-R/plumbing strand (refrigeration cycle, EPA 608 law, refrigerant-handling awareness, plumbing systems)',
     icon: HardHat,
   },
   {
@@ -173,7 +173,7 @@ const TOPIC_PLACEHOLDERS = {
   engineering_tech: 'e.g. The engineering design process, Exploring engineering fields, Build & program a robot (FIRST/VEX), Sensors & actuators, Intro to coding & computational thinking, Prototype & iterate a design',
   business_mgmt: 'e.g. The four functions of management, Business structures (LLC vs. corporation), A management decision case, Building a basic operating budget, Org charts & workflow, Intro to entrepreneurship, Basic HR concepts',
   agriculture: 'e.g. Plant growth & soil basics, Crop production, Animal care & husbandry, Conservation & water quality, Agribusiness & marketing ag products, Intro to FFA & SAE projects',
-  construction: 'e.g. Blueprint & construction-drawing reading, Building systems & materials, Framing basics, Measurement & layout, Intro to the trades (electrical/plumbing/HVAC/carpentry), Ladder & fall-protection safety',
+  construction: 'e.g. Blueprint reading, Building systems & materials, Framing & measurement/layout, The refrigeration cycle (HVAC-R), EPA 608 certification types & law, Refrigerant recovery (awareness), Plumbing supply & DWV drainage systems, Ladder & fall-protection safety',
   arts_av: 'e.g. Design principles & typography, Designing a poster or logo, Shooting & editing a short video, Broadcast journalism & interviewing, Digital/interactive media basics, Print production & quality control',
   government: 'e.g. How a bill becomes law, Levels of government (local/state/federal), How public agencies are managed, Public budgeting & taxation basics, Analyzing a local policy issue, Intro to public-service careers',
   law_safety: 'e.g. How the justice system works, Law-enforcement career paths, Court procedures overview, Legal careers (paralegal/attorney), Corrections overview, Firefighter career path & fire behavior, Ethics & professionalism',
@@ -820,7 +820,7 @@ export default function CteGenerator() {
                 pathway === 'engineering_tech'? 'e.g. Apply the engineering design process to a constraint-based challenge (PLTW / EDP)' :
                 pathway === 'business_mgmt'    ? 'e.g. Apply the four functions of management to a business scenario (NBEA Management)' :
                 pathway === 'agriculture'     ? 'e.g. Explain the components of a plant growth system (AFNR — Plant Systems)' :
-                pathway === 'construction'    ? 'e.g. Read and interpret a floor plan and its scale (NCCER Core — Construction Drawings)' :
+                pathway === 'construction'    ? 'e.g. Explain the four stages of the refrigeration cycle (NCCER HVAC) — or a construction-drawings objective' :
                 pathway === 'arts_av'         ? 'e.g. Apply design principles to a layout (CCTC AR-VIS / Visual Arts)' :
                 pathway === 'government'      ? 'e.g. Explain how a local government makes a policy decision (CCTC GV — Governance)' :
                 pathway === 'law_safety'      ? 'e.g. Trace how a case moves through the court system (CCTC LW — exploration)' :
