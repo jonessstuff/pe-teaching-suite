@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Loader2, Copy, Check, BarChart3, ExternalLink, RefreshCw, Sparkles } from 'lucide-react'
+import { Loader2, Copy, Check, BarChart3, ExternalLink, RefreshCw, Sparkles, Lightbulb } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
 import { getProfile, updateProfile } from '../services/profilesService'
 import { releaseSession } from '../services/sessionService'
@@ -11,6 +11,7 @@ import { PrintTeacherInfoToggle } from '../components/LessonPrintFix'
 import { getMyCode } from '../services/referralService'
 import { useTrial } from '../context/TrialContext'
 import { EXPORT_CAP, UPGRADE_URL } from '../services/trialService'
+import SuggestionModal from '../components/SuggestionModal'
 
 const SUBJECTS = ['PE', 'Health', 'Family Life', "Driver's Ed"]
 
@@ -41,6 +42,7 @@ export default function Settings() {
 
   const trial = useTrial()
   const [statusRefreshing, setStatusRefreshing] = useState(false)
+  const [suggestOpen, setSuggestOpen] = useState(false)
 
   async function handleRefreshStatus() {
     setStatusRefreshing(true)
@@ -369,6 +371,17 @@ export default function Settings() {
         </Link>
       </div>
 
+      {/* Suggest a feature */}
+      <div className="card p-6 space-y-3">
+        <h2 className="font-semibold text-ink-50">Suggest a feature</h2>
+        <p className="text-sm text-ink-400">
+          Missing a module, pathway, or feature? Tell us what would help — we read every suggestion.
+        </p>
+        <button type="button" onClick={() => setSuggestOpen(true)} className="btn-secondary inline-flex">
+          <Lightbulb size={16} /> Suggest a feature
+        </button>
+      </div>
+
       {/* Change password */}
       <div className="card p-6 space-y-5">
         <h2 className="font-semibold text-ink-50">Change password</h2>
@@ -422,6 +435,8 @@ export default function Settings() {
           </div>
         </form>
       </div>
+
+      {suggestOpen && <SuggestionModal onClose={() => setSuggestOpen(false)} />}
     </div>
   )
 }
