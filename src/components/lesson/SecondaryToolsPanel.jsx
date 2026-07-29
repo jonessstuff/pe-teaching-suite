@@ -317,9 +317,11 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
   }
 
   return (
-    <div className="mt-10 print:hidden space-y-6">
-      {/* Tool button strip */}
-      <div className="border-t border-ink-900 pt-6 space-y-4">
+    <div className="mt-10 print:hidden flex flex-col gap-6">
+      {/* Tool button strip. order-last drops it BELOW the active tool output
+          (rendered as the earlier siblings), so a generated sub plan/quiz sits
+          right under the lesson instead of being wedged beneath these buttons. */}
+      <div className="order-last border-t border-ink-900 pt-6 space-y-4">
         <p className="label-eyebrow text-ink-400">Generate from this lesson</p>
 
         {/* Primary tools — always visible */}

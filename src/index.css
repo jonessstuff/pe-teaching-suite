@@ -215,10 +215,19 @@
   }
 }
 
-/* On-screen: a subtle notice so trial users know their prints are watermarked
-   and that upgrading removes it. In print it becomes a fixed page footer (the
-   @media print rule above overrides position/size). */
+/* Hidden on screen; only shown in the @media print block above. Used by the
+   public free-lesson pages (FreeLessonView / TryFreeLesson) as a print-only
+   footer. */
 .trial-watermark {
+  display: none;
+}
+
+/* In-app trial watermark — split so a trial user sees it BEFORE printing AND it
+   repeats on every printed page:
+   • .trial-watermark-screen — subtle in-flow notice, visible on screen only.
+   • .trial-watermark-print  — fixed footer, print only. Portaled to <body> (see
+     TrialWatermark.jsx) so Chrome repeats it on every page instead of one. */
+.trial-watermark-screen {
   display: block;
   margin: 2rem auto 0;
   max-width: 42rem;
@@ -228,6 +237,28 @@
   font-size: 12px;
   letter-spacing: 0.01em;
   color: #6b7280;
+}
+.trial-watermark-print {
+  display: none;
+}
+@media print {
+  .trial-watermark-screen {
+    display: none !important;
+  }
+  .trial-watermark-print {
+    display: block !important;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 4px 0;
+    text-align: center;
+    font-size: 9px;
+    letter-spacing: 0.02em;
+    color: #6b7280 !important;
+    border-top: 1px solid #ccc !important;
+    background: #fff;
+  }
 }
 
 /* Shared public lesson: print-only notice, hidden on screen. */

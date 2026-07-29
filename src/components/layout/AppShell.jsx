@@ -57,12 +57,12 @@ export default function AppShell() {
             <SetPasswordBanner />
             <WhatsNewBanner />
             <Outlet />
+            <TrialWatermark />
             <SiteFooter />
           </div>
         </main>
       </div>
       <BottomTabBar />
-      <TrialWatermark />
       <PaywallModal />
     </div>
   )
