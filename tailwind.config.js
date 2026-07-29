@@ -35,6 +35,22 @@ export default {
           800: '#065f46',
           900: '#064e3b',
         },
+        // PlansK12 logo blue — the wordmark/checkmark hue (#4F7FFA) and its
+        // darker fold shade (#3b6de8 at 600). Used to tie the marketing landing
+        // page back to the actual brand mark. Kept separate from `accent`
+        // (emerald) so the in-app UI palette is unchanged.
+        brand: {
+          50: '#eff4ff',
+          100: '#dbe6ff',
+          200: '#bfd2ff',
+          300: '#93b4fd',
+          400: '#6f97fb',
+          500: '#4F7FFA',
+          600: '#3b6de8',
+          700: '#2f57c4',
+          800: '#2a4a9e',
+          900: '#27417d',
+        },
         subject: {
           pe: '#2dd4d4',
           health: '#8a6fd4',

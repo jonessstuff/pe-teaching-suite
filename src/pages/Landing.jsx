@@ -24,8 +24,8 @@ function PlansK12Logo() {
 function CheckItem({ children }) {
   return (
     <li className="flex items-start gap-3">
-      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-500/15">
-        <Check size={12} className="text-accent-500" strokeWidth={2.5} />
+      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500/15">
+        <Check size={12} className="text-brand-500" strokeWidth={2.5} />
       </span>
       <span className="text-sm text-ink-300 leading-snug">{children}</span>
     </li>
@@ -76,9 +76,9 @@ function CompareRow({ need, plansk12, generic }) {
   return (
     <div className="grid grid-cols-[1.1fr_1.4fr_1.4fr] border-t border-ink-800">
       <div className="px-4 py-4 text-sm font-medium text-ink-100 sm:px-6">{need}</div>
-      <div className="flex items-start gap-2.5 border-l border-ink-800 bg-accent-500/[0.06] px-4 py-4 sm:px-6">
-        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-500/15">
-          <Check size={12} className="text-accent-500" strokeWidth={2.5} />
+      <div className="flex items-start gap-2.5 border-l border-ink-800 bg-brand-500/[0.06] px-4 py-4 sm:px-6">
+        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500/15">
+          <Check size={12} className="text-brand-500" strokeWidth={2.5} />
         </span>
         <span className="text-sm leading-snug text-ink-300">{plansk12}</span>
       </div>
@@ -163,7 +163,7 @@ export default function Landing() {
         />
 
         <div className="relative mx-auto max-w-3xl text-center">
-          <p className="label-eyebrow mb-4 text-accent-500">AI-powered lesson planning</p>
+          <p className="label-eyebrow mb-4 text-brand-500">AI-powered lesson planning</p>
 
           <h1 className="text-4xl font-display font-semibold tracking-tight text-ink-50 sm:text-5xl">
             Built for the teachers everyone forgets about.
@@ -284,7 +284,7 @@ export default function Landing() {
           <div className="mt-9 flex flex-col items-center gap-4">
             <Link
               to="/try"
-              className="btn-primary px-9 py-4 text-lg shadow-lg shadow-accent-500/25"
+              className="btn-primary !bg-brand-500 hover:!bg-brand-600 px-9 py-4 text-lg shadow-lg shadow-brand-500/25"
             >
               Try a free lesson — no signup required
             </Link>
@@ -307,7 +307,7 @@ export default function Landing() {
       <section className="bg-ink-950 px-6 py-20">
         <div className="mx-auto max-w-5xl">
           <div className="mb-12 text-center">
-            <p className="label-eyebrow mb-3 text-accent-500">How it works</p>
+            <p className="label-eyebrow mb-3 text-brand-500">How it works</p>
             <h2 className="text-3xl font-display font-semibold tracking-tight text-ink-50">
               A ready-to-teach lesson in three steps.
             </h2>
@@ -338,7 +338,7 @@ export default function Landing() {
           </div>
 
           <div className="mt-12 text-center">
-            <Link to="/try" className="btn-primary px-8 py-3.5 text-base shadow-lg shadow-accent-500/25">
+            <Link to="/try" className="btn-primary !bg-brand-500 hover:!bg-brand-600 px-8 py-3.5 text-base shadow-lg shadow-brand-500/25">
               Try it free — build a real lesson now
             </Link>
             <p className="mt-3 text-xs text-ink-600">No signup, no card. See it work before you decide anything.</p>
@@ -349,7 +349,7 @@ export default function Landing() {
       {/* ── 3. BUILT ON REAL STANDARDS ────────────────────────────────────── */}
       <section className="border-t border-ink-900 bg-white px-6 py-16">
         <div className="mx-auto max-w-4xl text-center">
-          <p className="label-eyebrow mb-3 text-accent-500">Built on real standards</p>
+          <p className="label-eyebrow mb-3 text-brand-500">Built on real standards</p>
           <h2 className="text-2xl font-display font-semibold tracking-tight text-ink-50 sm:text-3xl">
             Not generic AI. Grounded in the frameworks your field is actually held to.
           </h2>
@@ -734,7 +734,7 @@ export default function Landing() {
               <div className="grid grid-cols-[1.1fr_1.4fr_1.4fr] bg-ink-900/60">
                 <div className="px-4 py-4 sm:px-6" />
                 <div className="flex items-center gap-2 border-l border-ink-800 px-4 py-4 sm:px-6">
-                  <Sparkles size={16} className="text-accent-500" />
+                  <Sparkles size={16} className="text-brand-500" />
                   <span className="font-display text-base font-semibold text-ink-50">PlansK12</span>
                 </div>
                 <div className="border-l border-ink-800 px-4 py-4 sm:px-6">
@@ -756,7 +756,7 @@ export default function Landing() {
       {/* ── 7. FOUNDER NOTE ───────────────────────────────────────────────── */}
       <section className="border-t border-ink-900 bg-white px-6 py-20">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="label-eyebrow mb-5 text-accent-500">Why this exists</p>
+          <p className="label-eyebrow mb-5 text-brand-500">Why this exists</p>
           <blockquote className="font-display text-xl leading-relaxed text-ink-100 sm:text-2xl">
             &ldquo;I spent 27 years teaching. I built the first version for my own gym — then a
             colleague wanted one for her art room, then someone needed reading intervention, then
@@ -775,7 +775,7 @@ export default function Landing() {
           </div>
           <div className="mx-auto max-w-2xl">
             <div className="card p-8">
-              <p className="font-display text-4xl leading-none text-accent-500">&ldquo;</p>
+              <p className="font-display text-4xl leading-none text-brand-500">&ldquo;</p>
               <blockquote className="mt-2 text-lg italic leading-relaxed text-ink-200">
                 The warm-up format with fitness goals, video suggestions, student reflection,
                 and parent note as a newsletter — I would have used this every single day.
@@ -799,7 +799,7 @@ export default function Landing() {
 
           <div className="mx-auto mt-10 max-w-xs">
             <div className="card p-8">
-              <span className="inline-block rounded-full bg-accent-500/10 px-3 py-1 text-xs font-semibold text-accent-600">
+              <span className="inline-block rounded-full bg-brand-500/10 px-3 py-1 text-xs font-semibold text-brand-600">
                 Founding teacher rate
               </span>
 
@@ -821,7 +821,7 @@ export default function Landing() {
 
               <a
                 href="https://buy.stripe.com/5kQ5kveUR2xWh0tcoi0kE05"
-                className="btn-primary mt-8 w-full justify-center"
+                className="btn-primary !bg-brand-500 hover:!bg-brand-600 mt-8 w-full justify-center"
               >
                 Start your 7-day trial
               </a>
@@ -829,7 +829,7 @@ export default function Landing() {
 
             <p className="mt-5 text-sm text-ink-500">
               Not ready to commit?{' '}
-              <Link to="/try" className="font-semibold text-accent-600 hover:text-accent-500">
+              <Link to="/try" className="font-semibold text-brand-600 hover:text-brand-500">
                 Try a free lesson first — no signup →
               </Link>
             </p>
@@ -844,7 +844,7 @@ export default function Landing() {
           <div className="text-sm text-ink-500">
             <p>© 2026 PlansK12</p>
             <p className="mt-0.5">Built for the teachers everyone forgets about.</p>
-            <a href="mailto:hello@plansk12.com?cc=plansk12.com@gmail.com" className="mt-1 inline-block text-accent-500 transition-colors hover:text-accent-400">
+            <a href="mailto:hello@plansk12.com?cc=plansk12.com@gmail.com" className="mt-1 inline-block text-brand-500 transition-colors hover:text-brand-400">
               Contact us
             </a>
           </div>
@@ -941,8 +941,8 @@ function FeatureGroup({ label, children }) {
 function FeatureCard({ icon: Icon, title, description }) {
   return (
     <div className="card flex flex-col gap-3 p-5">
-      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-500/10">
-        <Icon size={20} className="text-accent-500" />
+      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-500/10">
+        <Icon size={20} className="text-brand-500" />
       </div>
       <div>
         <p className="font-semibold text-ink-50">{title}</p>
@@ -958,10 +958,10 @@ function StepCard({ n, icon: Icon, title, description }) {
   return (
     <div className="card flex flex-col items-center gap-4 p-8 text-center">
       <div className="relative">
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-500/15">
-          <Icon size={28} className="text-accent-600" />
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-500/15">
+          <Icon size={28} className="text-brand-600" />
         </div>
-        <span className="absolute -right-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full bg-accent-500 text-sm font-bold text-white ring-2 ring-white">
+        <span className="absolute -right-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full bg-brand-500 text-sm font-bold text-white ring-2 ring-white">
           {n}
         </span>
       </div>
@@ -1000,7 +1000,7 @@ const STANDARDS = [
 function StandardBadge({ abbr, full }) {
   return (
     <span className="inline-flex items-center gap-1.5 rounded-full border border-ink-800 bg-white px-3 py-1.5 shadow-sm">
-      <BadgeCheck size={14} className="shrink-0 text-accent-500" />
+      <BadgeCheck size={14} className="shrink-0 text-brand-500" />
       <span className="text-sm font-semibold text-ink-100">{abbr}</span>
       <span className="hidden text-xs text-ink-500 sm:inline">· {full}</span>
     </span>
