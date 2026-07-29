@@ -1,5 +1,5 @@
 import { useSearchParams, Link } from 'react-router-dom'
-import { BookOpen, Globe, Accessibility, UserCheck, ClipboardList, ClipboardCheck, Mail, CalendarRange, Check, Users, BookMarked, PartyPopper, Newspaper, MessageCircle, Share2, Briefcase, BarChart3, ScrollText, Trophy, Dumbbell, Smartphone, SquareCheck, Sparkles, MousePointerClick, PencilLine, BadgeCheck } from 'lucide-react'
+import { BookOpen, Globe, Accessibility, UserCheck, ClipboardList, ClipboardCheck, Mail, CalendarRange, Check, X, Users, BookMarked, PartyPopper, Newspaper, MessageCircle, Share2, Briefcase, BarChart3, ScrollText, Trophy, Dumbbell, Smartphone, SquareCheck, Sparkles, MousePointerClick, PencilLine, BadgeCheck } from 'lucide-react'
 
 // ─── Shared sub-components ───────────────────────────────────────────────────
 
@@ -29,6 +29,66 @@ function CheckItem({ children }) {
       </span>
       <span className="text-sm text-ink-300 leading-snug">{children}</span>
     </li>
+  )
+}
+
+// Rows for the "PlansK12 vs. a generic AI chatbot" comparison. No brand names —
+// the contrast is with general-purpose AI tools, not any specific competitor.
+const COMPARE_ROWS = [
+  {
+    need: 'State-standards alignment',
+    plansk12: "Aligned to your state's actual standards, with confidence indicators so you know what to trust.",
+    generic: 'Guesses or invents standard codes, with no way to tell what is real.',
+  },
+  {
+    need: 'Built for your subject',
+    plansk12: '30+ specialist modules — PE, art, music, library, reading intervention, special education, counseling and more.',
+    generic: 'General-purpose chat with no specialist pedagogy behind it.',
+  },
+  {
+    need: 'Ready-to-use formats',
+    plansk12: 'Full-year maps, sub plans, parent notes, and IEP / adaptive supports generate from one lesson.',
+    generic: 'You prompt, re-prompt, and reformat each piece by hand every time.',
+  },
+  {
+    need: 'Consistent every time',
+    plansk12: 'The same reliable structure on every single generation.',
+    generic: 'Output format drifts from one chat to the next.',
+  },
+  {
+    need: 'Accommodations built in',
+    plansk12: 'ELL, IEP, and adaptive supports included in every lesson automatically.',
+    generic: 'Only if you remember to ask — and can describe them yourself.',
+  },
+  {
+    need: 'Save, print & share',
+    plansk12: 'A personal lesson library, print-ready PDFs, and share links for colleagues.',
+    generic: 'Copy-paste into another document and format it yourself.',
+  },
+  {
+    need: 'No prompt-writing needed',
+    plansk12: 'Pick a few options and generate — designed by a teacher of 27 years.',
+    generic: 'Results depend on your own prompt-engineering skill.',
+  },
+]
+
+function CompareRow({ need, plansk12, generic }) {
+  return (
+    <div className="grid grid-cols-[1.1fr_1.4fr_1.4fr] border-t border-ink-800">
+      <div className="px-4 py-4 text-sm font-medium text-ink-100 sm:px-6">{need}</div>
+      <div className="flex items-start gap-2.5 border-l border-ink-800 bg-accent-500/[0.06] px-4 py-4 sm:px-6">
+        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-500/15">
+          <Check size={12} className="text-accent-500" strokeWidth={2.5} />
+        </span>
+        <span className="text-sm leading-snug text-ink-300">{plansk12}</span>
+      </div>
+      <div className="flex items-start gap-2.5 border-l border-ink-800 px-4 py-4 sm:px-6">
+        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink-800">
+          <X size={12} className="text-ink-500" strokeWidth={2.5} />
+        </span>
+        <span className="text-sm leading-snug text-ink-500">{generic}</span>
+      </div>
+    </div>
   )
 }
 
@@ -653,7 +713,47 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── 6. FOUNDER NOTE ───────────────────────────────────────────────── */}
+      {/* ── 6. PLANSK12 vs. A GENERIC AI CHATBOT ──────────────────────────── */}
+      <section className="bg-ink-950 px-6 py-20">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-12 text-center">
+            <p className="label-eyebrow mb-3">Why not just use a chatbot?</p>
+            <h2 className="text-3xl font-display font-semibold tracking-tight text-ink-50">
+              Built for teachers — not general chat
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-ink-400">
+              A generic AI tool can write you a paragraph. PlansK12 is purpose-built for K-12
+              specialists — grounded in real standards, structured for the classroom, and ready to
+              print, save, and share.
+            </p>
+          </div>
+
+          <div className="overflow-x-auto">
+            <div className="mx-auto min-w-[680px] overflow-hidden rounded-2xl border border-ink-800">
+              {/* Header row */}
+              <div className="grid grid-cols-[1.1fr_1.4fr_1.4fr] bg-ink-900/60">
+                <div className="px-4 py-4 sm:px-6" />
+                <div className="flex items-center gap-2 border-l border-ink-800 px-4 py-4 sm:px-6">
+                  <Sparkles size={16} className="text-accent-500" />
+                  <span className="font-display text-base font-semibold text-ink-50">PlansK12</span>
+                </div>
+                <div className="border-l border-ink-800 px-4 py-4 sm:px-6">
+                  <span className="text-base font-medium text-ink-400">A generic AI chatbot</span>
+                </div>
+              </div>
+              {COMPARE_ROWS.map((row) => (
+                <CompareRow key={row.need} {...row} />
+              ))}
+            </div>
+          </div>
+
+          <p className="mx-auto mt-8 max-w-xl text-center text-sm text-ink-500">
+            Same idea, very different result — because PlansK12 was built by a teacher, for teachers.
+          </p>
+        </div>
+      </section>
+
+      {/* ── 7. FOUNDER NOTE ───────────────────────────────────────────────── */}
       <section className="border-t border-ink-900 bg-white px-6 py-20">
         <div className="mx-auto max-w-2xl text-center">
           <p className="label-eyebrow mb-5 text-accent-500">Why this exists</p>
@@ -667,7 +767,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── 7. TESTIMONIAL ────────────────────────────────────────────────── */}
+      {/* ── 8. TESTIMONIAL ────────────────────────────────────────────────── */}
       <section className="bg-ink-950 px-6 py-20">
         <div className="mx-auto max-w-5xl">
           <div className="mb-10 text-center">
@@ -686,7 +786,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── 8. PRICING CTA ────────────────────────────────────────────────── */}
+      {/* ── 9. PRICING CTA ────────────────────────────────────────────────── */}
       <section className="border-t border-ink-900 bg-white px-6 py-20">
         <div className="mx-auto max-w-5xl text-center">
           <p className="label-eyebrow mb-3">Founding teacher pricing</p>
@@ -737,7 +837,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── 9. FOOTER ─────────────────────────────────────────────────────── */}
+      {/* ── 10. FOOTER ─────────────────────────────────────────────────────── */}
       <footer className="border-t border-ink-900 bg-white px-6 py-8">
         <div className="mx-auto flex max-w-5xl flex-col items-center gap-1 text-center sm:flex-row sm:justify-between sm:text-left">
           <PlansK12Logo />
