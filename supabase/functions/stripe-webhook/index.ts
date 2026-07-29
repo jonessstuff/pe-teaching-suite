@@ -16,6 +16,7 @@
 //                                          already-linked account (never creates)
 import Stripe from "https://esm.sh/stripe@14.21.0?target=deno&deno-std=0.177.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
+import { pickBestStatus } from "../_shared/subscriptionStatus.ts";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
   apiVersion: "2023-10-16",
@@ -129,6 +130,33 @@ async function findLinkedUser(customerId: string, email: string | null) {
   return null;
 }
 
+// The customer's BEST current status across ALL their subscriptions (mirrors
+// Stripe, incl. downgrades). THROWS on a Stripe API error — the caller must let
+// it propagate so the event 500s and Stripe retries, rather than caching a
+// downgrade from a failed read (fail closed).
+async function bestStatusForCustomer(customerId: string) {
+  const subs = await stripe.subscriptions.list({ customer: customerId, status: "all", limit: 100 });
+  return pickBestStatus(subs.data.map((s) => ({ status: s.status, trial_end: s.trial_end })));
+}
+
+// Record a Stripe customer we could not attach to any account, so unmatched
+// payers surface instead of failing silently. Repeats bump seen_count.
+async function logUnmatched(
+  customerId: string | null,
+  email: string | null,
+  eventType: string,
+  status: string | null,
+  amountCents: number | null,
+) {
+  await admin.rpc("log_billing_unmatched", {
+    p_customer_id: customerId,
+    p_email: email,
+    p_event_type: eventType,
+    p_status: status,
+    p_amount: amountCents,
+  });
+}
+
 Deno.serve(async (req) => {
   const sig = req.headers.get("stripe-signature");
   const secret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
@@ -148,17 +176,17 @@ Deno.serve(async (req) => {
         const s = event.data.object as Stripe.Checkout.Session;
         const email = s.customer_details?.email ?? s.customer_email;
         const customerId = typeof s.customer === "string" ? s.customer : s.customer?.id ?? null;
-        if (!email) break; // nothing to link on
+        if (!email) {
+          // No email to link on — surface it instead of silently dropping.
+          await logUnmatched(customerId, null, event.type, null, null);
+          break;
+        }
         const { userId, created } = await resolveOrCreateUser(email);
 
-        // Pull the subscription so we cache real status/trial, not a guess.
-        let status: string | null = null, trialEnd: number | null = null;
-        if (s.subscription) {
-          const sub = await stripe.subscriptions.retrieve(s.subscription as string);
-          status = sub.status;
-          trialEnd = sub.trial_end;
-        }
-        await cacheStatus(userId, customerId, status, trialEnd);
+        // Mirror Stripe: cache the customer's BEST current status across all subs
+        // (not a single guessed one). Throws on Stripe error → event 500s & retries.
+        const best = customerId ? await bestStatusForCustomer(customerId) : null;
+        await cacheStatus(userId, customerId, best?.status ?? null, best?.trialEnd ?? null);
         if (created) await sendSetupEmail(email); // magic link ONLY for brand-new accounts
         break;
       }
@@ -168,17 +196,30 @@ Deno.serve(async (req) => {
         const sub = event.data.object as Stripe.Subscription;
         const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer.id;
         const cust = await stripe.customers.retrieve(customerId) as Stripe.Customer;
-        const userId = await findLinkedUser(customerId, cust.email);
-        if (userId) await cacheStatus(userId, customerId, sub.status, sub.trial_end);
-        break; // never creates an account off a bare subscription event
+        const userId = await findLinkedUser(customerId, cust.email ?? null);
+        if (!userId) {
+          await logUnmatched(customerId, cust.email ?? null, event.type, sub.status, null);
+          break; // never creates an account off a bare subscription event
+        }
+        // Best-of-all-subs so a canceled-sub event can't hide a still-active one,
+        // and a genuine cancellation correctly downgrades. Throws on Stripe error.
+        const best = await bestStatusForCustomer(customerId);
+        await cacheStatus(userId, customerId, best?.status ?? null, best?.trialEnd ?? null);
+        break;
       }
       case "invoice.paid": {
         const inv = event.data.object as Stripe.Invoice;
         const customerId = typeof inv.customer === "string" ? inv.customer : inv.customer?.id ?? null;
         if (!customerId) break;
         const cust = await stripe.customers.retrieve(customerId) as Stripe.Customer;
-        const userId = await findLinkedUser(customerId, cust.email);
-        if (userId) await cacheStatus(userId, customerId, "active", null);
+        const userId = await findLinkedUser(customerId, cust.email ?? null);
+        if (!userId) {
+          // Paid but unmatched — the exact "charged, no account" case to surface.
+          await logUnmatched(customerId, cust.email ?? null, event.type, null, inv.amount_paid ?? null);
+          break;
+        }
+        const best = await bestStatusForCustomer(customerId);
+        await cacheStatus(userId, customerId, best?.status ?? "active", best?.trialEnd ?? null);
         break;
       }
     }

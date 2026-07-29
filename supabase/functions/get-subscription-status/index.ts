@@ -23,29 +23,27 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js";
+import { pickBestStatus, STATUS_RANK } from "../_shared/subscriptionStatus.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY");
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY");
 
-// Higher rank = "better" status. When a customer (or duplicate customers with
-// the same email) has multiple subscriptions, we report the best one.
-const STATUS_RANK: Record<string, number> = {
-  active: 6,
-  trialing: 5,
-  past_due: 4,
-  paused: 3,
-  unpaid: 2,
-  canceled: 1,
-  incomplete: 0,
-  incomplete_expired: 0,
-};
+// STATUS_RANK + pickBestStatus now live in ../_shared/subscriptionStatus.ts so
+// the webhook, activate-checkout, and this function all rank identically
+// (active > trialing > past_due > … > canceled).
 
-function stripeGet(path: string) {
-  return fetch(`https://api.stripe.com/v1/${path}`, {
+async function stripeGet(path: string) {
+  const r = await fetch(`https://api.stripe.com/v1/${path}`, {
     headers: { Authorization: `Bearer ${STRIPE_SECRET_KEY}` },
-  }).then((r) => r.json());
+  });
+  const body = await r.json();
+  // Fail CLOSED: a non-2xx is a FAILED call, not "no data". Throw so the outer
+  // handler skips the cache write entirely, leaving the existing value intact —
+  // a transient Stripe error must never null or downgrade the cache.
+  if (!r.ok) throw new Error(`stripe ${r.status}: ${body?.error?.message ?? "request failed"}`);
+  return body;
 }
 
 Deno.serve(async (req) => {
@@ -79,8 +77,45 @@ Deno.serve(async (req) => {
     let trialEndsAt: string | null = null;
     let customerId: string | null = null;
 
-    if (STRIPE_SECRET_KEY && user.email) {
-      // Find Stripe customer(s) by email (there can be duplicates).
+    const admin = SUPABASE_SERVICE_ROLE_KEY
+      ? createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+      : null;
+
+    // Prefer the customer id already stored on the profile: entitlement resolves
+    // by the Stripe CUSTOMER, not by email — so a mismatch between the account's
+    // email and the payer's Stripe email no longer locks anyone out, and the
+    // owner's manual stripe_customer_id backfills become the source of truth.
+    let storedCustomerId: string | null = null;
+    if (admin) {
+      const { data: prof } = await admin
+        .from("profiles")
+        .select("stripe_customer_id")
+        .eq("id", user.id)
+        .maybeSingle();
+      storedCustomerId = (prof?.stripe_customer_id as string | null) ?? null;
+    }
+
+    if (STRIPE_SECRET_KEY && storedCustomerId) {
+      // PRIMARY PATH — by stored customer id. (stripeGet throws on API error →
+      // outer catch skips the write; an empty-but-successful list is a genuine
+      // "no subscription" and is allowed to downgrade, mirroring Stripe.)
+      customerId = storedCustomerId;
+      const subData = await stripeGet(
+        `subscriptions?customer=${encodeURIComponent(storedCustomerId)}&status=all&limit=100`,
+      );
+      const best = pickBestStatus(
+        (subData?.data ?? []).map((s: { status: string; trial_end: number | null }) => ({
+          status: s.status,
+          trial_end: s.trial_end,
+        })),
+      );
+      if (best) {
+        status = best.status;
+        trialEndsAt = best.trialEnd ? new Date(best.trialEnd * 1000).toISOString() : null;
+      }
+    } else if (STRIPE_SECRET_KEY && user.email) {
+      // FALLBACK — by email (unchanged), for accounts with no stored customer id
+      // yet. Find Stripe customer(s) by email (there can be duplicates).
       const custData = await stripeGet(
         `customers?email=${encodeURIComponent(user.email)}&limit=100`,
       );
@@ -90,15 +125,16 @@ Deno.serve(async (req) => {
         const subData = await stripeGet(
           `subscriptions?customer=${cust.id}&status=all&limit=100`,
         );
-        for (const sub of subData?.data ?? []) {
-          const rank = STATUS_RANK[sub.status] ?? 0;
-          if (status === null || rank > (STATUS_RANK[status] ?? 0)) {
-            status = sub.status;
-            customerId = cust.id;
-            trialEndsAt = sub.trial_end
-              ? new Date(sub.trial_end * 1000).toISOString()
-              : null;
-          }
+        const best = pickBestStatus(
+          (subData?.data ?? []).map((s: { status: string; trial_end: number | null }) => ({
+            status: s.status,
+            trial_end: s.trial_end,
+          })),
+        );
+        if (best && (status === null || (STATUS_RANK[best.status] ?? 0) > (STATUS_RANK[status] ?? 0))) {
+          status = best.status;
+          customerId = cust.id;
+          trialEndsAt = best.trialEnd ? new Date(best.trialEnd * 1000).toISOString() : null;
         }
       }
 
@@ -109,18 +145,18 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Cache on the profile via the service role (bypasses RLS).
-    if (SUPABASE_SERVICE_ROLE_KEY) {
-      const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-      await admin
-        .from("profiles")
-        .update({
-          stripe_customer_id: customerId,
-          subscription_status: status,
-          trial_ends_at: trialEndsAt,
-          subscription_synced_at: new Date().toISOString(),
-        })
-        .eq("id", user.id);
+    // Cache on the profile via the service role (bypasses RLS). Reached ONLY on a
+    // successful Stripe read (a thrown error skips this via the outer catch), and
+    // NEVER nulls stripe_customer_id — the column is a durable join key and may
+    // hold a manual backfill; only overwrite it with a real, non-null value.
+    if (admin) {
+      const patch: Record<string, unknown> = {
+        subscription_status: status,
+        trial_ends_at: trialEndsAt,
+        subscription_synced_at: new Date().toISOString(),
+      };
+      if (customerId) patch.stripe_customer_id = customerId;
+      await admin.from("profiles").update(patch).eq("id", user.id);
     }
 
     const isPaid = status === "active" || status === "past_due";
