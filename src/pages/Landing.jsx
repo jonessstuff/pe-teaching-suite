@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { BookOpen, Globe, Accessibility, UserCheck, ClipboardList, ClipboardCheck, Mail, CalendarRange, Check, X, Users, BookMarked, PartyPopper, Newspaper, MessageCircle, Share2, Briefcase, BarChart3, ScrollText, Trophy, Dumbbell, Smartphone, SquareCheck, Sparkles, MousePointerClick, PencilLine, BadgeCheck } from 'lucide-react'
 
@@ -97,6 +98,7 @@ function CompareRow({ need, plansk12, generic }) {
 export default function Landing() {
   const [searchParams] = useSearchParams()
   const refCode = searchParams.get('ref')
+  const [showAllFeatures, setShowAllFeatures] = useState(false)
 
   return (
     <div className="force-light min-h-screen bg-white font-sans">
@@ -170,115 +172,29 @@ export default function Landing() {
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-lg text-ink-400 leading-relaxed">
-            You teach every kid in the building — PE, Art, Music, Library, STEM, Adaptive PE, CTE, gifted
-            and talented, reading and math intervention, special education, ESL, counseling, student
-            support, and early childhood. You see them all, every week, all year long. But when it comes
-            to planning tools, curriculum support, and AI? Everyone builds for the classroom teacher.
-            PlansK12 was built for you. Real lesson plans in minutes, standards-aligned to your state,
-            built around how your class actually runs.
+            You teach every kid in the building — but the planning tools all get built for the
+            classroom teacher. PlansK12 is built for you: real, standards-aligned lessons in minutes,
+            shaped around how your class actually runs.
           </p>
 
-          {/* Module chips — grouped by category, alphabetical within each group */}
+          {/* A representative sample of specialties — the full set lives in the
+              carousel below (linked from the "+more" pill), so the hero doesn't
+              open with a 30-item wall. */}
           <div className="mt-7 flex flex-wrap items-center justify-center gap-2">
-            {/* Core specials & encore subjects — PE & Health (flagship) first, then alphabetical */}
-            <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              PE &amp; Health
-            </span>
-            <span className="rounded-full bg-rose-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Adaptive PE
-            </span>
-            <span className="rounded-full bg-orange-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Art
-            </span>
-            <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Library &amp; Media
-            </span>
-            <span className="rounded-full bg-purple-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Music
-            </span>
-            <span className="rounded-full bg-maroon-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Theater / Drama
-            </span>
-            <span className="rounded-full bg-olive-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Dance
-            </span>
-            <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              STEM
-            </span>
-            <span className="rounded-full bg-saffron-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Elementary Technology
-            </span>
-            <span className="rounded-full bg-coral-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              After-School Clubs
-            </span>
-            <span className="rounded-full bg-denim-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              JROTC
-            </span>
-            <span className="rounded-full bg-jade-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              World Languages
-            </span>
-            {/* Early childhood */}
-            <span className="rounded-full bg-grass-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Early Childhood / Pre-K
-            </span>
-            {/* Career & technical education */}
-            <span className="rounded-full bg-pink-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              CTE
-            </span>
-            {/* Academic intervention & support */}
-            <span className="rounded-full bg-fuchsia-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              ESL/ELL Specialist
-            </span>
-            <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Gifted &amp; Talented
-            </span>
-            <span className="rounded-full bg-stone-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Intervention Planning
-            </span>
-            <span className="rounded-full bg-lime-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Math Specialists
-            </span>
-            <span className="rounded-full bg-sky-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Reading Specialists
-            </span>
-            <span className="rounded-full bg-steel-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Test Prep
-            </span>
-            <span className="rounded-full bg-violet-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Special Education
-            </span>
-            {/* Student wellbeing & behavior */}
-            <span className="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Classroom Management
-            </span>
-            <span className="rounded-full bg-crimson-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              School Counselors
-            </span>
-            <span className="rounded-full bg-bronze-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Speech-Language (SLP)
-            </span>
-            <span className="rounded-full bg-periwinkle-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Occupational Therapy (OT)
-            </span>
-            <span className="rounded-full bg-zinc-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Physical Therapy (PT)
-            </span>
-            <span className="rounded-full bg-cobalt-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Visually Impaired (TVI)
-            </span>
-            <span className="rounded-full bg-magenta-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Deaf/Hard of Hearing (D/HH)
-            </span>
-            <span className="rounded-full bg-plum-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Student Support Team
-            </span>
-            {/* School leadership */}
-            <span className="rounded-full bg-gold-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Staff PD &amp; Meeting Planning
-            </span>
-            <span className="rounded-full bg-mocha-500/20 px-3 py-1 text-xs font-medium text-ink-50">
-              Instructional Coaching
-            </span>
+            <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-medium text-ink-50">PE &amp; Health</span>
+            <span className="rounded-full bg-orange-500/20 px-3 py-1 text-xs font-medium text-ink-50">Art</span>
+            <span className="rounded-full bg-purple-500/20 px-3 py-1 text-xs font-medium text-ink-50">Music</span>
+            <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-medium text-ink-50">Library &amp; Media</span>
+            <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-medium text-ink-50">STEM</span>
+            <span className="rounded-full bg-violet-500/20 px-3 py-1 text-xs font-medium text-ink-50">Special Education</span>
+            <span className="rounded-full bg-sky-500/20 px-3 py-1 text-xs font-medium text-ink-50">Reading Specialists</span>
+            <span className="rounded-full bg-crimson-500/20 px-3 py-1 text-xs font-medium text-ink-50">School Counselors</span>
+            <a
+              href="#specialties"
+              className="rounded-full border border-brand-500/40 bg-brand-500/10 px-3 py-1 text-xs font-semibold text-brand-600 transition-colors hover:bg-brand-500/20"
+            >
+              +24 more specialties ↓
+            </a>
           </div>
 
           <div className="mt-9 flex flex-col items-center gap-4">
@@ -366,13 +282,16 @@ export default function Landing() {
       </section>
 
       {/* ── 4. WHO IT'S FOR ───────────────────────────────────────────────── */}
-      <section className="bg-ink-950 px-6 py-20">
+      <section id="specialties" className="scroll-mt-8 bg-ink-950 px-6 py-20">
         <div className="mx-auto max-w-5xl">
           <div className="mb-10 text-center">
-            <p className="label-eyebrow mb-3">Who it's for</p>
+            <p className="label-eyebrow mb-3 text-brand-500">Who it's for</p>
             <h2 className="text-3xl font-display font-semibold tracking-tight text-ink-50">
               One tool for every subject they never had one for.
             </h2>
+            <p className="mx-auto mt-3 max-w-lg text-ink-400">
+              30+ specialties, one login. Swipe through any group to find yours.
+            </p>
           </div>
 
           <div className="space-y-10">
@@ -380,62 +299,62 @@ export default function Landing() {
               <ModuleCard
                 name="PE & Health"
                 color="emerald"
-                description="Station rotations, SHAPE standards, sub plans, and accommodations built for the gym."
+                description="Station rotations, SHAPE-aligned lessons, sub plans, and accommodations built for the gym."
               />
               <ModuleCard
                 name="Adaptive PE"
                 color="rose"
-                description="Full APE lessons and accommodation plans for students with disabilities — built for real IEP goals, not generic advice."
+                description="Full APE lessons and accommodation plans built around real IEP goals — not generic advice."
               />
               <ModuleCard
                 name="Art"
                 color="orange"
-                description="Teacher prep, supplies lists, and NCAS-aligned lessons for elementary art rooms."
+                description="NCAS-aligned lessons with teacher prep and supply lists for the elementary art room."
               />
               <ModuleCard
                 name="Library & Media"
                 color="blue"
-                description="Genre study, research skills, and AASL-aligned lessons for K–5 library classes — plus the shared Makerspace project generator (also in STEM)."
+                description="Genre study, research skills, and AASL-aligned lessons for K–5 — plus the Makerspace project generator."
               />
               <ModuleCard
                 name="Music"
                 color="purple"
-                description="Warm-ups, listening examples, and National Core Arts Standards for general music K–5."
+                description="Warm-ups, listening examples, and National Core Arts Standards for general music, K–5."
               />
               <ModuleCard
                 name="Theater / Drama"
                 color="maroon"
-                description="NCAS Theatre lessons across the four Artistic Processes — Creating, Performing, Responding & Connecting — K–12, using original scene-starters & improv, never copyrighted scripts."
+                description="NCAS Theatre across all four Artistic Processes, K–12 — original scene-starters, never copyrighted scripts."
               />
               <ModuleCard
                 name="Dance"
                 color="olive"
-                description="NCAS Dance lessons across the four Artistic Processes — Creating, Performing, Responding & Connecting — K–12, built on the elements of dance with age-appropriate body-safety guidance."
+                description="NCAS Dance built on the elements of dance, K–12, with age-appropriate body-safety guidance."
               />
               <ModuleCard
                 name="STEM"
                 color="cyan"
-                description="Engineering challenges, coding, science investigations, and maker projects — all four in one place, plus the shared Makerspace project generator (tool-specific builds, also in Library & Media)."
+                description="Engineering, coding, science investigations, and maker projects — all in one place."
               />
               <ModuleCard
                 name="Elementary Technology / Computer Lab"
                 color="saffron"
-                description="Self-contained K–5 computer-lab lessons for a weekly tech special — foundational mouse/keyboard/typing skills, digital citizenship & online safety, creation tools, and intro coding/computational thinking, aligned to the ISTE Standards for Students."
+                description="Self-contained K–5 computer-lab lessons — keyboarding, digital citizenship, creation tools, and intro coding, ISTE-aligned."
               />
               <ModuleCard
                 name="After-School Clubs"
                 color="coral"
-                description="Ready-to-run club session plans across 68 club types — sports, academic, creative, wellness, leadership, life-skills & interest clubs — scaled K–12 by grade band, low-prep and runnable by a first-time sponsor."
+                description="Ready-to-run session plans across 68 club types, scaled K–12 — low-prep enough for a first-time sponsor."
               />
               <ModuleCard
                 name="JROTC"
                 color="denim"
-                description="High-school citizenship & leadership development across the LET 1–4 progression — leadership fundamentals, advanced leadership & mentorship, civics, wellness & life skills, service learning, and civilian + military career exploration. Not military tactics; drill is precision teamwork & tradition."
+                description="LET 1–4 citizenship and leadership — civics, wellness, and service learning, not military tactics."
               />
               <ModuleCard
                 name="World Languages"
                 color="jade"
-                description="ACTFL 5 Cs lessons for any target language — Spanish, French, Mandarin, Latin, ASL & more — structured by the three communication modes (Interpersonal, Interpretive, Presentational), Novice–Advanced, K–12."
+                description="ACTFL 5 Cs lessons for any language, Novice–Advanced, structured by the three communication modes."
               />
             </ModuleGroup>
 
@@ -443,12 +362,12 @@ export default function Landing() {
               <ModuleCard
                 name="Early Childhood / Pre-K"
                 color="grass"
-                description="Play-based learning centers & guided-play invitations for the whole child — NAEYC Developmentally Appropriate Practice, NAEYC Professional Standards & Head Start ELOF, toddlers through TK."
+                description="Play-based learning centers and guided-play invitations for the whole child — NAEYC DAP and Head Start ELOF."
               />
               <ModuleCard
                 name="Early Childhood Special Education"
                 color="sage"
-                description="Play-based, embedded-instruction support for young children with disabilities or delays (birth–5) — DEC Recommended Practices, NAEYC DAP & CEC. Naturalistic learning across play & routines for birth–3 (IFSP) and preschool (IEP); ideas to adapt to the child's plan, never IEP/IFSP goals or a diagnosis."
+                description="Play-based, embedded support for young children with delays (birth–5) — DEC, NAEYC DAP, and CEC-aligned."
               />
             </ModuleGroup>
 
@@ -456,7 +375,7 @@ export default function Landing() {
               <ModuleCard
                 name="CTE"
                 color="pink"
-                description="Career & Technical Education across Hospitality & Tourism, Finance, Marketing, Human Services / Family & Consumer Sciences, Health Science, Education & Training, Career Readiness (MS foundations), Information Technology, Transportation, Distribution & Logistics, Manufacturing, STEM / Engineering & Technology, Business Management & Administration, Agriculture, Food & Natural Resources, Architecture & Construction, Arts, A/V Technology & Communications, Government & Public Administration, Law, Public Safety, Corrections & Security, Cosmetology / Personal Care Services, Business Law, Sports & Entertainment Marketing, and Exercise Science / Sports Medicine pathways — standards-aligned and industry-relevant."
+                description="Standards-aligned, industry-relevant lessons across 20+ Career & Technical Education pathways."
               />
             </ModuleGroup>
 
@@ -464,37 +383,37 @@ export default function Landing() {
               <ModuleCard
                 name="ESL/ELL Specialist"
                 color="fuchsia"
-                description="Language-development lessons for ESL/ELL teachers — WIDA proficiency levels, SIOP content & language objectives, and all four language domains, K–12."
+                description="Language-development lessons with WIDA levels and SIOP objectives across all four domains, K–12."
               />
               <ModuleCard
                 name="Gifted & Talented"
                 color="amber"
-                description="Depth & Complexity differentiation, enrichment vs. acceleration options, and 2e / underachievement support — grounded in the NAGC framework, K–12."
+                description="Depth & Complexity differentiation and enrichment vs. acceleration, NAGC-grounded, K–12."
               />
               <ModuleCard
                 name="Intervention Planning"
                 color="stone"
-                description="Describe a concern and get a tiered MTSS/RTI intervention — routed to Reading (IDA), Math (NCTM/CRA), or Behavior support, with Tier framing and progress-monitoring, K–12."
+                description="Tiered MTSS/RTI plans routed to reading, math, or behavior — with progress-monitoring, K–12."
               />
               <ModuleCard
                 name="Math Specialists"
                 color="lime"
-                description="Concept-first math interventions & differentiation — CRA sequencing, Number Talks, and NCTM process standards for pull-out and co-teaching, plus a Tutoring Mode (private/after-school and in-class pull-aside), K–12."
+                description="Concept-first math interventions — CRA sequencing, Number Talks, and NCTM standards, plus a Tutoring Mode."
               />
               <ModuleCard
                 name="Reading Specialists"
                 color="sky"
-                description="Explicit, systematic Structured Literacy interventions for phonics, fluency, and comprehension — IDA-aligned, with dyslexia-indicator flagging, plus a Tutoring Mode (private/after-school and in-class pull-aside), K–12."
+                description="Explicit Structured Literacy interventions with dyslexia-indicator flagging, IDA-aligned, plus a Tutoring Mode."
               />
               <ModuleCard
                 name="Special Education"
                 color="violet"
-                description="Resource & self-contained instructional support — multi-tier differentiation, functional/life-skills, and push-in co-teaching ideas to adapt to your students, K–12."
+                description="Resource and self-contained support — multi-tier differentiation, life-skills, and co-teaching ideas, K–12."
               />
               <ModuleCard
                 name="Test Prep"
                 color="steel"
-                description="SAT/ACT and state-assessment prep as tutoring-style sessions — 100% original practice questions (never copyrighted items), strategies, content review, and test-day prep; state path verifies against your official blueprint."
+                description="SAT/ACT and state-assessment prep with 100% original practice questions — never copyrighted items."
               />
             </ModuleGroup>
 
@@ -502,42 +421,42 @@ export default function Landing() {
               <ModuleCard
                 name="Classroom Management"
                 color="indigo"
-                description="All grade bands K–12 — printable quick-reference cards, behavior charts, reflection forms, behavior troubleshooting, ABC data sheets, CICO trackers, and parent communication tools."
+                description="Printable behavior cards, charts, ABC/CICO trackers, and parent-communication tools, K–12."
               />
               <ModuleCard
                 name="School Counselors"
                 color="crimson"
-                description="Whole-class classroom guidance curriculum — ASCA-aligned lessons across academic, career, and social/emotional development, K–12."
+                description="ASCA-aligned classroom guidance across academic, career, and social/emotional development, K–12."
               />
               <ModuleCard
                 name="Speech-Language (SLP)"
                 color="bronze"
-                description="SLP session activity ideas — articulation, language, fluency, social communication & AAC, ASHA-aligned; activity planning, not clinical protocol."
+                description="Session activity ideas for articulation, language, fluency, social communication, and AAC — ASHA-aligned."
               />
               <ModuleCard
                 name="Occupational Therapy (OT)"
                 color="periwinkle"
-                description="School-based OT activity ideas — fine motor & handwriting, sensory & self-regulation, ADLs, visual-motor & vocational, OTPF-4 / AOTA-aligned; activity planning, not clinical protocol."
+                description="School-based OT activity ideas — fine motor, sensory, ADLs, and visual-motor, OTPF-4 / AOTA-aligned."
               />
               <ModuleCard
                 name="Physical Therapy (PT)"
                 color="zinc"
-                description="School-based PT activity ideas — gross motor, mobility & positioning, adaptive-PE crossover & functional mobility, APTA / APTA Pediatric-aligned; activity planning, not clinical protocol."
+                description="School-based PT activity ideas — gross motor, mobility, and positioning, APTA-aligned."
               />
               <ModuleCard
                 name="Visually Impaired (TVI)"
                 color="cobalt"
-                description="Expanded Core Curriculum activity ideas — Braille & compensatory access, assistive technology, independent living, sensory & social skills, and career/transition, CEC/DVIDB-aligned; activity planning, not an assessment tool."
+                description="Expanded Core Curriculum activities — Braille, assistive tech, and independent living, CEC/DVIDB-aligned."
               />
               <ModuleCard
                 name="Deaf/Hard of Hearing (D/HH)"
                 color="magenta"
-                description="ECC-DHH activity ideas — communication (bilingual-bicultural or listening & spoken language, teacher's choice), self-advocacy, social-emotional, hearing technology & career transition, CEC/CED-aligned; activity planning, not an assessment tool."
+                description="ECC-DHH activities — communication, self-advocacy, and hearing technology, CEC/CED-aligned."
               />
               <ModuleCard
                 name="Student Support Team"
                 color="plum"
-                description="Ready-to-run small-group SEL & behavioral activities for social workers, school psychologists, MFLCs & behavior specialists — role-tailored, activity structure only, K–12."
+                description="Ready-to-run small-group SEL and behavioral activities, role-tailored for support staff, K–12."
               />
             </ModuleGroup>
 
@@ -545,12 +464,12 @@ export default function Landing() {
               <ModuleCard
                 name="Staff PD & Meeting Planning"
                 color="gold"
-                description="For principals & coaches — Learning Forward-aligned PD sessions, new-teacher mentoring, walkthrough look-fors, PLC/data-team protocols, and building communication templates for adult, job-embedded professional learning."
+                description="Learning Forward-aligned PD, mentoring, walkthrough look-fors, and PLC protocols for principals and coaches."
               />
               <ModuleCard
                 name="Instructional Coaching"
                 color="mocha"
-                description="Non-evaluative, partnership-based coaching built on Jim Knight's Impact Cycle & Partnership Principles — coaching conversation frameworks, teacher-driven observation tools (not evaluation), and goal-setting & data-use protocols. Confidential support, never a performance review."
+                description="Partnership-based coaching on the Impact Cycle — confidential support, never a performance review."
               />
             </ModuleGroup>
           </div>
@@ -619,6 +538,10 @@ export default function Landing() {
               />
             </FeatureGroup>
 
+            {/* The remaining tool groups collapse behind a toggle so the section
+                previews the breadth without dropping ~18 more cards at once. */}
+            {showAllFeatures && (
+              <div className="space-y-10">
             <FeatureGroup label="Substitute &amp; Coverage">
               <FeatureCard
                 icon={UserCheck}
@@ -708,6 +631,18 @@ export default function Landing() {
                 description="Install on any phone or tablet directly from the browser. No App Store, no updates to manage."
               />
             </FeatureGroup>
+              </div>
+            )}
+
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => setShowAllFeatures((v) => !v)}
+                className="btn-secondary px-6 py-2.5"
+              >
+                {showAllFeatures ? 'Show fewer tools' : 'Show all 20+ tools'}
+              </button>
+            </div>
 
           </div>
         </div>
@@ -903,8 +838,13 @@ const MODULE_STYLES = {
 function ModuleGroup({ label, children }) {
   return (
     <div>
-      <p className="mb-4 text-xs font-bold uppercase tracking-widest text-ink-500">{label}</p>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mb-4 flex items-baseline justify-between gap-3">
+        <p className="text-xs font-bold uppercase tracking-widest text-ink-500">{label}</p>
+        <span className="shrink-0 text-[11px] font-medium uppercase tracking-wider text-ink-600">Scroll →</span>
+      </div>
+      {/* Horizontal scroll-snap row — swipe on touch, scroll on desktop. Keeps
+          each category browsable without stacking 30+ cards vertically. */}
+      <div className="flex snap-x gap-4 overflow-x-auto pb-3 [-webkit-overflow-scrolling:touch]">
         {children}
       </div>
     </div>
@@ -914,7 +854,7 @@ function ModuleGroup({ label, children }) {
 function ModuleCard({ name, color, description }) {
   const { border, pill } = MODULE_STYLES[color]
   return (
-    <div className={`card flex flex-col items-start gap-2 border-t-2 p-5 ${border}`}>
+    <div className={`card flex w-64 shrink-0 snap-start flex-col items-start gap-2 border-t-2 p-5 ${border}`}>
       <span className={`inline-block rounded-md px-2 py-0.5 text-sm font-semibold text-ink-50 ${pill}`}>
         {name}
       </span>
