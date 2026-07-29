@@ -38,7 +38,7 @@ export default function WhatsNewBanner() {
   if (!show) return null
 
   return (
-    <div className="relative mb-6 rounded-xl border border-accent-500/30 bg-accent-500/10 p-4 pr-10">
+    <div data-no-print className="relative mb-6 rounded-xl border border-accent-500/30 bg-accent-500/10 p-4 pr-10">
       <div className="flex items-start gap-3">
         <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent-500/20">
           <Sparkles size={16} className="text-accent-400" />

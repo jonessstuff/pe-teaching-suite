@@ -7,7 +7,7 @@ import { supabase } from '../lib/supabaseClient'
 export const TRIAL_DAYS = 7
 export const EXPORT_CAP = 5
 export const TRIAL_HORIZON_WEEKS = 4
-export const WATERMARK_TEXT = 'Created with PlansK12 Free Trial — plansk12.com'
+export const WATERMARK_TEXT = 'PlansK12 trial — upgrade to remove this from your printed lessons. plansk12.com'
 // New-user signup / free-trial checkout — Stripe payment link WITH the 7-day
 // trial, $9.99/mo. Single source of truth for EVERY new-signup CTA (Landing,
 // TryFreeLesson, FreeLessonView, Login) so no path can reach the retired $6.99

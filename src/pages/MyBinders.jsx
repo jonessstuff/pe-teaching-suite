@@ -57,7 +57,8 @@ export default function MyBinders() {
 
   async function handleUpdateDay(weekIndex, dayIndex, updatedLesson) {
     if (!selectedData) return
-    const newBinder = selectedData.binder_data.binder.map((week, wi) =>
+    const weeks = selectedData.binder_data.binder ?? selectedData.binder_data.weeks ?? []
+    const newBinder = weeks.map((week, wi) =>
       wi === weekIndex ? week.map((day, di) => di === dayIndex ? { ...day, ...updatedLesson } : day) : week
     )
     const newData = { ...selectedData.binder_data, binder: newBinder }
@@ -96,7 +97,7 @@ export default function MyBinders() {
           </div>
         ) : (
           <SubBinderRenderer
-            binder={selectedData.binder_data?.binder ?? []}
+            binder={selectedData.binder_data?.binder ?? selectedData.binder_data?.weeks ?? []}
             subject={meta.subject}
             weekCount={meta.weekCount}
             classSize={meta.classSize}

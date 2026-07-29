@@ -450,9 +450,30 @@ export default function SubBinderGenerator() {
       }
 
       // weekCount reflects what was actually generated (1 for the gated 1-day preview).
-      setBinderMeta({ subject, weekCount: weeks.length, classSize, duration, state, routines, emergencyNotes })
+      const totalDays = allDays.length
+      const meta = { subject, weekCount: weeks.length, days: totalDays, classSize, duration, state, routines, emergencyNotes }
+      setBinderMeta(meta)
       setBinder(weeks)
       setView('result')
+
+      // Autosave on generate. A sub plan is usually made by someone sick or
+      // rushed; "you have unsaved work" is a worse experience than just saving
+      // it. This also fixes the data-loss bug where a gated single-day plan
+      // vanished on navigate-away (it was never persisted without a manual Save).
+      try {
+        const isSinglePlan = totalDays === 1
+        const defaultName = isSinglePlan
+          ? `${subject} Sub Plan — ${new Date().toLocaleDateString()}`
+          : `${subject} Sub Binder — ${weeks.length} week${weeks.length !== 1 ? 's' : ''}`
+        const saved = await createBinder({
+          name: defaultName,
+          subject,
+          binderData: { binder: weeks, meta },
+        })
+        setSavedBinderId(saved.id)
+        setBinderName(defaultName)
+        setSaveStatus('saved')
+      } catch { /* non-fatal: the manual Save button stays available as a fallback */ }
     } catch (err) {
       setError(err?.message ?? 'Generation failed. Please try again.')
     } finally {
@@ -477,7 +498,7 @@ export default function SubBinderGenerator() {
       const saved = await createBinder({
         name: binderName || `${binderMeta.subject} Sub Binder — ${binderMeta.weekCount} week${binderMeta.weekCount !== 1 ? 's' : ''}`,
         subject: binderMeta.subject,
-        binderData: { weeks: binder, meta: binderMeta },
+        binderData: { binder, meta: binderMeta },
       })
       setSavedBinderId(saved.id)
       setSaveStatus('saved')

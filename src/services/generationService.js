@@ -14,6 +14,22 @@
 import { supabase } from '../lib/supabaseClient'
 
 /**
+ * Turn a supabase-js FunctionsHttpError into an Error carrying the function's
+ * REAL message. `functions.invoke` rejects with a generic
+ * "Edge Function returned a non-2xx status code" and stashes the actual
+ * Response (with our `{ error }` body) on `error.context`. Read it so callers
+ * surface e.g. "Anthropic API error (529): overloaded" instead of the wrapper.
+ */
+async function toGenerationError(error) {
+  let message = error?.message ?? 'Generation failed'
+  try {
+    const body = await error?.context?.json?.()
+    if (body?.error) message = body.error
+  } catch { /* body already consumed or not JSON — keep the wrapper message */ }
+  return new Error(message)
+}
+
+/**
  * @typedef {Object} GenerateLessonInput
  * @property {number[]} gradeBands       e.g. [6, 7, 8]
  * @property {string} unit               e.g. "Striking & Fielding"
@@ -35,7 +51,7 @@ export async function generateLesson(input) {
     body: input,
   })
 
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
@@ -52,7 +68,7 @@ export async function generateSubPlan(lessonId) {
     body: { lessonId },
   })
 
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
@@ -61,7 +77,7 @@ export async function generateWeatherAlt(lessonId) {
     body: { lessonId },
   })
 
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
@@ -70,7 +86,7 @@ export async function generateParentNote(lessonId) {
     body: { lessonId },
   })
 
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
@@ -79,7 +95,7 @@ export async function generateObservationSummary(lessonId) {
     body: { lessonId },
   })
 
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
@@ -96,7 +112,7 @@ export async function generateQuiz(lessonId) {
     body: { lessonId },
   })
 
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
@@ -105,7 +121,7 @@ export async function generateYearPlan({ subjects, gradeBand, state, totalWeeks 
     body: { subjects, gradeBand, state, totalWeeks },
   })
 
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
@@ -114,7 +130,7 @@ export async function generatePoster(lessonObject) {
     body: { lessonObject },
   })
 
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
@@ -123,7 +139,7 @@ export async function generateLibraryLesson(input) {
     body: input,
   })
 
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
@@ -644,19 +660,19 @@ export async function generateArtLesson(input) {
 
 export async function generateRubric(lessonId) {
   const { data, error } = await supabase.functions.invoke('generate-rubric', { body: { lessonId } })
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
 export async function generateFamilyNewsletter(lessonId, weekOf) {
   const { data, error } = await supabase.functions.invoke('generate-family-newsletter', { body: { lessonId, weekOf } })
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
 export async function generateDifferentiatedLesson(lessonId, differentiationType) {
   const { data, error } = await supabase.functions.invoke('generate-differentiated-lesson', { body: { lessonId, differentiationType } })
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
@@ -664,25 +680,25 @@ export async function generateProgressNote(lessonId, { studentName, iepGoal, goa
   const { data, error } = await supabase.functions.invoke('generate-progress-note', {
     body: { lessonId, studentName, iepGoal, goalCategory, observationNotes, performanceLevel },
   })
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
 export async function generateExitTicket(lessonId) {
   const { data, error } = await supabase.functions.invoke('generate-exit-ticket', { body: { lessonId } })
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
 export async function generateCrossCurricular(lessonId) {
   const { data, error } = await supabase.functions.invoke('generate-cross-curricular', { body: { lessonId } })
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
 export async function generateWarmup({ subject, gradeBand, duration, equipment }) {
   const { data, error } = await supabase.functions.invoke('generate-warmup', { body: { subject, gradeBand, duration, equipment } })
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
@@ -690,7 +706,7 @@ export async function generateBehaviorNote({ studentName, incidentDescription, g
   const { data, error } = await supabase.functions.invoke('generate-behavior-note', {
     body: { studentName, incidentDescription, gradeLevel, subject },
   })
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
@@ -698,7 +714,7 @@ export async function generateIncidentReport({ dateTime, location, studentName, 
   const { data, error } = await supabase.functions.invoke('generate-incident-report', {
     body: { dateTime, location, studentName, incidentDescription, witnesses, actionsTaken, followUpNeeded, subject },
   })
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
@@ -706,7 +722,7 @@ export async function generateConferencePrep({ studentName, subject, gradeBand, 
   const { data, error } = await supabase.functions.invoke('generate-conference-prep', {
     body: { studentName, subject, gradeBand, strengths, areasOfConcern, goals },
   })
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
@@ -714,7 +730,7 @@ export async function generateEoyNarrative({ subject, gradeLevels, state, school
   const { data, error } = await supabase.functions.invoke('generate-eoy-narrative', {
     body: { subject, gradeLevels, state, schoolYear, keyUnits, achievements, challenges, goals },
   })
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
@@ -722,7 +738,7 @@ export async function generateActivityBank({ subject, gradeBand, duration, occas
   const { data, error } = await supabase.functions.invoke('generate-activity-bank', {
     body: { subject, gradeBand, duration, occasion },
   })
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
@@ -730,7 +746,7 @@ export async function generateFieldDay({ numStudents, gradeLevels, duration, spa
   const { data, error } = await supabase.functions.invoke('generate-field-day', {
     body: { numStudents, gradeLevels, duration, space, numStations, theme },
   })
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
@@ -738,7 +754,7 @@ export async function generateFitnessTestPrep({ gradeBands, testName, component,
   const { data, error } = await supabase.functions.invoke('generate-fitness-test-prep', {
     body: { gradeBands, testName, component, state, classSize, duration },
   })
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
@@ -746,7 +762,7 @@ export async function generateImportedLesson({ rawText, subject, gradeBand, targ
   const { data, error } = await supabase.functions.invoke('generate-imported-lesson', {
     body: { rawText, subject, gradeBand, targetLanguage, stemFocusArea },
   })
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
@@ -754,7 +770,7 @@ export async function generatePacingGuide({ subject, grade, state, quarterIndex,
   const { data, error } = await supabase.functions.invoke('generate-pacing-guide', {
     body: { subject, grade, state, quarterIndex, totalQuarters, schoolYearStart, schoolYearEnd, daysPerWeek, breaks, topics, previousQuarters },
   })
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 
@@ -762,7 +778,7 @@ export async function generatePortfolio({ subject, yearsTeaching, philosophySeed
   const { data, error } = await supabase.functions.invoke('generate-portfolio', {
     body: { subject, yearsTeaching, philosophySeeds },
   })
-  if (error) throw error
+  if (error) throw await toGenerationError(error)
   return data
 }
 

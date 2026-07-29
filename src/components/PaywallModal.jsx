@@ -5,8 +5,8 @@ import { UPGRADE_URL, EXPORT_CAP } from '../services/trialService'
 
 const COPY = {
   'export-cap': {
-    title: 'Trial export limit reached',
-    body: `You've used all ${EXPORT_CAP} free-trial exports. Upgrade to PlansK12 for unlimited exports and prints — no watermark.`,
+    title: `You've used all ${EXPORT_CAP} free trial exports`,
+    body: `Trial accounts can print or export ${EXPORT_CAP} lessons. Subscribe to PlansK12 for unlimited prints and exports — and no watermark on your lessons.`,
   },
   'gated-feature': {
     title: 'This is a paid feature',
