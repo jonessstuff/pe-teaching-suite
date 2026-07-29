@@ -40,19 +40,18 @@ async function sendMagicLink(email: string) {
   const html = `
     <div style="font-family:system-ui,sans-serif;max-width:480px;margin:0 auto;color:#1a1a2e">
       <h2 style="color:#1a1a2e">You're in — payment received ✅</h2>
-      <p>Thanks for subscribing to PlansK12. Your subscription is active.</p>
+      <p>Thanks for subscribing to PlansK12 — your 7-day free trial is active. You won't be charged until it ends, and you can cancel anytime.</p>
       <p><strong>One tap to log in</strong> — no password needed:</p>
       <p><a href="${actionLink}" style="display:inline-block;background:#4f46e5;color:#fff;
          padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600">
          Log in to PlansK12</a></p>
-      <p style="color:#6b7280;font-size:13px">You won't be charged again to set this up —
-         your subscription is already active. You can add a password later from Settings.</p>
+      <p style="color:#6b7280;font-size:13px">Tap the button above to log in and build your first lesson — it takes about a minute. You can set a password later so you can skip the link next time.</p>
       <p style="color:#9aa4b0;font-size:12px">If you didn't subscribe to PlansK12, you can ignore this email.</p>
     </div>`;
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${Deno.env.get("RESEND_API_KEY")}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: FROM, to: [email], subject: "Finish setting up your PlansK12 account", html }),
+    body: JSON.stringify({ from: FROM, to: [email], subject: "You're in — here's your PlansK12 login", html }),
   });
   if (!res.ok) throw new Error(`resend ${res.status}: ${await res.text()}`);
 }

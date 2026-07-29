@@ -34,6 +34,7 @@ export default function Login({ authError, onClearAuthError }) {
   const [status, setStatus] = useState('idle')
   const [message, setMessage] = useState(null)
   const [forgotSent, setForgotSent] = useState(false)
+  const [linkSent, setLinkSent] = useState(false)
 
   // authError comes from App.jsx state (set by the onAuthStateChange handler)
   // and takes priority over local message state.
@@ -45,6 +46,7 @@ export default function Login({ authError, onClearAuthError }) {
     setStatus('idle')
     setMessage(null)
     setForgotSent(false)
+    setLinkSent(false)
     onClearAuthError?.()
   }
 
@@ -81,6 +83,29 @@ export default function Login({ authError, onClearAuthError }) {
       return
     }
     setForgotSent(true)
+  }
+
+  // Passwordless sign-in: email a one-time magic link (Supabase built-in, now via
+  // Resend SMTP). shouldCreateUser:false keeps signup Stripe-only — this can only
+  // log in an existing account, never create one.
+  async function handleMagicLink() {
+    if (!email.trim()) {
+      setMessage('Enter your email above first, then tap this.')
+      return
+    }
+    onClearAuthError?.()
+    setStatus('loading')
+    setMessage(null)
+    const { error } = await supabase.auth.signInWithOtp({
+      email: email.trim(),
+      options: { shouldCreateUser: false },
+    })
+    setStatus('idle')
+    if (error) {
+      setMessage(error.message)
+      return
+    }
+    setLinkSent(true)
   }
 
   return (
@@ -174,6 +199,26 @@ export default function Login({ authError, onClearAuthError }) {
                   Sign in
                 </button>
               </form>
+
+              {linkSent ? (
+                <p className="mt-5 text-center text-sm text-emerald-400">
+                  Check your inbox — we sent you a login link.
+                </p>
+              ) : (
+                <>
+                  <div className="mt-5 flex items-center gap-3 text-xs text-ink-600">
+                    <span className="h-px flex-1 bg-ink-800" /> or <span className="h-px flex-1 bg-ink-800" />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleMagicLink}
+                    disabled={status === 'loading'}
+                    className="btn-secondary mt-4 w-full"
+                  >
+                    Email me a login link instead
+                  </button>
+                </>
+              )}
             </>
           )}
         </div>

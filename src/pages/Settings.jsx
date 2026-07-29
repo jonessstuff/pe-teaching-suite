@@ -32,6 +32,7 @@ export default function Settings() {
   const [saveError, setSaveError] = useState(null)
 
   const [pwForm, setPwForm] = useState({ current: '', newPw: '', confirm: '' })
+  const [hasPassword, setHasPassword] = useState(true) // until profile loads
   const [pwStatus, setPwStatus] = useState('idle') // idle | saving | saved | error
   const [pwError, setPwError] = useState(null)
   const [referralCode, setReferralCode] = useState(null)
@@ -70,6 +71,7 @@ export default function Settings() {
           cte_pathways: profile.cte_pathways ?? [],
           teaching_other: profile.teaching_other ?? '',
         })
+        setHasPassword(profile.has_password ?? false)
         setLoadStatus('ready')
       })
       .catch(() => setLoadStatus('ready'))
@@ -128,6 +130,28 @@ export default function Settings() {
     }
 
     setPwStatus('saved')
+    setPwForm({ current: '', newPw: '', confirm: '' })
+    setTimeout(() => setPwStatus('idle'), 3000)
+  }
+
+  // Set a FIRST password — no current-password re-auth (the live session proves
+  // identity). has_password flips via the DB trigger; reflect it locally too.
+  async function handleSetPassword(e) {
+    e.preventDefault()
+    setPwError(null)
+    if (pwForm.newPw !== pwForm.confirm) {
+      setPwError("New passwords don't match.")
+      return
+    }
+    setPwStatus('saving')
+    const { error: updateError } = await supabase.auth.updateUser({ password: pwForm.newPw })
+    if (updateError) {
+      setPwError(updateError.message)
+      setPwStatus('error')
+      return
+    }
+    setPwStatus('saved')
+    setHasPassword(true)
     setPwForm({ current: '', newPw: '', confirm: '' })
     setTimeout(() => setPwStatus('idle'), 3000)
   }
@@ -382,21 +406,28 @@ export default function Settings() {
         </button>
       </div>
 
-      {/* Change password */}
+      {/* Set / change password */}
       <div className="card p-6 space-y-5">
-        <h2 className="font-semibold text-ink-50">Change password</h2>
-        <form onSubmit={handleChangePassword} className="space-y-4">
-          <Field label="Current password">
-            <input
-              type="password"
-              required
-              className="input-field"
-              value={pwForm.current}
-              onChange={(e) => setPwForm((p) => ({ ...p, current: e.target.value }))}
-              placeholder="••••••••"
-              autoComplete="current-password"
-            />
-          </Field>
+        <h2 className="font-semibold text-ink-50">{hasPassword ? 'Change password' : 'Set a password'}</h2>
+        {!hasPassword && (
+          <p className="-mt-2 text-sm text-ink-400">
+            You&apos;ve been signing in with email links. Set a password to sign in directly next time.
+          </p>
+        )}
+        <form onSubmit={hasPassword ? handleChangePassword : handleSetPassword} className="space-y-4">
+          {hasPassword && (
+            <Field label="Current password">
+              <input
+                type="password"
+                required
+                className="input-field"
+                value={pwForm.current}
+                onChange={(e) => setPwForm((p) => ({ ...p, current: e.target.value }))}
+                placeholder="••••••••"
+                autoComplete="current-password"
+              />
+            </Field>
+          )}
           <Field label="New password">
             <input
               type="password"
@@ -427,7 +458,7 @@ export default function Settings() {
           <div className="flex items-center gap-3 pt-1">
             <button type="submit" className="btn-primary" disabled={pwStatus === 'saving'}>
               {pwStatus === 'saving' && <Loader2 size={14} className="animate-spin" />}
-              Update password
+              {hasPassword ? 'Update password' : 'Set password'}
             </button>
             {pwStatus === 'saved' && (
               <p className="text-sm text-accent-400">Password updated successfully</p>

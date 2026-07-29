@@ -173,7 +173,9 @@ Deno.serve(async (req) => {
       if (days < 0 || days >= TRIAL_DAYS) continue; // only within the trial window
 
       const due: string[] = [];
-      if (!sent.has(`${p.id}:welcome`)) due.push("welcome");
+      // Day-0 "welcome" removed: the signup/login email (stripe-webhook /
+      // activate-checkout) now carries the "you're in, here's your link" framing,
+      // so a separate welcome would double up. midtrial + nudge remain.
       if (days >= 3 && !sent.has(`${p.id}:midtrial`)) due.push("midtrial");
       if (days >= 5 && !sent.has(`${p.id}:nudge`)) due.push("nudge");
       if (due.length === 0) continue;
