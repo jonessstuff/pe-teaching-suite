@@ -4,6 +4,7 @@ import { Palette, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'lu
 import { generateArtLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
+import LessonPrintFix from '../components/LessonPrintFix'
 import ArtPlanRenderer from '../components/renderers/ArtPlanRenderer'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 
@@ -180,6 +181,7 @@ export default function ArtGenerator() {
         )}
 
         <div className="mt-10">
+          <LessonPrintFix lesson={generatedLesson} />
           <ArtPlanRenderer lesson={generatedLesson} />
         </div>
       </div>

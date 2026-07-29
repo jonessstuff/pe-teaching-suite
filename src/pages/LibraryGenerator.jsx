@@ -4,6 +4,7 @@ import { BookOpen, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'l
 import { generateLibraryLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
+import LessonPrintFix from '../components/LessonPrintFix'
 import LibraryPlanRenderer from '../components/renderers/LibraryPlanRenderer'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 
@@ -171,6 +172,7 @@ export default function LibraryGenerator() {
         )}
 
         <div className="mt-10">
+          <LessonPrintFix lesson={generatedLesson} />
           <LibraryPlanRenderer lesson={generatedLesson} />
         </div>
       </div>

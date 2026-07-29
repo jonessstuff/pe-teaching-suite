@@ -4,6 +4,7 @@ import { FlaskConical, Wrench, Code2, Microscope, Hammer, Sparkles, Loader2, Plu
 import { generateStemLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
+import LessonPrintFix from '../components/LessonPrintFix'
 import StemPlanRenderer from '../components/renderers/StemPlanRenderer'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 
@@ -258,6 +259,7 @@ export default function StemGenerator() {
         )}
 
         <div className="mt-10">
+          <LessonPrintFix lesson={generatedLesson} />
           <StemPlanRenderer lesson={generatedLesson} />
         </div>
       </div>

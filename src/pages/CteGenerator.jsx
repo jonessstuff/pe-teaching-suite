@@ -4,6 +4,7 @@ import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stetho
 import { generateCteLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
+import LessonPrintFix from '../components/LessonPrintFix'
 import CtePlanRenderer from '../components/renderers/CtePlanRenderer'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 
@@ -537,6 +538,7 @@ export default function CteGenerator() {
         )}
 
         <div className="mt-10">
+          <LessonPrintFix lesson={generatedLesson} />
           <CtePlanRenderer lesson={generatedLesson} />
         </div>
       </div>

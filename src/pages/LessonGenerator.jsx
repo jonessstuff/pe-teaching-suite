@@ -10,6 +10,7 @@ import { listStudentsByPeriod } from '../services/studentsService'
 import { getProfile } from '../services/profilesService'
 import { listPresets, savePreset, deletePreset } from '../services/presetsService'
 import { US_STATES } from '../constants/usStates'
+import LessonPrintFix from '../components/LessonPrintFix'
 import PlanBookRenderer from '../components/renderers/PlanBookRenderer'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 
@@ -256,6 +257,7 @@ export default function LessonGenerator() {
         />
 
         <div className="mt-10">
+          <LessonPrintFix lesson={generatedLesson} />
           <PlanBookRenderer lesson={generatedLesson} />
         </div>
       </div>

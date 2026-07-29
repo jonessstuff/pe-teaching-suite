@@ -4,6 +4,7 @@ import { Music, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink } from 'luci
 import { generateMusicLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
+import LessonPrintFix from '../components/LessonPrintFix'
 import MusicPlanRenderer from '../components/renderers/MusicPlanRenderer'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 
@@ -171,6 +172,7 @@ export default function MusicGenerator() {
         )}
 
         <div className="mt-10">
+          <LessonPrintFix lesson={generatedLesson} />
           <MusicPlanRenderer lesson={generatedLesson} />
         </div>
       </div>
