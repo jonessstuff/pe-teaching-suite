@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
-import { BookOpen, Globe, Accessibility, UserCheck, ClipboardList, ClipboardCheck, Mail, CalendarRange, Check, X, Users, BookMarked, PartyPopper, Newspaper, MessageCircle, Share2, Briefcase, BarChart3, ScrollText, Trophy, Dumbbell, Smartphone, SquareCheck, Sparkles, MousePointerClick, PencilLine, BadgeCheck } from 'lucide-react'
+import { BookOpen, Globe, Accessibility, UserCheck, ClipboardList, ClipboardCheck, Mail, CalendarRange, Check, X, Users, BookMarked, PartyPopper, Newspaper, MessageCircle, Share2, Briefcase, BarChart3, ScrollText, Trophy, Dumbbell, Smartphone, SquareCheck, Sparkles, MousePointerClick, PencilLine, BadgeCheck, LogIn } from 'lucide-react'
 
 // ─── Shared sub-components ───────────────────────────────────────────────────
 
@@ -107,10 +107,8 @@ export default function Landing() {
       <nav className="border-b border-ink-900 bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
           <PlansK12Logo />
-          <Link
-            to="/login"
-            className="text-sm font-medium text-ink-400 hover:text-ink-100 transition-colors"
-          >
+          <Link to="/login" className="btn-outline">
+            <LogIn size={15} />
             Log in
           </Link>
         </div>
@@ -776,10 +774,11 @@ export default function Landing() {
       <footer className="border-t border-ink-900 bg-white px-6 py-8">
         <div className="mx-auto flex max-w-5xl flex-col items-center gap-1 text-center sm:flex-row sm:justify-between sm:text-left">
           <PlansK12Logo />
-          <div className="text-sm text-ink-500">
+          <div className="flex flex-col items-center gap-2 text-sm text-ink-500 sm:items-end">
             <p>© 2026 PlansK12</p>
             <p className="mt-0.5">Built for the teachers everyone forgets about.</p>
-            <a href="mailto:hello@plansk12.com?cc=plansk12.com@gmail.com" className="mt-1 inline-block text-brand-500 transition-colors hover:text-brand-400">
+            <a href="mailto:hello@plansk12.com?cc=plansk12.com@gmail.com" className="btn-outline mt-1">
+              <Mail size={15} />
               Contact us
             </a>
           </div>

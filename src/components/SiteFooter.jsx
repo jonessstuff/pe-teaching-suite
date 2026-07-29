@@ -18,20 +18,13 @@ export default function SiteFooter() {
       <footer data-no-print className="mt-16 border-t border-ink-900 pt-6 pb-2">
         <div className="flex flex-col items-center justify-between gap-3 text-xs text-ink-500 sm:flex-row">
           <p>© {year} PlansK12</p>
-          <div className="flex items-center gap-4">
-            <a
-              href={CONTACT_MAILTO}
-              className="flex items-center gap-1.5 transition-colors hover:text-ink-200"
-            >
-              <Mail size={14} />
+          <div className="flex items-center gap-3">
+            <a href={CONTACT_MAILTO} className="btn-outline">
+              <Mail size={15} />
               Contact
             </a>
-            <button
-              type="button"
-              onClick={() => setOpen(true)}
-              className="flex items-center gap-1.5 transition-colors hover:text-ink-200"
-            >
-              <Lightbulb size={14} />
+            <button type="button" onClick={() => setOpen(true)} className="btn-outline">
+              <Lightbulb size={15} />
               Suggest a feature
             </button>
           </div>
