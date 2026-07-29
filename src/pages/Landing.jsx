@@ -78,14 +78,14 @@ function CompareRow({ need, plansk12, generic }) {
     <div className="grid grid-cols-[1.1fr_1.4fr_1.4fr] border-t border-ink-800">
       <div className="px-4 py-4 text-sm font-medium text-ink-100 sm:px-6">{need}</div>
       <div className="flex items-start gap-2.5 border-l border-ink-800 bg-brand-500/[0.06] px-4 py-4 sm:px-6">
-        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500/15">
-          <Check size={12} className="text-brand-500" strokeWidth={2.5} />
+        <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-500 shadow-sm shadow-brand-500/40">
+          <Check size={15} className="text-white" strokeWidth={3.5} />
         </span>
-        <span className="text-sm leading-snug text-ink-300">{plansk12}</span>
+        <span className="text-sm leading-snug text-ink-200">{plansk12}</span>
       </div>
       <div className="flex items-start gap-2.5 border-l border-ink-800 px-4 py-4 sm:px-6">
-        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink-800">
-          <X size={12} className="text-ink-500" strokeWidth={2.5} />
+        <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-500 shadow-sm shadow-red-500/40">
+          <X size={15} className="text-white" strokeWidth={3.5} />
         </span>
         <span className="text-sm leading-snug text-ink-500">{generic}</span>
       </div>
