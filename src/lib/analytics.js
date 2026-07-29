@@ -74,3 +74,14 @@ export function track(event, properties = {}) {
   if (inStudentArea()) return
   posthog.capture(event, properties)
 }
+
+/**
+ * Set PERSISTENT person properties on the identified user (PostHog $set), e.g.
+ * teaching_areas / cte_pathways. These are stable module KEYS (not PII), so they
+ * stay within the metadata-only privacy posture. No-op in the student area.
+ */
+export function setPersonProps(properties = {}) {
+  if (!ready) return
+  if (inStudentArea()) return
+  posthog.setPersonProperties(properties)
+}

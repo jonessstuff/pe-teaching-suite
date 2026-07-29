@@ -132,6 +132,7 @@ export function TrialProvider({ children }) {
 
   const value = {
     ...state,
+    profile,
     loaded,
     paywall,
     openPaywall,

@@ -8,6 +8,10 @@ import LessonPrintFix from '../components/LessonPrintFix'
 import StationsToggle from '../components/StationsToggle'
 import StemPlanRenderer from '../components/renderers/StemPlanRenderer'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
+import { useProfileDefaults, useGradeStateDefaults } from '../hooks/useProfileDefaults'
+import { persistFirstRun } from '../services/onboardingService'
+import FirstRunFields from '../components/FirstRunFields'
+import { track, setPersonProps } from '../lib/analytics'
 
 const GRADE_OPTIONS = [
   { value: 0, label: 'K' },
@@ -158,6 +162,11 @@ export default function StemGenerator() {
   // Hands-on/kinesthetic toggle surfaces only for elementary (K–5) grades.
   const showHandsOn = gradeBands.some((g) => g <= 5)
 
+  const { onboarded, ready: profileReady, refresh: refreshProfile } = useProfileDefaults()
+  useGradeStateDefaults(setGradeBands, setState)
+  // Pre-select the module she's already in — she's confirming + adding, not starting cold.
+  const [firstRun, setFirstRun] = useState({ areas: ['stem'], ctePathways: [], other: '' })
+
   const placeholders = MATERIAL_PLACEHOLDERS[focusArea] ?? MATERIAL_PLACEHOLDERS.engineering
 
   const addMaterial = () => setMaterials((prev) => [...prev, ''])
@@ -203,6 +212,26 @@ export default function StemGenerator() {
       setGeneratedLesson(lessonObject)
       setSavedId(saved.id)
       setView('result')
+
+      if (profileReady && !onboarded) {
+        try {
+          await persistFirstRun({
+            teachingAreas: firstRun.areas,
+            ctePathways: firstRun.ctePathways,
+            teachingOther: firstRun.other,
+            gradeLevels: gradeBands.map(String),
+            state,
+          })
+          const answered = firstRun.areas.length > 0
+          track(answered ? 'onboarding_answered' : 'onboarding_skipped', {
+            area_count: firstRun.areas.length,
+            has_cte: firstRun.ctePathways.length > 0,
+          })
+          if (answered) setPersonProps({ teaching_areas: firstRun.areas, cte_pathways: firstRun.ctePathways })
+          track('first_lesson_generated', { module: 'stem' })
+          refreshProfile()
+        } catch { /* non-fatal */ }
+      }
     } catch (err) {
       setError(err.message ?? 'Generation failed. Please try again.')
     } finally {
@@ -300,6 +329,7 @@ export default function StemGenerator() {
       </div>
 
       <form onSubmit={handleGenerate} className="space-y-6">
+        {profileReady && !onboarded && <FirstRunFields value={firstRun} onChange={setFirstRun} />}
 
         {/* Focus area selector */}
         <div className="space-y-3">

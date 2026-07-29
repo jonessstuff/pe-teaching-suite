@@ -86,6 +86,14 @@ async function cacheStatus(
   await admin.from("profiles").update(patch).eq("id", userId);
 }
 
+// Write the Stripe customer's name to full_name, but ONLY when it is currently
+// null — never overwrite a name the teacher has since set. Additive to the
+// provisioning writes; does not touch stripe_customer_id / status handling.
+async function setNameIfNull(userId: string, name: string | null | undefined) {
+  if (!name) return;
+  await admin.from("profiles").update({ full_name: name }).eq("id", userId).is("full_name", null);
+}
+
 // Branded magic-link email (own Resend template, not Supabase's default), so it
 // matches the /welcome page copy and reads as legitimate, not a scam or a charge.
 async function sendSetupEmail(email: string) {
@@ -187,6 +195,7 @@ Deno.serve(async (req) => {
         // (not a single guessed one). Throws on Stripe error → event 500s & retries.
         const best = customerId ? await bestStatusForCustomer(customerId) : null;
         await cacheStatus(userId, customerId, best?.status ?? null, best?.trialEnd ?? null);
+        await setNameIfNull(userId, s.customer_details?.name ?? null); // seed full_name from Stripe (if unset)
         if (created) await sendSetupEmail(email); // magic link ONLY for brand-new accounts
         break;
       }
@@ -205,6 +214,7 @@ Deno.serve(async (req) => {
         // and a genuine cancellation correctly downgrades. Throws on Stripe error.
         const best = await bestStatusForCustomer(customerId);
         await cacheStatus(userId, customerId, best?.status ?? null, best?.trialEnd ?? null);
+        await setNameIfNull(userId, (cust as Stripe.Customer).name ?? null);
         break;
       }
       case "invoice.paid": {
@@ -220,6 +230,7 @@ Deno.serve(async (req) => {
         }
         const best = await bestStatusForCustomer(customerId);
         await cacheStatus(userId, customerId, best?.status ?? "active", best?.trialEnd ?? null);
+        await setNameIfNull(userId, (cust as Stripe.Customer).name ?? null);
         break;
       }
     }

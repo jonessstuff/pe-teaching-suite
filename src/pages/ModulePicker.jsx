@@ -121,7 +121,9 @@ export default function ModulePicker() {
         <h1 className="text-3xl font-semibold text-ink-50">
           {getTimeGreeting()}{firstName ? `, ${firstName}` : ''}!
         </h1>
-        <p className="mt-2 text-lg text-ink-400">Which module would you like to work in?</p>
+        <p className="mt-2 text-lg text-ink-400">
+          Standards-aligned, ready-to-teach lessons for your subject — in about a minute. Pick your area below to start.
+        </p>
       </div>
 
       {/* Module cards, grouped by category (favorites pinned above the groups) */}

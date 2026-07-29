@@ -62,3 +62,30 @@ export const CTE_PATHWAYS = [
   { key: 'exercise_science', label: 'Exercise Science / Sports Medicine' },
   { key: 'early_childhood', label: 'Early Childhood Education & Services' },
 ]
+
+/**
+ * Maps a "What do you teach?" area key to its module-picker route slug
+ * (module_favorites.module_key), so first-run selections can pin the right
+ * modules. Areas with no single top-level module (makerspace, adaptive_pe,
+ * other) are intentionally omitted — favoriting simply skips them.
+ */
+export const AREA_TO_MODULE_KEY = {
+  pe_health: 'pe-health',
+  library_media: 'library',
+  art: 'art',
+  music: 'music',
+  stem: 'stem',
+  cte: 'cte',
+  classroom_management: 'classroom-management',
+  gifted_talented: 'gifted-talented',
+  reading_specialist: 'reading-specialists',
+  math_specialist: 'math-specialists',
+  special_education: 'special-education',
+  esl_ell: 'esl-specialist',
+  school_counselors: 'school-counselors',
+  speech_language: 'slp',
+  student_support: 'student-support-activities',
+  early_childhood: 'early-childhood',
+  intervention_planning: 'intervention',
+  staff_pd: 'staff-pd',
+}

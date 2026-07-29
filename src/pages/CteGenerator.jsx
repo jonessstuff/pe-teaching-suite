@@ -7,6 +7,10 @@ import { US_STATES } from '../constants/usStates'
 import LessonPrintFix from '../components/LessonPrintFix'
 import CtePlanRenderer from '../components/renderers/CtePlanRenderer'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
+import { useProfileDefaults, useGradeStateDefaults } from '../hooks/useProfileDefaults'
+import { persistFirstRun } from '../services/onboardingService'
+import FirstRunFields from '../components/FirstRunFields'
+import { track, setPersonProps } from '../lib/analytics'
 
 const PATHWAYS = [
   {
@@ -429,6 +433,13 @@ export default function CteGenerator() {
   const [targetCompetency, setTargetCompetency] = useState('')
   const [materials, setMaterials] = useState(['', ''])
 
+  // First-run capture. CTE has no K-12 grade selector, so only state is
+  // pre-filled; grade_levels is not written from this module.
+  const { onboarded, ready: profileReady, refresh: refreshProfile } = useProfileDefaults()
+  useGradeStateDefaults(null, setState)
+  // Pre-select the module she's already in — she's confirming + adding, not starting cold.
+  const [firstRun, setFirstRun] = useState({ areas: ['cte'], ctePathways: [], other: '' })
+
   // Multi-stage project
   const [isMultiStage, setIsMultiStage] = useState(false)
   const [sessionNumber, setSessionNumber] = useState(1)
@@ -492,6 +503,25 @@ export default function CteGenerator() {
       setGeneratedLesson(lessonObject)
       setSavedId(saved.id)
       setView('result')
+
+      if (profileReady && !onboarded) {
+        try {
+          await persistFirstRun({
+            teachingAreas: firstRun.areas,
+            ctePathways: firstRun.ctePathways,
+            teachingOther: firstRun.other,
+            state,
+          })
+          const answered = firstRun.areas.length > 0
+          track(answered ? 'onboarding_answered' : 'onboarding_skipped', {
+            area_count: firstRun.areas.length,
+            has_cte: firstRun.ctePathways.length > 0,
+          })
+          if (answered) setPersonProps({ teaching_areas: firstRun.areas, cte_pathways: firstRun.ctePathways })
+          track('first_lesson_generated', { module: 'cte' })
+          refreshProfile()
+        } catch { /* non-fatal */ }
+      }
     } catch (err) {
       setError(err.message ?? 'Generation failed. Please try again.')
     } finally {
@@ -598,6 +628,7 @@ export default function CteGenerator() {
       </div>
 
       <form onSubmit={handleGenerate} className="space-y-6">
+        {profileReady && !onboarded && <FirstRunFields value={firstRun} onChange={setFirstRun} />}
 
         {/* Pathway selector — 22 pathways grouped into 6 collapsible categories */}
         <div className="space-y-3">

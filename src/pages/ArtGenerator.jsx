@@ -8,6 +8,10 @@ import LessonPrintFix from '../components/LessonPrintFix'
 import StationsToggle from '../components/StationsToggle'
 import ArtPlanRenderer from '../components/renderers/ArtPlanRenderer'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
+import { useProfileDefaults, useGradeStateDefaults } from '../hooks/useProfileDefaults'
+import { persistFirstRun } from '../services/onboardingService'
+import FirstRunFields from '../components/FirstRunFields'
+import { track, setPersonProps } from '../lib/analytics'
 
 const GRADE_OPTIONS = [
   { value: 0, label: 'K' },
@@ -89,6 +93,13 @@ export default function ArtGenerator() {
   // Hands-on/kinesthetic toggle surfaces only for elementary (K–5) grades.
   const showHandsOn = gradeBands.some((g) => g <= 5)
 
+  // First-run capture: pre-fill grade/state from the profile, and (until the
+  // teacher is onboarded) collect "what do you teach?" to persist on generate.
+  const { onboarded, ready: profileReady, refresh: refreshProfile } = useProfileDefaults()
+  useGradeStateDefaults(setGradeBands, setState)
+  // Pre-select the module she's already in — she's confirming + adding, not starting cold.
+  const [firstRun, setFirstRun] = useState({ areas: ['art'], ctePathways: [], other: '' })
+
   const addMaterial = () => setMaterials((prev) => [...prev, ''])
   const removeMaterial = (i) => setMaterials((prev) => prev.filter((_, idx) => idx !== i))
   const setMaterial = (i, value) =>
@@ -125,6 +136,28 @@ export default function ArtGenerator() {
       setGeneratedLesson(lessonObject)
       setSavedId(saved.id)
       setView('result')
+
+      // First generation: persist the profile answers + grade/state, star the
+      // chosen modules, and flip onboarded. Non-fatal — never block the lesson.
+      if (profileReady && !onboarded) {
+        try {
+          await persistFirstRun({
+            teachingAreas: firstRun.areas,
+            ctePathways: firstRun.ctePathways,
+            teachingOther: firstRun.other,
+            gradeLevels: gradeBands.map(String),
+            state,
+          })
+          const answered = firstRun.areas.length > 0
+          track(answered ? 'onboarding_answered' : 'onboarding_skipped', {
+            area_count: firstRun.areas.length,
+            has_cte: firstRun.ctePathways.length > 0,
+          })
+          if (answered) setPersonProps({ teaching_areas: firstRun.areas, cte_pathways: firstRun.ctePathways })
+          track('first_lesson_generated', { module: 'art' })
+          refreshProfile()
+        } catch { /* non-fatal */ }
+      }
     } catch (err) {
       setError(err.message ?? 'Generation failed. Please try again.')
     } finally {
@@ -222,6 +255,7 @@ export default function ArtGenerator() {
       </div>
 
       <form onSubmit={handleGenerate} className="space-y-6">
+        {profileReady && !onboarded && <FirstRunFields value={firstRun} onChange={setFirstRun} />}
         {/* Class setup */}
         <div className="card p-6 space-y-5">
           <h2 className="text-sm font-semibold text-ink-200">Class setup</h2>

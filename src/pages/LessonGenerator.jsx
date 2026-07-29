@@ -13,6 +13,10 @@ import { US_STATES } from '../constants/usStates'
 import LessonPrintFix from '../components/LessonPrintFix'
 import PlanBookRenderer from '../components/renderers/PlanBookRenderer'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
+import { useProfileDefaults, useGradeStateDefaults } from '../hooks/useProfileDefaults'
+import { persistFirstRun } from '../services/onboardingService'
+import FirstRunFields from '../components/FirstRunFields'
+import { track, setPersonProps } from '../lib/analytics'
 
 const GRADE_OPTIONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
@@ -39,6 +43,14 @@ export default function LessonGenerator() {
   const [handsOn, setHandsOn] = useState(false)
   // Hands-on/kinesthetic toggle: lesson mode + elementary (K–5) grades only.
   const showHandsOn = mode === 'lesson' && gradeBands.some((g) => g <= 5)
+
+  // First-run capture. State is already pre-filled from the profile below (the
+  // getProfile effect), so only pre-fill grade here; collect "what do you teach?"
+  // until the teacher is onboarded, persisted on first generate.
+  const { onboarded, ready: profileReady, refresh: refreshProfile } = useProfileDefaults()
+  useGradeStateDefaults(setGradeBands, null)
+  // Pre-select the module she's already in — she's confirming + adding, not starting cold.
+  const [firstRun, setFirstRun] = useState({ areas: ['pe_health'], ctePathways: [], other: '' })
 
   const [periods, setPeriods] = useState([])
   const [selectedPeriodId, setSelectedPeriodId] = useState('')
@@ -197,6 +209,26 @@ export default function LessonGenerator() {
         setGeneratedLesson(lessonObject)
         setSavedId(saved.id)
         setStatus('result')
+      }
+
+      if (profileReady && !onboarded) {
+        try {
+          await persistFirstRun({
+            teachingAreas: firstRun.areas,
+            ctePathways: firstRun.ctePathways,
+            teachingOther: firstRun.other,
+            gradeLevels: gradeBands.map(String),
+            state,
+          })
+          const answered = firstRun.areas.length > 0
+          track(answered ? 'onboarding_answered' : 'onboarding_skipped', {
+            area_count: firstRun.areas.length,
+            has_cte: firstRun.ctePathways.length > 0,
+          })
+          if (answered) setPersonProps({ teaching_areas: firstRun.areas, cte_pathways: firstRun.ctePathways })
+          track('first_lesson_generated', { module: 'pe-health' })
+          refreshProfile()
+        } catch { /* non-fatal */ }
       }
     } catch (err) {
       setStatus('error')
@@ -362,6 +394,7 @@ export default function LessonGenerator() {
       </div>
 
       <form onSubmit={handleSubmit}>
+        {profileReady && !onboarded && <FirstRunFields value={firstRun} onChange={setFirstRun} />}
 
         {/* ── Section 1: Class Setup ── */}
         <FormSection title="Class Setup" first>

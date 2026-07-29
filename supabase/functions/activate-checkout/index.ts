@@ -113,6 +113,13 @@ Deno.serve(async (req) => {
       await admin.from("profiles").update(patch).eq("id", uid);
     }
 
+    // Capture the Stripe customer's name into full_name at provisioning — only
+    // when it's still null, never overwriting a name the teacher already set.
+    const stripeName = session.customer_details?.name ?? null;
+    if (uid && stripeName) {
+      await admin.from("profiles").update({ full_name: stripeName }).eq("id", uid).is("full_name", null);
+    }
+
     // Send if we created the account (webhook hadn't) or the user hit Resend.
     // A pre-existing account with no resend gets no duplicate email.
     if (created || resend) await sendMagicLink(norm);
