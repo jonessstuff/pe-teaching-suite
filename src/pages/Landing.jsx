@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
+import { CHECKOUT_URL, YEARLY_CHECKOUT_URL } from '../services/trialService'
 import { BookOpen, Globe, Accessibility, UserCheck, ClipboardList, ClipboardCheck, Mail, CalendarRange, Check, X, Users, BookMarked, PartyPopper, Newspaper, MessageCircle, Share2, Briefcase, BarChart3, ScrollText, Trophy, Dumbbell, Smartphone, SquareCheck, Sparkles, MousePointerClick, PencilLine, BadgeCheck, LogIn } from 'lucide-react'
 
 // ─── Shared sub-components ───────────────────────────────────────────────────
@@ -99,6 +100,7 @@ export default function Landing() {
   const [searchParams] = useSearchParams()
   const refCode = searchParams.get('ref')
   const [showAllFeatures, setShowAllFeatures] = useState(false)
+  const [billing, setBilling] = useState('monthly') // 'monthly' | 'yearly'
 
   return (
     <div className="force-light min-h-screen bg-white font-sans">
@@ -205,7 +207,7 @@ export default function Landing() {
             <div className="flex items-center gap-3 text-sm text-ink-500">
               <span aria-hidden="true" className="h-px w-8 bg-ink-800" />
               <span>or</span>
-              <a href="https://buy.stripe.com/5kQ5kveUR2xWh0tcoi0kE05" className="btn-secondary px-5 py-2.5">
+              <a href={CHECKOUT_URL} className="btn-secondary px-5 py-2.5">
                 Start your 7-day trial
               </a>
               <span aria-hidden="true" className="h-px w-8 bg-ink-800" />
@@ -722,42 +724,91 @@ export default function Landing() {
       {/* ── 9. PRICING CTA ────────────────────────────────────────────────── */}
       <section className="border-t border-ink-900 bg-white px-6 py-20">
         <div className="mx-auto max-w-5xl text-center">
-          <p className="label-eyebrow mb-3">Founding teacher pricing</p>
+          <p className="label-eyebrow mb-3">Simple pricing</p>
           <h2 className="text-3xl font-display font-semibold tracking-tight text-ink-50">
             Start planning in minutes.
           </h2>
-          <p className="mx-auto mt-3 max-w-sm text-ink-400">
-            One plan. Every specialty and every tool included. 7-day free trial, cancel anytime.
+          <p className="mx-auto mt-3 max-w-md text-ink-400">
+            Every specialty and every tool, in one plan. Start monthly with a 7-day free trial —
+            or pay yearly and get 2 months free.
           </p>
 
-          <div className="mx-auto mt-10 max-w-xs">
-            <div className="card p-8">
-              <span className="inline-block rounded-full bg-brand-500/10 px-3 py-1 text-xs font-semibold text-brand-600">
-                Founding teacher rate
-              </span>
-
-              <div className="mt-5">
-                <p className="text-5xl font-display font-bold tracking-tight text-ink-50">
-                  $6.99
-                  <span className="text-2xl font-normal text-ink-400"> / mo</span>
-                </p>
-                <p className="mt-1 text-sm text-ink-500">
-                  <s>Regular price $9.99/month</s>
-                </p>
-              </div>
-
-              <ul className="mt-6 space-y-3 text-left">
-                <CheckItem>Unlimited lessons, units, and quizzes</CheckItem>
-                <CheckItem>Locked in for as long as you stay subscribed</CheckItem>
-                <CheckItem>7-day free trial, cancel anytime</CheckItem>
-              </ul>
-
-              <a
-                href="https://buy.stripe.com/5kQ5kveUR2xWh0tcoi0kE05"
-                className="btn-primary !bg-brand-500 hover:!bg-brand-600 mt-8 w-full justify-center"
+          <div className="mx-auto mt-10 max-w-sm">
+            {/* Monthly / Yearly toggle */}
+            <div className="mb-6 inline-flex rounded-lg border border-ink-800 bg-ink-900/40 p-1 text-sm">
+              <button
+                type="button"
+                onClick={() => setBilling('monthly')}
+                className={`rounded-md px-4 py-1.5 font-medium transition-colors ${billing === 'monthly' ? 'bg-brand-500 text-white' : 'text-ink-400 hover:text-ink-200'}`}
               >
-                Start your 7-day trial
-              </a>
+                Monthly
+              </button>
+              <button
+                type="button"
+                onClick={() => setBilling('yearly')}
+                className={`flex items-center gap-1.5 rounded-md px-4 py-1.5 font-medium transition-colors ${billing === 'yearly' ? 'bg-brand-500 text-white' : 'text-ink-400 hover:text-ink-200'}`}
+              >
+                Yearly
+                <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${billing === 'yearly' ? 'bg-white/20 text-white' : 'bg-brand-500/15 text-brand-600'}`}>
+                  2 months free
+                </span>
+              </button>
+            </div>
+
+            <div className="card p-8">
+              {billing === 'monthly' ? (
+                <>
+                  <div>
+                    <p className="text-5xl font-display font-bold tracking-tight text-ink-50">
+                      $9.99
+                      <span className="text-2xl font-normal text-ink-400"> / mo</span>
+                    </p>
+                    <p className="mt-1 text-sm text-ink-500">Billed monthly · cancel anytime</p>
+                  </div>
+
+                  <ul className="mt-6 space-y-3 text-left">
+                    <CheckItem>Unlimited lessons, units, and quizzes</CheckItem>
+                    <CheckItem>Every specialty and every tool included</CheckItem>
+                    <CheckItem>7-day free trial, cancel anytime</CheckItem>
+                  </ul>
+
+                  <a
+                    href={CHECKOUT_URL}
+                    className="btn-primary !bg-brand-500 hover:!bg-brand-600 mt-8 w-full justify-center"
+                  >
+                    Start your 7-day trial
+                  </a>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <p className="text-5xl font-display font-bold tracking-tight text-ink-50">
+                      $99.99
+                      <span className="text-2xl font-normal text-ink-400"> / yr</span>
+                    </p>
+                    <p className="mt-3 inline-block rounded-full bg-brand-500/10 px-3 py-1 text-sm font-bold text-brand-600">
+                      🎉 That's 2 months free
+                    </p>
+                    <p className="mt-2 text-sm text-ink-500">
+                      $99.99/year vs. $119.88 billed monthly — you save ~$20.
+                    </p>
+                  </div>
+
+                  <ul className="mt-6 space-y-3 text-left">
+                    <CheckItem>Unlimited lessons, units, and quizzes</CheckItem>
+                    <CheckItem>Every specialty and every tool included</CheckItem>
+                    <CheckItem>Two months free vs. paying month to month</CheckItem>
+                  </ul>
+
+                  <a
+                    href={YEARLY_CHECKOUT_URL}
+                    className="btn-primary !bg-brand-500 hover:!bg-brand-600 mt-8 w-full justify-center"
+                  >
+                    Get the yearly plan
+                  </a>
+                  <p className="mt-3 text-xs text-ink-600">Billed $99.99 today · annual plan has no free trial</p>
+                </>
+              )}
             </div>
 
             <p className="mt-5 text-sm text-ink-500">

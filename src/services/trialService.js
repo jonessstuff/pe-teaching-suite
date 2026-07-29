@@ -9,13 +9,21 @@ export const EXPORT_CAP = 5
 export const TRIAL_HORIZON_WEEKS = 4
 export const WATERMARK_TEXT = 'Created with PlansK12 Free Trial — plansk12.com'
 // New-user signup / free-trial checkout — Stripe payment link WITH the 7-day
-// trial. Used by the Landing "Start free trial" flow (pre-auth, new users).
-export const CHECKOUT_URL = 'https://buy.stripe.com/5kQ5kveUR2xWh0tcoi0kE05'
-// Existing-user upgrade — Stripe payment link with NO trial (charges immediately).
-// Used by the in-app "Upgrade" CTAs (preview paywall banner, PaywallModal,
-// Settings) so a user already in trial/preview isn't sent back through another
-// free-trial checkout.
-export const UPGRADE_URL = 'https://buy.stripe.com/9B6aEP2858WkbG98820kE06'
+// trial, $9.99/mo. Single source of truth for EVERY new-signup CTA (Landing,
+// TryFreeLesson, FreeLessonView, Login) so no path can reach the retired $6.99
+// rate. (The old $6.99 link stays live in Stripe only so current trialers
+// convert at their grandfathered rate; it is intentionally unreferenced here.)
+export const CHECKOUT_URL = 'https://buy.stripe.com/14AeV5dQN5K8cKd1JE0kE07'
+// Annual plan — $99.99/yr, NO trial (charges immediately); ~2 months free vs.
+// paying monthly. The yearly option on the Landing pricing card.
+export const YEARLY_CHECKOUT_URL = 'https://buy.stripe.com/dRmeV56ol6Oc7pTbke0kE08'
+// Existing-user upgrade CTA (preview paywall banner, PaywallModal, Settings).
+// Points at the $9.99/mo link so the retired $6.99 rate is not reachable via a
+// public link. NOTE: this link carries the 7-day trial, so an in-app "Upgrade"
+// now starts a fresh trial (and could create a second subscription for someone
+// who already has one). If you want immediate-charge upgrades, create a $9.99
+// NO-trial link and point this constant there instead.
+export const UPGRADE_URL = 'https://buy.stripe.com/14AeV5dQN5K8cKd1JE0kE07'
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000
 

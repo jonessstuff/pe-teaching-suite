@@ -3,8 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import { Loader2, AlertCircle, Sparkles } from 'lucide-react'
 import { leadView } from '../services/leadMagnetService'
 import FreeLessonRenderer from '../components/FreeLessonRenderer'
-
-const CHECKOUT_URL = 'https://buy.stripe.com/5kQ5kveUR2xWh0tcoi0kE05'
+import { CHECKOUT_URL } from '../services/trialService'
 
 export default function FreeLessonView() {
   const { token } = useParams()

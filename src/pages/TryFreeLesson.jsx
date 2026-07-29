@@ -7,8 +7,7 @@ import {
   generateStemLesson, generateLibraryLesson,
 } from '../services/generationService'
 import FreeLessonRenderer from '../components/FreeLessonRenderer'
-
-const CHECKOUT_URL = 'https://buy.stripe.com/5kQ5kveUR2xWh0tcoi0kE05'
+import { CHECKOUT_URL } from '../services/trialService'
 
 const SUBJECTS = [
   { value: 'PE', label: 'PE' },

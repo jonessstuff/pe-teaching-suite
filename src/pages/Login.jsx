@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
+import { CHECKOUT_URL } from '../services/trialService'
 
 // New accounts are created ONLY through the card-required Stripe checkout (7-day
 // trial). The in-app cardless "Sign up" form was removed so every account becomes
 // a real Stripe customer with a card on file. This page is sign-in + reset only;
-// "Don't have an account?" sends new users to the checkout.
-const CHECKOUT_URL = 'https://buy.stripe.com/5kQ5kveUR2xWh0tcoi0kE05'
+// "Don't have an account?" sends new users to the checkout (CHECKOUT_URL, the
+// $9.99/mo link — single source of truth in trialService).
 
 function PlansK12Logo() {
   return (
