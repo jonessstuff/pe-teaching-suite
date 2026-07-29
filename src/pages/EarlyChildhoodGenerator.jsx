@@ -4,6 +4,7 @@ import { Blocks, Sparkles, Loader2, ArrowLeft, ExternalLink, Info } from 'lucide
 import { generateEarlyChildhood } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import LessonPrintFix from '../components/LessonPrintFix'
+import StationsToggle from '../components/StationsToggle'
 import EarlyChildhoodRenderer from '../components/renderers/EarlyChildhoodRenderer'
 import { useTrial } from '../context/TrialContext'
 
@@ -27,6 +28,8 @@ export default function EarlyChildhoodGenerator() {
   const [ageGroup, setAgeGroup] = useState('prek4')
   const [programType, setProgramType] = useState('general')
   const [teacherNotes, setTeacherNotes] = useState('')
+  const [useStations, setUseStations] = useState(false)
+  const [numStations, setNumStations] = useState(3)
 
   const [result, setResult] = useState(null)
   const [savedId, setSavedId] = useState(null)
@@ -40,7 +43,7 @@ export default function EarlyChildhoodGenerator() {
     setSavedId(null)
 
     try {
-      const input = { studyTheme, ageGroup, programType, teacherNotes }
+      const input = { studyTheme, ageGroup, programType, teacherNotes, stationsMode: useStations, stationCount: useStations ? Number(numStations) : undefined }
       const generated = await generateEarlyChildhood(input)
       setResult(generated)
 
@@ -187,6 +190,15 @@ export default function EarlyChildhoodGenerator() {
             {error}
           </div>
         )}
+
+        <StationsToggle
+          useStations={useStations}
+          setUseStations={setUseStations}
+          numStations={numStations}
+          setNumStations={setNumStations}
+          label="Offer a timed station rotation (alongside centers)"
+          hint="Optional teacher-guided rotation offered ALONGSIDE the child-led centers model — kept developmentally appropriate: short, playful, real choice, never forced."
+        />
 
         <button
           type="submit"

@@ -1,4 +1,5 @@
 import { resolveStateName } from "./stateNames.js"
+import { stationsDirective } from "./stationsDirective.js"
 
 function getLibraryStandardsGuidance(stateName) {
   if (stateName === "Virginia") {
@@ -40,6 +41,8 @@ export function buildLibraryLessonPrompt({
   priorSessionsSummary = "",
   includeELL = false,
   handsOn = false,
+  stationsMode = false,
+  stationCount = 3,
 }) {
   const stateName = resolveStateName(state)
   const gradeStr = gradeBands
@@ -136,7 +139,7 @@ CRITICAL requirements for this session — read carefully:
 - Direct instruction MUST advance the skill beyond what was already taught — do not re-teach concepts already covered
 - The practice activity MUST be noticeably more complex or more independent than the prior session's activity` : ""}${sessionNumber === totalSessions && totalSessions > 1 ? `
 - This is the FINAL session of the unit: closure must bring the unit to a satisfying conclusion (gallery share, student-choice book selection, synthesis reflection, or a brief celebration of learning across all sessions) — NOT a preview of another session` : sessionNumber > 0 && sessionNumber < totalSessions ? `
-- Closure must preview specifically what is coming in Session ${sessionNumber + 1}` : ""}` : ""}${includeELL ? `\n\nELL ACCOMMODATIONS: This lesson will be taught to a class that includes English Language Learners. In addition to all fields in the schema above, add an "ell_accommodations" object to the JSON with these subfields:\n- language_objectives: 2–3 strings in format "Students will [language skill] in order to [content purpose]"\n- tiered_vocabulary: { tier_1: [everyday words students likely know], tier_2: [academic cross-subject vocabulary], tier_3: [content-specific vocabulary unique to this lesson] } — each value is an array of strings\n- sentence_frames: 4–6 strings, each labeled with the specific lesson context (e.g. "During partner practice: 'I noticed that you ___'", "When sharing what you found: 'I learned that ___'")\n- visual_supports: 4–6 specific, concrete suggestions for visual supports, gestures, or realia tied to this lesson's actual activities\n- simplified_instructions: single string — 2–3 short sentences describing the core task at a 2nd-grade reading level, no idioms, no figurative language` : ""}${handsOn ? HANDS_ON_DIRECTIVE : ""}`
+- Closure must preview specifically what is coming in Session ${sessionNumber + 1}` : ""}` : ""}${includeELL ? `\n\nELL ACCOMMODATIONS: This lesson will be taught to a class that includes English Language Learners. In addition to all fields in the schema above, add an "ell_accommodations" object to the JSON with these subfields:\n- language_objectives: 2–3 strings in format "Students will [language skill] in order to [content purpose]"\n- tiered_vocabulary: { tier_1: [everyday words students likely know], tier_2: [academic cross-subject vocabulary], tier_3: [content-specific vocabulary unique to this lesson] } — each value is an array of strings\n- sentence_frames: 4–6 strings, each labeled with the specific lesson context (e.g. "During partner practice: 'I noticed that you ___'", "When sharing what you found: 'I learned that ___'")\n- visual_supports: 4–6 specific, concrete suggestions for visual supports, gestures, or realia tied to this lesson's actual activities\n- simplified_instructions: single string — 2–3 short sentences describing the core task at a 2nd-grade reading level, no idioms, no figurative language` : ""}${handsOn ? HANDS_ON_DIRECTIVE : ""}${stationsMode ? stationsDirective({ stationCount, field: "independent_practice", unit: "library-skill / exploration", note: "Stations suit a media-center lesson well — e.g., a catalog-search station, a shelf-browsing / call-number station, a source-evaluation station, a book-selection station." }) : ""}`
 
   const user = `Generate a complete library/media ${sessionNumber > 0 ? `unit session (Session ${sessionNumber} of ${totalSessions})` : "lesson"} with these parameters:
 

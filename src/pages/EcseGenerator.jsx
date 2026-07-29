@@ -4,6 +4,7 @@ import { Baby, Sparkles, Loader2, ArrowLeft, ExternalLink, Info } from 'lucide-r
 import { generateEcse } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import LessonPrintFix from '../components/LessonPrintFix'
+import StationsToggle from '../components/StationsToggle'
 import EcseRenderer from '../components/renderers/EcseRenderer'
 import { useTrial } from '../context/TrialContext'
 
@@ -30,6 +31,8 @@ export default function EcseGenerator() {
   const [ageBand, setAgeBand] = useState('preschool')
   const [focusArea, setFocusArea] = useState('')
   const [teacherNotes, setTeacherNotes] = useState('')
+  const [useStations, setUseStations] = useState(false)
+  const [numStations, setNumStations] = useState(3)
 
   const [result, setResult] = useState(null)
   const [savedId, setSavedId] = useState(null)
@@ -43,7 +46,7 @@ export default function EcseGenerator() {
     setSavedId(null)
 
     try {
-      const input = { focusSkill, ageBand, focusArea, teacherNotes }
+      const input = { focusSkill, ageBand, focusArea, teacherNotes, stationsMode: useStations, stationCount: useStations ? Number(numStations) : undefined }
       const generated = await generateEcse(input)
       setResult(generated)
 
@@ -190,6 +193,15 @@ export default function EcseGenerator() {
             {error}
           </div>
         )}
+
+        <StationsToggle
+          useStations={useStations}
+          setUseStations={setUseStations}
+          numStations={numStations}
+          setNumStations={setNumStations}
+          label="Offer a timed station rotation (alongside embedded learning)"
+          hint="Optional small-group rotation offered ALONGSIDE the naturalistic, embedded approach — each station stays individualized and supported."
+        />
 
         <button
           type="submit"

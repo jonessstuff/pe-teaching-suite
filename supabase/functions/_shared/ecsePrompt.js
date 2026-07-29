@@ -20,6 +20,7 @@
  * - The 3 federal Early Childhood Outcomes (OSEP child outcomes) where they fit.
  * - State layer: Part C / Part B-619 rules vary by state — emit a verify note.
  */
+import { stationsDirective } from "./stationsDirective.js";
 
 const AGE_BANDS = {
   birth3: {
@@ -86,6 +87,8 @@ export function buildEcsePrompt({
   ageBand = "preschool",
   focusArea = "",
   teacherNotes = "",
+  stationsMode = false,
+  stationCount = 3,
 }) {
   const band = AGE_BANDS[ageBand] ?? AGE_BANDS["preschool"]
   const area = FOCUS_AREAS[focusArea] || null
@@ -158,7 +161,7 @@ Field notes:
 - state_verification_note: a brief reminder that early-intervention (Part C) and preschool special-education (Part B, Section 619) rules, eligibility, and services vary by state — verify against the teacher's own state's requirements and the child's IFSP/IEP team.
 - instructional_support_note: the safeguard disclaimer per the FRAMING (ideas to embed/adapt to this child's existing ${planWord} and family priorities — not ${planWord} goals, not a diagnosis, not an eligibility/compliance determination).
 
-Tone: warm, joyful, play-based, strengths-based, family-centered, and dignity-first. Absolutely NO worksheets, testing, forced academics, drill, deficit framing, or goal/compliance language. LENGTH DISCIPLINE: a complete JSON object matters more than exhaustive detail — a response cut off before the closing brace is a FAILED response.`
+Tone: warm, joyful, play-based, strengths-based, family-centered, and dignity-first. Absolutely NO worksheets, testing, forced academics, drill, deficit framing, or goal/compliance language. LENGTH DISCIPLINE: a complete JSON object matters more than exhaustive detail — a response cut off before the closing brace is a FAILED response.${stationsMode ? stationsDirective({ stationCount, field: "embedded_learning_opportunities", unit: "playful / embedded", note: "IMPORTANT — this is an OPTIONAL small-group rotation offered ALONGSIDE (never replacing) the naturalistic, embedded, child-led approach. Keep every station INDIVIDUALIZED and SUPPORTED: each station carries the child's specialized_supports (AAC, visual, motor/positioning, sensory), stays play-based and awareness/assistant-level, uses short and flexible timing, and NEVER forces a child to move on or performs pull-out drill. Preserve all safeguards (no IEP/IFSP goals, no diagnosis) and the family-partnership framing." }) : ""}`
 
   const user = `Create a play-based, embedded-instruction ECSE support plan (naturalistic learning opportunities across routines and play) for one young child:
 

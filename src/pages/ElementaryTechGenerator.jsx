@@ -4,6 +4,7 @@ import { Monitor, Sparkles, Loader2, ArrowLeft, ExternalLink, Info } from 'lucid
 import { generateElementaryTech } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import LessonPrintFix from '../components/LessonPrintFix'
+import StationsToggle from '../components/StationsToggle'
 import ElementaryTechRenderer from '../components/renderers/ElementaryTechRenderer'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 import { useTrial } from '../context/TrialContext'
@@ -30,6 +31,8 @@ export default function ElementaryTechGenerator() {
   const [contentArea, setContentArea] = useState('')
   const [durationMinutes, setDurationMinutes] = useState(40)
   const [teacherNotes, setTeacherNotes] = useState('')
+  const [useStations, setUseStations] = useState(false)
+  const [numStations, setNumStations] = useState(3)
 
   const [result, setResult] = useState(null)
   const [savedId, setSavedId] = useState(null)
@@ -43,7 +46,7 @@ export default function ElementaryTechGenerator() {
     setSavedId(null)
 
     try {
-      const input = { topic, gradeBand, contentArea, durationMinutes, teacherNotes }
+      const input = { topic, gradeBand, contentArea, durationMinutes, teacherNotes, stationsMode: useStations, stationCount: useStations ? Number(numStations) : undefined }
       const generated = await generateElementaryTech(input)
       setResult(generated)
 
@@ -205,6 +208,15 @@ export default function ElementaryTechGenerator() {
             {error}
           </div>
         )}
+
+        <StationsToggle
+          useStations={useStations}
+          setUseStations={setUseStations}
+          numStations={numStations}
+          setNumStations={setNumStations}
+          label="Use rotating stations"
+          hint="Structure the core activity as rotating tech stations — e.g. keyboarding, unplugged coding, create-a-slide, digital-citizenship sort."
+        />
 
         <button
           type="submit"

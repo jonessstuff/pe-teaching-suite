@@ -15,6 +15,7 @@
  * identification and service rules vary, so every mode carries a state
  * verification disclaimer instead of any state-specific content.
  */
+import { stationsDirective } from "./stationsDirective.js";
 
 const GRADE_BANDS = {
   "k-2": { label: "K–2", grades: [0, 1, 2] },
@@ -81,6 +82,8 @@ function buildDifferentiatePrompt({
   contentArea = "",
   teacherNotes = "",
   handsOn = false,
+  stationsMode = false,
+  stationCount = 3,
 }) {
   const band = resolveBand(gradeBand)
 
@@ -126,7 +129,7 @@ Field notes:
 - assessment: how to assess the deeper thinking — rubric focus on reasoning and transfer, not recall.
 - social_emotional_note: one focused note on a relevant SE consideration for THIS work (e.g., perfectionism during open-ended products, asynchronous development, engaging an underachiever, supporting a 2e learner's access).
 - standards_alignment: 2–4 entries citing NAGC (by standard area) and/or NAGC-CEC; framework field must be exactly "NAGC" or "NAGC-CEC".
-- ${STATE_DISCLAIMER}${handsOn ? HANDS_ON_DIRECTIVE : ""}`
+- ${STATE_DISCLAIMER}${handsOn ? HANDS_ON_DIRECTIVE : ""}${stationsMode ? stationsDirective({ stationCount, field: "depth_complexity prompts and extension_products", unit: "enrichment / depth", note: "GIFTED FRAMING: frame each station around DEPTH & ENRICHMENT — e.g., an INQUIRY station, a RESEARCH station, an INDEPENDENT-PROJECT / product station, an open-ended CHALLENGE station — NOT skill-drill or remediation rotation. Each station raises depth, complexity, and cognitive demand with higher-order questions, real choice, and student-directed work. Keep the depth_complexity, tiered_assignments, and extension_products intact." }) : ""}`
 
   const user = `Build a Depth & Complexity differentiation for gifted / high-ability learners:
 
@@ -146,6 +149,8 @@ function buildEnrichPrompt({
   contentArea = "",
   teacherNotes = "",
   handsOn = false,
+  stationsMode = false,
+  stationCount = 3,
 }) {
   const band = resolveBand(gradeBand)
 
@@ -184,7 +189,7 @@ Field notes:
 - recommended_products: 3–5 authentic products/outcomes.
 - social_emotional_note: one relevant SE consideration (e.g., peer fit after acceleration, perfectionism, underachievement re-engagement, 2e access).
 - standards_alignment: 2–4 entries; framework exactly "NAGC" or "NAGC-CEC".
-- ${STATE_DISCLAIMER}${handsOn ? HANDS_ON_DIRECTIVE : ""}`
+- ${STATE_DISCLAIMER}${handsOn ? HANDS_ON_DIRECTIVE : ""}${stationsMode ? stationsDirective({ stationCount, field: "enrichment_options", unit: "enrichment / inquiry", note: "GIFTED FRAMING: frame each station around DEPTH & ENRICHMENT — e.g., an INQUIRY station, a RESEARCH station, an INDEPENDENT-PROJECT / product station, an open-ended CHALLENGE station — NOT skill-drill or remediation rotation. Each station raises depth, complexity, and cognitive demand with higher-order questions and real student choice, consistent with the Renzulli enrichment framing." }) : ""}`
 
   const user = `Suggest enrichment and acceleration options for gifted learners:
 

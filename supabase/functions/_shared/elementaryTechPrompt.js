@@ -22,6 +22,7 @@
  * educational-technology standards built on ISTE — always append a verify-your-
  * state disclaimer.
  */
+import { stationsDirective } from "./stationsDirective.js";
 
 // This module is intentionally elementary-only (K–5). MS/HS technology needs are
 // served by CTE's Information Technology pathway, not here.
@@ -80,6 +81,8 @@ export function buildElementaryTechPrompt({
   contentArea = "",
   durationMinutes = 40,
   teacherNotes = "",
+  stationsMode = false,
+  stationCount = 3,
 }) {
   const band = GRADE_BANDS[gradeBand] ?? GRADE_BANDS["3-5"]
   const area = CONTENT_AREAS[contentArea] || null
@@ -146,7 +149,7 @@ Field notes:
 - ${STATE_DISCLAIMER}
 - ${SCOPE_GUARDRAIL}
 
-Tone: warm, playful, concrete, and empowering for young children. Keep instructions simple and highly modelable. LENGTH DISCIPLINE: complete JSON over exhaustive detail; a response cut off before the closing brace is a FAILED response.`
+Tone: warm, playful, concrete, and empowering for young children. Keep instructions simple and highly modelable. LENGTH DISCIPLINE: complete JSON over exhaustive detail; a response cut off before the closing brace is a FAILED response.${stationsMode ? stationsDirective({ stationCount, field: "core_activity", unit: "hands-on tech / computer-lab", note: "Each station is a short, self-contained tech task (e.g., a keyboarding station, a coding/unplugged station, a create-a-slide station, a digital-citizenship sorting station) that a rotating small group completes in one session. Keep the unplugged_option and digital_citizenship_focus intact." }) : ""}`
 
   const user = `Generate a complete, self-contained elementary Technology / Computer Lab lesson:
 

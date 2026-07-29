@@ -4,6 +4,7 @@ import { Sparkles, Loader2, ArrowLeft, ExternalLink, AlertTriangle } from 'lucid
 import { generateGiftedTalented } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import LessonPrintFix from '../components/LessonPrintFix'
+import StationsToggle from '../components/StationsToggle'
 import GiftedTalentedRenderer from '../components/renderers/GiftedTalentedRenderer'
 import { useTrial } from '../context/TrialContext'
 
@@ -49,9 +50,12 @@ export default function GiftedTalentedGenerator() {
   const [situation, setSituation] = useState('')
 
   const [handsOn, setHandsOn] = useState(false)
+  const [useStations, setUseStations] = useState(false)
+  const [numStations, setNumStations] = useState(3)
   // Hands-on/kinesthetic toggle: differentiate & enrich modes at elementary
   // (K–2 / 3–5) only. The advisory "support" mode is out of scope.
   const showHandsOn = mode !== 'support' && (gradeBand === 'k-2' || gradeBand === '3-5')
+  const showStations = mode !== 'support'
 
   const [result, setResult] = useState(null)
   const [savedId, setSavedId] = useState(null)
@@ -68,7 +72,7 @@ export default function GiftedTalentedGenerator() {
       const input =
         mode === 'support'
           ? { mode, gradeBand, focus, situation }
-          : { mode, gradeBand, topic, contentArea, teacherNotes, handsOn: showHandsOn && handsOn }
+          : { mode, gradeBand, topic, contentArea, teacherNotes, handsOn: showHandsOn && handsOn, stationsMode: showStations && useStations, stationCount: (showStations && useStations) ? Number(numStations) : undefined }
 
       const generated = await generateGiftedTalented(input)
       setResult(generated)
@@ -296,6 +300,17 @@ export default function GiftedTalentedGenerator() {
           <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-ink-100">
             {error}
           </div>
+        )}
+
+        {showStations && (
+          <StationsToggle
+            useStations={useStations}
+            setUseStations={setUseStations}
+            numStations={numStations}
+            setNumStations={setNumStations}
+            label="Use enrichment stations"
+            hint="Structure enrichment as rotating depth/complexity stations — e.g. inquiry, research, independent-project, challenge — not skill drill."
+          />
         )}
 
         <button

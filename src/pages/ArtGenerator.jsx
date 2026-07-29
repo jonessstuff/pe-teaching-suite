@@ -5,6 +5,7 @@ import { generateArtLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
 import LessonPrintFix from '../components/LessonPrintFix'
+import StationsToggle from '../components/StationsToggle'
 import ArtPlanRenderer from '../components/renderers/ArtPlanRenderer'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 
@@ -83,6 +84,8 @@ export default function ArtGenerator() {
   const [error, setError] = useState(null)
   const [includeELL, setIncludeELL] = useState(false)
   const [handsOn, setHandsOn] = useState(false)
+  const [useStations, setUseStations] = useState(false)
+  const [numStations, setNumStations] = useState(3)
   // Hands-on/kinesthetic toggle surfaces only for elementary (K–5) grades.
   const showHandsOn = gradeBands.some((g) => g <= 5)
 
@@ -113,6 +116,8 @@ export default function ArtGenerator() {
         totalSessions: isMultiStage ? totalSessions : 0,
         includeELL,
         handsOn: showHandsOn && handsOn,
+        stationsMode: useStations,
+        stationCount: useStations ? Number(numStations) : undefined,
       })
 
       const saved = await createLesson(lessonObject, { aiModel: 'claude-sonnet-4-6' })
@@ -473,6 +478,15 @@ export default function ArtGenerator() {
             {error}
           </div>
         )}
+
+        <StationsToggle
+          useStations={useStations}
+          setUseStations={setUseStations}
+          numStations={numStations}
+          setNumStations={setNumStations}
+          label="Use rotating studio stations"
+          hint="Structure studio time as rotating art stations — e.g. color-mixing, texture/mark-making, sketching, collage."
+        />
 
         <button
           type="submit"

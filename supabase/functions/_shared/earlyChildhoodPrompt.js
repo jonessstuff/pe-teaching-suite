@@ -26,6 +26,7 @@
  * - State layer: DO NOT build/claim any state's specific Pre-K standards. Over
  *   25 states maintain their own early learning standards — emit a verify note.
  */
+import { stationsDirective } from "./stationsDirective.js";
 
 const AGE_GROUPS = {
   toddler:
@@ -68,6 +69,8 @@ export function buildEarlyChildhoodPrompt({
   ageGroup = "prek4",
   programType = "general",
   teacherNotes = "",
+  stationsMode = false,
+  stationCount = 3,
 }) {
   const age = AGE_GROUPS[ageGroup] ?? AGE_GROUPS["prek4"]
   const isHeadStart = programType === "head-start"
@@ -136,7 +139,7 @@ Field notes:
 - standards_alignment: fill naeyc_dap, naeyc_standards (2–4), head_start_elof (map to ELOF domains), and state_verification_note per the instructions above.
 - teacher_note: a brief DAP reminder framing this as flexible, child-led, play-based — to adapt to the children in front of you.
 
-Tone: warm, joyful, play-based, strengths-based, inclusive. Absolutely NO worksheets, testing, forced academics, or rigid direct-instruction framing. LENGTH DISCIPLINE: a complete JSON object matters more than exhaustive detail — a response cut off before the closing brace is a FAILED response.`
+Tone: warm, joyful, play-based, strengths-based, inclusive. Absolutely NO worksheets, testing, forced academics, or rigid direct-instruction framing. LENGTH DISCIPLINE: a complete JSON object matters more than exhaustive detail — a response cut off before the closing brace is a FAILED response.${stationsMode ? stationsDirective({ stationCount, field: "learning_centers", unit: "playful learning", note: "IMPORTANT — DEVELOPMENTALLY APPROPRIATE STATIONS: this is an OPTIONAL teacher-guided timed ROTATION offered ALONGSIDE (never replacing) the child-led, choice-based centers model. Keep it DAP: short, playful rotations; real CHOICE within each station; small groups; a gentle signal to transition; and NEVER force a young child to move on before they're ready (a child may stay longer or opt out). Present the learning_centers as the rotation stations while preserving their play-based, open-ended nature." }) : ""}`
 
   const user = `Create a play-based, developmentally appropriate early-childhood plan (learning centers + guided-play invitations) for a study of:
 
