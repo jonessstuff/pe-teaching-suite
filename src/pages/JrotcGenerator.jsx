@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Award, Sparkles, Loader2, ArrowLeft, ExternalLink, ShieldCheck } from 'lucide-react'
 import { generateJrotc } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
+import LessonPrintFix from '../components/LessonPrintFix'
 import JrotcRenderer from '../components/renderers/JrotcRenderer'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 import { useTrial } from '../context/TrialContext'
@@ -92,6 +93,7 @@ export default function JrotcGenerator() {
           </button>
         </div>
         {savedId && <p className="mb-4 text-xs text-ink-500 print:hidden">Saved to your lesson archive.</p>}
+        <LessonPrintFix lesson={result} />
         <JrotcRenderer lesson={result} />
 
         {savedId && (

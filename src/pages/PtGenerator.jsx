@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { PersonStanding, Sparkles, Loader2, ArrowLeft, ExternalLink, ShieldAlert } from 'lucide-react'
 import { generatePt } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
+import LessonPrintFix from '../components/LessonPrintFix'
 import PtRenderer from '../components/renderers/PtRenderer'
 import { useTrial } from '../context/TrialContext'
 
@@ -103,6 +104,7 @@ export default function PtGenerator() {
           <p className="mb-4 text-xs text-ink-500 print:hidden">Saved to your lesson archive.</p>
         )}
 
+        <LessonPrintFix lesson={result} />
         <PtRenderer lesson={result} />
       </div>
     )

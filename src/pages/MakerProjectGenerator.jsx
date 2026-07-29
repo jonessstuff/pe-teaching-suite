@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Wrench, Sparkles, Loader2, ArrowLeft, ExternalLink, Info } from 'lucide-react'
 import { generateMakerProject } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
+import LessonPrintFix from '../components/LessonPrintFix'
 import MakerProjectRenderer from '../components/renderers/MakerProjectRenderer'
 import { useTrial } from '../context/TrialContext'
 
@@ -117,6 +118,7 @@ export default function MakerProjectGenerator({ origin = 'stem' }) {
           <p className="mb-4 text-xs text-ink-500 print:hidden">Saved to your lesson archive.</p>
         )}
 
+        <LessonPrintFix lesson={result} />
         <MakerProjectRenderer lesson={result} />
       </div>
     )

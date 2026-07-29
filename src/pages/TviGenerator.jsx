@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { ScanEye, Sparkles, Loader2, ArrowLeft, ExternalLink, ShieldAlert } from 'lucide-react'
 import { generateTvi } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
+import LessonPrintFix from '../components/LessonPrintFix'
 import TviRenderer from '../components/renderers/TviRenderer'
 import { useTrial } from '../context/TrialContext'
 
@@ -105,6 +106,7 @@ export default function TviGenerator() {
           <p className="mb-4 text-xs text-ink-500 print:hidden">Saved to your lesson archive.</p>
         )}
 
+        <LessonPrintFix lesson={result} />
         <TviRenderer lesson={result} />
       </div>
     )

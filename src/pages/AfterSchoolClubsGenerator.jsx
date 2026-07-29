@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { PartyPopper, Sparkles, Loader2, ArrowLeft, ExternalLink } from 'lucide-react'
 import { generateAfterSchoolClubs } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
+import LessonPrintFix from '../components/LessonPrintFix'
 import AfterSchoolClubsRenderer from '../components/renderers/AfterSchoolClubsRenderer'
 import { useTrial } from '../context/TrialContext'
 
@@ -206,6 +207,7 @@ export default function AfterSchoolClubsGenerator() {
           <p className="mb-4 text-xs text-ink-500 print:hidden">Saved to your lesson archive.</p>
         )}
 
+        <LessonPrintFix lesson={result} />
         <AfterSchoolClubsRenderer lesson={result} />
       </div>
     )

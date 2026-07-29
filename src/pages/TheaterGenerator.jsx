@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Drama, Sparkles, Loader2, ArrowLeft, ExternalLink, Info } from 'lucide-react'
 import { generateTheater } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
+import LessonPrintFix from '../components/LessonPrintFix'
 import TheaterRenderer from '../components/renderers/TheaterRenderer'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 import { useTrial } from '../context/TrialContext'
@@ -113,6 +114,7 @@ export default function TheaterGenerator() {
           <p className="mb-4 text-xs text-ink-500 print:hidden">Saved to your lesson archive.</p>
         )}
 
+        <LessonPrintFix lesson={result} />
         <TheaterRenderer lesson={result} />
 
         {savedId && (

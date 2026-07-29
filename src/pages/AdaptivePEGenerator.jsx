@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Accessibility, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink, AlertTriangle } from 'lucide-react'
 import { generateAdaptivePE } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
+import LessonPrintFix from '../components/LessonPrintFix'
 import AdaptivePERenderer from '../components/renderers/AdaptivePERenderer'
 import { useTrial } from '../context/TrialContext'
 
@@ -157,6 +158,7 @@ export default function AdaptivePEGenerator() {
           </p>
         )}
 
+        <LessonPrintFix lesson={result} />
         <AdaptivePERenderer lesson={result} />
       </div>
     )

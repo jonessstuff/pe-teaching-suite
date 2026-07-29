@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { HeartHandshake, Sparkles, Loader2, ArrowLeft, ExternalLink, ShieldCheck } from 'lucide-react'
 import { generateSpecialEducation } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
+import LessonPrintFix from '../components/LessonPrintFix'
 import SpecialEducationRenderer from '../components/renderers/SpecialEducationRenderer'
 import { useTrial } from '../context/TrialContext'
 
@@ -132,6 +133,7 @@ export default function SpecialEducationGenerator() {
           <p className="mb-4 text-xs text-ink-500 print:hidden">Saved to your lesson archive.</p>
         )}
 
+        <LessonPrintFix lesson={result} />
         <SpecialEducationRenderer lesson={result} />
       </div>
     )

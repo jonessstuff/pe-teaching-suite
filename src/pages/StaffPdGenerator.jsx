@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Presentation, Sparkles, Loader2, ArrowLeft, ExternalLink, ShieldAlert } from 'lucide-react'
 import { generateStaffPd } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
+import LessonPrintFix from '../components/LessonPrintFix'
 import StaffPdRenderer from '../components/renderers/StaffPdRenderer'
 import { useTrial } from '../context/TrialContext'
 
@@ -94,6 +95,7 @@ export default function StaffPdGenerator() {
           </button>
         </div>
         {savedId && <p className="mb-4 text-xs text-ink-500 print:hidden">Saved to your archive.</p>}
+        <LessonPrintFix lesson={result} />
         <StaffPdRenderer lesson={result} />
       </div>
     )

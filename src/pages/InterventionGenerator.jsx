@@ -4,6 +4,7 @@ import { Layers, Sparkles, Loader2, ArrowLeft, ExternalLink, ShieldAlert, Histor
 import { generateIntervention } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { saveInterventionHistory, getInterventionHistory } from '../services/interventionHistoryService'
+import LessonPrintFix from '../components/LessonPrintFix'
 import InterventionRenderer from '../components/renderers/InterventionRenderer'
 import { useTrial } from '../context/TrialContext'
 
@@ -262,6 +263,7 @@ export default function InterventionGenerator() {
           )}
         </div>
 
+        <LessonPrintFix lesson={result} />
         <InterventionRenderer lesson={result} />
       </div>
     )

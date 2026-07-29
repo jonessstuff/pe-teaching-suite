@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Monitor, Sparkles, Loader2, ArrowLeft, ExternalLink, Info } from 'lucide-react'
 import { generateElementaryTech } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
+import LessonPrintFix from '../components/LessonPrintFix'
 import ElementaryTechRenderer from '../components/renderers/ElementaryTechRenderer'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 import { useTrial } from '../context/TrialContext'
@@ -96,6 +97,7 @@ export default function ElementaryTechGenerator() {
           <p className="mb-4 text-xs text-ink-500 print:hidden">Saved to your lesson archive.</p>
         )}
 
+        <LessonPrintFix lesson={result} />
         <ElementaryTechRenderer lesson={result} />
 
         {savedId && (

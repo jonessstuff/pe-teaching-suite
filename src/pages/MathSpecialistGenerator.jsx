@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Calculator, Sparkles, Loader2, ArrowLeft, ExternalLink, Info } from 'lucide-react'
 import { generateMathSpecialist, generateTutoringSession } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
+import LessonPrintFix from '../components/LessonPrintFix'
 import MathSpecialistRenderer from '../components/renderers/MathSpecialistRenderer'
 import TutoringSessionRenderer from '../components/renderers/TutoringSessionRenderer'
 import { useTrial } from '../context/TrialContext'
@@ -153,6 +154,7 @@ export default function MathSpecialistGenerator() {
           <p className="mb-4 text-xs text-ink-500 print:hidden">Saved to your lesson archive.</p>
         )}
 
+        <LessonPrintFix lesson={result} />
         {result.mode === 'tutoring'
           ? <TutoringSessionRenderer lesson={result} />
           : <MathSpecialistRenderer lesson={result} />}

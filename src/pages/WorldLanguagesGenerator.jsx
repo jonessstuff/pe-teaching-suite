@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Globe, Sparkles, Loader2, ArrowLeft, ExternalLink, Info } from 'lucide-react'
 import { generateWorldLanguages } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
+import LessonPrintFix from '../components/LessonPrintFix'
 import WorldLanguagesRenderer from '../components/renderers/WorldLanguagesRenderer'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 import { useTrial } from '../context/TrialContext'
@@ -101,6 +102,7 @@ export default function WorldLanguagesGenerator() {
           <p className="mb-4 text-xs text-ink-500 print:hidden">Saved to your lesson archive.</p>
         )}
 
+        <LessonPrintFix lesson={result} />
         <WorldLanguagesRenderer lesson={result} />
 
         {savedId && (

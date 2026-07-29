@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Baby, Sparkles, Loader2, ArrowLeft, ExternalLink, Info } from 'lucide-react'
 import { generateEcse } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
+import LessonPrintFix from '../components/LessonPrintFix'
 import EcseRenderer from '../components/renderers/EcseRenderer'
 import { useTrial } from '../context/TrialContext'
 
@@ -96,6 +97,7 @@ export default function EcseGenerator() {
           <p className="mb-4 text-xs text-ink-500 print:hidden">Saved to your lesson archive.</p>
         )}
 
+        <LessonPrintFix lesson={result} />
         <EcseRenderer lesson={result} />
       </div>
     )

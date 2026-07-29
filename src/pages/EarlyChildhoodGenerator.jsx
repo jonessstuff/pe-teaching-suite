@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Blocks, Sparkles, Loader2, ArrowLeft, ExternalLink, Info } from 'lucide-react'
 import { generateEarlyChildhood } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
+import LessonPrintFix from '../components/LessonPrintFix'
 import EarlyChildhoodRenderer from '../components/renderers/EarlyChildhoodRenderer'
 import { useTrial } from '../context/TrialContext'
 
@@ -93,6 +94,7 @@ export default function EarlyChildhoodGenerator() {
           <p className="mb-4 text-xs text-ink-500 print:hidden">Saved to your lesson archive.</p>
         )}
 
+        <LessonPrintFix lesson={result} />
         <EarlyChildhoodRenderer lesson={result} />
       </div>
     )

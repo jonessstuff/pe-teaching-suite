@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { BookOpen, Sparkles, Loader2, ArrowLeft, ExternalLink, Info } from 'lucide-react'
 import { generateReadingSpecialist, generateTutoringSession } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
+import LessonPrintFix from '../components/LessonPrintFix'
 import ReadingSpecialistRenderer from '../components/renderers/ReadingSpecialistRenderer'
 import TutoringSessionRenderer from '../components/renderers/TutoringSessionRenderer'
 import { useTrial } from '../context/TrialContext'
@@ -151,6 +152,7 @@ export default function ReadingSpecialistGenerator() {
           <p className="mb-4 text-xs text-ink-500 print:hidden">Saved to your lesson archive.</p>
         )}
 
+        <LessonPrintFix lesson={result} />
         {result.mode === 'tutoring'
           ? <TutoringSessionRenderer lesson={result} />
           : <ReadingSpecialistRenderer lesson={result} />}
