@@ -120,6 +120,20 @@ export function subjectsForModule(moduleLabel) {
   return MODULES.find((m) => m.label === moduleLabel)?.subjects ?? []
 }
 
+/**
+ * True when a saved lesson/assessment `subject` should appear under a subject
+ * FILTER value. The filter dropdowns (Assessment Bank, Standards Tracker) use the
+ * shared toolSubjects lists, which are MODULE labels — some of which own several
+ * differently-named saved subjects (e.g. 'PE & Health' owns 'PE'/'Health'/…,
+ * 'Library & Media' owns 'Library/Media'). Exact-matching the label against the
+ * saved `subject` string therefore silently hid those lessons. This resolves the
+ * label to its owned subjects, while still matching (a) modules whose label equals
+ * their subject (Art, Music, CTE, …) and (b) any legacy row saved under the label.
+ */
+export function subjectMatchesFilter(subject, filterLabel) {
+  return subject === filterLabel || subjectInModule(subject, filterLabel)
+}
+
 // The subjects the PE & Health module owns. CANONICAL allow-list used by both
 // the PE dashboard scope and the PE lesson generator's Subject chips.
 // (Previously each hand-maintained a deny-list off the full SUBJECT_AREAS

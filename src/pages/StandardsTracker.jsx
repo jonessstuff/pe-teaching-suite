@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ASSESSABLE_SUBJECTS } from '../constants/toolSubjects'
+import { subjectMatchesFilter } from '../constants/modules'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, BarChart2, Loader2 } from 'lucide-react'
 import { listLessons } from '../services/lessonsService'
@@ -28,7 +29,7 @@ export default function StandardsTracker() {
   }, [])
 
   const filtered = (lessons ?? []).filter(l => {
-    if (filterSubject !== 'All Subjects' && l.subject !== filterSubject) return false
+    if (filterSubject !== 'All Subjects' && !subjectMatchesFilter(l.subject, filterSubject)) return false
     if (filterGrade !== 'All Grades') {
       const grade = filterGrade === 'K' ? 0 : Number(filterGrade)
       if (!(l.grade_bands ?? []).includes(grade)) return false

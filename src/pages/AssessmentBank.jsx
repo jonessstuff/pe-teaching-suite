@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ASSESSABLE_SUBJECTS } from '../constants/toolSubjects'
+import { subjectMatchesFilter } from '../constants/modules'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, Archive, Trash2, Printer, Search, Loader2 } from 'lucide-react'
 import { listAssessments, deleteAssessment } from '../services/assessmentService'
@@ -36,7 +37,7 @@ export default function AssessmentBank() {
   const filtered = (assessments ?? []).filter(a => {
     if (search && !a.title.toLowerCase().includes(search.toLowerCase())) return false
     if (filterType !== 'all' && a.assessment_type !== filterType) return false
-    if (filterSubject !== 'All Subjects' && a.subject !== filterSubject) return false
+    if (filterSubject !== 'All Subjects' && !subjectMatchesFilter(a.subject, filterSubject)) return false
     return true
   })
 
