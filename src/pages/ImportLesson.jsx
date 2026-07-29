@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, FileInput, Loader2 } from 'lucide-react'
 import { generateImportedLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
@@ -11,6 +11,18 @@ const NEWER_SUBJECTS = [
   'Theater', 'Dance', 'World Languages', 'JROTC', 'Elementary Technology',
   'ESL/ELL Specialist', 'Gifted & Talented', 'Special Education',
 ]
+
+// Module-home "Import & Enhance" cards deep-link with ?subject=<route-slug> so the
+// importer opens preselected to THAT module. Only the subjects this importer
+// actually supports (CORE_SUBJECTS + NEWER_SUBJECTS) are mapped; any other/absent
+// slug falls back to the default. (Mirrors UnitBuilder's SUBJECT_FROM_SLUG.)
+const SUBJECT_FROM_SLUG = {
+  'pe-health': 'PE & Health', 'adaptive-pe': 'Adaptive PE', 'library': 'Library & Media',
+  'art': 'Art', 'music': 'Music', 'stem': 'STEM',
+  'theater': 'Theater', 'dance': 'Dance', 'world-languages': 'World Languages', 'jrotc': 'JROTC',
+  'elementary-tech': 'Elementary Technology', 'esl-specialist': 'ESL/ELL Specialist',
+  'gifted-talented': 'Gifted & Talented', 'special-education': 'Special Education',
+}
 const GRADES = [
   { label: 'K', value: 0 }, { label: '1', value: 1 }, { label: '2', value: 2 },
   { label: '3', value: 3 }, { label: '4', value: 4 }, { label: '5', value: 5 },
@@ -30,7 +42,8 @@ const STEM_FOCUS_AREAS = [
 
 export default function ImportLesson() {
   const navigate = useNavigate()
-  const [subject, setSubject] = useState('PE & Health')
+  const [searchParams] = useSearchParams()
+  const [subject, setSubject] = useState(() => SUBJECT_FROM_SLUG[searchParams.get('subject')] ?? 'PE & Health')
   const [gradeBand, setGradeBand] = useState(5)
   const [targetLanguage, setTargetLanguage] = useState('')
   const [stemFocusArea, setStemFocusArea] = useState('engineering')
