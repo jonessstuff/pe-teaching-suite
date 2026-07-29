@@ -27,6 +27,7 @@ const PATHWAY_FILTERS = [
   { value: 'business_law', label: 'Business Law' },
   { value: 'sports_entertainment', label: 'Sports & Entertainment Marketing' },
   { value: 'exercise_science', label: 'Exercise Science / Sports Medicine' },
+  { value: 'early_childhood', label: 'Early Childhood Education & Services' },
 ]
 
 export default function CteLessonLibrary() {

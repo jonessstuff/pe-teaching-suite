@@ -60,4 +60,5 @@ export const CTE_PATHWAYS = [
   { key: 'business_law', label: 'Business Law' },
   { key: 'sports_entertainment', label: 'Sports & Entertainment Marketing' },
   { key: 'exercise_science', label: 'Exercise Science / Sports Medicine' },
+  { key: 'early_childhood', label: 'Early Childhood Education & Services' },
 ]

@@ -23,6 +23,7 @@ const PHASE_LABELS = {
   business_law: ['Case / Scenario Hook', 'Concept Instruction', 'Applied Example / Guided Practice', 'Hands-On Case Analysis', 'Reflection & Career Connection'],
   sports_entertainment: ['Industry Hook', 'Concept Instruction', 'Applied Example / Guided Practice', 'Hands-On Marketing Application', 'Reflection & Career Connection'],
   exercise_science: ['Scenario Hook', 'Concept Instruction', 'Skill Demonstration / Guided Practice', 'Hands-On Application (Supervised)', 'Reflection & Career Connection'],
+  early_childhood: ['Child-Focused Hook', 'Concept Instruction', 'Skill Demonstration', 'Hands-On Application', 'Reflection & Profession Connection'],
 }
 
 const PATHWAY_LABELS = {
@@ -47,6 +48,7 @@ const PATHWAY_LABELS = {
   business_law: 'Business Law',
   sports_entertainment: 'Sports & Entertainment Marketing',
   exercise_science: 'Exercise Science / Sports Medicine',
+  early_childhood: 'Early Childhood Education & Services',
 }
 
 const LEVEL_LABELS = {

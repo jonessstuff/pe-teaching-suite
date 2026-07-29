@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Wrench, Factory, Cpu, Building2, Sprout, HardHat, Clapperboard, Scale, Shield, Scissors, Gavel, Ticket, Dumbbell, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink, ChevronDown } from 'lucide-react'
+import { Briefcase, UtensilsCrossed, Landmark, Megaphone, HeartHandshake, Stethoscope, GraduationCap, Compass, Code2, Wrench, Factory, Cpu, Building2, Sprout, HardHat, Clapperboard, Scale, Shield, Scissors, Gavel, Ticket, Dumbbell, Baby, Sparkles, Loader2, Plus, X, ArrowLeft, ExternalLink, ChevronDown } from 'lucide-react'
 import { generateCteLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
@@ -135,15 +135,21 @@ const PATHWAYS = [
     description: 'Sports-medicine team & therapeutic careers, anatomy/kinesiology, injury prevention & care, fitness & nutrition (NASM-CPT / HOSA) — awareness-level; CPR cert needs a certified instructor',
     icon: Dumbbell,
   },
+  {
+    value: 'early_childhood',
+    label: 'Early Childhood Education & Services',
+    description: 'HS students studying the early-childhood/childcare profession — child development, safe & healthy environments, DAP & positive guidance, careers (CDA / NAEYC / NASAFACS 4.0 / CCTC / FCCLA). Career-exploration/pre-professional — NOT the Early Childhood/Pre-K teacher module.',
+    icon: Baby,
+  },
 ]
 
-// The 21 pathways grouped into 6 logical categories for scannability. Career
+// The 22 pathways grouped into 6 logical categories for scannability. Career
 // Readiness is pinned first as the foundational entry point. Order within each
 // group is intentional. Every pathway value MUST appear in exactly one group.
 const PATHWAY_GROUPS = [
   { label: 'Career Foundations', values: ['career_readiness'] },
   { label: 'Business, Finance & Marketing', values: ['finance', 'marketing', 'sports_entertainment', 'business_mgmt', 'business_law', 'hospitality'] },
-  { label: 'Health & Human Services', values: ['health_science', 'exercise_science', 'human_services', 'education', 'cosmetology'] },
+  { label: 'Health & Human Services', values: ['health_science', 'exercise_science', 'human_services', 'early_childhood', 'education', 'cosmetology'] },
   { label: 'Technology & Engineering', values: ['information_technology', 'engineering_tech'] },
   { label: 'Skilled Trades & Industrial', values: ['transportation', 'manufacturing', 'construction', 'agriculture'] },
   { label: 'Arts, Government & Public Service', values: ['arts_av', 'government', 'law_safety'] },
@@ -182,6 +188,7 @@ const TOPIC_PLACEHOLDERS = {
   business_law: 'e.g. Elements of a valid contract, Breach of contract & remedies, Consumer protection basics, Civil vs. criminal law, Court system structure, Employment at-will & agency, A business ethics case study (FBLA/DECA-style)',
   sports_entertainment: 'e.g. Build a sponsorship pitch, Athlete/celebrity endorsement deals, Promote a concert or festival, Ticket-pricing & promotion strategy, Co-branding & licensing, Event marketing plan, DECA SEM role-play prep',
   exercise_science: 'e.g. The sports-medicine team & careers, Muscles & joints in a movement, Injury prevention & RICE, Taping/wrapping awareness, Sport nutrition basics, Exercise programming concepts, HOSA Sports Medicine prep',
+  early_childhood: 'e.g. Developmental milestones birth–age 5, Piaget/Erikson/Vygotsky for caregivers, Positive guidance & redirection, Setting up a learning center, Safe & healthy environments, Writing an anecdotal observation, Careers in early childhood & the CDA',
 }
 
 const MATERIAL_PLACEHOLDERS = {
@@ -391,6 +398,14 @@ const MATERIAL_PLACEHOLDERS = {
     'e.g. Manikin for supervised awareness practice (where allowed)',
     'e.g. Laptops/Chromebooks for career & HOSA research',
   ],
+  early_childhood: [
+    'e.g. Child-development milestones chart (birth–age 5)',
+    'e.g. Learning-center materials (blocks, books, dramatic play)',
+    'e.g. Anecdotal-observation recording form',
+    'e.g. Safe-environment / classroom-safety checklist',
+    'e.g. Preschool-lab access or child-development video cases',
+    'e.g. CDA / NAEYC & FCCLA career reference',
+  ],
 }
 
 export default function CteGenerator() {
@@ -568,7 +583,7 @@ export default function CteGenerator() {
           </div>
         </div>
         <p className="text-sm text-ink-400 mt-3">
-          Generate a complete Career &amp; Technical Education lesson across twenty-one pathways —
+          Generate a complete Career &amp; Technical Education lesson across twenty-two pathways —
           all 16 national CTE clusters: Hospitality &amp; Tourism, Finance, Marketing, Human
           Services / FCS, Health Science, Education &amp; Training, Career Readiness (MS
           foundations), Information Technology, Transportation, Distribution &amp; Logistics,
@@ -576,14 +591,15 @@ export default function CteGenerator() {
           Administration, Agriculture, Food &amp; Natural Resources, Architecture &amp; Construction,
           Arts, A/V Technology &amp; Communications, Government &amp; Public Administration, Law,
           Public Safety, Corrections &amp; Security, Cosmetology / Personal Care Services,
-          Business Law, Sports &amp; Entertainment Marketing, or Exercise Science / Sports
-          Medicine — with work-based learning and career pathway context built in.
+          Business Law, Sports &amp; Entertainment Marketing, Exercise Science / Sports
+          Medicine, or Early Childhood Education &amp; Services — with work-based learning and
+          career pathway context built in.
         </p>
       </div>
 
       <form onSubmit={handleGenerate} className="space-y-6">
 
-        {/* Pathway selector — 21 pathways grouped into 6 collapsible categories */}
+        {/* Pathway selector — 22 pathways grouped into 6 collapsible categories */}
         <div className="space-y-3">
           <h2 className="text-sm font-semibold text-ink-200">Pathway</h2>
           <div className="space-y-2">
@@ -830,6 +846,7 @@ export default function CteGenerator() {
                 pathway === 'business_law'    ? 'e.g. Identify the elements of a valid contract (NBEA Business Law — Contract Law)' :
                 pathway === 'sports_entertainment' ? 'e.g. Explain how a sponsorship creates value for a sports property (Precision Exams 416 / DECA SEM)' :
                 pathway === 'exercise_science' ? 'e.g. Identify the roles of the sports-medicine team (HOSA — Sports Medicine)' :
+                pathway === 'early_childhood' ? 'e.g. Describe positive guidance strategies for a preschool learning center (CDA — Positive Guidance)' :
                                                 'e.g. Identify a target market (DECA PI)'
               }
               value={targetCompetency}
