@@ -25,6 +25,7 @@ const OTHER_TEACHING = ['School Counselors', 'Early Childhood', 'After-School Cl
 const NON_TEACHING = [
   'Occupational Therapists', 'Physical Therapists', 'Speech-Language Pathologists',
   'Teacher of the Visually Impaired', 'Teacher of the Deaf & Hard of Hearing',
+  'Early Childhood Special Education',
   'Student Support Team Activities', 'Intervention Planning',
   'Staff PD & Meeting Planning', 'Instructional Coaching',
 ]

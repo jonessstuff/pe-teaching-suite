@@ -220,7 +220,7 @@ export default function TryFreeLesson() {
               </p>
               <p className="mt-1 text-sm text-emerald-800">
                 We emailed a link to <b>{email}</b> so you can always find it. This is the complete lesson — the same
-                thing PlansK12 builds across 30 modules.
+                thing PlansK12 builds across every module.
               </p>
               <a href={CHECKOUT_URL} className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-accent-600 px-4 py-2 text-sm font-semibold text-white hover:bg-accent-700">
                 <Sparkles size={15} /> Start your 7-day free trial

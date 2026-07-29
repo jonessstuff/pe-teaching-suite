@@ -41,6 +41,7 @@ import TviRenderer from '../renderers/TviRenderer'
 import DhhRenderer from '../renderers/DhhRenderer'
 import SstActivityRenderer from '../renderers/SstActivityRenderer'
 import EarlyChildhoodRenderer from '../renderers/EarlyChildhoodRenderer'
+import EcseRenderer from '../renderers/EcseRenderer'
 import InterventionRenderer from '../renderers/InterventionRenderer'
 import StaffPdRenderer from '../renderers/StaffPdRenderer'
 import InstructionalCoachingRenderer from '../renderers/InstructionalCoachingRenderer'
@@ -79,6 +80,7 @@ const LESSON_RENDERERS = {
   'Student Support Team Activities': SstActivityRenderer,
   // Early childhood & leadership
   'Early Childhood': EarlyChildhoodRenderer,
+  'Early Childhood Special Education': EcseRenderer,
   'Staff PD & Meeting Planning': StaffPdRenderer,
   'Instructional Coaching': InstructionalCoachingRenderer,
 }
