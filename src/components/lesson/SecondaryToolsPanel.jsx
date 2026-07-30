@@ -56,7 +56,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
   const [error, setError] = useState(null)
   const [showPoster, setShowPoster] = useState(false)
   const posterSvgRef = useRef(null)
-  const worksheetPrintRef = useRef(null)
+  const toolPrintRef = useRef(null)
 
   const [generatingSubPlan, setGeneratingSubPlan] = useState(false)
   const [generatingQuiz, setGeneratingQuiz] = useState(false)
@@ -582,84 +582,83 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
 
       {/* Active tool output */}
       {toolView === 'subplan' && hasSubPlan && (
-        <div className="space-y-3">
+        <div ref={toolPrintRef} className="space-y-3">
           <SubPlanRenderer lesson={lo} />
-          <ToolActions onClose={() => setToolView(null)} />
+          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={() => setToolView(null)} />
         </div>
       )}
       {toolView === 'quiz' && hasQuiz && (
-        <div className="space-y-3">
+        <div ref={toolPrintRef} className="space-y-3">
           {isWorldLanguages && (
-            <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-ink-200">
+            <p className="no-print rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-ink-200">
               ⚠️ Verify all target-language text (spelling, grammar, register) with a native/heritage speaker before use — especially for less commonly taught languages.
             </p>
           )}
           <QuizRenderer quiz_questions={lo.quiz_questions} />
           {!quizSavedToBank && (
-            <button onClick={handleSaveQuizToBank} className="btn-secondary text-xs">
+            <button onClick={handleSaveQuizToBank} className="no-print btn-secondary text-xs">
               <BookMarked size={14} /> Save quiz to Assessment Bank
             </button>
           )}
-          {quizSavedToBank && <p className="text-xs text-green-400">Saved to Assessment Bank ✓</p>}
-          <ToolActions onClose={() => setToolView(null)} />
+          {quizSavedToBank && <p className="no-print text-xs text-green-400">Saved to Assessment Bank ✓</p>}
+          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={() => setToolView(null)} />
         </div>
       )}
       {toolView === 'worksheet' && worksheet && (
-        <div className="space-y-3">
+        <div ref={toolPrintRef} className="space-y-3">
           {isWorldLanguages && (
-            <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-ink-200">
+            <p className="no-print rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-ink-200">
               ⚠️ Verify all target-language text (spelling, grammar) with a native/heritage speaker before use.
             </p>
           )}
-          <div ref={worksheetPrintRef}>
-            <WorksheetRenderer worksheet={worksheet} />
-          </div>
+          <WorksheetRenderer worksheet={worksheet} />
           {allowQuizRubric && (worksheet.formats ?? [])
             .filter(f => (f.type === 'labeling' || f.type === 'cut_paste') && f.applicable !== false)
             .map(f => (
               worksheetSaved[f.type]
-                ? <p key={f.type} className="text-xs text-green-400">Saved {WORKSHEET_BANK_LABELS[f.type]} to Assessment Bank ✓</p>
-                : <button key={f.type} onClick={() => handleSaveWorksheetToBank(f)} className="btn-secondary text-xs">
+                ? <p key={f.type} className="no-print text-xs text-green-400">Saved {WORKSHEET_BANK_LABELS[f.type]} to Assessment Bank ✓</p>
+                : <button key={f.type} onClick={() => handleSaveWorksheetToBank(f)} className="no-print btn-secondary text-xs">
                     <BookMarked size={14} /> Save {WORKSHEET_BANK_LABELS[f.type]} to Assessment Bank
                   </button>
             ))}
-          <ToolActions printRef={worksheetPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={() => setToolView(null)} />
+          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={() => setToolView(null)} />
         </div>
       )}
       {toolView === 'weatheralt' && hasWeatherAlt && (
-        <div className="space-y-3">
+        <div ref={toolPrintRef} className="space-y-3">
           <WeatherAltRenderer lesson={lo} />
-          <ToolActions onClose={() => setToolView(null)} />
+          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={() => setToolView(null)} />
         </div>
       )}
       {toolView === 'parentnote' && hasParentNote && (
-        <div className="space-y-3">
+        <div ref={toolPrintRef} className="space-y-3">
           <ParentNoteRenderer lesson={lo} />
-          <ToolActions onClose={() => setToolView(null)} />
+          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={() => setToolView(null)} />
         </div>
       )}
       {toolView === 'observation' && hasObsSummary && (
-        <div className="space-y-3">
+        <div ref={toolPrintRef} className="space-y-3">
           <ObservationSummaryRenderer lesson={lo} />
-          <ToolActions onClose={() => setToolView(null)} />
+          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={() => setToolView(null)} />
         </div>
       )}
       {toolView === 'rubric' && rubric && (
-        <div className="space-y-3">
+        <div ref={toolPrintRef} className="space-y-3">
           <RubricRenderer rubric={rubric} />
           {!rubricSavedToBank && (
-            <button onClick={handleSaveRubricToBank} className="btn-secondary text-xs">
+            <button onClick={handleSaveRubricToBank} className="no-print btn-secondary text-xs">
               <BookMarked size={14} /> Save rubric to Assessment Bank
             </button>
           )}
-          {rubricSavedToBank && <p className="text-xs text-green-400">Saved to Assessment Bank ✓</p>}
-          <ToolActions onClose={() => setToolView(null)} />
+          {rubricSavedToBank && <p className="no-print text-xs text-green-400">Saved to Assessment Bank ✓</p>}
+          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={() => setToolView(null)} />
         </div>
       )}
       {toolView === 'newsletter' && newsletter && (
-        <div className="space-y-3">
+        <div ref={toolPrintRef} className="space-y-3">
           <FamilyNewsletterRenderer newsletter={newsletter} />
           <ToolActions
+            printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT}
             copyText={[
               newsletter.subject_line,
               newsletter.week_of ? `Week of ${newsletter.week_of}` : null,
@@ -674,9 +673,10 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
         </div>
       )}
       {toolView === 'diff' && diffLesson && (
-        <div className="space-y-3">
+        <div ref={toolPrintRef} className="space-y-3">
           <DifferentiatedLessonRenderer differentiation={diffLesson} />
           <ToolActions
+            printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT}
             copyText={Object.entries(diffLesson).map(([, p]) => [
               `── ${p.label ?? 'Differentiation'} ──`,
               p.warm_up ? `Warm-up\n${p.warm_up}` : null,
@@ -690,7 +690,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
         </div>
       )}
       {toolView === 'exitticket' && exitTickets && (
-        <div className="space-y-4">
+        <div ref={toolPrintRef} className="space-y-4">
           <p className="label-eyebrow text-ink-400">Exit Tickets — 3 formats</p>
           {exitTickets.map((et, i) => (
             <div key={i} className="card p-4 space-y-1">
@@ -703,6 +703,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
             </div>
           ))}
           <ToolActions
+            printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT}
             copyText={['EXIT TICKETS', ...exitTickets.map(et =>
               [
                 `${et.format.toUpperCase()} — ${et.title}`,
@@ -715,7 +716,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
         </div>
       )}
       {toolView === 'cross' && crossConnections && (
-        <div className="space-y-3">
+        <div ref={toolPrintRef} className="space-y-3">
           <p className="label-eyebrow text-ink-400">Cross-Curricular Connections</p>
           {crossConnections.map((c, i) => (
             <div key={i} className="card p-4 space-y-1">
@@ -728,6 +729,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
             </div>
           ))}
           <ToolActions
+            printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT}
             copyText={['CROSS-CURRICULAR CONNECTIONS', ...crossConnections.map(c =>
               `${c.subject} — ${c.standard_code}\n${c.standard_text}\n${c.connection_description}`
             )].join('\n\n')}
@@ -736,7 +738,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
         </div>
       )}
       {toolView === 'warmup' && warmupOptions && (
-        <div className="space-y-3">
+        <div ref={toolPrintRef} className="space-y-3">
           <p className="label-eyebrow text-ink-400">Warm-Up Options</p>
           {warmupOptions.map((w, i) => (
             <div key={i} className="card p-4 space-y-1">
@@ -751,6 +753,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
             </div>
           ))}
           <ToolActions
+            printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT}
             copyText={['WARM-UP OPTIONS', ...warmupOptions.map(w =>
               [
                 `${w.title} (${w.duration_mins} min)`,
@@ -763,21 +766,21 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
         </div>
       )}
       {toolView === 'progress' && progressNote && (
-        <div className="card p-5 space-y-3">
+        <div ref={toolPrintRef} className="card p-5 space-y-3">
           <p className="label-eyebrow text-ink-400">IEP Progress Note</p>
           <p className="text-sm text-ink-700 leading-relaxed whitespace-pre-wrap">{progressNote}</p>
-          <ToolActions copyText={progressNote} onClose={() => setToolView(null)} />
+          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} copyText={progressNote} onClose={() => setToolView(null)} />
         </div>
       )}
       {toolView === 'behavior' && behaviorNote && (
-        <div className="card p-5 space-y-3">
+        <div ref={toolPrintRef} className="card p-5 space-y-3">
           <p className="label-eyebrow text-ink-400">Behavior Management Note</p>
           <p className="text-sm text-ink-700 leading-relaxed whitespace-pre-wrap">{behaviorNote}</p>
-          <ToolActions copyText={behaviorNote} onClose={() => setToolView(null)} />
+          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} copyText={behaviorNote} onClose={() => setToolView(null)} />
         </div>
       )}
       {toolView === 'conference' && conferencePrep && (
-        <div className="card p-5 space-y-4">
+        <div ref={toolPrintRef} className="card p-5 space-y-4">
           <p className="label-eyebrow text-ink-400">Conference Prep</p>
           {conferencePrep.opening_statement && <p className="text-sm text-ink-700"><strong>Opening:</strong> {conferencePrep.opening_statement}</p>}
           {conferencePrep.strengths?.length > 0 && (
@@ -802,6 +805,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
           )}
           {conferencePrep.closing_statement && <p className="text-sm text-ink-700"><strong>Closing:</strong> {conferencePrep.closing_statement}</p>}
           <ToolActions
+            printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT}
             copyText={[
               conferencePrep.opening_statement ? `Opening:\n${conferencePrep.opening_statement}` : null,
               conferencePrep.strengths?.length ? `Strengths:\n${conferencePrep.strengths.map(s => `· ${s}`).join('\n')}` : null,
@@ -966,17 +970,17 @@ function ToolActions({ copyText, onClose, printRef, printWatermark }) {
     else window.print()
   }
   return (
-    <div className="flex gap-2 border-t border-ink-900 pt-3 mt-1">
+    <div className="no-print flex gap-2 border-t border-ink-900 pt-3 mt-1">
       {copyText !== undefined && (
-        <button onClick={handleCopy} className="btn-secondary text-xs">
+        <button onClick={handleCopy} className="no-print btn-secondary text-xs">
           {copied ? <Check size={13} /> : <Copy size={13} />}
           {copied ? 'Copied!' : 'Copy'}
         </button>
       )}
-      <button onClick={handlePrint} className="btn-secondary text-xs">
+      <button onClick={handlePrint} className="no-print btn-secondary text-xs">
         <Printer size={13} /> Print
       </button>
-      <button onClick={onClose} className="btn-secondary text-xs">
+      <button onClick={onClose} className="no-print btn-secondary text-xs">
         <X size={13} /> Close
       </button>
     </div>
