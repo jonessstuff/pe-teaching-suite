@@ -27,6 +27,24 @@ import WorksheetRenderer from '../renderers/WorksheetRenderer'
 import { useTrial } from '../../context/TrialContext'
 import { WATERMARK_TEXT } from '../../services/trialService'
 
+// Print a single artifact (e.g. a worksheet) in isolation. The tool outputs live
+// inside a `print:hidden` panel, so a plain window.print() prints the underlying
+// lesson instead — this opens a dedicated window with ONLY the artifact's DOM
+// (same approach as the poster print), so trial users still get the watermark.
+function printArtifact(el, watermark) {
+  if (!el) return
+  const w = window.open('', '_blank', 'width=850,height=1100')
+  if (!w) return
+  const styles = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'))
+    .map((n) => n.outerHTML).join('\n')
+  const wm = watermark ? `<div class="trial-watermark-print">${watermark}</div>` : ''
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8">${styles}<style>@page{margin:0.6in}html,body{background:#fff;margin:0}</style></head><body>${el.outerHTML}${wm}</body></html>`)
+  w.document.close()
+  w.focus()
+  // Let the linked stylesheets load before printing (else it prints unstyled).
+  setTimeout(() => { try { w.print() } catch { /* user closed the window */ } }, 450)
+}
+
 const PE_SUBJECTS = new Set(['PE', 'Health', "Family Life", "Driver's Ed", "Strength & Conditioning"])
 const DIFF_TYPES = ['advanced', 'below_grade', 'sensory', 'ell', 'physical']
 const DIFF_LABELS = { advanced: 'Advanced', below_grade: 'Below Grade', sensory: 'Sensory', ell: 'ELL', physical: 'Physical' }
@@ -38,6 +56,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
   const [error, setError] = useState(null)
   const [showPoster, setShowPoster] = useState(false)
   const posterSvgRef = useRef(null)
+  const worksheetPrintRef = useRef(null)
 
   const [generatingSubPlan, setGeneratingSubPlan] = useState(false)
   const [generatingQuiz, setGeneratingQuiz] = useState(false)
@@ -592,7 +611,9 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
               ⚠️ Verify all target-language text (spelling, grammar) with a native/heritage speaker before use.
             </p>
           )}
-          <WorksheetRenderer worksheet={worksheet} />
+          <div ref={worksheetPrintRef}>
+            <WorksheetRenderer worksheet={worksheet} />
+          </div>
           {allowQuizRubric && (worksheet.formats ?? [])
             .filter(f => (f.type === 'labeling' || f.type === 'cut_paste') && f.applicable !== false)
             .map(f => (
@@ -602,7 +623,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
                     <BookMarked size={14} /> Save {WORKSHEET_BANK_LABELS[f.type]} to Assessment Bank
                   </button>
             ))}
-          <ToolActions onClose={() => setToolView(null)} />
+          <ToolActions printRef={worksheetPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={() => setToolView(null)} />
         </div>
       )}
       {toolView === 'weatheralt' && hasWeatherAlt && (
@@ -928,13 +949,21 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
   )
 }
 
-function ToolActions({ copyText, onClose }) {
+function ToolActions({ copyText, onClose, printRef, printWatermark }) {
   const { requestExport } = useTrial()
   const [copied, setCopied] = useState(false)
   function handleCopy() {
     navigator.clipboard.writeText(copyText)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+  // With a printRef, print ONLY that artifact in an isolated window (the tool
+  // outputs live in a print:hidden panel, so a plain window.print() would print
+  // the underlying lesson instead). Without one, fall back to the page print.
+  async function handlePrint() {
+    if (!(await requestExport())) return
+    if (printRef?.current) printArtifact(printRef.current, printWatermark)
+    else window.print()
   }
   return (
     <div className="flex gap-2 border-t border-ink-900 pt-3 mt-1">
@@ -944,7 +973,7 @@ function ToolActions({ copyText, onClose }) {
           {copied ? 'Copied!' : 'Copy'}
         </button>
       )}
-      <button onClick={async () => { if (await requestExport()) window.print() }} className="btn-secondary text-xs">
+      <button onClick={handlePrint} className="btn-secondary text-xs">
         <Printer size={13} /> Print
       </button>
       <button onClick={onClose} className="btn-secondary text-xs">

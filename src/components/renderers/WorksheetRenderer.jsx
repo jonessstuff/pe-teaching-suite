@@ -182,32 +182,38 @@ function CutPaste({ f }) {
       : (f.items ?? [])
     return shuffle(items)
   }, [f, isSort])
+  // Glue-box height scales to the fullest category so the physical cut-out cards
+  // actually fit: ~0.62in per card (cards can be full sentences → wrap to 2 lines)
+  // plus padding, floored at 2.5in and capped at 5in.
+  const cats = f.categories ?? []
+  const maxPerCat = cats.reduce((m, c) => Math.max(m, c.items?.length ?? 0), 0)
+  const boxMinIn = Math.min(5, Math.max(2.5, maxPerCat * 0.62 + 0.4))
   return (
     <div className="space-y-5">
       {isSort ? (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {(f.categories ?? []).map((c, i) => (
-            <div key={i} className="rounded-lg border border-dashed border-ink-700 p-3">
-              <p className="text-center text-sm font-semibold text-ink-200">{c.name}</p>
-              <div className="mt-2 h-24" />
+        <div className="grid grid-cols-2 gap-4 break-inside-avoid">
+          {cats.map((c, i) => (
+            <div key={i} className="break-inside-avoid rounded-lg border-2 border-dashed border-ink-400 p-3">
+              <p className="text-center text-sm font-semibold text-ink-100">{c.name}</p>
+              <div className="mt-2" style={{ minHeight: `${boxMinIn}in` }} />
             </div>
           ))}
         </div>
       ) : (
-        <div className="space-y-2">
+        <ol className="space-y-3">
           {(f.items ?? []).map((_, i) => (
-            <div key={i} className="flex items-center gap-2">
-              <span className="text-sm text-ink-400">{i + 1}.</span>
-              <div className="h-9 flex-1 rounded-lg border border-dashed border-ink-700" />
-            </div>
+            <li key={i} className="flex items-center gap-2">
+              <span className="w-6 shrink-0 text-sm font-semibold text-ink-400">{i + 1}.</span>
+              <div className="h-11 flex-1 rounded-lg border-2 border-dashed border-ink-400" />
+            </li>
           ))}
-        </div>
+        </ol>
       )}
       <div>
         <p className="mb-2 flex items-center gap-1.5 label-eyebrow text-ink-500"><Scissors size={12} /> Cut these out</p>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-2 gap-3">
           {pieces.map((p, i) => (
-            <span key={i} className="rounded-md border border-ink-700 px-3 py-1.5 text-sm text-ink-200">{p}</span>
+            <span key={i} className="break-inside-avoid rounded-md border-2 border-ink-400 px-3 py-2 text-sm text-ink-100">{p}</span>
           ))}
         </div>
       </div>
