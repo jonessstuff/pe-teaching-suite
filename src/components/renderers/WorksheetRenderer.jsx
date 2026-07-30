@@ -239,23 +239,31 @@ function Labeling({ f }) {
   const bank = useMemo(() => (f.word_bank ? shuffle(labels) : null), [f.word_bank, labels])
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border border-dashed border-ink-700 p-4 text-center text-sm text-ink-400">
-        Teacher: provide / project this diagram — <span className="text-ink-200">{f.diagram}</span>
+      {/* Compact teacher note (what to draw/project) — not the student's writing area. */}
+      {f.diagram && (
+        <p className="text-xs leading-snug text-ink-500">
+          <span className="font-semibold text-ink-400">Teacher:</span> draw, project, or paste the diagram in the box below — {f.diagram}
+        </p>
+      )}
+      {/* Diagram area — real room for the picture students label. */}
+      <div className="flex items-center justify-center rounded-lg border-2 border-ink-400 min-h-[2in] text-xs uppercase tracking-wide text-ink-500">
+        Diagram area
       </div>
-      <ol className="grid grid-cols-2 gap-x-6 gap-y-3">
+      {/* Write-lines — full width, tall, dark: room for a K–2 student to actually write. */}
+      <ol className="space-y-4">
         {labels.map((_, i) => (
-          <li key={i} className="flex items-center gap-2 text-sm text-ink-100">
-            <span className="font-medium text-ink-400">{i + 1}.</span>
-            <span className="inline-block flex-1 border-b border-ink-600" />
+          <li key={i} className="flex items-end gap-3">
+            <span className="w-7 shrink-0 text-base font-semibold text-ink-300">{i + 1}.</span>
+            <span className="h-9 flex-1 border-b-2 border-ink-400" />
           </li>
         ))}
       </ol>
       {bank && (
         <div>
-          <p className="label-eyebrow text-ink-500 mb-1">Word bank</p>
+          <p className="label-eyebrow text-ink-500 mb-1.5">Word Bank</p>
           <div className="flex flex-wrap gap-2">
             {bank.map((w, i) => (
-              <span key={i} className="rounded-md border border-ink-700 px-3 py-1.5 text-sm text-ink-200">{w}</span>
+              <span key={i} className="rounded-md border-2 border-ink-400 px-3 py-1.5 text-sm font-medium text-ink-100">{w}</span>
             ))}
           </div>
         </div>

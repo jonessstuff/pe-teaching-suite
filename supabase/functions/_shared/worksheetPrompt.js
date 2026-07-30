@@ -27,7 +27,7 @@ const FORMAT_SPECS = {
   multiple_choice: `"multiple_choice" — multiple-choice PRACTICE/REVIEW (same shape as a quiz item but framed as low-stakes practice, NOT a graded test).
     Fields: "questions": [{ "question": string, "options": string[] (exactly 4, no letter prefix), "answer": "A"|"B"|"C"|"D" }]. 6-10 questions grounded in the lesson.`,
   labeling: `"labeling" — a diagram/image labeling activity (e.g., label the parts of a plant, a map, a body system).
-    ONLY applicable when the lesson has clear LABELABLE visual/diagram content. Fields: "diagram": string (a precise description of the diagram the TEACHER should provide/draw/project — we do not generate the image), "labels": string[] (the parts/regions students must label, from the lesson), "word_bank": boolean (true = provide the labels as a scrambled word bank). 5-12 labels. If the lesson has NO clear labelable diagram/visual content, return applicable:false with a reason.`,
+    ONLY applicable when the lesson has clear LABELABLE visual/diagram content. Fields: "diagram": string (a SHORT teacher note — 1-2 sentences, ~200 characters MAX — saying what simple diagram to draw/project and its key parts; we don't generate the image and this prints as a small caption, so keep it brief, NOT a long paragraph), "labels": string[] (the parts/regions students label, from the lesson — keep each label 1-3 words), "word_bank": boolean (true = provide the labels as a scrambled word bank). 5-10 labels (fewer for K-2). If the lesson has NO clear labelable diagram/visual content, return applicable:false with a reason.`,
 }
 
 /**
