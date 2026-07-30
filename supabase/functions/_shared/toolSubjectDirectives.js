@@ -45,6 +45,12 @@ EXIT-TICKET-SPECIFIC: Frame in ENGLISH — a quick check tied to the lesson's AC
     [WL]: `WORLD LANGUAGES — ${WL_ACCURACY}
 Frame every activity in ENGLISH; any target-language content is short vocab/phrases with English glosses only — never a translation or extended-production task.`,
   },
+  worksheet: {
+    [WL]: `WORLD LANGUAGES — ${WL_ACCURACY}
+WORKSHEET-SPECIFIC: All instructions, prompts, and answers are in ENGLISH. Target-language content is limited to SHORT, high-frequency vocabulary/phrases from THIS lesson, each with an English gloss. Word-search "words" must be single target-language vocabulary words (letters only) OR their English equivalents — never phrases or sentences. Matching pairs a target-language word with its English meaning. Fill-in-the-blank sentences are in English testing vocabulary meaning, not target-language production. Never require translating a passage or producing sentences beyond the ACTFL proficiency level.`,
+    [JROTC]: `JROTC — NON-MILITARY BOUNDARY: All worksheet content stays in citizenship, leadership, character/ethics, civics, wellness, and financial-literacy territory FROM THIS LESSON. NEVER reference weapons, marksmanship, combat, tactical, or military-operations content anywhere — not in a sentence, a vocabulary word, a matching pair, a word-search word, or a distractor. Every term must be a plausible citizenship/leadership term.`,
+    [ETECH]: `ELEMENTARY TECHNOLOGY — AGE-CALIBRATED: Keep reading/writing load minimal and age-appropriate. For grades K-2 (grade numbers 0-2), favor picture-able, very short words and concrete matching/labeling/cut-and-paste over heavy text; avoid dense fill-in-the-blank paragraphs. For grades 3-5, standard but plain-language practice on the digital-citizenship, computer-skill, and coding concepts from the lesson.`,
+  },
 }
 
 /** Returns the directive for a tool+subject, or '' if there is none. */

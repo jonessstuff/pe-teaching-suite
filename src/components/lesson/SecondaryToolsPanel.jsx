@@ -3,14 +3,14 @@ import {
   FileText, ClipboardList, CloudRain, Mail, ClipboardCheck,
   LayoutTemplate, Loader2, Printer, Download, X, Star, BookOpen,
   CheckSquare, Shuffle, Flame, BookMarked, Send, Globe, Users, FileWarning, ChevronDown,
-  Copy, Check,
+  Copy, Check, PencilRuler,
 } from 'lucide-react'
 import {
   generateSubPlan, generateQuiz, generateWeatherAlt,
   generateParentNote, generateObservationSummary, generatePoster,
   generateRubric, generateFamilyNewsletter, generateDifferentiatedLesson,
   generateProgressNote, generateExitTicket, generateCrossCurricular,
-  generateWarmup, generateBehaviorNote, generateConferencePrep,
+  generateWarmup, generateBehaviorNote, generateConferencePrep, generateWorksheet,
 } from '../../services/generationService'
 import { updateLesson } from '../../services/lessonsService'
 import { createAssessment } from '../../services/assessmentService'
@@ -23,6 +23,7 @@ import PosterRenderer from '../renderers/PosterRenderer'
 import RubricRenderer from '../renderers/RubricRenderer'
 import FamilyNewsletterRenderer from '../renderers/FamilyNewsletterRenderer'
 import DifferentiatedLessonRenderer from '../renderers/DifferentiatedLessonRenderer'
+import WorksheetRenderer from '../renderers/WorksheetRenderer'
 import { useTrial } from '../../context/TrialContext'
 import { WATERMARK_TEXT } from '../../services/trialService'
 
@@ -82,6 +83,12 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
   const [warmupOptions, setWarmupOptions] = useState(null)
   const [generatingWarmup, setGeneratingWarmup] = useState(false)
 
+  // Worksheet — format selection + session-scoped result
+  const [showWorksheetForm, setShowWorksheetForm] = useState(false)
+  const [worksheetFormats, setWorksheetFormats] = useState(['fill_blank', 'matching'])
+  const [worksheet, setWorksheet] = useState(null)
+  const [generatingWorksheet, setGeneratingWorksheet] = useState(false)
+
   const [expanded, setExpanded] = useState(false)
 
   const hasSubPlan = Boolean(lo?.sub_script)
@@ -103,6 +110,23 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
   ])
   const allowQuizRubric = !NON_EVALUATIVE.has(subject)
   const isWorldLanguages = subject === 'World Languages'
+
+  // Worksheet format options. Cut & paste is a younger-grades (K-5) activity, so
+  // it's only OFFERED when the lesson targets a grade band ≤ 5. Content-based
+  // fit (e.g. labeling only when there's labelable diagram content) is judged
+  // server-side, which actually sees the lesson — a format that doesn't fit
+  // comes back marked "not generated" rather than producing a weak sheet.
+  const worksheetGrades = lo?.grade_bands ?? []
+  const offersCutPaste = worksheetGrades.length > 0 && Math.min(...worksheetGrades) <= 5
+  const WORKSHEET_FORMAT_OPTIONS = [
+    { key: 'fill_blank', label: 'Fill in the blank' },
+    { key: 'matching', label: 'Matching' },
+    { key: 'word_search', label: 'Word search' },
+    { key: 'multiple_choice', label: 'Multiple choice practice' },
+    { key: 'research', label: 'Research sheet' },
+    { key: 'labeling', label: 'Labeling' },
+    ...(offersCutPaste ? [{ key: 'cut_paste', label: 'Cut & paste (K–5)' }] : []),
+  ]
 
   async function run(setter, fn) {
     setter(true)
@@ -268,6 +292,17 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
     })
   }
 
+  async function handleGenerateWorksheet(e) {
+    e.preventDefault()
+    if (worksheetFormats.length === 0) { setError('Pick at least one worksheet format.'); return }
+    await run(setGeneratingWorksheet, async () => {
+      const result = await generateWorksheet(savedId, worksheetFormats)
+      setWorksheet(result.worksheet)
+      setToolView('worksheet')
+      setShowWorksheetForm(false)
+    })
+  }
+
   async function handlePrintPoster() {
     const svgEl = posterSvgRef.current
     if (!svgEl) return
@@ -351,6 +386,14 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
               Quiz
             </button>
           ))}
+
+          {/* Worksheet — independent practice; hidden for non-evaluative modules */}
+          {allowQuizRubric && (
+            <button onClick={() => (worksheet ? toggle('worksheet') : setShowWorksheetForm(f => !f))} className={showWorksheetForm || toolView === 'worksheet' ? 'btn-primary' : 'btn-secondary'}>
+              <PencilRuler size={16} />
+              Worksheet
+            </button>
+          )}
 
           {/* Observation prep */}
           {!hasObsSummary ? (
@@ -521,6 +564,17 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
             </button>
           )}
           {quizSavedToBank && <p className="text-xs text-green-400">Saved to Assessment Bank ✓</p>}
+          <ToolActions onClose={() => setToolView(null)} />
+        </div>
+      )}
+      {toolView === 'worksheet' && worksheet && (
+        <div className="space-y-3">
+          {isWorldLanguages && (
+            <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-ink-200">
+              ⚠️ Verify all target-language text (spelling, grammar) with a native/heritage speaker before use.
+            </p>
+          )}
+          <WorksheetRenderer worksheet={worksheet} />
           <ToolActions onClose={() => setToolView(null)} />
         </div>
       )}
@@ -783,6 +837,28 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
           ))}
           <button type="submit" disabled={generatingConference} className="btn-primary">
             {generatingConference ? <Loader2 size={14} className="animate-spin" /> : <Users size={14} />} Generate prep
+          </button>
+        </form>
+      )}
+
+      {showWorksheetForm && (
+        <form onSubmit={handleGenerateWorksheet} className="card p-5 space-y-3">
+          <p className="label-eyebrow text-ink-400">Worksheet — choose format(s)</p>
+          <div className="flex flex-wrap gap-2">
+            {WORKSHEET_FORMAT_OPTIONS.map(({ key, label }) => {
+              const on = worksheetFormats.includes(key)
+              return (
+                <button type="button" key={key}
+                  onClick={() => setWorksheetFormats(fs => on ? fs.filter(k => k !== key) : [...fs, key])}
+                  className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${on ? 'border-teal-500 bg-teal-500/15 text-teal-400' : 'border-ink-700 text-ink-500 hover:border-ink-500 hover:text-ink-200'}`}>
+                  {label}
+                </button>
+              )
+            })}
+          </div>
+          <p className="text-xs text-ink-500">Independent-practice materials built from this lesson's vocabulary & concepts. A format that doesn't fit the content is noted instead of forced.</p>
+          <button type="submit" disabled={generatingWorksheet} className="btn-primary">
+            {generatingWorksheet ? <Loader2 size={14} className="animate-spin" /> : <PencilRuler size={14} />} Generate worksheet
           </button>
         </form>
       )}

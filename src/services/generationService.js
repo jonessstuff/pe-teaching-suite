@@ -664,6 +664,13 @@ export async function generateRubric(lessonId) {
   return data
 }
 
+// Worksheets: independent-practice materials in teacher-selected format types.
+export async function generateWorksheet(lessonId, formats) {
+  const { data, error } = await supabase.functions.invoke('generate-worksheet', { body: { lessonId, formats } })
+  if (error) throw await toGenerationError(error)
+  return data
+}
+
 export async function generateFamilyNewsletter(lessonId, weekOf) {
   const { data, error } = await supabase.functions.invoke('generate-family-newsletter', { body: { lessonId, weekOf } })
   if (error) throw await toGenerationError(error)
