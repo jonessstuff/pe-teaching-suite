@@ -88,6 +88,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
   const [worksheetFormats, setWorksheetFormats] = useState(['fill_blank', 'matching'])
   const [worksheet, setWorksheet] = useState(null)
   const [generatingWorksheet, setGeneratingWorksheet] = useState(false)
+  const [worksheetSaved, setWorksheetSaved] = useState({}) // { labeling: true, cut_paste: true }
 
   const [expanded, setExpanded] = useState(false)
 
@@ -298,9 +299,26 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
     await run(setGeneratingWorksheet, async () => {
       const result = await generateWorksheet(savedId, worksheetFormats)
       setWorksheet(result.worksheet)
+      setWorksheetSaved({})
       setToolView('worksheet')
       setShowWorksheetForm(false)
     })
+  }
+
+  // Labeling and cut & paste worksheets can be banked like quizzes/rubrics.
+  const WORKSHEET_BANK_LABELS = { labeling: 'Labeling', cut_paste: 'Cut & Paste' }
+  async function handleSaveWorksheetToBank(fmt) {
+    try {
+      await createAssessment({
+        title: `${lo?.title ?? 'Lesson'} — ${WORKSHEET_BANK_LABELS[fmt.type] ?? fmt.type}`,
+        subject: lo?.subject,
+        gradeBands: lo?.grade_bands ?? [],
+        assessmentType: fmt.type,
+        content: fmt,
+        lessonId: savedId,
+      })
+      setWorksheetSaved(s => ({ ...s, [fmt.type]: true }))
+    } catch (err) { setError(err.message) }
   }
 
   async function handlePrintPoster() {
@@ -575,6 +593,15 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
             </p>
           )}
           <WorksheetRenderer worksheet={worksheet} />
+          {allowQuizRubric && (worksheet.formats ?? [])
+            .filter(f => (f.type === 'labeling' || f.type === 'cut_paste') && f.applicable !== false)
+            .map(f => (
+              worksheetSaved[f.type]
+                ? <p key={f.type} className="text-xs text-green-400">Saved {WORKSHEET_BANK_LABELS[f.type]} to Assessment Bank ✓</p>
+                : <button key={f.type} onClick={() => handleSaveWorksheetToBank(f)} className="btn-secondary text-xs">
+                    <BookMarked size={14} /> Save {WORKSHEET_BANK_LABELS[f.type]} to Assessment Bank
+                  </button>
+            ))}
           <ToolActions onClose={() => setToolView(null)} />
         </div>
       )}
