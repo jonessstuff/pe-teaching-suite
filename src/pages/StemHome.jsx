@@ -47,6 +47,9 @@ export default function StemHome() {
         </div>
       </div>
 
+      {/* My lessons — search / sort / starred */}
+      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/stem/lessons" accentText="text-cyan-400" />
+
       {/* Action cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Link
@@ -249,8 +252,6 @@ export default function StemHome() {
         </Link>
       </div>
 
-      {/* My lessons — search / sort / starred */}
-      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/stem/lessons" accentText="text-cyan-400" />
     </div>
   )
 }

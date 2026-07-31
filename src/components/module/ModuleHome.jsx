@@ -124,6 +124,9 @@ export default function ModuleHome({ config }) {
         </div>
       </div>
 
+      {/* My lessons — search / sort / starred */}
+      <RecentLessonsPanel lessons={lessons} error={error} browseNoun={browseNoun} browseTo={browseTo} accentText={accent.text} />
+
       {/* Action cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <ActionCard
@@ -142,8 +145,6 @@ export default function ModuleHome({ config }) {
         })}
       </div>
 
-      {/* My lessons — search / sort / starred */}
-      <RecentLessonsPanel lessons={lessons} error={error} browseNoun={browseNoun} browseTo={browseTo} accentText={accent.text} />
     </div>
   )
 }

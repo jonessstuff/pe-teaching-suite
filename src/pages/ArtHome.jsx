@@ -45,6 +45,9 @@ export default function ArtHome() {
         </div>
       </div>
 
+      {/* My lessons — search / sort / starred */}
+      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/art/lessons" accentText="text-orange-400" />
+
       {/* Action cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Link
@@ -226,8 +229,6 @@ export default function ArtHome() {
         </Link>
       </div>
 
-      {/* My lessons — search / sort / starred */}
-      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/art/lessons" accentText="text-orange-400" />
     </div>
   )
 }

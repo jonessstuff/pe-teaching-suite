@@ -45,6 +45,9 @@ export default function LibraryHome() {
         </div>
       </div>
 
+      {/* My lessons — search / sort / starred */}
+      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/library/lessons" accentText="text-blue-400" />
+
       {/* Action cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Link
@@ -287,8 +290,6 @@ export default function LibraryHome() {
         </Link>
       </div>
 
-      {/* My lessons — search / sort / starred */}
-      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/library/lessons" accentText="text-blue-400" />
     </div>
   )
 }
