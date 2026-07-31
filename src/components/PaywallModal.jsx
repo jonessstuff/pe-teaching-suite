@@ -16,6 +16,10 @@ const COPY = {
     title: 'Your free trial has ended',
     body: 'Your 7-day free trial is over. Upgrade to PlansK12 to keep generating, exporting, and printing.',
   },
+  'docx-export': {
+    title: 'Download as an editable Word document',
+    body: 'Subscribe to PlansK12 to download your lessons as editable .docx files — open and edit them in Google Docs, Microsoft Word, or any word processor. Trial accounts keep the watermarked print / PDF export.',
+  },
 }
 
 export default function PaywallModal() {

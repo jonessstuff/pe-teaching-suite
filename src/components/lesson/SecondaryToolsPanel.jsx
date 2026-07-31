@@ -3,7 +3,7 @@ import {
   FileText, ClipboardList, CloudRain, Mail, ClipboardCheck,
   LayoutTemplate, Loader2, Printer, Download, X, Star, BookOpen,
   CheckSquare, Shuffle, Flame, BookMarked, Send, Globe, Users, FileWarning, ChevronDown,
-  Copy, Check, PencilRuler,
+  Copy, Check, PencilRuler, FileDown, Lock,
 } from 'lucide-react'
 import {
   generateSubPlan, generateQuiz, generateWeatherAlt,
@@ -27,13 +27,14 @@ import WorksheetRenderer from '../renderers/WorksheetRenderer'
 import { useTrial } from '../../context/TrialContext'
 import { WATERMARK_TEXT } from '../../services/trialService'
 import { printArtifact } from '../../lib/printArtifact'
+import { requestDocx, lessonToBlocks, domToBlocks } from '../../lib/docxExport'
 
 const PE_SUBJECTS = new Set(['PE', 'Health', "Family Life", "Driver's Ed", "Strength & Conditioning"])
 const DIFF_TYPES = ['advanced', 'below_grade', 'sensory', 'ell', 'physical']
 const DIFF_LABELS = { advanced: 'Advanced', below_grade: 'Below Grade', sensory: 'Sensory', ell: 'ELL', physical: 'Physical' }
 
 export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) {
-  const { requestExport, isPaid } = useTrial()
+  const { requestExport, isPaid, openPaywall } = useTrial()
   const [lo, setLo] = useState(lessonObject)
   const [toolView, setToolView] = useState(null)
   const [error, setError] = useState(null)
@@ -145,6 +146,19 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
 
   function toggle(view) {
     setToolView((prev) => (prev === view ? null : view))
+  }
+
+  // Word (.docx) export of the main lesson — PAID ONLY. Trial users get the
+  // upgrade prompt instead (the server also enforces the gate).
+  async function handleDownloadLessonDocx() {
+    if (!isPaid) { openPaywall('docx-export'); return }
+    setError(null)
+    try {
+      await requestDocx({ filename: lo?.title ?? 'lesson', title: lo?.title, blocks: lessonToBlocks(lo) })
+    } catch (err) {
+      if (err.status === 403) openPaywall('docx-export')
+      else setError(err.message ?? 'Download failed')
+    }
   }
 
   async function handleGenerateSubPlan() {
@@ -448,6 +462,12 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
           <button onClick={async () => { if (await requestExport()) window.print() }} className="btn-secondary">
             <Printer size={16} />
             Print lesson
+          </button>
+
+          {/* Word (.docx) — paid only; trial users see the upgrade prompt */}
+          <button onClick={handleDownloadLessonDocx} className="btn-secondary" title={isPaid ? 'Download as an editable Word document' : 'Upgrade to download as an editable Word document'}>
+            {isPaid ? <FileDown size={16} /> : <Lock size={16} />}
+            Word (.docx)
           </button>
         </div>
 
@@ -939,8 +959,8 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
   )
 }
 
-function ToolActions({ copyText, onClose, printRef, printWatermark }) {
-  const { requestExport } = useTrial()
+function ToolActions({ copyText, onClose, printRef, printWatermark, docxTitle }) {
+  const { requestExport, isPaid, openPaywall } = useTrial()
   const [copied, setCopied] = useState(false)
   function handleCopy() {
     navigator.clipboard.writeText(copyText)
@@ -955,6 +975,16 @@ function ToolActions({ copyText, onClose, printRef, printWatermark }) {
     if (printRef?.current) printArtifact(printRef.current, printWatermark)
     else window.print()
   }
+  // Word (.docx) — PAID ONLY, built from this artifact's rendered content.
+  async function handleDocx() {
+    if (!isPaid) { openPaywall('docx-export'); return }
+    if (!printRef?.current) return
+    try {
+      await requestDocx({ filename: docxTitle || 'plansk12-export', title: docxTitle, blocks: domToBlocks(printRef.current) })
+    } catch (err) {
+      if (err.status === 403) openPaywall('docx-export')
+    }
+  }
   return (
     <div className="no-print flex gap-2 border-t border-ink-900 pt-3 mt-1">
       {copyText !== undefined && (
@@ -966,6 +996,11 @@ function ToolActions({ copyText, onClose, printRef, printWatermark }) {
       <button onClick={handlePrint} className="no-print btn-secondary text-xs">
         <Printer size={13} /> Print
       </button>
+      {printRef && (
+        <button onClick={handleDocx} className="no-print btn-secondary text-xs" title={isPaid ? 'Download as an editable Word document' : 'Upgrade to download as an editable Word document'}>
+          {isPaid ? <FileDown size={13} /> : <Lock size={13} />} Word
+        </button>
+      )}
       <button onClick={onClose} className="no-print btn-secondary text-xs">
         <X size={13} /> Close
       </button>
