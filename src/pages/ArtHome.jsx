@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Palette, Sparkles, BookOpen, BookMarked, CalendarDays, ClipboardList, Layers, ArrowRight, ArrowLeft, Loader2, BarChart3, CalendarRange, FileInput, ScrollText, PartyPopper, Flame, BookCheck } from 'lucide-react'
 import { listLessons } from '../services/lessonsService'
 import LessonCard from '../components/lesson/LessonCard'
+import RecentLessonsPanel from '../components/lesson/RecentLessonsPanel'
 
 export default function ArtHome() {
   const [lessons, setLessons] = useState(null)
@@ -225,54 +226,8 @@ export default function ArtHome() {
         </Link>
       </div>
 
-      {/* Recent lessons */}
-      <div className="space-y-5">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-lg font-semibold text-ink-50">Recent lessons</h2>
-            {lessons !== null && (
-              <p className="text-sm text-ink-500 mt-0.5">
-                {lessons.length} lesson{lessons.length !== 1 ? 's' : ''} saved
-              </p>
-            )}
-          </div>
-          {(lessons ?? []).length > 3 && (
-            <Link
-              to="/art/lessons"
-              className="text-sm font-medium text-orange-400 hover:text-orange-300"
-            >
-              View all
-            </Link>
-          )}
-        </div>
-
-        {lessons === null && !error && (
-          <div className="flex items-center gap-2 text-ink-400 text-sm">
-            <Loader2 size={16} className="animate-spin" />
-            Loading lessons…
-          </div>
-        )}
-
-        {error && (
-          <div className="card p-4 text-sm text-red-400 border-red-500/30">
-            Couldn&rsquo;t load lessons: {error}
-          </div>
-        )}
-
-        {lessons !== null && lessons.length === 0 && (
-          <p className="text-sm text-ink-600">
-            Your art lessons will appear here once you generate your first one.
-          </p>
-        )}
-
-        {recent.length > 0 && (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {recent.map((lesson) => (
-              <LessonCard key={lesson.id} lesson={lesson} />
-            ))}
-          </div>
-        )}
-      </div>
+      {/* My lessons — search / sort / starred */}
+      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/art/lessons" accentText="text-orange-400" />
     </div>
   )
 }

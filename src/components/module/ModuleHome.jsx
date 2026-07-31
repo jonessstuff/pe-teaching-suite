@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Sparkles, BookOpen, CalendarDays, BookCheck, BarChart3, CalendarRange, PartyPopper, Flame, ScrollText, FolderOpen, BookMarked, FileInput, Layers, ArrowRight, ArrowLeft, Loader2 } from 'lucide-react'
 import { listLessons } from '../../services/lessonsService'
 import LessonCard from '../lesson/LessonCard'
+import RecentLessonsPanel from '../lesson/RecentLessonsPanel'
 
 // Reusable module dashboard/home. Driven entirely by a config (see
 // src/constants/moduleHomes.js) so every newer module gets a consistent shell
@@ -141,42 +142,8 @@ export default function ModuleHome({ config }) {
         })}
       </div>
 
-      {/* Recent items */}
-      <div className="space-y-5">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-lg font-semibold text-ink-50">Recent {browseNoun}s</h2>
-            {lessons !== null && (
-              <p className="text-sm text-ink-500 mt-0.5">
-                {lessons.length} {browseNoun}{lessons.length !== 1 ? 's' : ''} saved
-              </p>
-            )}
-          </div>
-          {(lessons ?? []).length > 3 && (
-            <Link to={browseTo} className={`text-sm font-medium ${accent.text}`}>View all</Link>
-          )}
-        </div>
-
-        {lessons === null && !error && (
-          <div className="flex items-center gap-2 text-ink-400 text-sm">
-            <Loader2 size={16} className="animate-spin" />
-            Loading…
-          </div>
-        )}
-        {error && (
-          <div className="card p-4 text-sm text-red-400 border-red-500/30">Couldn&rsquo;t load: {error}</div>
-        )}
-        {lessons !== null && lessons.length === 0 && !error && (
-          <p className="text-sm text-ink-600">
-            Your saved {browseNoun}s will appear here once you generate your first one.
-          </p>
-        )}
-        {recent.length > 0 && (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {recent.map((lesson) => <LessonCard key={lesson.id} lesson={lesson} />)}
-          </div>
-        )}
-      </div>
+      {/* My lessons — search / sort / starred */}
+      <RecentLessonsPanel lessons={lessons} error={error} browseNoun={browseNoun} browseTo={browseTo} accentText={accent.text} />
     </div>
   )
 }

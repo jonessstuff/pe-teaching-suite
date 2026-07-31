@@ -6,6 +6,7 @@ import { listPeriods } from '../services/classPeriodsService'
 import { PE_HEALTH_SUBJECTS } from '../constants/modules'
 import { useDisplayName, getTimeGreeting } from '../hooks/useDisplayName'
 import LessonCard from '../components/lesson/LessonCard'
+import RecentLessonsPanel from '../components/lesson/RecentLessonsPanel'
 
 const TIPS = [
   'Tip: Click Copy on any Plan Book section to paste straight into PlanbookEdu.',
@@ -244,55 +245,8 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Recent activity */}
-      <div className="space-y-5">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-lg font-semibold text-ink-50">Recent activity</h2>
-            {allLessons !== null && (
-              <p className="text-sm text-ink-500 mt-0.5">
-                {totalLessons} lesson{totalLessons !== 1 ? 's' : ''}
-                {totalUnits > 0 ? ` · ${totalUnits} unit${totalUnits !== 1 ? 's' : ''}` : ''}
-              </p>
-            )}
-          </div>
-          {recent.length > 0 && (
-            <Link
-              to="/lessons"
-              className="text-sm font-medium text-accent-400 hover:text-accent-300"
-            >
-              View all
-            </Link>
-          )}
-        </div>
-
-        {allLessons === null && !error && (
-          <div className="flex items-center gap-2 text-ink-400 text-sm">
-            <Loader2 size={16} className="animate-spin" />
-            Loading lessons…
-          </div>
-        )}
-
-        {error && (
-          <div className="card p-4 text-sm text-red-400 border-red-500/30">
-            Couldn&rsquo;t load lessons: {error}
-          </div>
-        )}
-
-        {allLessons !== null && lessons.length === 0 && (
-          <p className="text-sm text-ink-600">
-            Your lessons will appear here once you generate your first one.
-          </p>
-        )}
-
-        {recent.length > 0 && (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {recent.map((lesson) => (
-              <LessonCard key={lesson.id} lesson={lesson} />
-            ))}
-          </div>
-        )}
-      </div>
+      {/* My lessons — search / sort / starred */}
+      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/lessons" accentText="text-accent-400" />
     </div>
   )
 }
