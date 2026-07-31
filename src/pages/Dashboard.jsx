@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Sparkles, BookOpen, BookMarked, ArrowRight, ArrowLeft, Loader2, CalendarDays, ClipboardList, Layers, Accessibility, BarChart3, CalendarRange, Trophy, Briefcase, ScrollText, PartyPopper, FileInput, BookCheck } from 'lucide-react'
+import { Sparkles, BookOpen, BookMarked, ArrowRight, ArrowLeft, Loader2, CalendarDays, ClipboardList, Layers, Accessibility, BarChart3, CalendarRange, Trophy, Briefcase, ScrollText, PartyPopper, Flame, FileInput, BookCheck } from 'lucide-react'
 import { listLessons } from '../services/lessonsService'
 import { listPeriods } from '../services/classPeriodsService'
 import { PE_HEALTH_SUBJECTS } from '../constants/modules'
@@ -169,6 +169,14 @@ export default function Dashboard() {
       hoverClass: 'hover:border-yellow-500/40',
       title: 'Activity Bank',
       subtitle: 'Low-prep activities for any occasion',
+    },
+    {
+      to: '/warm-up-generator',
+      icon: Flame,
+      iconClass: 'bg-orange-500/15 text-orange-400',
+      hoverClass: 'hover:border-orange-500/40',
+      title: 'Warm-up / Bell-ringer',
+      subtitle: 'Quick warm-ups students start on their own',
     },
     {
       to: '/field-day',

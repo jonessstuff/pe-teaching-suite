@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Sparkles, BookOpen, CalendarDays, BookCheck, BarChart3, CalendarRange, PartyPopper, ScrollText, FolderOpen, BookMarked, FileInput, Layers, ArrowRight, ArrowLeft, Loader2 } from 'lucide-react'
+import { Sparkles, BookOpen, CalendarDays, BookCheck, BarChart3, CalendarRange, PartyPopper, Flame, ScrollText, FolderOpen, BookMarked, FileInput, Layers, ArrowRight, ArrowLeft, Loader2 } from 'lucide-react'
 import { listLessons } from '../../services/lessonsService'
 import LessonCard from '../lesson/LessonCard'
 
@@ -32,6 +32,10 @@ const UTILITY_CARDS = {
   activity: {
     Icon: PartyPopper, title: 'Activity Bank', desc: 'Low-prep activities for any occasion',
     to: '/activity-bank', well: 'bg-yellow-500/15', text: 'text-yellow-400', hover: 'hover:border-yellow-500/40', arrow: 'group-hover:text-yellow-400',
+  },
+  warmup: {
+    Icon: Flame, title: 'Warm-up / Bell-ringer', desc: 'Quick warm-ups students start on their own',
+    to: '/warm-up-generator', well: 'bg-orange-500/15', text: 'text-orange-400', hover: 'hover:border-orange-500/40', arrow: 'group-hover:text-orange-400',
   },
   eoy: {
     Icon: ScrollText, title: 'EOY Narrative', desc: 'Professional end-of-year summary',

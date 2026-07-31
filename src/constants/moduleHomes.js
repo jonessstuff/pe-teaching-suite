@@ -61,9 +61,9 @@ const ACCENTS = {
 const accent = (c) => ACCENTS[c]
 
 // Phase 3 card sets — expanded now that the shared tools support all subjects.
-const FULL = ['schedule', 'assessments', 'standards', 'pacing', 'activity', 'eoy', 'portfolio']
-const LITE = ['schedule', 'pacing', 'activity', 'eoy', 'portfolio']
-const TESTPREP = ['assessments', 'standards', 'pacing', 'activity', 'eoy', 'portfolio']
+const FULL = ['schedule', 'assessments', 'standards', 'pacing', 'activity', 'warmup', 'eoy', 'portfolio']
+const LITE = ['schedule', 'pacing', 'activity', 'warmup', 'eoy', 'portfolio']
+const TESTPREP = ['assessments', 'standards', 'pacing', 'activity', 'warmup', 'eoy', 'portfolio']
 const PRO = ['eoy', 'portfolio']
 // FULL + Long-Term Sub Binder + Import & Enhance, for the content-lesson modules
 // that both tools now support via per-module paths (Theater, Dance, World

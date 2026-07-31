@@ -50,6 +50,7 @@ import FreeLessonView from './pages/FreeLessonView'
 import ImportLesson from './pages/ImportLesson'
 import EOYNarrativeGenerator from './pages/EOYNarrativeGenerator'
 import ActivityBank from './pages/ActivityBank'
+import WarmupGenerator from './pages/WarmupGenerator'
 import PacingGuideGenerator from './pages/PacingGuideGenerator'
 import MyPacingGuides from './pages/MyPacingGuides'
 import FieldDayPlanner from './pages/FieldDayPlanner'
@@ -394,6 +395,7 @@ function App() {
           <Route path="import" element={<ImportLesson />} />
           <Route path="eoy-narrative" element={<EOYNarrativeGenerator />} />
           <Route path="activity-bank" element={<ActivityBank />} />
+          <Route path="warm-up-generator" element={<WarmupGenerator />} />
           <Route path="pacing-guide" element={<PacingGuideGenerator />} />
           <Route path="my-pacing-guides" element={<MyPacingGuides />} />
           <Route path="field-day" element={<FieldDayPlanner />} />
