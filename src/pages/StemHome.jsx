@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { FlaskConical, Sparkles, BookOpen, BookMarked, CalendarDays, ClipboardList, Layers, ArrowRight, ArrowLeft, Loader2, BarChart3, CalendarRange, FileInput, ScrollText, PartyPopper, BookCheck, Wrench } from 'lucide-react'
+import { FlaskConical, Sparkles, BookOpen, BookMarked, CalendarDays, ClipboardList, Layers, ArrowRight, ArrowLeft, Loader2, BarChart3, CalendarRange, FileInput, ScrollText, PartyPopper, Flame, BookCheck, Wrench } from 'lucide-react'
 import { listLessons } from '../services/lessonsService'
 import LessonCard from '../components/lesson/LessonCard'
 
@@ -238,6 +238,13 @@ export default function StemHome() {
             <ArrowRight size={18} className="mt-0.5 text-ink-700 transition-transform group-hover:translate-x-1 group-hover:text-yellow-400" />
           </div>
           <div><p className="font-semibold text-ink-50">Activity Bank</p><p className="mt-0.5 text-sm text-ink-500">Low-prep activities for any occasion</p></div>
+        </Link>
+        <Link to="/warm-up-generator" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-orange-500/40">
+          <div className="flex items-start justify-between">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-orange-500/15"><Flame size={22} className="text-orange-400" /></div>
+            <ArrowRight size={18} className="mt-0.5 text-ink-700 transition-transform group-hover:translate-x-1 group-hover:text-orange-400" />
+          </div>
+          <div><p className="font-semibold text-ink-50">Warm-up / Bell-ringer</p><p className="mt-0.5 text-sm text-ink-500">Quick warm-ups students start on their own</p></div>
         </Link>
       </div>
 
