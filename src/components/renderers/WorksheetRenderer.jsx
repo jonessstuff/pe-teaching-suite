@@ -113,7 +113,7 @@ function WordSearch({ f }) {
       <div className="overflow-x-auto">
         <div className="inline-grid gap-0.5" style={{ gridTemplateColumns: `repeat(${grid.length}, minmax(0, 1fr))` }}>
           {grid.flatMap((row, r) => row.map((ch, c) => (
-            <span key={`${r}-${c}`} className="flex h-6 w-6 items-center justify-center font-mono text-sm text-ink-200 select-none">
+            <span key={`${r}-${c}`} className="flex h-8 w-8 items-center justify-center font-mono text-base text-ink-200 select-none">
               {ch}
             </span>
           )))}
