@@ -10,7 +10,7 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { corsHeaders, errorResponse } from "../_shared/cors.js";
-import { Document, Packer, Paragraph, HeadingLevel } from "https://esm.sh/docx@8.5.0?target=deno";
+import { Document, Packer, Paragraph, HeadingLevel, PageBreak } from "https://esm.sh/docx@8.5.0?target=deno";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY");
@@ -59,6 +59,7 @@ Deno.serve(async (req) => {
       case "h2": children.push(new Paragraph({ text, heading: HeadingLevel.HEADING_2 })); break;
       case "h3": children.push(new Paragraph({ text, heading: HeadingLevel.HEADING_3 })); break;
       case "bullet": children.push(new Paragraph({ text, bullet: { level: 0 } })); break;
+      case "pagebreak": children.push(new Paragraph({ children: [new PageBreak()] })); break;
       case "spacer": children.push(new Paragraph({ text: "" })); break;
       default: children.push(new Paragraph({ text }));
     }

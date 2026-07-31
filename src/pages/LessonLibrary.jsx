@@ -1,9 +1,11 @@
 
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Sparkles, Loader2, Search, Star } from 'lucide-react'
+import { Sparkles, Loader2, Search, Star, FileDown, Lock } from 'lucide-react'
 import { listLessons } from '../services/lessonsService'
 import { MODULES, subjectInModule } from '../constants/modules'
+import { useTrial } from '../context/TrialContext'
+import { requestDocx, lessonsToDocxBlocks } from '../lib/docxExport'
 import LessonCard from '../components/lesson/LessonCard'
 
 export default function LessonLibrary() {
@@ -19,6 +21,24 @@ export default function LessonLibrary() {
   const [search, setSearch] = useState('')
   const [sortOrder, setSortOrder] = useState('newest') // 'newest' | 'oldest' | 'az'
   const [favoritesOnly, setFavoritesOnly] = useState(false)
+  const { isPaid, openPaywall } = useTrial()
+  const [exporting, setExporting] = useState(false)
+
+  // Bulk "Export all my lessons as .docx" — PAID ONLY (server also enforces it).
+  // Builds ONE Word document with every lesson as its own page/section.
+  async function handleExportAll() {
+    if (!isPaid) { openPaywall('docx-export'); return }
+    if (!(lessons ?? []).length) return
+    setExporting(true)
+    try {
+      await requestDocx({ filename: 'my-plansk12-lessons', title: 'My PlansK12 Lessons', blocks: lessonsToDocxBlocks(lessons) })
+    } catch (err) {
+      if (err?.status === 403) openPaywall('docx-export')
+      else setError(err.message ?? 'Export failed')
+    } finally {
+      setExporting(false)
+    }
+  }
 
   useEffect(() => {
     listLessons()
@@ -100,10 +120,21 @@ export default function LessonLibrary() {
           <p className="label-eyebrow mb-2">Library</p>
           <h1 className="text-2xl font-semibold">Lesson Library</h1>
         </div>
-        <Link to="/generate" className="btn-primary">
-          <Sparkles size={16} />
-          New lesson
-        </Link>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleExportAll}
+            disabled={exporting || (lessons?.length ?? 0) === 0}
+            className="btn-secondary disabled:opacity-50"
+            title={isPaid ? 'Download all your lessons as one editable Word document' : 'Upgrade to download your lessons as an editable Word document'}
+          >
+            {exporting ? <Loader2 size={16} className="animate-spin" /> : (isPaid ? <FileDown size={16} /> : <Lock size={16} />)}
+            Export all (.docx)
+          </button>
+          <Link to="/generate" className="btn-primary">
+            <Sparkles size={16} />
+            New lesson
+          </Link>
+        </div>
       </div>
 
       {/* Search */}

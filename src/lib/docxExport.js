@@ -75,6 +75,19 @@ export function lessonToBlocks(lo) {
   return b
 }
 
+// Combine many lesson rows into one document — each lesson as an h1 section on
+// its own page (page break between). Used for bulk "Export all my lessons".
+export function lessonsToDocxBlocks(rows) {
+  const blocks = []
+  ;(rows ?? []).forEach((row, i) => {
+    const lo = row.lesson_object ?? row
+    if (i > 0) blocks.push({ style: 'pagebreak' })
+    blocks.push({ style: 'h1', text: row.title ?? lo?.title ?? 'Lesson' })
+    blocks.push(...lessonToBlocks(lo))
+  })
+  return blocks
+}
+
 // Generic serializer for a rendered tool output (Quiz/Rubric/Worksheet/…) via
 // its DOM: headings → heading blocks, list items → bullets, paragraphs → text.
 // Skips print/download chrome (.no-print) so buttons/answer keys aren't dumped.
