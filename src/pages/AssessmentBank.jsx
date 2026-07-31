@@ -15,7 +15,6 @@ const TRIAL_PREVIEW_COUNT = 3
 const TYPE_COLORS = {
   quiz:      { badge: 'bg-amber-500/15 text-amber-400',   label: 'Quiz' },
   rubric:    { badge: 'bg-blue-500/15 text-blue-400',     label: 'Rubric' },
-  labeling:  { badge: 'bg-teal-500/15 text-teal-400',     label: 'Labeling' },
   cut_paste: { badge: 'bg-purple-500/15 text-purple-400', label: 'Cut & Paste' },
 }
 
@@ -94,7 +93,7 @@ export default function AssessmentBank() {
           {selected.assessment_type === 'rubric' && (
             <RubricRenderer rubric={selected.content} />
           )}
-          {(selected.assessment_type === 'labeling' || selected.assessment_type === 'cut_paste') && (
+          {selected.assessment_type === 'cut_paste' && (
             <WorksheetRenderer worksheet={{ formats: [selected.content] }} />
           )}
         </div>
@@ -131,7 +130,6 @@ export default function AssessmentBank() {
           <option value="all">All Types</option>
           <option value="quiz">Quiz</option>
           <option value="rubric">Rubric</option>
-          <option value="labeling">Labeling</option>
           <option value="cut_paste">Cut & Paste</option>
         </select>
         <select
@@ -155,7 +153,7 @@ export default function AssessmentBank() {
           <Archive size={32} className="mx-auto mb-3 text-ink-600" />
           <p className="font-medium text-ink-300">No assessments saved yet</p>
           <p className="mt-1 text-sm text-ink-600">
-            Generate a quiz, rubric, or worksheet (labeling / cut & paste) from any lesson, then click "Save to Assessment Bank."
+            Generate a quiz, rubric, or cut &amp; paste worksheet from any lesson, then click "Save to Assessment Bank."
           </p>
         </div>
       )}

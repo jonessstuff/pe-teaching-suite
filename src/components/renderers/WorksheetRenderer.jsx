@@ -9,7 +9,6 @@ const FORMAT_LABELS = {
   research: 'Research Sheet',
   cut_paste: 'Cut & Paste',
   multiple_choice: 'Multiple Choice Practice',
-  labeling: 'Labeling',
 }
 
 // Stable shuffle (Fisher–Yates) — memoized by callers so order holds across renders.
@@ -240,44 +239,6 @@ function MultipleChoice({ f }) {
   )
 }
 
-function Labeling({ f }) {
-  const labels = f.labels ?? []
-  const bank = useMemo(() => (f.word_bank ? shuffle(labels) : null), [f.word_bank, labels])
-  return (
-    <div className="space-y-4">
-      {/* Compact teacher note (what to draw/project) — not the student's writing area. */}
-      {f.diagram && (
-        <p className="text-xs leading-snug text-ink-500">
-          <span className="font-semibold text-ink-400">Teacher:</span> draw, project, or paste the diagram in the box below — {f.diagram}
-        </p>
-      )}
-      {/* Diagram area — real room for the picture students label. */}
-      <div className="flex items-center justify-center rounded-lg border-2 border-ink-400 min-h-[2in] text-xs uppercase tracking-wide text-ink-500">
-        Diagram area
-      </div>
-      {/* Write-lines — full width, tall, dark: room for a K–2 student to actually write. */}
-      <ol className="space-y-4">
-        {labels.map((_, i) => (
-          <li key={i} className="flex items-end gap-3">
-            <span className="w-7 shrink-0 text-base font-semibold text-ink-300">{i + 1}.</span>
-            <span className="h-9 flex-1 border-b-2 border-ink-400" />
-          </li>
-        ))}
-      </ol>
-      {bank && (
-        <div>
-          <p className="label-eyebrow text-ink-500 mb-1.5">Word Bank</p>
-          <div className="flex flex-wrap gap-2">
-            {bank.map((w, i) => (
-              <span key={i} className="rounded-md border-2 border-ink-400 px-3 py-1.5 text-sm font-medium text-ink-100">{w}</span>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
-
 const RENDERERS = {
   fill_blank: FillBlank,
   word_search: WordSearch,
@@ -285,7 +246,6 @@ const RENDERERS = {
   research: Research,
   cut_paste: CutPaste,
   multiple_choice: MultipleChoice,
-  labeling: Labeling,
 }
 
 // Answer key lines per format (returns [] when a format has no meaningful key).
@@ -299,8 +259,6 @@ function answerLines(f) {
     }
     case 'multiple_choice':
       return (f.questions ?? []).map((q, i) => `${i + 1}. ${q.answer}${q.options?.[LETTERS.indexOf(q.answer)] ? ` — ${q.options[LETTERS.indexOf(q.answer)]}` : ''}`)
-    case 'labeling':
-      return (f.labels ?? []).map((l, i) => `${i + 1}. ${l}`)
     case 'cut_paste':
       return f.mode === 'sort'
         ? (f.categories ?? []).map((c) => `${c.name}: ${(c.items ?? []).join(', ')}`)

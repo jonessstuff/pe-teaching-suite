@@ -26,8 +26,6 @@ const FORMAT_SPECS = {
     Fields: "mode": "sort" | "sequence", "instructions": string (kid-friendly cut-and-paste directions). For "sort": "categories": [{ "name": string, "items": string[] }] (2-4 categories; items are the pieces students cut out and sort — the client presents them scrambled). For "sequence": "items": string[] IN CORRECT ORDER (the client scrambles them; students cut and paste into order). Keep pieces short, concrete, picture-able. If the content is too abstract to sort/sequence physically, return applicable:false.`,
   multiple_choice: `"multiple_choice" — multiple-choice PRACTICE/REVIEW (same shape as a quiz item but framed as low-stakes practice, NOT a graded test).
     Fields: "questions": [{ "question": string, "options": string[] (exactly 4, no letter prefix), "answer": "A"|"B"|"C"|"D" }]. 6-10 questions grounded in the lesson.`,
-  labeling: `"labeling" — a diagram/image labeling activity (e.g., label the parts of a plant, a map, a body system).
-    ONLY applicable when the lesson has clear LABELABLE visual/diagram content. Fields: "diagram": string (a SHORT teacher note — 1-2 sentences, ~200 characters MAX — saying what simple diagram to draw/project and its key parts; we don't generate the image and this prints as a small caption, so keep it brief, NOT a long paragraph), "labels": string[] (the parts/regions students label, from the lesson — keep each label 1-3 words), "word_bank": boolean (true = provide the labels as a scrambled word bank). 5-10 labels (fewer for K-2). If the lesson has NO clear labelable diagram/visual content, return applicable:false with a reason.`,
 }
 
 /**
@@ -92,7 +90,7 @@ Rules:
 - Ground EVERYTHING in the lesson's ACTUAL vocabulary, concepts, and content below — do not invent material not in the lesson.
 - Frame as practice/reinforcement, never as a graded test (even multiple_choice is "practice/review").
 - Calibrate difficulty to: ${calibration}
-- If a requested format genuinely does NOT fit this lesson's content, still return an entry for it with "applicable": false and a one-sentence "reason" (omit that format's content fields). Be honest — e.g. labeling with no diagram content, or a word search with too few real vocabulary words.
+- If a requested format genuinely does NOT fit this lesson's content, still return an entry for it with "applicable": false and a one-sentence "reason" (omit that format's content fields). Be honest — e.g. a word search with too few real vocabulary words, or a cut & paste for content that can't be physically sorted or sequenced.
 - Every "applicable": true entry MUST include "title", "instructions", and its type-specific fields.`
 
   const taught = isCte

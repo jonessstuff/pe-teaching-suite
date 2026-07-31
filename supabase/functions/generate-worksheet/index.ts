@@ -20,7 +20,7 @@ const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY");
 
 const VALID_FORMATS = [
   "fill_blank", "word_search", "matching", "research",
-  "cut_paste", "multiple_choice", "labeling",
+  "cut_paste", "multiple_choice",
 ];
 
 Deno.serve(async (req) => {

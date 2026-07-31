@@ -107,7 +107,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
   const [worksheetFormats, setWorksheetFormats] = useState(['fill_blank', 'matching'])
   const [worksheet, setWorksheet] = useState(null)
   const [generatingWorksheet, setGeneratingWorksheet] = useState(false)
-  const [worksheetSaved, setWorksheetSaved] = useState({}) // { labeling: true, cut_paste: true }
+  const [worksheetSaved, setWorksheetSaved] = useState({}) // { cut_paste: true }
 
   const [expanded, setExpanded] = useState(false)
 
@@ -133,9 +133,10 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
 
   // Worksheet format options. Cut & paste is a younger-grades (K-5) activity, so
   // it's only OFFERED when the lesson targets a grade band ≤ 5. Content-based
-  // fit (e.g. labeling only when there's labelable diagram content) is judged
-  // server-side, which actually sees the lesson — a format that doesn't fit
-  // comes back marked "not generated" rather than producing a weak sheet.
+  // fit (e.g. cut & paste needs sortable/sequenceable content, word search needs
+  // enough vocabulary) is judged server-side, which actually sees the lesson — a
+  // format that doesn't fit comes back marked "not generated" rather than
+  // producing a weak sheet.
   const worksheetGrades = lo?.grade_bands ?? []
   const offersCutPaste = worksheetGrades.length > 0 && Math.min(...worksheetGrades) <= 5
   const WORKSHEET_FORMAT_OPTIONS = [
@@ -144,7 +145,6 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
     { key: 'word_search', label: 'Word search' },
     { key: 'multiple_choice', label: 'Multiple choice practice' },
     { key: 'research', label: 'Research sheet' },
-    { key: 'labeling', label: 'Labeling' },
     ...(offersCutPaste ? [{ key: 'cut_paste', label: 'Cut & paste (K–5)' }] : []),
   ]
 
@@ -324,8 +324,8 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
     })
   }
 
-  // Labeling and cut & paste worksheets can be banked like quizzes/rubrics.
-  const WORKSHEET_BANK_LABELS = { labeling: 'Labeling', cut_paste: 'Cut & Paste' }
+  // Cut & paste worksheets can be banked like quizzes/rubrics.
+  const WORKSHEET_BANK_LABELS = { cut_paste: 'Cut & Paste' }
   async function handleSaveWorksheetToBank(fmt) {
     try {
       await createAssessment({
@@ -424,9 +424,12 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
             </button>
           ))}
 
-          {/* Worksheet — independent practice; hidden for non-evaluative modules */}
+          {/* Worksheet — independent practice; hidden for non-evaluative modules.
+              Always opens the format picker so a teacher can generate MULTIPLE
+              different formats from the same lesson (each generation replaces the
+              shown sheet; the picker is the way back to make another). */}
           {allowQuizRubric && (
-            <button onClick={() => (worksheet ? toggle('worksheet') : setShowWorksheetForm(f => !f))} className={showWorksheetForm || toolView === 'worksheet' ? 'btn-primary' : 'btn-secondary'}>
+            <button onClick={() => setShowWorksheetForm(f => !f)} className={showWorksheetForm || toolView === 'worksheet' ? 'btn-primary' : 'btn-secondary'}>
               <PencilRuler size={16} />
               Worksheet
             </button>
@@ -613,7 +616,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
           )}
           <WorksheetRenderer worksheet={worksheet} />
           {allowQuizRubric && (worksheet.formats ?? [])
-            .filter(f => (f.type === 'labeling' || f.type === 'cut_paste') && f.applicable !== false)
+            .filter(f => f.type === 'cut_paste' && f.applicable !== false)
             .map(f => (
               worksheetSaved[f.type]
                 ? <p key={f.type} className="no-print text-xs text-green-400">Saved {WORKSHEET_BANK_LABELS[f.type]} to Assessment Bank ✓</p>
