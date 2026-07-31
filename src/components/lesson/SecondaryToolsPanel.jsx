@@ -26,24 +26,7 @@ import DifferentiatedLessonRenderer from '../renderers/DifferentiatedLessonRende
 import WorksheetRenderer from '../renderers/WorksheetRenderer'
 import { useTrial } from '../../context/TrialContext'
 import { WATERMARK_TEXT } from '../../services/trialService'
-
-// Print a single artifact (e.g. a worksheet) in isolation. The tool outputs live
-// inside a `print:hidden` panel, so a plain window.print() prints the underlying
-// lesson instead — this opens a dedicated window with ONLY the artifact's DOM
-// (same approach as the poster print), so trial users still get the watermark.
-function printArtifact(el, watermark) {
-  if (!el) return
-  const w = window.open('', '_blank', 'width=850,height=1100')
-  if (!w) return
-  const styles = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'))
-    .map((n) => n.outerHTML).join('\n')
-  const wm = watermark ? `<div class="trial-watermark-print">${watermark}</div>` : ''
-  w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8">${styles}<style>@page{margin:0.6in}html,body{background:#fff;margin:0}</style></head><body>${el.outerHTML}${wm}</body></html>`)
-  w.document.close()
-  w.focus()
-  // Let the linked stylesheets load before printing (else it prints unstyled).
-  setTimeout(() => { try { w.print() } catch { /* user closed the window */ } }, 450)
-}
+import { printArtifact } from '../../lib/printArtifact'
 
 const PE_SUBJECTS = new Set(['PE', 'Health', "Family Life", "Driver's Ed", "Strength & Conditioning"])
 const DIFF_TYPES = ['advanced', 'below_grade', 'sensory', 'ell', 'physical']

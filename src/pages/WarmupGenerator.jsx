@@ -1,8 +1,13 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { PLANNING_SUBJECTS } from '../constants/toolSubjects'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Flame, Loader2, Copy, Check } from 'lucide-react'
+import { ArrowLeft, Flame, Loader2, Printer, BookMarked, Copy, Check } from 'lucide-react'
 import { generateWarmup } from '../services/generationService'
+import { createAssessment } from '../services/assessmentService'
+import { useTrial } from '../context/TrialContext'
+import { WATERMARK_TEXT } from '../services/trialService'
+import { printArtifact } from '../lib/printArtifact'
+import WarmupRenderer from '../components/renderers/WarmupRenderer'
 
 const SUBJECTS = PLANNING_SUBJECTS
 const GRADES = [
@@ -15,22 +20,34 @@ const GRADES = [
 const DURATIONS = [3, 5, 10]
 
 export default function WarmupGenerator() {
+  const { requestExport, isPaid } = useTrial()
   const [subject, setSubject] = useState('PE & Health')
-  const [gradeBand, setGradeBand] = useState(5)
+  const [grades, setGrades] = useState([5])
   const [duration, setDuration] = useState(5)
   const [equipment, setEquipment] = useState('')
   const [warmups, setWarmups] = useState(null)
   const [status, setStatus] = useState('idle')
   const [error, setError] = useState(null)
-  const [copiedIdx, setCopiedIdx] = useState(null)
+  const [saved, setSaved] = useState(false)
+  const [copiedAll, setCopiedAll] = useState(false)
+  const printRef = useRef(null)
+
+  const gradeLabel = [...grades].sort((a, b) => a - b).map(g => (g === 0 ? 'K' : g)).join(', ')
+  const heading = `Warm-up options — ${subject}, Grade${grades.length > 1 ? 's' : ''} ${gradeLabel}`
+
+  function toggleGrade(v) {
+    setGrades(gs => gs.includes(v) ? gs.filter(x => x !== v) : [...gs, v])
+  }
 
   async function handleGenerate(e) {
     e.preventDefault()
+    if (grades.length === 0) { setError('Pick at least one grade.'); return }
     setStatus('generating')
     setError(null)
     setWarmups(null)
+    setSaved(false)
     try {
-      const result = await generateWarmup({ subject, gradeBand, duration, equipment: equipment.trim() })
+      const result = await generateWarmup({ subject, gradeBand: grades, duration, equipment: equipment.trim() })
       setWarmups(result.warmup_options)
       setStatus('done')
     } catch (err) {
@@ -39,11 +56,30 @@ export default function WarmupGenerator() {
     }
   }
 
-  function copyWarmup(w, idx) {
-    const text = `${w.title} (${w.duration_mins} min)\n\n${w.description}${w.equipment_needed?.length ? `\n\nEquipment: ${w.equipment_needed.join(', ')}` : ''}`
+  async function handlePrint() {
+    if (await requestExport()) printArtifact(printRef.current, isPaid ? null : WATERMARK_TEXT)
+  }
+
+  async function handleSave() {
+    try {
+      await createAssessment({
+        title: heading.replace('Warm-up options — ', ''),
+        subject,
+        gradeBands: grades,
+        assessmentType: 'warmup',
+        content: warmups,
+      })
+      setSaved(true)
+    } catch (err) { setError(err.message) }
+  }
+
+  function handleCopyAll() {
+    const text = (warmups ?? []).map(w =>
+      `${w.title} (${w.duration_mins} min)\n${w.description}${w.equipment_needed?.length ? `\nEquipment: ${w.equipment_needed.join(', ')}` : ''}`
+    ).join('\n\n')
     navigator.clipboard.writeText(text)
-    setCopiedIdx(idx)
-    setTimeout(() => setCopiedIdx(null), 2000)
+    setCopiedAll(true)
+    setTimeout(() => setCopiedAll(false), 2000)
   }
 
   return (
@@ -77,13 +113,13 @@ export default function WarmupGenerator() {
           </div>
         </div>
 
-        {/* Grade */}
+        {/* Grade — multi-select (pick one grade or a range) */}
         <div>
-          <label className="block text-sm font-medium text-ink-300 mb-2">Grade</label>
+          <label className="block text-sm font-medium text-ink-300 mb-2">Grade(s) <span className="text-ink-600 font-normal">— pick one or several for a range</span></label>
           <div className="flex flex-wrap gap-2">
             {GRADES.map(g => (
-              <button key={g.value} type="button" onClick={() => setGradeBand(g.value)}
-                className={`h-9 w-11 rounded-lg border text-sm font-semibold transition-colors ${gradeBand === g.value ? 'border-orange-500 bg-orange-500/15 text-orange-400' : 'border-ink-700 text-ink-500 hover:border-ink-500 hover:text-ink-200'}`}>
+              <button key={g.value} type="button" onClick={() => toggleGrade(g.value)}
+                className={`h-9 w-11 rounded-lg border text-sm font-semibold transition-colors ${grades.includes(g.value) ? 'border-orange-500 bg-orange-500/15 text-orange-400' : 'border-ink-700 text-ink-500 hover:border-ink-500 hover:text-ink-200'}`}>
                 {g.label}
               </button>
             ))}
@@ -125,26 +161,26 @@ export default function WarmupGenerator() {
       {/* Results */}
       {warmups && (
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-ink-50">Warm-up options — {subject}, Grade {gradeBand === 0 ? 'K' : gradeBand}</h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {warmups.map((w, i) => (
-              <div key={i} className="card flex flex-col gap-3 p-5">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <p className="font-semibold text-ink-50 leading-snug">{w.title}</p>
-                    <span className="shrink-0 text-xs text-ink-500">{w.duration_mins} min</span>
-                  </div>
-                  <button type="button" onClick={() => copyWarmup(w, i)}
-                    className="flex-shrink-0 text-ink-600 hover:text-ink-200 transition-colors">
-                    {copiedIdx === i ? <Check size={16} className="text-green-400" /> : <Copy size={16} />}
-                  </button>
-                </div>
-                <p className="text-sm text-ink-700 leading-relaxed">{w.description}</p>
-                {w.equipment_needed?.length > 0 && (
-                  <p className="text-xs text-ink-600 border-t border-ink-800 pt-2">Equipment: {w.equipment_needed.join(', ')}</p>
-                )}
-              </div>
-            ))}
+          <div className="flex flex-wrap items-center gap-2 no-print">
+            <button type="button" onClick={handlePrint}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-ink-700 px-3 py-1.5 text-sm text-ink-400 hover:text-ink-200 transition-colors">
+              <Printer size={14} /> Print
+            </button>
+            {saved ? (
+              <span className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-green-400"><Check size={14} /> Saved to Assessment Bank</span>
+            ) : (
+              <button type="button" onClick={handleSave}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-ink-700 px-3 py-1.5 text-sm text-ink-400 hover:text-ink-200 transition-colors">
+                <BookMarked size={14} /> Save to Assessment Bank
+              </button>
+            )}
+            <button type="button" onClick={handleCopyAll}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-ink-700 px-3 py-1.5 text-sm text-ink-400 hover:text-ink-200 transition-colors">
+              {copiedAll ? <Check size={14} className="text-green-400" /> : <Copy size={14} />} {copiedAll ? 'Copied!' : 'Copy all'}
+            </button>
+          </div>
+          <div ref={printRef}>
+            <WarmupRenderer warmups={warmups} heading={heading} />
           </div>
         </div>
       )}

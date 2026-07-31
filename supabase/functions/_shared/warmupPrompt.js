@@ -1,7 +1,13 @@
 import { toolDirective } from "./toolSubjectDirectives.js"
 
 export function buildWarmupPrompt({ subject, gradeBand, duration, equipment }) {
-  const gradeLabel = gradeBand === 0 ? 'K' : String(gradeBand);
+  const grades = (Array.isArray(gradeBand) ? gradeBand : [gradeBand])
+    .filter((g) => g !== undefined && g !== null);
+  const labels = (grades.length ? grades : [5]).map((g) => (g === 0 ? 'K' : String(g)));
+  const gradeLabel = labels.join(', ');
+  const gradePhrase = labels.length > 1
+    ? `grades ${gradeLabel} — each warm-up should work across this whole range (scalable up/down)`
+    : `grade ${gradeLabel}`;
   const equipmentStr = Array.isArray(equipment) ? equipment.join(', ') : (equipment ?? '');
 
   const system = `You are a ${subject} specialist teacher generating warm-up activity ideas for a class. Warm-ups should immediately engage students, prepare the body and mind for the main lesson, and be manageable by any substitute teacher.
@@ -19,18 +25,18 @@ Return ONLY a single JSON object with this exact schema:
 }
 
 Rules:
-- Generate exactly 3 warm-up options that vary meaningfully in format (e.g., locomotor, game-based, stretching/yoga, music-based, cooperative).
+- Generate 6-8 warm-up options that vary MEANINGFULLY in format (e.g., locomotor, game-based, stretching/yoga, music/rhythm-based, cooperative, focus/mindfulness) so the teacher has genuine choice — no near-duplicates.
 - Each warm-up should take approximately ${duration} minutes.
-- All three must be appropriate for grade ${gradeLabel}.
+- All must be appropriate for ${gradePhrase}.
 - Equipment is limited to what is available — do not invent equipment not in the list.
 - "description": 3-4 sentences. Include setup, how to run it, and how to signal transitions. Clear enough for a sub.
 - "equipment_needed": list only items from the available equipment, or empty array if none needed.
 - No markdown fences, no commentary — only the JSON object.`;
 
-  const user = `Generate 3 warm-up options:
+  const user = `Generate 6-8 warm-up options:
 
 Subject: ${subject}
-Grade: ${gradeLabel}
+Grade(s): ${gradeLabel}
 Duration: ${duration} minutes per warm-up
 Available equipment: ${equipmentStr || 'none'}
 

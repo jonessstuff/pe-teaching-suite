@@ -7,6 +7,7 @@ import { listAssessments, deleteAssessment } from '../services/assessmentService
 import QuizRenderer from '../components/renderers/QuizRenderer'
 import RubricRenderer from '../components/renderers/RubricRenderer'
 import WorksheetRenderer from '../components/renderers/WorksheetRenderer'
+import WarmupRenderer from '../components/renderers/WarmupRenderer'
 import { useTrial } from '../context/TrialContext'
 import UpgradeBanner from '../components/UpgradeBanner'
 
@@ -16,6 +17,7 @@ const TYPE_COLORS = {
   quiz:      { badge: 'bg-amber-500/15 text-amber-400',   label: 'Quiz' },
   rubric:    { badge: 'bg-blue-500/15 text-blue-400',     label: 'Rubric' },
   cut_paste: { badge: 'bg-purple-500/15 text-purple-400', label: 'Cut & Paste' },
+  warmup:    { badge: 'bg-orange-500/15 text-orange-400', label: 'Warm-up' },
 }
 
 const SUBJECTS = ['All Subjects', ...ASSESSABLE_SUBJECTS]
@@ -96,6 +98,9 @@ export default function AssessmentBank() {
           {selected.assessment_type === 'cut_paste' && (
             <WorksheetRenderer worksheet={{ formats: [selected.content] }} />
           )}
+          {selected.assessment_type === 'warmup' && (
+            <WarmupRenderer warmups={selected.content} />
+          )}
         </div>
       </div>
     )
@@ -108,7 +113,7 @@ export default function AssessmentBank() {
           <ArrowLeft size={14} /> Dashboard
         </Link>
         <h1 className="text-2xl font-semibold text-ink-50">Assessment Bank</h1>
-        <p className="mt-1 text-sm text-ink-500">Your saved quizzes, rubrics, and worksheet activities — searchable and ready to reuse.</p>
+        <p className="mt-1 text-sm text-ink-500">Your saved quizzes, rubrics, worksheet activities, and warm-ups — searchable and ready to reuse.</p>
       </div>
 
       {/* Filters */}
@@ -131,6 +136,7 @@ export default function AssessmentBank() {
           <option value="quiz">Quiz</option>
           <option value="rubric">Rubric</option>
           <option value="cut_paste">Cut & Paste</option>
+          <option value="warmup">Warm-up</option>
         </select>
         <select
           value={filterSubject}
