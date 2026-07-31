@@ -47,10 +47,7 @@ export default function StemHome() {
         </div>
       </div>
 
-      {/* My lessons — search / sort / starred */}
-      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/stem/lessons" accentText="text-cyan-400" />
-
-      {/* Action cards */}
+      {/* Action cards — the primary actions come first. */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Link
           to="/stem/generate"
@@ -251,6 +248,9 @@ export default function StemHome() {
           <div><p className="font-semibold text-ink-50">Warm-up / Bell-ringer</p><p className="mt-0.5 text-sm text-ink-500">Quick warm-ups students start on their own</p></div>
         </Link>
       </div>
+
+      {/* My lessons — compact preview below the tools */}
+      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/stem/lessons" accentText="text-cyan-400" />
 
     </div>
   )

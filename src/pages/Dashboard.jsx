@@ -238,15 +238,15 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* My lessons — search / sort / starred */}
-      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/lessons" accentText="text-accent-400" />
-
-      {/* Action cards */}
+      {/* Action cards — the primary actions come first. */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {actionCards.map((card) => (
           <ActionCard key={card.title} {...card} />
         ))}
       </div>
+
+      {/* My lessons — compact preview below the tools */}
+      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/lessons" accentText="text-accent-400" />
 
     </div>
   )

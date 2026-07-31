@@ -122,10 +122,7 @@ export default function ModuleHome({ config }) {
         </div>
       </div>
 
-      {/* My lessons — search / sort / starred */}
-      <RecentLessonsPanel lessons={lessons} error={error} browseNoun={browseNoun} browseTo={browseTo} accentText={accent.text} />
-
-      {/* Action cards */}
+      {/* Action cards — the primary actions come first. */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <ActionCard
           Icon={Sparkles} title={generateTitle} desc={generateDesc} to={generatePath}
@@ -142,6 +139,9 @@ export default function ModuleHome({ config }) {
           return <ActionCard key={key} {...c} to={to} />
         })}
       </div>
+
+      {/* My lessons — compact preview below the tools */}
+      <RecentLessonsPanel lessons={lessons} error={error} browseNoun={browseNoun} browseTo={browseTo} accentText={accent.text} />
 
     </div>
   )
