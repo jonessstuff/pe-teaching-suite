@@ -548,6 +548,11 @@ export default function LessonGenerator() {
                     </button>
                   ))}
                 </div>
+                {fitnessTestName === 'Presidential' && (
+                  <p className="mt-2 text-xs text-ink-400">
+                    Generates the traditional event-based test (mile run, curl-ups, pull-ups, shuttle run, V-sit reach) with the 85th-percentile Presidential Award framing. The 2025 executive order revived this test, but its official updated standards are still being finalized — lessons use the historical President&rsquo;s Challenge norms and say so. For the health-based Healthy Fitness Zone model still mandated in many states, choose FitnessGram.
+                  </p>
+                )}
               </Field>
               <Field label="Components to prep" hint="A separate prep lesson is generated for each selected component. Leave all unselected to generate one cardiovascular lesson.">
                 <div className="flex flex-wrap gap-2">
