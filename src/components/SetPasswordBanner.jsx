@@ -42,7 +42,7 @@ export default function SetPasswordBanner() {
   }
 
   return (
-    <div data-no-print className="mb-6 rounded-xl border border-brand-500/30 bg-brand-500/[0.06] p-4">
+    <div data-no-print className="no-print mb-6 rounded-xl border border-brand-500/30 bg-brand-500/[0.06] p-4">
       <div className="flex items-start gap-3">
         <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-500/15">
           <KeyRound size={16} className="text-brand-500" />
