@@ -19,11 +19,12 @@ const titleOf = (l) => (l.title ?? '').toLowerCase()
 const topicOf = (l) => (l.lesson_object?.unit ?? l.lesson_object?.topic ?? '').toLowerCase()
 const dateOf = (l) => new Date(l.updated_at ?? l.created_at ?? 0).getTime()
 
-export default function RecentLessonsPanel({ lessons, error, browseNoun = 'lesson', browseTo, accentText = 'text-accent-400' }) {
+export default function RecentLessonsPanel({ lessons, error, browseNoun = 'lesson', browseTo, accentText = 'text-accent-400', previewLimit = 6 }) {
   const [items, setItems] = useState(lessons ?? null)
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState('recent')
   const [starredOnly, setStarredOnly] = useState(false)
+  const [expanded, setExpanded] = useState(false)
   useEffect(() => { setItems(lessons ?? null) }, [lessons])
 
   function handleFav(updated) {
@@ -45,6 +46,14 @@ export default function RecentLessonsPanel({ lessons, error, browseNoun = 'lesso
     else arr.sort((a, b) => (Number(b.is_favorite) - Number(a.is_favorite)) || (dateOf(b) - dateOf(a)))
     return arr
   }, [items, search, sort, starredOnly])
+
+  // This panel sits ABOVE the module's tool cards, so it must stay compact — an
+  // unbounded grid would bury Generate/Browse/etc. under the whole library. Show
+  // a preview by default; lift the cap when the user is actively narrowing
+  // (searching or starred-only) or explicitly expands.
+  const filtering = search.trim() !== '' || starredOnly
+  const visible = filtering || expanded ? results : results.slice(0, previewLimit)
+  const hiddenCount = results.length - visible.length
 
   return (
     <section className="space-y-4">
@@ -104,8 +113,18 @@ export default function RecentLessonsPanel({ lessons, error, browseNoun = 'lesso
       )}
       {results.length > 0 && (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {results.map((lesson) => <LessonCard key={lesson.id} lesson={lesson} onFavoriteToggle={handleFav} />)}
+          {visible.map((lesson) => <LessonCard key={lesson.id} lesson={lesson} onFavoriteToggle={handleFav} />)}
         </div>
+      )}
+      {/* Expand / collapse the preview (only when not actively filtering). */}
+      {!filtering && (hiddenCount > 0 || expanded) && (
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          className={`text-sm font-medium ${accentText} hover:underline`}
+        >
+          {hiddenCount > 0 ? `Show all ${results.length} ${browseNoun}s` : 'Show fewer'}
+        </button>
       )}
     </section>
   )

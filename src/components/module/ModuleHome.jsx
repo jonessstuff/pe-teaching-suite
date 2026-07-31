@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Sparkles, BookOpen, CalendarDays, BookCheck, BarChart3, CalendarRange, PartyPopper, Flame, ScrollText, FolderOpen, BookMarked, FileInput, Layers, ArrowRight, ArrowLeft, Loader2 } from 'lucide-react'
 import { listLessons } from '../../services/lessonsService'
-import LessonCard from '../lesson/LessonCard'
 import RecentLessonsPanel from '../lesson/RecentLessonsPanel'
 
 // Reusable module dashboard/home. Driven entirely by a config (see
@@ -95,7 +94,6 @@ export default function ModuleHome({ config }) {
       .catch((err) => setError(err.message))
   }, [subject])
 
-  const recent = (lessons ?? []).slice(0, 3)
   // Most modules deep-link into the shared library filtered by module; a module
   // with its own bespoke library (e.g. CTE → /cte/lessons) overrides via browsePath.
   const browseTo = browsePath ?? `/lessons?module=${encodeURIComponent(moduleLabel)}`
