@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { CHECKOUT_URL, YEARLY_CHECKOUT_URL } from '../services/trialService'
-import { BookOpen, Globe, Accessibility, UserCheck, ClipboardList, ClipboardCheck, Mail, CalendarRange, Check, X, Users, BookMarked, PartyPopper, Newspaper, MessageCircle, Share2, Briefcase, BarChart3, ScrollText, Trophy, Dumbbell, Smartphone, SquareCheck, Sparkles, MousePointerClick, PencilLine, BadgeCheck, LogIn } from 'lucide-react'
+import { submitSchoolInterest } from '../services/schoolInterestService'
+import { BookOpen, Globe, Accessibility, UserCheck, ClipboardList, ClipboardCheck, Mail, CalendarRange, Check, X, Users, BookMarked, PartyPopper, Newspaper, MessageCircle, Share2, Briefcase, BarChart3, ScrollText, Trophy, Dumbbell, Smartphone, SquareCheck, Sparkles, MousePointerClick, PencilLine, BadgeCheck, LogIn, Building2, Loader2 } from 'lucide-react'
 
 // ─── Shared sub-components ───────────────────────────────────────────────────
 
@@ -821,6 +822,25 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ── 9b. SCHOOL / DISTRICT INTEREST ─────────────────────────────────── */}
+      <section id="schools" className="scroll-mt-8 border-t border-ink-900 bg-ink-950 px-6 py-20">
+        <div className="mx-auto max-w-2xl text-center">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-500/15">
+            <Building2 size={24} className="text-brand-500" />
+          </div>
+          <p className="label-eyebrow mb-3">For schools &amp; districts</p>
+          <h2 className="text-3xl font-display font-semibold tracking-tight text-ink-50">
+            Interested in PlansK12 for your whole school or district?
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-ink-400">
+            We don&rsquo;t have school- or district-wide licensing yet — we&rsquo;re gauging
+            interest before we build it. Tell us a little about your school and we&rsquo;ll be
+            in touch. No commitment, and no pricing to review (there isn&rsquo;t any yet).
+          </p>
+          <SchoolInterestForm />
+        </div>
+      </section>
+
       {/* ── 10. FOOTER ─────────────────────────────────────────────────────── */}
       <footer className="border-t border-ink-900 bg-white px-6 py-8">
         <div className="mx-auto flex max-w-5xl flex-col items-center gap-1 text-center sm:flex-row sm:justify-between sm:text-left">
@@ -837,6 +857,68 @@ export default function Landing() {
       </footer>
 
     </div>
+  )
+}
+
+// ─── School / District interest form ─────────────────────────────────────────
+
+function SchoolInterestForm() {
+  const [form, setForm] = useState({ name: '', organization: '', email: '', teacherCount: '', note: '' })
+  const [status, setStatus] = useState('idle') // 'idle' | 'sending' | 'sent' | 'error'
+  const [error, setError] = useState('')
+  const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    setStatus('sending')
+    setError('')
+    try {
+      await submitSchoolInterest(form)
+      setStatus('sent')
+    } catch (err) {
+      setError(err?.message ?? 'Something went wrong — please try again.')
+      setStatus('error')
+    }
+  }
+
+  if (status === 'sent') {
+    return (
+      <div className="mx-auto mt-8 max-w-md rounded-xl border border-brand-500/30 bg-brand-500/[0.06] p-6 text-center">
+        <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-brand-500/15">
+          <Check size={20} className="text-brand-500" />
+        </div>
+        <p className="font-semibold text-ink-50">Thanks — we&rsquo;ve got it.</p>
+        <p className="mt-1 text-sm text-ink-400">
+          We&rsquo;ll reach out to {form.email} as school/district options take shape.
+        </p>
+      </div>
+    )
+  }
+
+  const inputCls =
+    'w-full rounded-lg border border-ink-800 bg-ink-900/40 px-3 py-2.5 text-sm text-ink-100 placeholder:text-ink-600 outline-none focus:border-brand-500'
+
+  return (
+    <form onSubmit={handleSubmit} className="mx-auto mt-8 max-w-md space-y-3 text-left">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <input className={inputCls} placeholder="Your name" value={form.name} onChange={set('name')} autoComplete="name" required />
+        <input className={inputCls} type="email" placeholder="Work email" value={form.email} onChange={set('email')} autoComplete="email" required />
+      </div>
+      <input className={inputCls} placeholder="School or district" value={form.organization} onChange={set('organization')} autoComplete="organization" required />
+      <input className={inputCls} type="number" min="1" placeholder="Approx. number of teachers (optional)" value={form.teacherCount} onChange={set('teacherCount')} />
+      <textarea className={inputCls} rows={2} placeholder="Anything else? (optional)" value={form.note} onChange={set('note')} />
+      {status === 'error' && <p className="text-sm text-red-400">{error}</p>}
+      <button
+        type="submit"
+        disabled={status === 'sending'}
+        className="btn-primary !bg-brand-500 hover:!bg-brand-600 w-full justify-center disabled:opacity-60"
+      >
+        {status === 'sending' ? <><Loader2 size={16} className="animate-spin" /> Sending…</> : 'Register interest'}
+      </button>
+      <p className="text-center text-xs text-ink-600">
+        Just gauging interest — no commitment, and we won&rsquo;t share your details.
+      </p>
+    </form>
   )
 }
 
