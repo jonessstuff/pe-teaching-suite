@@ -64,6 +64,19 @@ Deno.serve(async (req) => {
       });
     }
 
+    // ── List ALL customers (paginated), grouped by email — dup-trial sizing ──
+    if (body?.list_all_customers) {
+      const all: Array<{ id: string; email: string | null; created: string }> = [];
+      let startingAfter: string | undefined = undefined;
+      for (let page = 0; page < 50; page++) {
+        const res: Stripe.ApiList<Stripe.Customer> = await stripe.customers.list({ limit: 100, starting_after: startingAfter });
+        for (const c of res.data) all.push({ id: c.id, email: c.email, created: new Date(c.created * 1000).toISOString() });
+        if (!res.has_more) break;
+        startingAfter = res.data[res.data.length - 1]?.id;
+      }
+      return json({ total: all.length, customers: all });
+    }
+
     const { email } = body ?? {};
     if (!email) return json({ error: "missing email" }, 400);
 
