@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { Lock, Sparkles, X } from 'lucide-react'
 import { useTrial } from '../context/TrialContext'
 import { UPGRADE_URL, EXPORT_CAP } from '../services/trialService'
+import ActivateNowButton from './ActivateNowButton'
 
 const COPY = {
   'export-cap': {
@@ -23,7 +24,7 @@ const COPY = {
 }
 
 export default function PaywallModal() {
-  const { paywall, closePaywall } = useTrial()
+  const { paywall, closePaywall, isTrialingSubscriber } = useTrial()
   if (!paywall) return null
 
   const { title, body } = COPY[paywall] ?? COPY['gated-feature']
@@ -58,13 +59,25 @@ export default function PaywallModal() {
         <p className="mt-2 text-sm leading-relaxed text-ink-500 dark:text-ink-300">{body}</p>
 
         <div className="mt-6 flex flex-col gap-2">
-          <a
-            href={UPGRADE_URL}
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-accent-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-accent-700"
-          >
-            <Sparkles size={16} />
-            Upgrade to PlansK12
-          </a>
+          {isTrialingSubscriber ? (
+            <>
+              <ActivateNowButton
+                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-accent-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-accent-700 disabled:opacity-60"
+                onActivated={closePaywall}
+              />
+              <p className="text-center text-xs text-ink-500 dark:text-ink-400">
+                Ends your free trial and charges your card today — full access unlocks instantly. Cancel anytime.
+              </p>
+            </>
+          ) : (
+            <a
+              href={UPGRADE_URL}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-accent-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-accent-700"
+            >
+              <Sparkles size={16} />
+              Upgrade to PlansK12
+            </a>
+          )}
           <Link
             to="/settings"
             onClick={closePaywall}

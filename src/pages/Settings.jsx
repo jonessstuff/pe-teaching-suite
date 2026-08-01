@@ -11,6 +11,7 @@ import { PrintTeacherInfoToggle } from '../components/LessonPrintFix'
 import { getMyCode } from '../services/referralService'
 import { useTrial } from '../context/TrialContext'
 import { EXPORT_CAP, UPGRADE_URL } from '../services/trialService'
+import ActivateNowButton from '../components/ActivateNowButton'
 import SuggestionModal from '../components/SuggestionModal'
 
 const SUBJECTS = ['PE', 'Health', 'Family Life', "Driver's Ed"]
@@ -483,7 +484,7 @@ function Field({ label, hint, children }) {
 }
 
 function PlanStatus({ trial }) {
-  const { isPaid, isOwner, isTrial, isExpired, status, daysLeft, exportCount } = trial
+  const { isPaid, isOwner, isTrial, isTrialingSubscriber, isExpired, status, daysLeft, exportCount } = trial
 
   let badgeClass = 'bg-ink-700 text-ink-300'
   let label = 'Free account'
@@ -502,7 +503,9 @@ function PlanStatus({ trial }) {
   } else if (isTrial) {
     badgeClass = 'bg-amber-500/15 text-amber-400'
     label = 'Free trial'
-    detail = `${daysLeft} day${daysLeft === 1 ? '' : 's'} left · ${exportCount}/${EXPORT_CAP} free exports used`
+    detail = isTrialingSubscriber
+      ? `${daysLeft} day${daysLeft === 1 ? '' : 's'} left · limited access until you activate. Activate now to be charged today and unlock everything.`
+      : `${daysLeft} day${daysLeft === 1 ? '' : 's'} left · ${exportCount}/${EXPORT_CAP} free exports used`
   } else if (isExpired) {
     badgeClass = 'bg-red-500/15 text-red-400'
     label = status === 'canceled' ? 'Subscription canceled' : 'Trial ended'
@@ -522,9 +525,13 @@ function PlanStatus({ trial }) {
       </div>
 
       {!isPaid && (
-        <a href={UPGRADE_URL} className="btn-primary shrink-0">
-          <Sparkles size={14} /> Upgrade
-        </a>
+        isTrialingSubscriber ? (
+          <ActivateNowButton className="btn-primary shrink-0 disabled:opacity-60" label="Activate now" />
+        ) : (
+          <a href={UPGRADE_URL} className="btn-primary shrink-0">
+            <Sparkles size={14} /> Upgrade
+          </a>
+        )
       )}
     </div>
   )

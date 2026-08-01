@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import { getProfile } from '../services/profilesService'
-import { deriveTrialState, incrementExportCount } from '../services/trialService'
+import { deriveTrialState, incrementExportCount, activateSubscriptionNow } from '../services/trialService'
 import { track } from '../lib/analytics'
 
 // Skip the Stripe round-trip if the cached status was synced this recently.
@@ -65,6 +65,20 @@ export function TrialProvider({ children }) {
     const fresh = await syncSubscriptionStatus()
     if (fresh) setProfile(fresh)
     return fresh
+  }, [])
+
+  // Activate now — end the trialing subscription's Stripe trial early and charge
+  // the card immediately. On success (Stripe reports active/past_due) we merge
+  // the paid status into the profile in memory so the whole app unlocks
+  // instantly, without waiting on the webhook or the 1-hour sync throttle.
+  // Returns { status, isPaid, error? }; a declined card returns isPaid:false.
+  const activateNow = useCallback(async () => {
+    const res = await activateSubscriptionNow()
+    if (res?.isPaid) {
+      setProfile((prev) => (prev ? { ...prev, subscription_status: res.status ?? 'active' } : prev))
+      track('subscription_activated', { status: res.status ?? 'active' })
+    }
+    return res
   }, [])
 
   useEffect(() => {
@@ -140,6 +154,7 @@ export function TrialProvider({ children }) {
     requestExport,
     refresh,
     syncStatus,
+    activateNow,
   }
 
   return <TrialContext.Provider value={value}>{children}</TrialContext.Provider>

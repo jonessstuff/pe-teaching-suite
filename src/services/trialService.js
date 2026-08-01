@@ -84,12 +84,36 @@ export function deriveTrialState(profile) {
     isPaid,
     isOwner,
     isTrial,
+    // A trialing subscriber (card on file, in the Stripe trial) can "activate
+    // now" — end the trial early and be charged immediately. Distinct from the
+    // free no-card trial (status null), which must subscribe first.
+    isTrialingSubscriber: status === 'trialing',
     isExpired,
     status,
     daysLeft,
     exportCount,
     exportsLeft: isPaid ? Infinity : Math.max(0, EXPORT_CAP - exportCount),
   }
+}
+
+// ---------------------------------------------------------------------
+// activateSubscriptionNow — ends a trialing user's Stripe trial immediately
+// (charging the card on file now) and returns the resulting { status, isPaid }.
+// Fail-closed server-side: isPaid is only true if Stripe actually charged and
+// the subscription is active. Throws on transport/500 errors.
+// ---------------------------------------------------------------------
+export async function activateSubscriptionNow() {
+  const { data, error } = await supabase.functions.invoke('activate-subscription', { body: {} })
+  if (error) {
+    // functions.invoke wraps non-2xx as an error; surface the server's message.
+    let message = error.message ?? 'Activation failed. Please try again.'
+    try {
+      const body = await error.context?.json?.()
+      if (body?.error) message = body.error
+    } catch { /* keep default */ }
+    throw new Error(message)
+  }
+  return data // { status, isPaid, error? }
 }
 
 // ---------------------------------------------------------------------
