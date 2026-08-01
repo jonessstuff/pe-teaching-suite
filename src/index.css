@@ -113,12 +113,9 @@
 }
 
 @media print {
-  aside,
-  header,
-  .no-print,
-  .print\:hidden {
-    display: none !important;
-  }
+  /* Chrome-hiding lives in the single authoritative list in styles/print.css
+     (nav/aside/header/footer/.bottom-nav/.no-print/.print:hidden/[data-no-print]).
+     Do NOT re-declare it here — a split list is how one path missed [data-no-print]. */
 
   body {
     background: white !important;

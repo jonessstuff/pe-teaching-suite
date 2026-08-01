@@ -13,12 +13,21 @@
 }
 
 @media print {
-  /* App chrome: the sidebar <nav> and the fixed bottom <nav> are both <nav>
-     elements (no dedicated class), so `nav` covers both. */
+  /* App chrome — the SINGLE authoritative hide list for print. Covers every way
+     chrome is marked across the app so no print path can miss one:
+       - <nav> (sidebar + fixed bottom nav, both bare <nav>), <aside>, <header>, <footer>
+       - .bottom-nav
+       - .no-print / .print:hidden CLASSES (tool-output chrome uses these)
+       - [data-no-print] ATTRIBUTE (banners/footer/etc.; also read by the docx serializer)
+     Keep this list complete here rather than splitting it across files — a split,
+     each-incomplete list was a real footgun (only the union hid everything). */
   nav,
+  aside,
+  header,
   footer,
   .bottom-nav,
   .no-print,
+  .print\:hidden,
   [data-no-print] {
     display: none !important;
   }
