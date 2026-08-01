@@ -110,10 +110,15 @@ export default function Landing() {
       <nav className="border-b border-ink-900 bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
           <PlansK12Logo />
-          <Link to="/login" className="btn-outline">
-            <LogIn size={15} />
-            Log in
-          </Link>
+          <div className="flex items-center gap-5">
+            <a href="#schools" className="hidden text-sm font-medium text-ink-500 transition-colors hover:text-brand-600 sm:inline">
+              For schools &amp; districts
+            </a>
+            <Link to="/login" className="btn-outline">
+              <LogIn size={15} />
+              Log in
+            </Link>
+          </div>
         </div>
       </nav>
 
