@@ -42,6 +42,28 @@ Deno.serve(async (req) => {
       return json({ canceled: { id: subId, customer: canceled.customer, previous_status: before.status, new_status: canceled.status } });
     }
 
+    // ── Invoice / decline detail (dunning diagnostics for past_due) ──────────
+    if (body?.latest_invoice_for) {
+      const sub = await stripe.subscriptions.retrieve(String(body.latest_invoice_for), {
+        expand: ["latest_invoice.payment_intent"],
+      });
+      const inv = sub.latest_invoice as Stripe.Invoice | null;
+      const pi = (inv?.payment_intent ?? null) as Stripe.PaymentIntent | null;
+      const err = pi?.last_payment_error ?? null;
+      return json({
+        subscription: sub.id,
+        status: sub.status,
+        invoice: inv ? {
+          id: inv.id,
+          status: inv.status,
+          amount_due: inv.amount_due,
+          attempt_count: inv.attempt_count,
+          next_payment_attempt: inv.next_payment_attempt ? new Date(inv.next_payment_attempt * 1000).toISOString() : null,
+        } : null,
+        last_payment_error: err ? { code: err.code, decline_code: err.decline_code, message: err.message } : null,
+      });
+    }
+
     const { email } = body ?? {};
     if (!email) return json({ error: "missing email" }, 400);
 
