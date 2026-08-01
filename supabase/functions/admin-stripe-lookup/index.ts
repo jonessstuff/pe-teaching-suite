@@ -53,12 +53,19 @@ Deno.serve(async (req) => {
       return json({
         subscription: sub.id,
         status: sub.status,
+        collection_method: sub.collection_method,
         invoice: inv ? {
           id: inv.id,
-          status: inv.status,
+          status: inv.status,               // open | paid | uncollectible | void
+          paid: inv.paid,
           amount_due: inv.amount_due,
           attempt_count: inv.attempt_count,
           next_payment_attempt: inv.next_payment_attempt ? new Date(inv.next_payment_attempt * 1000).toISOString() : null,
+        } : null,
+        payment_intent: pi ? {
+          id: pi.id,
+          status: pi.status,                // processing | succeeded | requires_action | ...
+          payment_method_types: pi.payment_method_types,   // card | us_bank_account | ...
         } : null,
         last_payment_error: err ? { code: err.code, decline_code: err.decline_code, message: err.message } : null,
       });
