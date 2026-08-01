@@ -128,11 +128,25 @@ async function sendSetupEmail(email: string) {
 
 // Look up an already-linked user for subscription/invoice events (no creation).
 async function findLinkedUser(customerId: string, email: string | null) {
+  // Primary + durable: match on the Stripe customer id (the join key).
   const byCust = await admin.from("profiles").select("id").eq("stripe_customer_id", customerId).maybeSingle();
   if (byCust.data?.id) return byCust.data.id as string;
+
+  // Email fallback — link ONLY an account that has NO customer id yet (a genuinely
+  // new payer). If the account already has a DIFFERENT, deliberately-set
+  // stripe_customer_id (byCust didn't match above, so it isn't this customer), we
+  // must NOT link this event to it: caching it would clobber that keeper with a
+  // different — often duplicate or canceled — customer's status (the exact bug
+  // that broke every duplicate-trial cleanup). Such an event is genuinely
+  // unmatched to this customer, so the caller logs it instead of overwriting.
   if (email) {
     const byEmail = await admin.rpc("get_user_id_by_email", { p_email: email.trim().toLowerCase() });
-    if (byEmail.data) return byEmail.data as string;
+    const uid = byEmail.data as string | null;
+    if (uid) {
+      const { data: prof } = await admin
+        .from("profiles").select("stripe_customer_id").eq("id", uid).maybeSingle();
+      if ((prof?.stripe_customer_id ?? null) === null) return uid; // no keeper set yet → safe to link
+    }
   }
   return null;
 }
