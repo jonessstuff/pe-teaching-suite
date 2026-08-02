@@ -84,6 +84,41 @@ Deno.serve(async (req) => {
       return json({ total: all.length, customers: all });
     }
 
+    // ── Customer-id lookup with PRICE + checkout-link detail (rate questions) ─
+    if (body?.customer_id) {
+      const custId = String(body.customer_id);
+      const cust = await stripe.customers.retrieve(custId) as Stripe.Customer;
+      const subs = await stripe.subscriptions.list({ customer: custId, status: "all", limit: 100, expand: ["data.items.data.price"] });
+      const sessions = await stripe.checkout.sessions.list({ customer: custId, limit: 10 });
+      return json({
+        customer: { id: custId, email: cust.email, created: new Date(cust.created * 1000).toISOString(), name: cust.name },
+        subscriptions: subs.data.map((s) => ({
+          id: s.id, status: s.status,
+          created: new Date(s.created * 1000).toISOString(),
+          trial_end: s.trial_end ? new Date(s.trial_end * 1000).toISOString() : null,
+          items: s.items.data.map((it) => {
+            const p = it.price;
+            return { price_id: p.id, nickname: p.nickname, unit_amount: p.unit_amount, interval: p.recurring?.interval, product: typeof p.product === "string" ? p.product : p.product?.id };
+          }),
+        })),
+        checkout_sessions: sessions.data.map((cs) => ({
+          id: cs.id, created: new Date(cs.created * 1000).toISOString(),
+          payment_link: cs.payment_link, mode: cs.mode, amount_total: cs.amount_total,
+          status: cs.status,
+        })),
+      });
+    }
+
+    // ── Resolve a payment link id → its URL + price (which link / rate is it?) ─
+    if (body?.payment_link_id) {
+      const pl = await stripe.paymentLinks.retrieve(String(body.payment_link_id));
+      const items = await stripe.paymentLinks.listLineItems(String(body.payment_link_id), { limit: 10, expand: ["data.price"] });
+      return json({
+        id: pl.id, url: pl.url, active: pl.active,
+        line_items: items.data.map((it) => ({ unit_amount: (it.price as Stripe.Price)?.unit_amount, interval: (it.price as Stripe.Price)?.recurring?.interval, price_id: (it.price as Stripe.Price)?.id })),
+      });
+    }
+
     const { email } = body ?? {};
     if (!email) return json({ error: "missing email" }, 400);
 
