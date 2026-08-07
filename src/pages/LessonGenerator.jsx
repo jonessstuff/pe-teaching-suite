@@ -398,7 +398,7 @@ export default function LessonGenerator() {
 
         {/* ── Section 1: Class Setup ── */}
         <FormSection title="Class Setup" first>
-          {periods.length > 0 && (
+          {periods.length > 0 ? (
             <Field label="Class period (optional)" hint="Auto-fills subject, grade bands, class size, and duration.">
               <select
                 className="input-field"
@@ -417,7 +417,26 @@ export default function LessonGenerator() {
                   {periodStudents.filter((s) => s.accommodation_notes).length} student accommodation{periodStudents.filter((s) => s.accommodation_notes).length !== 1 ? 's' : ''} will be included in this lesson.
                 </p>
               )}
+              <p className="mt-1.5 text-xs">
+                <Link to="/schedule" className="font-medium text-accent-400 hover:text-accent-300">
+                  Add or edit class periods →
+                </Link>
+              </p>
             </Field>
+          ) : (
+            // No periods yet — give a real path to create them (this is the
+            // "class setup" entry point from the generator flow).
+            <div className="rounded-lg border border-dashed border-ink-700 bg-ink-900/40 p-4">
+              <p className="text-sm text-ink-300">
+                Set up your class periods once — they&rsquo;ll auto-fill subject, grade, class size, and duration here every time.
+              </p>
+              <Link
+                to="/schedule"
+                className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-accent-400 hover:text-accent-300"
+              >
+                <Plus size={13} /> Set up my classes
+              </Link>
+            </div>
           )}
 
           <Field label="Subject">

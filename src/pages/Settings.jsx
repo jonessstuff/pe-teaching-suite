@@ -353,6 +353,19 @@ export default function Settings() {
         )}
       </div>
 
+      {/* My classes — class-period setup, also reachable from the lesson
+          generator's Class Setup section, so a teacher can manage it from either. */}
+      <div className="card p-6 space-y-3">
+        <h2 className="font-semibold text-ink-50">My classes</h2>
+        <p className="text-sm text-ink-400">
+          Set up your class periods so the lesson generator can auto-fill subject, grade, class size,
+          and duration — and pull in student accommodations for each class.
+        </p>
+        <Link to="/schedule" className="btn-secondary inline-flex w-fit">
+          Manage class periods →
+        </Link>
+      </div>
+
       {/* Referral */}
       {referralCode && (
         <div className="card p-6 space-y-4">
