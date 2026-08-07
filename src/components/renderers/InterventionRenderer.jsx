@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Copy, Check, Info, Layers, Target, TrendingUp, ClipboardList, ShieldAlert } from 'lucide-react'
+import { Copy, Check, Info, Layers, Target, TrendingUp, ClipboardList, ShieldAlert, Tag, Accessibility, Brain, Scale } from 'lucide-react'
 
 const DOMAIN_LABEL = { Reading: 'Reading', Math: 'Math', Behavior: 'Behavior' }
 
@@ -27,6 +27,11 @@ export default function InterventionRenderer({ lesson }) {
           {lesson.tier && (
             <span className="rounded px-2 py-0.5 text-xs font-semibold bg-amber-500/15 text-ink-50">
               {lesson.tier}
+            </span>
+          )}
+          {lesson.intervention_code?.code && (
+            <span className="rounded px-2 py-0.5 text-xs font-semibold bg-indigo-500/20 text-ink-50">
+              {lesson.intervention_code.code}{lesson.intervention_code.name ? ` · ${lesson.intervention_code.name}` : ''}
             </span>
           )}
           {lesson.grade_band && lesson.grade_band !== 'not specified' && (
@@ -65,6 +70,72 @@ export default function InterventionRenderer({ lesson }) {
       {lesson.framework_basis && (
         <Section title="Framework Basis" copyText={lesson.framework_basis}>
           <p className="text-ink-300 whitespace-pre-line">{lesson.framework_basis}</p>
+        </Section>
+      )}
+
+      {/* MTSS taxonomy categorization */}
+      {(lesson.intervention_code?.code || (lesson.also_consider ?? []).length > 0) && (
+        <Section
+          title="MTSS Intervention Code"
+          icon={Tag}
+          copyText={[
+            lesson.intervention_code?.code && `${lesson.intervention_code.code} — ${lesson.intervention_code.name ?? ''}${lesson.intervention_code.tier ? ` (${lesson.intervention_code.tier})` : ''}`,
+            (lesson.also_consider ?? []).length ? `Also consider: ${(lesson.also_consider ?? []).map((c) => `${c.code} ${c.name}`).join('; ')}` : '',
+          ].filter(Boolean).join('\n')}
+        >
+          {lesson.intervention_code?.code && (
+            <p className="text-ink-300">
+              <span className="font-semibold text-ink-100">{lesson.intervention_code.code}</span>
+              {lesson.intervention_code.name ? ` — ${lesson.intervention_code.name}` : ''}
+              {lesson.intervention_code.tier ? <span className="ml-1 text-xs text-ink-500">({lesson.intervention_code.tier})</span> : null}
+            </p>
+          )}
+          {(lesson.also_consider ?? []).length > 0 && (
+            <div className="mt-2 flex flex-wrap items-center gap-1.5">
+              <span className="text-xs text-ink-500">Also consider:</span>
+              {lesson.also_consider.map((c, i) => (
+                <span key={i} className="rounded bg-ink-900 px-1.5 py-0.5 text-xs text-ink-300">
+                  {c.code} — {c.name}
+                </span>
+              ))}
+            </div>
+          )}
+        </Section>
+      )}
+
+      {/* UDL alignment */}
+      {lesson.udl_alignment && (lesson.udl_alignment.engagement || lesson.udl_alignment.representation || lesson.udl_alignment.action_expression) && (
+        <Section
+          title="UDL Alignment (CAST)"
+          icon={Accessibility}
+          copyText={[
+            lesson.udl_alignment.engagement && `Engagement: ${lesson.udl_alignment.engagement}`,
+            lesson.udl_alignment.representation && `Representation: ${lesson.udl_alignment.representation}`,
+            lesson.udl_alignment.action_expression && `Action & Expression: ${lesson.udl_alignment.action_expression}`,
+          ].filter(Boolean).join('\n')}
+        >
+          <dl className="space-y-2">
+            <Field label="Engagement (the why)" value={lesson.udl_alignment.engagement} />
+            <Field label="Representation (the what)" value={lesson.udl_alignment.representation} />
+            <Field label="Action & Expression (the how)" value={lesson.udl_alignment.action_expression} />
+          </dl>
+        </Section>
+      )}
+
+      {/* Executive-function supports */}
+      {(lesson.executive_function_supports ?? []).length > 0 && (
+        <Section
+          title="Executive-Function Supports"
+          icon={Brain}
+          copyText={(lesson.executive_function_supports ?? []).map((e) => `${e.skill}: ${e.support}`).join('\n')}
+        >
+          <ul className="space-y-1.5 text-ink-300">
+            {lesson.executive_function_supports.map((e, i) => (
+              <li key={i} className="text-sm">
+                <span className="font-semibold text-ink-100">{e.skill}: </span>{e.support}
+              </li>
+            ))}
+          </ul>
         </Section>
       )}
 
@@ -131,6 +202,29 @@ export default function InterventionRenderer({ lesson }) {
             <Field label="Simple measure" value={pm.simple_measure} />
             <Field label="How often to re-check" value={pm.recheck_frequency} />
             <Field label="If responding / not responding" value={pm.decision_guidance} />
+          </dl>
+        </Section>
+      )}
+
+      {/* Data-based decision rules */}
+      {lesson.decision_rules && (lesson.decision_rules.goal_aimline || lesson.decision_rules.response_criteria || lesson.decision_rules.decision || lesson.decision_rules.measure) && (
+        <Section
+          title="Data-Based Decision Rules"
+          icon={Scale}
+          copyText={[
+            lesson.decision_rules.goal_aimline && `Goal / aimline: ${lesson.decision_rules.goal_aimline}`,
+            lesson.decision_rules.measure && `Measure: ${lesson.decision_rules.measure}`,
+            lesson.decision_rules.schedule && `Data schedule: ${lesson.decision_rules.schedule}`,
+            lesson.decision_rules.response_criteria && `Response criteria: ${lesson.decision_rules.response_criteria}`,
+            lesson.decision_rules.decision && `Decision: ${lesson.decision_rules.decision}`,
+          ].filter(Boolean).join('\n')}
+        >
+          <dl className="space-y-2">
+            <Field label="Goal / aimline" value={lesson.decision_rules.goal_aimline} />
+            <Field label="Progress measure" value={lesson.decision_rules.measure} />
+            <Field label="Data-collection schedule" value={lesson.decision_rules.schedule} />
+            <Field label="Response criteria (points vs. aimline / trend)" value={lesson.decision_rules.response_criteria} />
+            <Field label="Decision" value={lesson.decision_rules.decision} />
           </dl>
         </Section>
       )}

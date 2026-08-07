@@ -20,6 +20,7 @@
 
 import { STANDARDS_STACK as READING_STANDARDS } from "./readingSpecialistPrompt.js"
 import { STANDARDS_STACK as MATH_STANDARDS } from "./mathSpecialistPrompt.js"
+import { formatTaxonomy } from "./interventionTaxonomy.js"
 
 const GRADE_BANDS = {
   "k-2": "K–2",
@@ -39,6 +40,26 @@ const BEHAVIOR_STANDARDS = `Ground the intervention in evidence-informed, positi
 - Use proactive, skill-building, teach-and-reinforce strategies: explicitly teach the replacement/expected skill, model it, set students up for success, and reinforce it. Self-monitoring and reset approaches (like a green/yellow/red self-check) are framed as supportive, never punitive.
 - Structure it as a ready-to-run, preventative small-group SEL/behavioral skill-building routine (consistent with Student Support Team activity practice) that a teacher or interventionist can lead.
 - Keep it strengths-based and age-respectful.`
+
+const UDL_STRAND = `Ground the intervention in Universal Design for Learning (CAST UDL Guidelines) as a FIRST-CLASS lens. Design for and tag which of the three UDL principles this intervention serves:
+- Multiple Means of ENGAGEMENT (the "why") — recruiting interest, sustaining effort and persistence, and self-regulation.
+- Multiple Means of REPRESENTATION (the "what") — perception, language and symbols, and comprehension (present content in more than one format).
+- Multiple Means of ACTION & EXPRESSION (the "how") — physical action, expression and communication, and executive functions (varied ways to practice and demonstrate learning while keeping the same goal).
+UDL is especially central for Tier 1 / universal supports — a strong universal design often reduces the need for more intensive tiers. Set udl_alignment for the principle(s) served (leave a principle's field empty if it doesn't apply).`
+
+const EF_STRAND = `Treat EXECUTIVE-FUNCTION supports as a FIRST-CLASS strand. When the concern or intervention involves how a student initiates, organizes, sustains, or self-manages work, explicitly name the executive-function skill(s) involved (e.g., task initiation, working memory, planning and organization, time management, self-monitoring, cognitive flexibility, emotional/attention regulation) and the concrete support for each (routines, planners, checklists, visual schedules, timers, chunking, checkpoints, self-monitoring tools). If the intervention is purely an academic skill with no executive-function component, return an EMPTY executive_function_supports array — do not force it.`
+
+const DECISION_RULES_GUIDANCE = `Provide REAL data-based decision-rule scaffolding in decision_rules — not vague advice:
+- goal_aimline: a specific, measurable goal and, where sensible, an aimline (a target level by a target date on the progress measure — e.g., "from ~20 to ~40 correct sounds per minute over 8 weeks").
+- measure: the specific progress-monitoring measure (a curriculum-based measure, brief skill probe, frequency or percent-correct count, etc.).
+- schedule: how often data are collected (e.g., "1-2 brief probes per week for 6-8 weeks; graph each point").
+- response_criteria: an EXPLICIT decision rule tied to the data pattern, using the standard MTSS logic of data points vs. the aimline and the trend line — e.g., "4 consecutive points below the aimline OR a flat/decelerating trend across 3-4 weeks = NOT responding; a trend at or above the aimline = responding."
+- decision: the concrete next step keyed to that rule — CONTINUE (responding), ADJUST / INTENSIFY (partial or no response — increase frequency, duration, or explicitness, or reduce group size), or bring the data to the team to consider a more intensive tier. The team's own data and judgment decide actual tier placement and eligibility.`
+
+const TAXONOMY_INSTRUCTION = `CATEGORIZE this intervention under the school's official Tier 1 / Tier 2 intervention taxonomy below. Choose the ONE code+name that best matches the primary intervention (set intervention_code with its tier), plus 1-3 additional closely-related codes (set also_consider). Use the EXACT code and name as written — never invent a code. Match the code's tier to the tier framing (Tier 1 codes for Tier 1 universal supports; Tier 2 codes for Tier 2 supplemental support; for a Tier 3 concern, pick the closest Tier 2 code and note the added intensity in tier_rationale). A few source codes repeat a number — the NAME disambiguates, so always output BOTH the code and the name.
+
+INTERVENTION TAXONOMY (use these exact codes):
+${formatTaxonomy()}`
 
 const DISCLAIMER_RULES = `CRITICAL — READ CAREFULLY. This tool generates INSTRUCTIONAL INTERVENTION IDEAS ONLY:
 - It does NOT replace formal universal screening or diagnostic assessment tools.
@@ -78,6 +99,14 @@ ${MTSS_ANCHOR}
 
 ${domainGrounding(domain)}
 
+${UDL_STRAND}
+
+${EF_STRAND}
+
+${DECISION_RULES_GUIDANCE}
+
+${TAXONOMY_INSTRUCTION}
+
 ${DISCLAIMER_RULES}
 
 ${JSON_ONLY} Match this schema EXACTLY:
@@ -92,6 +121,10 @@ ${JSON_ONLY} Match this schema EXACTLY:
   "tier": string,
   "tier_rationale": string,
   "framework_basis": string,
+  "intervention_code": { "code": string, "name": string, "tier": string },
+  "also_consider": [ { "code": string, "name": string } ],
+  "udl_alignment": { "engagement": string, "representation": string, "action_expression": string },
+  "executive_function_supports": [ { "skill": string, "support": string } ],
   "intervention": {
     "format": string,
     "schedule": string,
@@ -106,6 +139,13 @@ ${JSON_ONLY} Match this schema EXACTLY:
     "recheck_frequency": string,
     "decision_guidance": string
   },
+  "decision_rules": {
+    "goal_aimline": string,
+    "measure": string,
+    "schedule": string,
+    "response_criteria": string,
+    "decision": string
+  },
   "standards_alignment": [ { "framework": string, "note": string } ],
   "documentation_note": string,
   "disclaimer": string
@@ -119,9 +159,13 @@ Field notes:
 - targeted_skill: the specific underlying skill/gap this intervention targets (narrow and precise, drawn from the domain framework).
 - tier: the MTSS tier this approach fits ("Tier 1", "Tier 2", or "Tier 3"); tier_rationale: why, in one or two sentences, noting the team's data decides actual placement.
 - framework_basis: name the domain framework(s) grounding this intervention and how (e.g., IDA Structured Literacy — explicit, systematic, cumulative).
+- intervention_code: the single best-matching taxonomy code for the primary intervention — { code, name, tier } using the EXACT code and name from the taxonomy. also_consider: 1-3 related codes ({ code, name }); use [] if none fit.
+- udl_alignment: for each UDL principle this intervention serves (engagement / representation / action_expression), a brief note of HOW; leave a field empty ("") for principles it doesn't serve.
+- executive_function_supports: array of { skill, support } for any executive-function skills the intervention supports; [] if none.
+- decision_rules: real data-based rules — goal_aimline, measure, schedule, response_criteria (an explicit points-vs-aimline / trend-line rule), and decision (continue / adjust-intensify / bring to team). This is the formal data layer; progress_monitoring stays the quick observational layer.
 - intervention.steps: 4–7 concrete steps for a mini-lesson/activity that directly targets the described gap; teacher_moves: explicit modeling, error correction, and scaffolds. Keep it genuinely doable.
 - progress_monitoring: what_to_watch (observable indicators), success_indicators (how you'll know it's working), simple_measure (one easy measure — e.g., correct sounds per minute, % of problems correct with/without manipulatives, frequency count), recheck_frequency (how often to re-check, e.g., "briefly weekly for 4–6 weeks"), decision_guidance (what to do if the student is / isn't responding — continue, adjust/intensify, or bring more data to the team).
-- standards_alignment: 2–4 entries. ALWAYS include one with framework "MTSS/RTI" and one with framework "NCII"; then the domain framework(s) (framework field like "IDA KPS", "NCTM Principles to Actions", or "Positive Behavior Support").
+- standards_alignment: 3–6 entries. ALWAYS include one with framework "MTSS/RTI", one with framework "NCII", and one with framework "UDL (CAST)"; add one with framework "Executive Function" when executive_function_supports is non-empty; then the domain framework(s) (framework field like "IDA KPS", "NCTM Principles to Actions", or "Positive Behavior Support").
 - documentation_note: one line the teacher can keep as a record of the intervention attempt (what was tried, tier, start date to fill in).
 - disclaimer: a concise version of the CRITICAL boundaries above.
 

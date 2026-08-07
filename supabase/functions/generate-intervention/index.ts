@@ -33,9 +33,10 @@ Deno.serve(async (req: Request) => {
   try {
     const { system, user } = buildInterventionPrompt(body as Record<string, unknown>)
 
-    // A single tiered intervention with steps + progress monitoring + standards
-    // is prose-dense but bounded; completes on Sonnet under the 150s limit.
-    const maxTokens = 4500
+    // A single tiered intervention with steps + progress monitoring + taxonomy
+    // categorization + UDL/EF tags + decision rules + standards. Denser than
+    // before but still bounded; completes on Sonnet under the 150s limit.
+    const maxTokens = 6500
     const _t0 = Date.now();
     const result = await callClaudeForJson(system, user, maxTokens)
     await captureLessonGenerated(req, { subject: "Intervention Planning", grades: gradeBand ? [gradeBand] : [], type: "intervention", durationMs: Date.now() - _t0 });

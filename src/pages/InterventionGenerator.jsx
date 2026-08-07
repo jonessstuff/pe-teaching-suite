@@ -282,7 +282,7 @@ export default function InterventionGenerator() {
           </div>
           <div className="flex-1">
             <h1 className="text-xl font-semibold text-ink-50">Intervention Planning</h1>
-            <p className="text-xs text-ink-500">MTSS/RTI tiered intervention ideas · Reading, Math &amp; Behavior</p>
+            <p className="text-xs text-ink-500">MTSS/RTI interventions · coded to your Tier 1/2 taxonomy · UDL + executive-function tagged · data-based decision rules</p>
           </div>
           <button type="button" onClick={() => { setLookupInitials(initials.trim()); setEntries(null); setView('history') }} className="flex items-center gap-1.5 rounded-lg border border-ink-700 px-3 py-1.5 text-sm text-ink-300 hover:border-stone-400/40 hover:text-ink-100 transition-colors">
             <History size={15} /> History
