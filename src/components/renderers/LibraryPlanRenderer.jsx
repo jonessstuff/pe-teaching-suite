@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Copy, Check } from 'lucide-react'
+import Tier1SupportsBlock from './Tier1SupportsBlock'
 
 function formatGrade(g) {
   return g === 0 ? 'K' : String(g)
@@ -241,6 +242,8 @@ export default function LibraryPlanRenderer({ lesson }) {
           </ul>
         </Section>
       )}
+
+      <Tier1SupportsBlock supports={lesson.tier1_udl_ef} />
 
       {/* ELL Accommodations */}
       {ell && (

@@ -28,6 +28,7 @@ Deno.serve(async (req: Request) => {
     handsOn,
     stationsMode,
     stationCount,
+    includeUdlEf,
   } = body ?? {}
 
   if (!Array.isArray(gradeBands) || (gradeBands as number[]).length === 0) {
@@ -46,6 +47,7 @@ Deno.serve(async (req: Request) => {
       includeELL: (includeELL as boolean) === true,
       handsOn: (handsOn as boolean) === true,
       stationsMode: (stationsMode as boolean) === true,
+      includeUdlEf: (includeUdlEf as boolean) === true,
       stationCount: Number(stationCount) || 3,
     })
 

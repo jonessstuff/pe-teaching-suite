@@ -74,6 +74,9 @@ Deno.serve(async (req: Request) => {
         // Structured outputs guarantees valid JSON, but the ELL-augmented schema
         // exceeds Anthropic's compiled-grammar size limit (400). ELL is opt-in and
         // rarer, so skip the schema there and fall back to the tolerant text parser.
+        // (Tier 1 UDL/EF is likewise unsupported for CTE — the base schema is already
+        // at the grammar ceiling and the schema-less fallback is unreliable on Haiku;
+        // see cteLessonPrompt.js. So the toggle is simply not offered on the CTE page.)
         const _t0 = Date.now()
         const result = await callClaudeForJson(system, user, maxTokens, CTE_MODEL, includeELL ? null : schema)
         finished = true

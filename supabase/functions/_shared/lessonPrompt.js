@@ -12,6 +12,7 @@
  */
 
 import { resolveStateName } from "./stateNames.js";
+import { udlEfDirective } from "./udlEfDirective.js";
 
 function getSubjectGuidance(subject, stateName) {
   const isVirginia = stateName === "Virginia";
@@ -83,6 +84,7 @@ export function buildLessonGenerationPrompt(input) {
     students = [],
     includeELL = false,
     handsOn = false,
+    includeUdlEf = false,
   } = input;
 
   const stateName = resolveStateName(state);
@@ -152,7 +154,7 @@ Example: "\\n\\nACCOMMODATION — Jamie: during the kickball batting drill, allo
 Do NOT blend student accommodations into the middle of a paragraph. They must appear as distinctly labeled lines at the end of the modifications text, one per student.
 
 Students requiring accommodations:
-${students.map((s) => `- ${s.name_or_initials}: ${s.accommodation_notes}`).join("\n")}` : ""}${includeELL ? `\n\nELL ACCOMMODATIONS: This lesson will be taught to a class that includes English Language Learners. In addition to all fields in the schema above, add an "ell_accommodations" object to the JSON with these subfields:\n- language_objectives: 2–3 strings in format "Students will [language skill] in order to [content purpose]"\n- tiered_vocabulary: { tier_1: [everyday words students likely know], tier_2: [academic cross-subject vocabulary], tier_3: [content-specific vocabulary unique to this lesson] } — each value is an array of strings\n- sentence_frames: 4–6 strings, each labeled with the specific lesson context (e.g. "During partner practice: 'I noticed that you ___'", "When explaining your work: 'I chose ___ because ___'")\n- visual_supports: 4–6 specific, concrete suggestions for visual supports, gestures, or realia tied to this lesson's actual activities\n- simplified_instructions: single string — 2–3 short sentences describing the core task at a 2nd-grade reading level, no idioms, no figurative language` : ""}${handsOn ? HANDS_ON_DIRECTIVE : ""}`;
+${students.map((s) => `- ${s.name_or_initials}: ${s.accommodation_notes}`).join("\n")}` : ""}${includeELL ? `\n\nELL ACCOMMODATIONS: This lesson will be taught to a class that includes English Language Learners. In addition to all fields in the schema above, add an "ell_accommodations" object to the JSON with these subfields:\n- language_objectives: 2–3 strings in format "Students will [language skill] in order to [content purpose]"\n- tiered_vocabulary: { tier_1: [everyday words students likely know], tier_2: [academic cross-subject vocabulary], tier_3: [content-specific vocabulary unique to this lesson] } — each value is an array of strings\n- sentence_frames: 4–6 strings, each labeled with the specific lesson context (e.g. "During partner practice: 'I noticed that you ___'", "When explaining your work: 'I chose ___ because ___'")\n- visual_supports: 4–6 specific, concrete suggestions for visual supports, gestures, or realia tied to this lesson's actual activities\n- simplified_instructions: single string — 2–3 short sentences describing the core task at a 2nd-grade reading level, no idioms, no figurative language` : ""}${handsOn ? HANDS_ON_DIRECTIVE : ""}${includeUdlEf ? udlEfDirective() : ""}`;
 
   const user = `Generate a complete lesson with these parameters:
 

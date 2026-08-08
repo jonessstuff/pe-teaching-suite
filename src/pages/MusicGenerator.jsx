@@ -6,6 +6,7 @@ import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
 import LessonPrintFix from '../components/LessonPrintFix'
 import StationsToggle from '../components/StationsToggle'
+import UdlEfToggle from '../components/UdlEfToggle'
 import MusicPlanRenderer from '../components/renderers/MusicPlanRenderer'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 import { useProfileDefaults, useGradeStateDefaults } from '../hooks/useProfileDefaults'
@@ -82,6 +83,7 @@ export default function MusicGenerator() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [includeELL, setIncludeELL] = useState(false)
+  const [includeUdlEf, setIncludeUdlEf] = useState(false)
   const [handsOn, setHandsOn] = useState(false)
   const [useStations, setUseStations] = useState(false)
   const [numStations, setNumStations] = useState(3)
@@ -120,6 +122,7 @@ export default function MusicGenerator() {
         handsOn: showHandsOn && handsOn,
         stationsMode: useStations,
         stationCount: useStations ? Number(numStations) : undefined,
+        includeUdlEf,
       })
 
       const saved = await createLesson(lessonObject, { aiModel: 'claude-sonnet-4-6' })
@@ -441,6 +444,7 @@ export default function MusicGenerator() {
           </div>
         )}
 
+        <UdlEfToggle value={includeUdlEf} onChange={setIncludeUdlEf} />
         <StationsToggle
           useStations={useStations}
           setUseStations={setUseStations}

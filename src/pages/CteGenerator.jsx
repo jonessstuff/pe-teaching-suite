@@ -493,8 +493,10 @@ export default function CteGenerator() {
         state,
         sessionNumber: isMultiStage ? sessionNumber : 0,
         totalSessions: isMultiStage ? totalSessions : 0,
-        // ELL accommodations are disabled for CTE: the ELL-augmented schema exceeds
-        // the structured-outputs grammar limit and the schema-less fallback is unreliable.
+        // ELL accommodations AND Tier 1 UDL/EF are both disabled for CTE: the CTE
+        // structured-output schema already sits at Anthropic's compiled-grammar size
+        // limit, so adding either field overflows it (400), and the schema-less
+        // fallback produces invalid JSON on Haiku at this size. See cteLessonPrompt.js.
         includeELL: false,
       })
 
@@ -991,7 +993,6 @@ export default function CteGenerator() {
             </button>
           )}
         </div>
-
 
         {error && (
           <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-ink-100">

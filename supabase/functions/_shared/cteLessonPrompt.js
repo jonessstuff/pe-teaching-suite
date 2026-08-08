@@ -1,4 +1,9 @@
 import { resolveStateName } from "./stateNames.js"
+// NOTE: Tier 1 UDL/EF supports (udlEfDirective) are intentionally NOT wired into CTE.
+// CTE runs on Haiku with a structured-output schema that already sits at Anthropic's
+// compiled-grammar size limit — adding the tier1_udl_ef field overflows it (400
+// "compiled grammar is too large"), and the schema-less fallback produces invalid
+// JSON at this size. This is the same constraint that keeps ELL disabled for CTE.
 
 /**
  * CTE (Career & Technical Education) lesson prompt builder.

@@ -1,5 +1,6 @@
 import { resolveStateName } from "./stateNames.js"
 import { stationsDirective } from "./stationsDirective.js"
+import { udlEfDirective } from "./udlEfDirective.js"
 
 function getArtStandardsGuidance(stateName) {
   if (stateName === "Virginia") {
@@ -38,6 +39,7 @@ export function buildArtLessonPrompt({
   totalSessions = 0,
   priorSessionsSummary = "",
   includeELL = false,
+  includeUdlEf = false,
   handsOn = false,
   stationsMode = false,
   stationCount = 3,
@@ -154,7 +156,7 @@ CRITICAL requirements for this stage — read carefully:
 - This is the FINAL stage: independent_practice is for completing the artwork; closure must bring the project to a satisfying conclusion (artwork display, gallery walk, written artist statement prompt, or peer appreciation protocol — NOT a preview of another session)
 - teacher_prep must include preparation for displaying or collecting finished work` : sessionNumber > 0 && sessionNumber < totalSessions ? `
 - Closure must end with a specific preview of what students will do in Stage ${sessionNumber + 1}
-- teacher_prep must include how to store in-progress student work between sessions` : ""}` : ""}${includeELL ? `\n\nELL ACCOMMODATIONS: This lesson will be taught to a class that includes English Language Learners. In addition to all fields in the schema above, add an "ell_accommodations" object to the JSON with these subfields:\n- language_objectives: 2–3 strings in format "Students will [language skill] in order to [content purpose]"\n- tiered_vocabulary: { tier_1: [everyday words students likely know], tier_2: [academic cross-subject vocabulary], tier_3: [content-specific art vocabulary unique to this lesson] } — each value is an array of strings\n- sentence_frames: 4–6 strings, each labeled with the specific art lesson context (e.g. "During the demonstration: 'I notice that the teacher ___'", "During the share: 'In my artwork I used ___ to show ___'")\n- visual_supports: 4–6 specific, concrete suggestions for visual supports, gesture cues, or picture reference cards tied to this lesson's techniques and materials\n- simplified_instructions: single string — 2–3 short sentences describing the core studio task at a 2nd-grade reading level, no idioms, no figurative language` : ""}${handsOn ? HANDS_ON_DIRECTIVE : ""}${stationsMode ? stationsDirective({ stationCount, field: "independent_practice", unit: "studio / making", note: "Each station is a creative or technique station (e.g., a color-mixing station, a texture/mark-making station, a sketching station, a collage station) — students make at each." }) : ""}`
+- teacher_prep must include how to store in-progress student work between sessions` : ""}` : ""}${includeELL ? `\n\nELL ACCOMMODATIONS: This lesson will be taught to a class that includes English Language Learners. In addition to all fields in the schema above, add an "ell_accommodations" object to the JSON with these subfields:\n- language_objectives: 2–3 strings in format "Students will [language skill] in order to [content purpose]"\n- tiered_vocabulary: { tier_1: [everyday words students likely know], tier_2: [academic cross-subject vocabulary], tier_3: [content-specific art vocabulary unique to this lesson] } — each value is an array of strings\n- sentence_frames: 4–6 strings, each labeled with the specific art lesson context (e.g. "During the demonstration: 'I notice that the teacher ___'", "During the share: 'In my artwork I used ___ to show ___'")\n- visual_supports: 4–6 specific, concrete suggestions for visual supports, gesture cues, or picture reference cards tied to this lesson's techniques and materials\n- simplified_instructions: single string — 2–3 short sentences describing the core studio task at a 2nd-grade reading level, no idioms, no figurative language` : ""}${handsOn ? HANDS_ON_DIRECTIVE : ""}${stationsMode ? stationsDirective({ stationCount, field: "independent_practice", unit: "studio / making", note: "Each station is a creative or technique station (e.g., a color-mixing station, a texture/mark-making station, a sketching station, a collage station) — students make at each." }) : ""}${includeUdlEf ? udlEfDirective() : ""}`
 
   const user = `Generate a complete elementary art ${isMultiStage ? `project stage (${stageLabel})` : "lesson"} with these parameters:
 

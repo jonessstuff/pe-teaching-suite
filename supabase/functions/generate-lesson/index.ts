@@ -50,6 +50,7 @@ Deno.serve(async (req) => {
     students,
     includeELL,
     handsOn,
+    includeUdlEf,
   } = input ?? {};
 
   if (!Array.isArray(gradeBands) || gradeBands.length === 0) {
@@ -72,6 +73,7 @@ Deno.serve(async (req) => {
       students: Array.isArray(students) ? students : [],
       includeELL: includeELL === true,
       handsOn: handsOn === true,
+      includeUdlEf: includeUdlEf === true,
     });
 
     const _t0 = Date.now();

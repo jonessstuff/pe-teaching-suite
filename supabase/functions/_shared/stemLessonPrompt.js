@@ -1,5 +1,6 @@
 import { resolveStateName } from "./stateNames.js"
 import { stationsDirective } from "./stationsDirective.js"
+import { udlEfDirective } from "./udlEfDirective.js"
 
 function getStemStandardsGuidance(focusArea, stateName) {
   const isVirginia = stateName === "Virginia"
@@ -153,6 +154,7 @@ export function buildStemLessonPrompt({
   totalSessions = 0,
   priorSessionsSummary = "",
   includeELL = false,
+  includeUdlEf = false,
   handsOn = false,
   stationsMode = false,
   stationCount = 3,
@@ -274,7 +276,7 @@ CRITICAL requirements for this stage:
 - This is the FINAL stage: closure must bring the project to a satisfying conclusion (presentation, gallery walk, reflection protocol — not a preview of another session)
 - teacher_prep must include preparation for displaying or collecting finished work` : sessionNumber > 0 && sessionNumber < totalSessions ? `
 - Closure must preview specifically what students will do in Stage ${sessionNumber + 1}
-- teacher_prep must include how to store in-progress work between sessions` : ""}` : ""}${includeELL ? `\n\nELL ACCOMMODATIONS: This lesson will be taught to a class that includes English Language Learners. In addition to all fields in the schema above, add an "ell_accommodations" object to the JSON with these subfields:\n- language_objectives: 2–3 strings in format "Students will [language skill] in order to [content purpose]"\n- tiered_vocabulary: { tier_1: [everyday words students likely know], tier_2: [academic cross-subject vocabulary], tier_3: [content-specific STEM vocabulary unique to this lesson] } — each value is an array of strings\n- sentence_frames: 4–6 strings, each labeled with the specific STEM lesson context (e.g. "During the design phase: 'My plan is to ___ because ___'", "During share-out: 'Our design worked / did not work because ___'")\n- visual_supports: 4–6 specific, concrete suggestions for visual supports, step-by-step picture cards, or gesture cues tied to this lesson's actual activities and materials\n- simplified_instructions: single string — 2–3 short sentences describing the core challenge or task at a 2nd-grade reading level, no idioms, no figurative language` : ""}${handsOn ? HANDS_ON_DIRECTIVE : ""}${stationsMode ? stationsDirective({ stationCount, field: "independent_practice", unit: "investigation / build", note: "Each station is an investigation or build station (e.g., a testing station, a materials/prototyping station, a data-collection station, a design-challenge station)." }) : ""}`
+- teacher_prep must include how to store in-progress work between sessions` : ""}` : ""}${includeELL ? `\n\nELL ACCOMMODATIONS: This lesson will be taught to a class that includes English Language Learners. In addition to all fields in the schema above, add an "ell_accommodations" object to the JSON with these subfields:\n- language_objectives: 2–3 strings in format "Students will [language skill] in order to [content purpose]"\n- tiered_vocabulary: { tier_1: [everyday words students likely know], tier_2: [academic cross-subject vocabulary], tier_3: [content-specific STEM vocabulary unique to this lesson] } — each value is an array of strings\n- sentence_frames: 4–6 strings, each labeled with the specific STEM lesson context (e.g. "During the design phase: 'My plan is to ___ because ___'", "During share-out: 'Our design worked / did not work because ___'")\n- visual_supports: 4–6 specific, concrete suggestions for visual supports, step-by-step picture cards, or gesture cues tied to this lesson's actual activities and materials\n- simplified_instructions: single string — 2–3 short sentences describing the core challenge or task at a 2nd-grade reading level, no idioms, no figurative language` : ""}${handsOn ? HANDS_ON_DIRECTIVE : ""}${stationsMode ? stationsDirective({ stationCount, field: "independent_practice", unit: "investigation / build", note: "Each station is an investigation or build station (e.g., a testing station, a materials/prototyping station, a data-collection station, a design-challenge station)." }) : ""}${includeUdlEf ? udlEfDirective() : ""}`
 
   const user = `Generate a complete K–5 ${focusAreaLabel} lesson${isMultiStage ? ` project stage (${stageLabel})` : ""} with these parameters:
 

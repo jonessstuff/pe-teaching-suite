@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Copy, Check } from 'lucide-react'
+import Tier1SupportsBlock from './Tier1SupportsBlock'
 
 const PHASE_LABELS = {
   hospitality: ['Industry Hook', 'Direct Instruction', 'Skill Demonstration', 'Hands-On Service Application', 'Debrief & Industry Connection'],
@@ -363,6 +364,8 @@ export default function CtePlanRenderer({ lesson }) {
           </p>
         </div>
       </Section>
+
+      <Tier1SupportsBlock supports={lesson.tier1_udl_ef} />
 
       {/* ELL Accommodations */}
       {ell && (
