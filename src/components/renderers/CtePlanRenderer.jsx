@@ -79,12 +79,12 @@ export default function CtePlanRenderer({ lesson }) {
   const successCriteriaText = (lesson.success_criteria ?? []).map((b) => `- ${b}`).join('\n')
 
   const instructionText = [
-    `${phaseLabels[0]}\n${lesson.warm_up ?? ''}`,
+    lesson.warm_up && `${phaseLabels[0]}\n${lesson.warm_up}`,
     `${phaseLabels[1]}\n${lesson.whole_group_instruction ?? ''}`,
     `${phaseLabels[2]}\n${lesson.fitness_activities ?? ''}`,
     `${phaseLabels[3]}\n${lesson.independent_practice ?? ''}`,
-    `${phaseLabels[4]}\n${lesson.closure ?? ''}`,
-  ].join('\n\n')
+    lesson.closure && `${phaseLabels[4]}\n${lesson.closure}`,
+  ].filter(Boolean).join('\n\n')
 
   const materialsText = [
     `Equipment / materials:\n${(lesson.equipment_needed ?? []).map((item) => `- ${item}`).join('\n')}`,
@@ -483,6 +483,8 @@ function Section({ title, copyText, children }) {
 }
 
 function InstructionBlock({ label, text }) {
+  // Hide a section with no content — e.g. warm_up/closure in Core Activity Only mode.
+  if (!text || !String(text).trim()) return null
   return (
     <div className="phase-block mb-4">
       <p className="text-sm font-semibold text-ink-200">{label}</p>

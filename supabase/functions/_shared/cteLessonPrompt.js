@@ -1,4 +1,5 @@
 import { resolveStateName } from "./stateNames.js"
+import { coreActivityDirective } from "./coreActivityDirective.js"
 // NOTE: Tier 1 UDL/EF supports (udlEfDirective) are intentionally NOT wired into CTE.
 // CTE runs on Haiku with a structured-output schema that already sits at Anthropic's
 // compiled-grammar size limit — adding the tier1_udl_ef field overflows it (400
@@ -1180,6 +1181,7 @@ export function buildCteLessonPrompt({
   totalSessions = 0,
   priorSessionsSummary = "",
   includeELL = false,
+  coreActivityOnly = false,
 }) {
   const stateName = resolveStateName(state)
   const pathwayLabel = PATHWAY_LABELS[pathway] ?? "Career & Technical Education"
@@ -1333,7 +1335,7 @@ CRITICAL requirements for this stage:
 - tiered_vocabulary: { tier_1: [...], tier_2: [...], tier_3: [...] } — tier_3 = pathway-specific industry vocabulary
 - sentence_frames: 4–6 strings labeled with this lesson's CTE context (e.g., "When greeting a guest: 'Welcome to ___, how may I ___?'")
 - visual_supports: 4–6 concrete suggestions tied to this lesson's actual tasks and industry materials
-- simplified_instructions: single string — 2–3 short sentences describing the core task at a lower reading level, no idioms` : ""}`
+- simplified_instructions: single string — 2–3 short sentences describing the core task at a lower reading level, no idioms` : ""}${coreActivityOnly ? coreActivityDirective() : ""}`
 
   const user = `Generate a complete ${pathwayLabel} CTE lesson${isMultiStage ? ` project stage (${stageLabel})` : ""} with these parameters:
 

@@ -14,6 +14,7 @@
 
 import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js";
 import { buildLessonGenerationPrompt } from "../_shared/lessonPrompt.js";
+import { stripNonCoreSections } from "../_shared/coreActivityDirective.js";
 import { callClaudeForJson } from "../_shared/anthropic.js";
 import { createEmptyLessonObject } from "../_shared/lessonObjectDefaults.js";
 import { captureLessonGenerated } from "../_shared/analytics.js";
@@ -51,6 +52,7 @@ Deno.serve(async (req) => {
     includeELL,
     handsOn,
     includeUdlEf,
+    coreActivityOnly,
   } = input ?? {};
 
   if (!Array.isArray(gradeBands) || gradeBands.length === 0) {
@@ -74,6 +76,7 @@ Deno.serve(async (req) => {
       includeELL: includeELL === true,
       handsOn: handsOn === true,
       includeUdlEf: includeUdlEf === true,
+      coreActivityOnly: coreActivityOnly === true,
     });
 
     const _t0 = Date.now();
@@ -115,6 +118,9 @@ Deno.serve(async (req) => {
       type: "lesson",
       durationMs,
     });
+
+    // Core Activity Only: deterministically drop warm-up/closure (see helper).
+    if (coreActivityOnly === true) stripNonCoreSections(lessonObject);
 
     return jsonResponse(lessonObject);
   } catch (err) {

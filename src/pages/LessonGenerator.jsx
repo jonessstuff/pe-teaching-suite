@@ -42,6 +42,7 @@ export default function LessonGenerator() {
   const [includeELL, setIncludeELL] = useState(false)
   const [handsOn, setHandsOn] = useState(false)
   const [includeUdlEf, setIncludeUdlEf] = useState(false)
+  const [coreActivityOnly, setCoreActivityOnly] = useState(false)
   // Hands-on/kinesthetic toggle: lesson mode + elementary (K–5) grades only.
   const showHandsOn = mode === 'lesson' && gradeBands.some((g) => g <= 5)
 
@@ -205,6 +206,7 @@ export default function LessonGenerator() {
           includeELL,
           handsOn: showHandsOn && handsOn,
           includeUdlEf,
+          coreActivityOnly,
         })
 
         const saved = await createLesson(lessonObject, { aiModel: 'claude-sonnet-4-6' })
@@ -752,6 +754,23 @@ export default function LessonGenerator() {
                 <span className="text-sm font-medium text-ink-200">Add Tier 1 UDL &amp; executive-function supports</span>
                 <p className="mt-0.5 text-xs text-ink-400">
                   Weaves universal-design supports (multiple means of engagement, representation, action &amp; expression) and executive-function supports into the lesson for all students, where they genuinely fit. Tier 2 targeted intervention lives in the Intervention Planning tool.
+                </p>
+              </div>
+            </label>
+          </div>
+
+          <div className="space-y-3">
+            <label className="flex cursor-pointer items-start gap-3">
+              <input
+                type="checkbox"
+                checked={coreActivityOnly}
+                onChange={(e) => setCoreActivityOnly(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-emerald-500"
+              />
+              <div>
+                <span className="text-sm font-medium text-ink-200">Core Activity Only (skip warm-up &amp; closure)</span>
+                <p className="mt-0.5 text-xs text-ink-400">
+                  Generates just the main instruction and core activity at full depth — no warm-up or closure. Standards citations and safety notes are always kept. Leave off for a complete lesson.
                 </p>
               </div>
             </label>

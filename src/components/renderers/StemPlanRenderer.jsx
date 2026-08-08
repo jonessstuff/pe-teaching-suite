@@ -50,12 +50,12 @@ export default function StemPlanRenderer({ lesson }) {
     .join('\n\n')
 
   const instructionText = [
-    `${phaseLabels[0]}\n${lesson.warm_up ?? ''}`,
+    lesson.warm_up && `${phaseLabels[0]}\n${lesson.warm_up}`,
     `${phaseLabels[1]}\n${lesson.whole_group_instruction ?? ''}`,
     `${phaseLabels[2]}\n${lesson.fitness_activities ?? ''}`,
     `${phaseLabels[3]}\n${lesson.independent_practice ?? ''}`,
-    `${phaseLabels[4]}\n${lesson.closure ?? ''}`,
-  ].join('\n\n')
+    lesson.closure && `${phaseLabels[4]}\n${lesson.closure}`,
+  ].filter(Boolean).join('\n\n')
 
   const modificationsText = gradeBands
     .map((grade) => `Grade ${formatGrade(grade)}\n${lesson.modifications?.[grade] ?? ''}`)
@@ -405,6 +405,8 @@ function GradeBandBlock({ grade, subtitle, children }) {
 }
 
 function InstructionBlock({ label, text }) {
+  // Hide a section with no content — e.g. warm_up/closure in Core Activity Only mode.
+  if (!text || !String(text).trim()) return null
   return (
     <div className="phase-block mb-4">
       <p className="text-sm font-semibold text-ink-200">{label}</p>

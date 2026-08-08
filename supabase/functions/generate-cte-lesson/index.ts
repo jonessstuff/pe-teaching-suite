@@ -1,5 +1,6 @@
 import { corsHeaders, errorResponse } from "../_shared/cors.js"
 import { buildCteLessonPrompt } from "../_shared/cteLessonPrompt.js"
+import { stripNonCoreSections } from "../_shared/coreActivityDirective.js"
 import { callClaudeForJson } from "../_shared/anthropic.js"
 import { captureLessonGenerated } from "../_shared/analytics.js"
 import { reportError } from "../_shared/sentry.js"
@@ -82,6 +83,7 @@ Deno.serve(async (req: Request) => {
         finished = true
         clearInterval(keepalive)
         await captureLessonGenerated(req, { subject: "CTE", grades: tier ? [tier] : [], type: "cte", durationMs: Date.now() - _t0 })
+        if (body?.coreActivityOnly === true) stripNonCoreSections(result)
         controller.enqueue(encoder.encode(JSON.stringify(result)))
       } catch (err) {
         finished = true

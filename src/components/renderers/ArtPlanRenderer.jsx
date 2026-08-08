@@ -35,12 +35,12 @@ export default function ArtPlanRenderer({ lesson }) {
     .join('\n\n')
 
   const instructionText = [
-    `Introduction & Inspiration\n${lesson.warm_up ?? ''}`,
+    lesson.warm_up && `Introduction & Inspiration\n${lesson.warm_up}`,
     `Teacher Demonstration\n${lesson.whole_group_instruction ?? ''}`,
     `Guided / Shared Practice\n${lesson.fitness_activities ?? ''}`,
     `Independent Creation\n${lesson.independent_practice ?? ''}`,
-    `Cleanup & Reflection\n${lesson.closure ?? ''}`,
-  ].join('\n\n')
+    lesson.closure && `Cleanup & Reflection\n${lesson.closure}`,
+  ].filter(Boolean).join('\n\n')
 
   const modificationsText = gradeBands
     .map((grade) => `Grade ${formatGrade(grade)}\n${lesson.modifications?.[grade] ?? ''}`)
@@ -390,6 +390,8 @@ function GradeBandBlock({ grade, subtitle, children }) {
 }
 
 function InstructionBlock({ label, text }) {
+  // Hide a section with no content — e.g. warm_up/closure in Core Activity Only mode.
+  if (!text || !String(text).trim()) return null
   return (
     <div className="phase-block mb-2">
       <p className="text-sm font-semibold text-ink-200">{label}</p>

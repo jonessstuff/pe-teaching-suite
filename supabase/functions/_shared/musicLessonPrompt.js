@@ -1,6 +1,7 @@
 import { resolveStateName } from "./stateNames.js"
 import { stationsDirective } from "./stationsDirective.js"
 import { udlEfDirective } from "./udlEfDirective.js"
+import { coreActivityDirective } from "./coreActivityDirective.js"
 
 function getMusicStandardsGuidance(stateName) {
   if (stateName === "Virginia") {
@@ -38,6 +39,7 @@ export function buildMusicLessonPrompt({
   unitName = "",
   includeELL = false,
   includeUdlEf = false,
+  coreActivityOnly = false,
   handsOn = false,
   stationsMode = false,
   stationCount = 3,
@@ -146,7 +148,7 @@ CRITICAL requirements for this session:
 - The Warm-Up MUST directly build on the musical concept from the prior session
 - Active Music Making must progress the concept further — do not repeat the same activity from prior sessions` : ""}${sessionNumber === totalSessions && totalSessions > 1 ? `
 - This is the FINAL session: closure must be a culminating activity — student performance, concept review game, or musical reflection protocol — NOT a preview of another session` : sessionNumber > 0 && sessionNumber < totalSessions ? `
-- Closure must end with a specific preview of the musical concept or activity planned for Session ${sessionNumber + 1}` : ""}` : ""}${includeELL ? `\n\nELL ACCOMMODATIONS: This lesson will be taught to a class that includes English Language Learners. In addition to all fields in the schema above, add an "ell_accommodations" object to the JSON with these subfields:\n- language_objectives: 2–3 strings in format "Students will [language skill] in order to [content purpose]"\n- tiered_vocabulary: { tier_1: [everyday words students likely know], tier_2: [academic cross-subject vocabulary], tier_3: [content-specific music vocabulary unique to this lesson] } — each value is an array of strings\n- sentence_frames: 4–6 strings, each labeled with the specific music lesson context (e.g. "During the listening example: 'I hear ___'", "During active music making: 'My body shows the beat by ___'")\n- visual_supports: 4–6 specific, concrete suggestions for visual supports, gesture cues, or picture cards tied to this lesson's musical concepts and activities\n- simplified_instructions: single string — 2–3 short sentences describing the core activity at a 2nd-grade reading level, no idioms, no figurative language` : ""}${handsOn ? HANDS_ON_DIRECTIVE : ""}${stationsMode ? stationsDirective({ stationCount, field: "independent_practice", unit: "music-making", note: "Each station targets a musical skill (e.g., a rhythm/body-percussion station, a listening-and-respond station, an instrument or singing station, a compose/notate station)." }) : ""}${includeUdlEf ? udlEfDirective() : ""}`
+- Closure must end with a specific preview of the musical concept or activity planned for Session ${sessionNumber + 1}` : ""}` : ""}${includeELL ? `\n\nELL ACCOMMODATIONS: This lesson will be taught to a class that includes English Language Learners. In addition to all fields in the schema above, add an "ell_accommodations" object to the JSON with these subfields:\n- language_objectives: 2–3 strings in format "Students will [language skill] in order to [content purpose]"\n- tiered_vocabulary: { tier_1: [everyday words students likely know], tier_2: [academic cross-subject vocabulary], tier_3: [content-specific music vocabulary unique to this lesson] } — each value is an array of strings\n- sentence_frames: 4–6 strings, each labeled with the specific music lesson context (e.g. "During the listening example: 'I hear ___'", "During active music making: 'My body shows the beat by ___'")\n- visual_supports: 4–6 specific, concrete suggestions for visual supports, gesture cues, or picture cards tied to this lesson's musical concepts and activities\n- simplified_instructions: single string — 2–3 short sentences describing the core activity at a 2nd-grade reading level, no idioms, no figurative language` : ""}${handsOn ? HANDS_ON_DIRECTIVE : ""}${stationsMode ? stationsDirective({ stationCount, field: "independent_practice", unit: "music-making", note: "Each station targets a musical skill (e.g., a rhythm/body-percussion station, a listening-and-respond station, an instrument or singing station, a compose/notate station)." }) : ""}${includeUdlEf ? udlEfDirective() : ""}${coreActivityOnly ? coreActivityDirective() : ""}`
 
   const user = `Generate a complete elementary general music lesson${isMultiSession ? ` (${sessionLabel})` : ""} with these parameters:
 

@@ -6,6 +6,7 @@ import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
 import LessonPrintFix from '../components/LessonPrintFix'
 import CtePlanRenderer from '../components/renderers/CtePlanRenderer'
+import CoreActivityToggle from '../components/CoreActivityToggle'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 import { useProfileDefaults, useGradeStateDefaults } from '../hooks/useProfileDefaults'
 import { persistFirstRun } from '../services/onboardingService'
@@ -432,6 +433,7 @@ export default function CteGenerator() {
   const [topic, setTopic] = useState('')
   const [targetCompetency, setTargetCompetency] = useState('')
   const [materials, setMaterials] = useState(['', ''])
+  const [coreActivityOnly, setCoreActivityOnly] = useState(false)
 
   // First-run capture. CTE has no K-12 grade selector, so only state is
   // pre-filled; grade_levels is not written from this module.
@@ -498,6 +500,9 @@ export default function CteGenerator() {
         // limit, so adding either field overflows it (400), and the schema-less
         // fallback produces invalid JSON on Haiku at this size. See cteLessonPrompt.js.
         includeELL: false,
+        // Core Activity Only adds NO new field (it just empties warm_up/closure), so
+        // it works within CTE's structured-output schema — unlike ELL/UDL above.
+        coreActivityOnly,
       })
 
       const saved = await createLesson(lessonObject, { aiModel: 'claude-haiku-4-5' })
@@ -993,6 +998,8 @@ export default function CteGenerator() {
             </button>
           )}
         </div>
+
+        <CoreActivityToggle value={coreActivityOnly} onChange={setCoreActivityOnly} />
 
         {error && (
           <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-ink-100">

@@ -1,5 +1,6 @@
 import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js"
 import { buildStemLessonPrompt } from "../_shared/stemLessonPrompt.js"
+import { stripNonCoreSections } from "../_shared/coreActivityDirective.js"
 import { callClaudeForJson } from "../_shared/anthropic.js"
 import { captureLessonGenerated } from "../_shared/analytics.js";
 import { reportError } from "../_shared/sentry.js";
@@ -37,6 +38,7 @@ Deno.serve(async (req: Request) => {
     const _t0 = Date.now();
     const result = await callClaudeForJson(system, user, maxTokens)
     await captureLessonGenerated(req, { subject: "STEM", grades: gradeBands, type: "stem", durationMs: Date.now() - _t0 });
+    if (body.coreActivityOnly === true) stripNonCoreSections(result)
     return jsonResponse(result)
   } catch (err) {
     await reportError(err, { fn: "generate-stem-lesson" });

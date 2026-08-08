@@ -35,12 +35,12 @@ export default function MusicPlanRenderer({ lesson }) {
     .join('\n\n')
 
   const instructionText = [
-    `Warm-Up\n${lesson.warm_up ?? ''}`,
+    lesson.warm_up && `Warm-Up\n${lesson.warm_up}`,
     `Concept Introduction\n${lesson.whole_group_instruction ?? ''}`,
     `Listening Example\n${lesson.fitness_activities ?? ''}`,
     `Active Music Making\n${lesson.independent_practice ?? ''}`,
-    `Assessment & Reflection\n${lesson.closure ?? ''}`,
-  ].join('\n\n')
+    lesson.closure && `Assessment & Reflection\n${lesson.closure}`,
+  ].filter(Boolean).join('\n\n')
 
   const modificationsText = gradeBands
     .map((grade) => `Grade ${formatGrade(grade)}\n${lesson.modifications?.[grade] ?? ''}`)
@@ -383,6 +383,8 @@ function GradeBandBlock({ grade, subtitle, children }) {
 }
 
 function InstructionBlock({ label, text }) {
+  // Hide a section with no content — e.g. warm_up/closure in Core Activity Only mode.
+  if (!text || !String(text).trim()) return null
   return (
     <div className="phase-block mb-2">
       <p className="text-sm font-semibold text-ink-200">{label}</p>

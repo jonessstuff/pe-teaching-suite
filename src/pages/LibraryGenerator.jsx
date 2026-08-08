@@ -7,6 +7,7 @@ import { US_STATES } from '../constants/usStates'
 import LessonPrintFix from '../components/LessonPrintFix'
 import StationsToggle from '../components/StationsToggle'
 import UdlEfToggle from '../components/UdlEfToggle'
+import CoreActivityToggle from '../components/CoreActivityToggle'
 import LibraryPlanRenderer from '../components/renderers/LibraryPlanRenderer'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 import { useProfileDefaults, useGradeStateDefaults } from '../hooks/useProfileDefaults'
@@ -82,6 +83,7 @@ export default function LibraryGenerator() {
   const [error, setError] = useState(null)
   const [includeELL, setIncludeELL] = useState(false)
   const [includeUdlEf, setIncludeUdlEf] = useState(false)
+  const [coreActivityOnly, setCoreActivityOnly] = useState(false)
   const [handsOn, setHandsOn] = useState(false)
   const [useStations, setUseStations] = useState(false)
   const [numStations, setNumStations] = useState(3)
@@ -121,6 +123,7 @@ export default function LibraryGenerator() {
         stationsMode: useStations,
         stationCount: useStations ? Number(numStations) : undefined,
         includeUdlEf,
+        coreActivityOnly,
       })
 
       const saved = await createLesson(lessonObject, { aiModel: 'claude-sonnet-4-6' })
@@ -445,6 +448,7 @@ export default function LibraryGenerator() {
         )}
 
         <UdlEfToggle value={includeUdlEf} onChange={setIncludeUdlEf} />
+        <CoreActivityToggle value={coreActivityOnly} onChange={setCoreActivityOnly} />
         <StationsToggle
           useStations={useStations}
           setUseStations={setUseStations}

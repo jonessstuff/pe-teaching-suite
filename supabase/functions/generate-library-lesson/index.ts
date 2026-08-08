@@ -1,5 +1,6 @@
 import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js"
 import { buildLibraryLessonPrompt } from "../_shared/libraryLessonPrompt.js"
+import { stripNonCoreSections } from "../_shared/coreActivityDirective.js"
 import { callClaudeForJson } from "../_shared/anthropic.js"
 import { captureLessonGenerated } from "../_shared/analytics.js";
 import { reportError } from "../_shared/sentry.js";
@@ -32,6 +33,7 @@ Deno.serve(async (req: Request) => {
     stationsMode,
     stationCount,
     includeUdlEf,
+    coreActivityOnly,
   } = body ?? {}
 
   if (!Array.isArray(gradeBands) || (gradeBands as number[]).length === 0) {
@@ -57,6 +59,7 @@ Deno.serve(async (req: Request) => {
       handsOn: (handsOn as boolean) === true,
       stationsMode: (stationsMode as boolean) === true,
       includeUdlEf: (includeUdlEf as boolean) === true,
+      coreActivityOnly: (coreActivityOnly as boolean) === true,
       stationCount: Number(stationCount) || 3,
     })
 
@@ -66,6 +69,7 @@ Deno.serve(async (req: Request) => {
     const _t0 = Date.now();
     const result = await callClaudeForJson(system, user, maxTokens)
     await captureLessonGenerated(req, { subject: "Library/Media", grades: gradeBands, type: "library", durationMs: Date.now() - _t0 });
+    if (coreActivityOnly === true) stripNonCoreSections(result)
     return jsonResponse(result)
   } catch (err) {
     await reportError(err, { fn: "generate-library-lesson" });
