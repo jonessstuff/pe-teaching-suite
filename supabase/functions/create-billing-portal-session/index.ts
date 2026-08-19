@@ -60,6 +60,11 @@ Deno.serve(async (req) => {
 
     const stripeCustomerId = profile?.stripe_customer_id;
 
+    // Optional: deep-link straight to the card-update screen (used by the
+    // /update-card dunning flow) instead of the portal home.
+    const reqBody = await req.json().catch(() => ({}));
+    const wantsCardUpdate = reqBody?.flow === "payment_method_update";
+
     // Preferred path: create a personalized portal session via Stripe API
     if (stripeCustomerId && STRIPE_SECRET_KEY) {
       const origin = req.headers.get("origin") ?? "https://pehealthk12.netlify.app";
@@ -67,6 +72,9 @@ Deno.serve(async (req) => {
         customer: stripeCustomerId,
         return_url: `${origin}/settings`,
       });
+      if (wantsCardUpdate) {
+        params.append("flow_data[type]", "payment_method_update");
+      }
 
       const stripeRes = await fetch(
         "https://api.stripe.com/v1/billing_portal/sessions",

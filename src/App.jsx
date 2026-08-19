@@ -12,6 +12,7 @@ import AppShell from './components/layout/AppShell'
 import ModuleHome from './components/module/ModuleHome'
 import { MODULE_HOMES } from './constants/moduleHomes'
 import ModulePicker from './pages/ModulePicker'
+import UpdateCard from './pages/UpdateCard'
 import Dashboard from './pages/Dashboard'
 import LessonGenerator from './pages/LessonGenerator'
 import LessonLibrary from './pages/LessonLibrary'
@@ -89,6 +90,18 @@ import DanceGenerator from './pages/DanceGenerator'
 // from mobile keyboard-dismiss causing an immediate visibility change) piggyback
 // on the same call instead of starting a second one. Cleared in the finally block.
 let activeClaimPromise = null
+
+// Wraps the sign-in screen shown at /update-card for a logged-out user. It drops a
+// short-lived flag so that after auth we can bounce them to /update-card even when
+// the login method (magic link) lands them at the site root. Password sign-in keeps
+// the URL at /update-card, so this is only needed for the magic-link path — AppShell
+// reads and clears the flag on the authenticated side.
+function CardUpdateGate({ children }) {
+  useEffect(() => {
+    try { localStorage.setItem('cardUpdateRedirect', String(Date.now())) } catch { /* ignore */ }
+  }, [])
+  return children
+}
 
 function App() {
   const [session, setSession] = useState(undefined) // undefined = loading
@@ -296,6 +309,11 @@ function App() {
           <Route path="/shared/:token" element={<SharedLesson />} />
           <Route path="/try" element={<TryFreeLesson />} />
           <Route path="/free-lesson/:token" element={<FreeLessonView />} />
+          <Route path="/update-card" element={
+            <CardUpdateGate>
+              <Login authError={authError} onClearAuthError={() => { setAuthError(null); setDisplaced(false) }} />
+            </CardUpdateGate>
+          } />
           <Route path="*" element={<Navigate to={displaced ? '/login' : '/'} replace />} />
         </Routes>
       </BrowserRouter>
@@ -308,6 +326,7 @@ function App() {
       <Routes>
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/welcome" element={<Welcome />} />
+        <Route path="/update-card" element={<UpdateCard />} />
         <Route path="/" element={<AppShell />}>
           <Route index element={<ModulePicker />} />
           <Route path="pe-health" element={<Dashboard />} />

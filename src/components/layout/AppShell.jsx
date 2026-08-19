@@ -1,4 +1,5 @@
-import { NavLink, Link, Outlet, useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
+import { NavLink, Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard,
   BookOpen,
@@ -46,6 +47,19 @@ const NAV_ITEMS = [
 
 export default function AppShell() {
   const showSidebar = usePERoute()
+  const navigate = useNavigate()
+
+  // Honor a pending "update card" redirect set by the dunning login gate. Needed for
+  // the magic-link sign-in path, which lands the user at the site root rather than at
+  // /update-card. Password sign-in keeps the URL, so it never reaches here. Flag is
+  // one-shot and expires after 15 min to avoid a stale bounce on a later normal login.
+  useEffect(() => {
+    let raw = null
+    try { raw = localStorage.getItem('cardUpdateRedirect') } catch { /* ignore */ }
+    if (!raw) return
+    try { localStorage.removeItem('cardUpdateRedirect') } catch { /* ignore */ }
+    if (Date.now() - Number(raw) < 15 * 60 * 1000) navigate('/update-card', { replace: true })
+  }, [navigate])
 
   return (
     <div className="flex min-h-screen bg-ink-950">
