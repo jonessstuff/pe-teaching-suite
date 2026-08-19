@@ -21,6 +21,10 @@ const COPY = {
     title: 'Download as an editable Word document',
     body: 'Subscribe to PlansK12 to download your lessons as editable .docx files — open and edit them in Google Docs, Microsoft Word, or any word processor. Trial accounts keep the watermarked print / PDF export.',
   },
+  'pptx-export': {
+    title: 'Download as PowerPoint slides',
+    body: 'Subscribe to PlansK12 to download your lessons as presentation-ready .pptx decks — clean, brand-styled slides with your full instructions tucked into the speaker notes. Open them in PowerPoint, Google Slides, or Keynote. Trial accounts keep the watermarked print / PDF export.',
+  },
 }
 
 export default function PaywallModal() {

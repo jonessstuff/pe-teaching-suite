@@ -3,7 +3,7 @@ import {
   FileText, ClipboardList, CloudRain, Mail, ClipboardCheck,
   LayoutTemplate, Loader2, Printer, Download, X, Star, BookOpen,
   CheckSquare, Shuffle, Flame, BookMarked, Send, Globe, Users, FileWarning, ChevronDown,
-  Copy, Check, PencilRuler, FileDown, Lock,
+  Copy, Check, PencilRuler, FileDown, Lock, Presentation,
 } from 'lucide-react'
 import {
   generateSubPlan, generateQuiz, generateWeatherAlt,
@@ -28,6 +28,7 @@ import { useTrial } from '../../context/TrialContext'
 import { WATERMARK_TEXT } from '../../services/trialService'
 import { printArtifact } from '../../lib/printArtifact'
 import { requestDocx, lessonToBlocks, domToBlocks } from '../../lib/docxExport'
+import { requestPptx, lessonToSlides } from '../../lib/pptxExport'
 
 const PE_SUBJECTS = new Set(['PE', 'Health', "Family Life", "Driver's Ed", "Strength & Conditioning"])
 const DIFF_TYPES = ['advanced', 'below_grade', 'sensory', 'ell', 'physical']
@@ -157,6 +158,20 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
       await requestDocx({ filename: lo?.title ?? 'lesson', title: lo?.title, blocks: lessonToBlocks(lo) })
     } catch (err) {
       if (err.status === 403) openPaywall('docx-export')
+      else setError(err.message ?? 'Download failed')
+    }
+  }
+
+  // PowerPoint (.pptx) export of the main lesson — PAID ONLY. Trial users get the
+  // upgrade prompt instead (the server also enforces the gate).
+  async function handleDownloadLessonPptx() {
+    if (!isPaid) { openPaywall('pptx-export'); return }
+    setError(null)
+    try {
+      const spec = lessonToSlides(lo)
+      await requestPptx({ filename: lo?.title ?? 'lesson', ...spec })
+    } catch (err) {
+      if (err.status === 403) openPaywall('pptx-export')
       else setError(err.message ?? 'Download failed')
     }
   }
@@ -468,6 +483,12 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
           <button onClick={handleDownloadLessonDocx} className="btn-secondary" title={isPaid ? 'Download as an editable Word document' : 'Upgrade to download as an editable Word document'}>
             {isPaid ? <FileDown size={16} /> : <Lock size={16} />}
             Word (.docx)
+          </button>
+
+          {/* PowerPoint (.pptx) — paid only; trial users see the upgrade prompt */}
+          <button onClick={handleDownloadLessonPptx} className="btn-secondary" title={isPaid ? 'Download as presentation-ready PowerPoint slides' : 'Upgrade to download as PowerPoint slides'}>
+            {isPaid ? <Presentation size={16} /> : <Lock size={16} />}
+            PowerPoint (.pptx)
           </button>
         </div>
 
