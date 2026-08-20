@@ -42,6 +42,33 @@ Deno.serve(async (req) => {
       return json({ canceled: { id: subId, customer: canceled.customer, previous_status: before.status, new_status: canceled.status } });
     }
 
+    // ── Full paid-invoice history for a customer (refund-figure sizing) ───────
+    // READ-ONLY. Lists every invoice and sums amount_paid so ops can quote an
+    // exact charged total before issuing a refund.
+    if (body?.invoices_for) {
+      const custId = String(body.invoices_for);
+      const invs = await stripe.invoices.list({ customer: custId, limit: 100 });
+      const rows = invs.data.map((iv) => ({
+        id: iv.id,
+        number: iv.number,
+        status: iv.status,                 // draft | open | paid | uncollectible | void
+        paid: iv.paid,
+        amount_paid: iv.amount_paid,
+        total: iv.total,
+        created: new Date(iv.created * 1000).toISOString(),
+        period_start: iv.period_start ? new Date(iv.period_start * 1000).toISOString() : null,
+        period_end: iv.period_end ? new Date(iv.period_end * 1000).toISOString() : null,
+      }));
+      const paidRows = rows.filter((r) => r.paid);
+      return json({
+        customer: custId,
+        invoice_count: rows.length,
+        paid_count: paidRows.length,
+        total_paid_cents: paidRows.reduce((a, r) => a + (r.amount_paid || 0), 0),
+        invoices: rows,
+      });
+    }
+
     // ── Invoice / decline detail (dunning diagnostics for past_due) ──────────
     if (body?.latest_invoice_for) {
       const sub = await stripe.subscriptions.retrieve(String(body.latest_invoice_for), {
