@@ -866,7 +866,7 @@ export default function CteGenerator() {
               placeholder={
                 pathway === 'hospitality'     ? 'e.g. Demonstrate the julienne knife cut with proper technique (ProStart / FRMCA culinary techniques)' :
                 pathway === 'finance'         ? 'e.g. Calculate compound interest (Jump$tart)' :
-                pathway === 'human_services'  ? 'e.g. Plan a balanced meal (AAFCS Nutrition & Wellness)' :
+                pathway === 'human_services'  ? 'e.g. Foods and Nutrition (Foods I/II) — plan a balanced meal (AAFCS Nutrition & Wellness)' :
                 pathway === 'health_science'  ? 'e.g. Measure and record blood pressure (NCHSE)' :
                 pathway === 'education'       ? 'e.g. Write a measurable learning objective (InTASC Standard 7)' :
                 pathway === 'career_readiness'? 'e.g. Demonstrate teamwork on a group task (Employability Skills: Effective Relationships)' :
