@@ -43,7 +43,7 @@ Guidance for each field:
 Critical rules:
 - Do NOT change learning targets, standards, success criteria, skill focus, vocabulary, or modifications. Those belong to the original lesson and are not repeated in this output.
 - The skill being taught must remain identical — only the setting and equipment adapt.
-- Format the five instruction fields (warm_up, fitness_activities, whole_group_instruction, independent_practice, closure) with the same structure as the original: use \\n\\n between major sections with descriptive headers, and \\n between individual steps.
+- Format the five instruction fields (warm_up, fitness_activities, whole_group_instruction, independent_practice, closure) with the same structure as the original: use \\n\\n between major sections, each with a descriptive header for the INTERNAL phase only (e.g. "Setup (2 min):", "Debrief (2 min):") — do NOT open a field with a header that restates the field's own name, e.g. don't begin warm_up with "WARM-UP" or closure with "CLOSURE"; the app already labels each field — and \\n between individual steps.
 - Do not include any fields not listed in the schema above.`;
 
   const user = `Here is the lesson to adapt for indoor use (as JSON):

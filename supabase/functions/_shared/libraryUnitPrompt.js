@@ -103,7 +103,7 @@ Rules for EACH session's lesson object:
 - learning_targets, success_criteria, and modifications must have one entry per grade band, keyed by the grade number as a string ("0" for Kindergarten).
 - success_criteria arrays should have exactly 3 bullets per grade band, phrased as "I can..." statements.
 - learning_targets should be phrased as "Today I will..." statements.
-- The lesson/instruction fields (warm_up, fitness_activities, whole_group_instruction, independent_practice, closure) are SHARED across all grade bands — write them so they work for the full grade range given. Use \\n\\n between major phases or sections (give each a descriptive header) and \\n between individual steps. Structure each field like a librarian's actual session notes.
+- The lesson/instruction fields (warm_up, fitness_activities, whole_group_instruction, independent_practice, closure) are SHARED across all grade bands — write them so they work for the full grade range given. Use \\n\\n between major phases or sections (give each INTERNAL phase a descriptive header, e.g. "Setup (2 min):", "Small-group work (8 min):", "Debrief (2 min):" — do NOT open a field with a header that restates the field's own name, e.g. don't begin warm_up with "WARM-UP" or closure with "CLOSURE"; the app already labels each field) and \\n between individual steps. Structure each field like a librarian's actual session notes.
 - modifications should describe concrete differentiation strategies per grade band — not generic language.
 - setup_diagram: brief text description of the room arrangement for this session.
 - equipment_needed: materials and resources (book titles + authors, database names, device counts, handouts).
