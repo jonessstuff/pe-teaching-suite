@@ -69,7 +69,7 @@ export default function ObservationSummaryRenderer({ lesson }) {
   }
 
   return (
-    <div className="card max-w-3xl mx-auto p-8 space-y-6 print:shadow-none print:border-0">
+    <div className="card lesson-doc p-8 space-y-6 print:shadow-none print:border-0">
       {/* Header */}
       <header className="space-y-4 border-b border-ink-900 pb-6 print:border-ink-300">
         <div className="flex items-start justify-between gap-4">

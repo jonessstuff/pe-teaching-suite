@@ -119,7 +119,7 @@ export default function TestPrepRenderer({ lesson }) {
   //    the answer-key toggle; all tutor-facing scaffolding stripped. ──
   if (viewMode === 'quiz') {
     return (
-      <div className="card max-w-3xl mx-auto p-8 space-y-4">
+      <div className="card lesson-doc p-8 space-y-4">
         {viewToggle}
         <header className="space-y-2 border-b border-ink-900 pb-3">
           <span className="label-eyebrow rounded px-2 py-0.5 bg-steel-500/15 text-ink-50">
@@ -140,7 +140,7 @@ export default function TestPrepRenderer({ lesson }) {
 
   // ── FULL TUTORING-SESSION VIEW ──
   return (
-    <div className="card max-w-3xl mx-auto p-8 space-y-6">
+    <div className="card lesson-doc p-8 space-y-6">
       {viewToggle}
 
       {/* Header */}

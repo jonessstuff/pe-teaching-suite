@@ -26,7 +26,7 @@ export default function MakerProjectRenderer({ lesson }) {
   ].filter(Boolean).join('\n\n')
 
   return (
-    <div className="card max-w-3xl mx-auto p-8 space-y-6">
+    <div className="card lesson-doc p-8 space-y-6">
       {/* Header */}
       <header className="space-y-2 border-b border-ink-900 pb-4">
         <span className="label-eyebrow rounded px-2 py-0.5 bg-slate-500/15 text-ink-50">

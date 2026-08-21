@@ -75,6 +75,13 @@
      inside the shared Section / InstructionBlock / GradeBandBlock components and the
      renderer header to give a lesson real typographic hierarchy. `.label-eyebrow`
      is deliberately untouched — it stays the 11px SUBJECT·GRADE chip. */
+  /* Lesson document column — the centered width shared by every lesson renderer's
+     card. Headings AND body fill this one column (there is no separate prose
+     measure), so the whole document reads as an intentional centered column rather
+     than narrow text stranded in a wide card. */
+  .lesson-doc {
+    @apply max-w-2xl mx-auto;
+  }
   .lesson-title {
     @apply font-display font-bold tracking-tight;
     font-size: 1.6875rem;   /* 27px */
@@ -94,7 +101,6 @@
     @apply font-normal;
     font-size: 0.875rem;    /* 14px — full readable body size, not shrunk */
     line-height: 1.6;
-    max-width: 62ch;        /* prose measure cap */
   }
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 rounded-lg bg-accent-500 px-4 py-2.5

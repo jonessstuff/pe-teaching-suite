@@ -12,7 +12,7 @@ export default function TviRenderer({ lesson }) {
   const grading = lesson.grading_the_activity ?? []
 
   return (
-    <div className="card max-w-3xl mx-auto p-8 space-y-6">
+    <div className="card lesson-doc p-8 space-y-6">
       {/* Header */}
       <header className="space-y-2 border-b border-ink-900 pb-4">
         <div className="flex flex-wrap items-center gap-2">

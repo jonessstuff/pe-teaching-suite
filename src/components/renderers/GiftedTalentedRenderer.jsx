@@ -26,7 +26,7 @@ function DifferentiatePlan({ lesson }) {
   ].join('\n\n')
 
   return (
-    <div className="card max-w-3xl mx-auto p-8 space-y-6">
+    <div className="card lesson-doc p-8 space-y-6">
       <PlanHeader
         badge="Gifted & Talented · Depth & Complexity"
         gradeBands={gradeBands}
@@ -102,7 +102,7 @@ function EnrichPlan({ lesson }) {
   const accelText = accel.map((a) => `${a.type}: ${a.description}`).join('\n\n')
 
   return (
-    <div className="card max-w-3xl mx-auto p-8 space-y-6">
+    <div className="card lesson-doc p-8 space-y-6">
       <PlanHeader
         badge="Gifted & Talented · Enrichment & Acceleration"
         gradeBands={gradeBands}
@@ -162,7 +162,7 @@ function EnrichPlan({ lesson }) {
 // ─── Mode: Support (2e / underachievement / asynchronous) ────────────────────
 function SupportGuide({ lesson }) {
   return (
-    <div className="card max-w-3xl mx-auto p-8 space-y-6">
+    <div className="card lesson-doc p-8 space-y-6">
       <header className="space-y-2 border-b border-ink-900 pb-4">
         <span className="label-eyebrow rounded px-2 py-0.5 bg-amber-500/15 text-ink-50">
           Gifted & Talented · Student Support Guidance

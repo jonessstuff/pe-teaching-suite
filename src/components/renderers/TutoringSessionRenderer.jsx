@@ -36,7 +36,7 @@ function PrivateSession({ lesson, a }) {
   ].filter(Boolean).join('\n\n')
 
   return (
-    <div className="card max-w-3xl mx-auto p-8 space-y-6">
+    <div className="card lesson-doc p-8 space-y-6">
       <header className="space-y-2 border-b border-ink-900 pb-4">
         <span className={`label-eyebrow rounded px-2 py-0.5 ${a.chip}`}>
           Tutoring · Private / After-School
@@ -111,7 +111,7 @@ function InClassSession({ lesson, a }) {
   const bands = lesson.grade_bands ?? []
   const steps = lesson.steps ?? []
   return (
-    <div className="card max-w-3xl mx-auto p-8 space-y-6">
+    <div className="card lesson-doc p-8 space-y-6">
       <header className="space-y-2 border-b border-ink-900 pb-4">
         <span className={`label-eyebrow rounded px-2 py-0.5 ${a.chip}`}>
           Tutoring · In-Class Pull-Aside

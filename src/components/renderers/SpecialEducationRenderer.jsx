@@ -18,7 +18,7 @@ function MultiTierPlan({ lesson }) {
   const udl = lesson.udl_supports ?? []
 
   return (
-    <div className="card max-w-3xl mx-auto p-8 space-y-6">
+    <div className="card lesson-doc p-8 space-y-6">
       <PlanHeader
         badge="Special Education · Multi-Tier Lesson"
         gradeBands={lesson.grade_bands}
@@ -91,7 +91,7 @@ function MultiTierPlan({ lesson }) {
 function FunctionalPlan({ lesson }) {
   const seq = lesson.instructional_sequence ?? []
   return (
-    <div className="card max-w-3xl mx-auto p-8 space-y-6">
+    <div className="card lesson-doc p-8 space-y-6">
       <PlanHeader
         badge="Special Education · Functional / Life Skills"
         gradeBands={lesson.grade_bands}
@@ -165,7 +165,7 @@ function FunctionalPlan({ lesson }) {
 function CoTeachingPlan({ lesson }) {
   const models = lesson.co_teaching_models ?? []
   return (
-    <div className="card max-w-3xl mx-auto p-8 space-y-6">
+    <div className="card lesson-doc p-8 space-y-6">
       <PlanHeader
         badge="Special Education · Push-In / Co-Teaching"
         gradeBands={lesson.grade_bands}
