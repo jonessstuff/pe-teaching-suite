@@ -3,10 +3,10 @@ export default function RubricRenderer({ rubric }) {
   const { title, level_labels, criteria } = rubric
 
   return (
-    <div className="print:font-sans">
+    <div className="max-w-4xl mx-auto print:font-sans">
       {/* Header */}
       <div className="mb-4 print:mb-3">
-        <h2 className="text-lg font-bold text-ink-50 print:text-black">{title}</h2>
+        <h2 className="lesson-section-title text-ink-50 print:text-black">{title}</h2>
         <div className="mt-1 flex gap-4 text-sm text-ink-400 print:text-gray-600">
           <span>Name: ___________________________</span>
           <span>Date: _______________</span>

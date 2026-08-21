@@ -6,15 +6,15 @@ export default function WarmupRenderer({ warmups, heading }) {
   if (!list.length) return null
   return (
     <div className="space-y-4">
-      {heading && <h2 className="text-lg font-semibold text-ink-50">{heading}</h2>}
+      {heading && <h2 className="lesson-section-title text-ink-50">{heading}</h2>}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {list.map((w, i) => (
           <div key={i} className="card flex flex-col gap-2 p-5">
             <div className="flex items-center gap-2">
-              <p className="font-semibold text-ink-50 leading-snug">{w.title}</p>
+              <p className="lesson-block-title text-ink-50 leading-snug">{w.title}</p>
               <span className="shrink-0 text-xs text-ink-500">{w.duration_mins} min</span>
             </div>
-            <p className="text-sm text-ink-700 leading-relaxed">{w.description}</p>
+            <p className="lesson-body text-ink-700">{w.description}</p>
             {w.equipment_needed?.length > 0 && (
               <p className="text-xs text-ink-600 border-t border-ink-800 pt-2">Equipment: {w.equipment_needed.join(', ')}</p>
             )}
