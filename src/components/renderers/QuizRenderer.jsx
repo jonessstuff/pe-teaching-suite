@@ -39,7 +39,7 @@ export default function QuizRenderer({ quiz_questions }) {
   if (bands.length === 0) return null
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="lesson-doc space-y-6">
       {/* One card per grade band — each starts on its own printed page */}
       {bands.map((band, idx) => (
         <section

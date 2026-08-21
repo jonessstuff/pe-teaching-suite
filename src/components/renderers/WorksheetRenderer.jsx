@@ -278,7 +278,7 @@ export default function WorksheetRenderer({ worksheet }) {
   if (formats.length === 0) return null
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="lesson-doc space-y-6">
       {applicable.map((f, idx) => {
         const Body = RENDERERS[f.type]
         return (
