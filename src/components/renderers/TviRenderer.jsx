@@ -14,7 +14,7 @@ export default function TviRenderer({ lesson }) {
   return (
     <div className="card lesson-doc p-8 space-y-6">
       {/* Header */}
-      <header className="space-y-2 border-b border-ink-900 pb-4">
+      <header className="lesson-header-band space-y-2">
         <div className="flex flex-wrap items-center gap-2">
           <span className="label-eyebrow rounded px-2 py-0.5 bg-cobalt-500/15 text-ink-50">
             TVI · {lesson.content_area || 'ECC Activity'}
@@ -161,8 +161,8 @@ function Section({ title, copyText, children }) {
   }
   return (
     <section className="space-y-3">
-      <div className="flex items-center justify-between border-b border-ink-900 pb-1">
-        <h3 className="lesson-section-title text-ink-400">{title}</h3>
+      <div className="flex items-center justify-between lesson-section-rule">
+        <h3 className="lesson-section-title text-ink-200">{title}</h3>
         {copyText && (
           <button
             type="button"

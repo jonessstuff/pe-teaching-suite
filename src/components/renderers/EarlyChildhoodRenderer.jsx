@@ -23,7 +23,7 @@ export default function EarlyChildhoodRenderer({ lesson }) {
   return (
     <div className="card lesson-doc p-8 space-y-6">
       {/* Header */}
-      <header className="space-y-2 border-b border-ink-900 pb-4">
+      <header className="lesson-header-band space-y-2">
         <div className="flex flex-wrap items-center gap-2">
           <span className="label-eyebrow rounded px-2 py-0.5 bg-grass-500/15 text-ink-50">
             Early Childhood · Play-Based (DAP)
@@ -278,7 +278,7 @@ function Section({ title, icon: Icon, copyText, children }) {
   }
   return (
     <section className="space-y-3">
-      <div className="flex items-center justify-between border-b border-ink-900 pb-1">
+      <div className="flex items-center justify-between lesson-section-rule">
         <h3 className="label-eyebrow text-ink-400 flex items-center gap-1.5">
           {Icon && <Icon size={13} className="text-grass-400" />}
           <span>{title}</span>

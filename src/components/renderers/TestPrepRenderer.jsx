@@ -87,7 +87,7 @@ export default function TestPrepRenderer({ lesson }) {
   const answerKeyBlock = questions.length > 0 && (
     <div className={`rounded-xl border border-ink-800 bg-ink-900/40 p-5 ${showAnswers ? '' : 'print:hidden'}`}>
       <div className="flex items-center justify-between">
-        <h3 className="lesson-section-title text-ink-400">Answer Key</h3>
+        <h3 className="lesson-section-title text-ink-200">Answer Key</h3>
         <button
           type="button"
           onClick={() => setShowAnswers((v) => !v)}
@@ -144,7 +144,7 @@ export default function TestPrepRenderer({ lesson }) {
       {viewToggle}
 
       {/* Header */}
-      <header className="space-y-2 border-b border-ink-900 pb-4">
+      <header className="lesson-header-band space-y-2">
         <div className="flex flex-wrap items-center gap-2">
           <span className="label-eyebrow rounded px-2 py-0.5 bg-steel-500/15 text-ink-50">
             Test Prep · {isState ? 'State Assessment' : 'SAT / ACT'}
@@ -286,8 +286,8 @@ function Section({ title, copyText, children }) {
   }
   return (
     <section className="space-y-3">
-      <div className="flex items-center justify-between border-b border-ink-900 pb-1">
-        <h3 className="lesson-section-title text-ink-400">{title}</h3>
+      <div className="flex items-center justify-between lesson-section-rule">
+        <h3 className="lesson-section-title text-ink-200">{title}</h3>
         {copyText && (
           <button
             type="button"

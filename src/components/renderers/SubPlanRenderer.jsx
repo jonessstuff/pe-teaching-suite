@@ -21,7 +21,7 @@ export default function SubPlanRenderer({ lesson }) {
 
   return (
     <div className="card lesson-doc p-8 space-y-6">
-      <header className="space-y-2 border-b border-ink-900 pb-4">
+      <header className="lesson-header-band space-y-2">
         <div className="flex items-center justify-between text-sm text-ink-400">
           <span>For your substitute</span>
           <span>
@@ -78,7 +78,7 @@ export default function SubPlanRenderer({ lesson }) {
 function Section({ title, children }) {
   return (
     <section className="space-y-3">
-      <h3 className="label-eyebrow text-ink-400 border-b border-ink-900 pb-1">
+      <h3 className="label-eyebrow text-ink-400 lesson-section-rule">
         {title}
       </h3>
       <div className="text-sm leading-relaxed">{children}</div>

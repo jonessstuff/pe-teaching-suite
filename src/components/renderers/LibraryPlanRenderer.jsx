@@ -83,11 +83,11 @@ export default function LibraryPlanRenderer({ lesson }) {
   return (
     <div className="card lesson-doc p-8 space-y-6">
       {/* Header */}
-      <header className="space-y-2 border-b border-ink-900 pb-4">
+      <header className="lesson-header-band space-y-2">
         <div className="flex items-center justify-between text-sm text-ink-400">
           <span>{lesson.scheduled_date ?? 'Unscheduled'}</span>
           <span>{lesson.period_label ?? ''}</span>
-          <span className="label-eyebrow rounded px-2 py-0.5 bg-blue-500/15 text-ink-50">
+          <span className="label-eyebrow rounded px-2 py-0.5 bg-white/15 text-white">
             Library/Media
             {gradeBands.length > 0
               ? ` · Grade${gradeBands.length > 1 ? 's' : ''} ${gradeBands.map(formatGrade).join('/')}`
@@ -101,7 +101,7 @@ export default function LibraryPlanRenderer({ lesson }) {
             {(lesson.skill_focus ?? []).map((s, i) => (
               <span
                 key={i}
-                className="rounded-full bg-ink-800 px-2.5 py-0.5 text-xs text-ink-300"
+                className="rounded-full bg-white/10 px-2.5 py-0.5 text-xs text-brand-100"
               >
                 {s}
               </span>
@@ -347,8 +347,8 @@ function Section({ title, copyText, children }) {
 
   return (
     <section className="space-y-3">
-      <div className="flex items-center justify-between border-b border-ink-900 pb-1">
-        <h3 className="lesson-section-title text-ink-400">{title}</h3>
+      <div className="lesson-section-rule flex items-center justify-between pb-1">
+        <h3 className="lesson-section-title text-ink-200">{title}</h3>
         {copyText && (
           <button
             type="button"

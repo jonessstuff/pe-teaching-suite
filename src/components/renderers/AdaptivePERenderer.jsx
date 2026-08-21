@@ -45,7 +45,7 @@ function APELessonPlan({ lesson }) {
   return (
     <div className="card lesson-doc p-8 space-y-6">
       {/* Header */}
-      <header className="space-y-2 border-b border-ink-900 pb-4">
+      <header className="lesson-header-band space-y-2">
         <div className="flex items-center justify-between text-sm text-ink-400">
           <span>{lesson.scheduled_date ?? 'Unscheduled'}</span>
           <span>{lesson.period_label ?? ''}</span>
@@ -223,7 +223,7 @@ function APEInclusionPlan({ lesson }) {
   return (
     <div className="card lesson-doc p-8 space-y-6">
       {/* Header */}
-      <header className="space-y-2 border-b border-ink-900 pb-4">
+      <header className="lesson-header-band space-y-2">
         <div className="flex items-center gap-2">
           <span className="label-eyebrow rounded px-2 py-0.5 bg-rose-500/15 text-ink-50">
             Inclusion & Accommodation Plan
@@ -336,8 +336,8 @@ function Section({ title, copyText, children }) {
 
   return (
     <section className="space-y-3">
-      <div className="flex items-center justify-between border-b border-ink-900 pb-1">
-        <h3 className="lesson-section-title text-ink-400">{title}</h3>
+      <div className="flex items-center justify-between lesson-section-rule">
+        <h3 className="lesson-section-title text-ink-200">{title}</h3>
         {copyText && (
           <button
             type="button"

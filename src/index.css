@@ -102,6 +102,34 @@
     font-size: 0.875rem;    /* 14px — full readable body size, not shrunk */
     line-height: 1.6;
   }
+
+  /* --- Lesson structure color -------------------------------------------------
+     Shared accent for now (same hues on every module — no per-module wiring yet).
+     Brand indigo band + emerald accent rules. Keeping the palette here means a
+     later per-module pass swaps hues in ONE place instead of across renderers. */
+
+  /* Header band: a solid brand-indigo bar that bleeds to the card edges, light
+     text, capped by a 4px emerald rule. ASSUMES it is the first child of a
+     `.card ... p-8` shell — the negative margins cancel that 2rem padding and the
+     top radius matches the card's `rounded-xl2`. Color the title/meta via these
+     scoped rules (not utilities in the renderer) so the band owns its own palette. */
+  .lesson-header-band {
+    @apply -mx-8 -mt-8 rounded-t-xl2 border-b-4 border-accent-500 bg-brand-800 px-8 pt-6 pb-5;
+  }
+  /* NOTE: the band's text colors (white title, light-indigo meta) are defined
+     UN-LAYERED below the @layer block — a component-layer rule loses to the
+     ink-* utility classes the renderers set on their title/meta. */
+
+  /* Section rule: keep the ink hairline, add a short 48px emerald segment sitting
+     on its left end (bottom: -1px so the segment overlaps the hairline exactly). */
+  .lesson-section-rule { @apply relative border-b border-ink-900; }
+  .lesson-section-rule::before {
+    content: "";
+    @apply absolute left-0 bg-accent-500;
+    bottom: -1px;
+    width: 48px;
+    height: 2px;
+  }
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 rounded-lg bg-accent-500 px-4 py-2.5
            text-sm font-semibold text-white transition-colors hover:bg-accent-600
@@ -144,6 +172,18 @@
   }
 }
 
+/* Lesson header band — text colors, UN-LAYERED on purpose. Un-layered normal
+   rules beat @layer utilities (so these win over the renderers' text-ink-50 /
+   text-ink-400 on the band) while still yielding to the @media print reset's
+   !important black — which is exactly what we want for the print fallback.
+   Scoped to the band's own children so nothing in the lesson body is touched.
+   The `> .text-ink-400` / `> p` targets catch the meta row and the unit /
+   subtitle line across every renderer's header variant; badges and chips carry
+   their own explicit colors and are untouched. */
+.lesson-header-band .lesson-title { color: #ffffff; }
+.lesson-header-band > .text-ink-400,
+.lesson-header-band > p { color: #dbe6ff; } /* brand-100 */
+
 @media print {
   /* Chrome-hiding lives in the single authoritative list in styles/print.css
      (nav/aside/header/footer/.bottom-nav/.no-print/.print:hidden/[data-no-print]).
@@ -169,6 +209,20 @@
   }
   .print\:bg-gray-50 {
     background-color: #f9fafb !important;
+  }
+
+  /* Lesson structure color — print fallback. The universal reset above already
+     drops the indigo band to white and the title to black; these class-scoped
+     rules out-specify it to (a) keep a SOLID BLACK rule under the header so it
+     still reads as a header, and (b) repaint the emerald accent segments in
+     black (print-color-adjust:exact so Chrome actually renders the pseudo). */
+  .lesson-header-band {
+    border-bottom-color: black !important;   /* keep the 4px rule, make it solid */
+  }
+  .lesson-section-rule::before {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-color: black !important;
   }
 
   /* Classroom Management card — print in full color with the teacher's chosen
