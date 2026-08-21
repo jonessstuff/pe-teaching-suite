@@ -102,7 +102,7 @@ export default function ObservationSummaryRenderer({ lesson }) {
         </div>
 
         <div>
-          <h2 className="text-2xl font-display font-semibold text-ink-50 print:text-ink-50">
+          <h2 className="lesson-title text-ink-50 print:text-ink-50">
             {lesson.title}
           </h2>
           {lesson.unit && (

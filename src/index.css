@@ -70,6 +70,32 @@
   .label-eyebrow {
     @apply text-xs font-mono uppercase tracking-widest text-ink-500;
   }
+  /* Lesson document type scale — SIZE / WEIGHT / LINE-HEIGHT / MEASURE / TRACKING
+     only. No color: callers keep their existing text-ink-* utilities. Applied
+     inside the shared Section / InstructionBlock / GradeBandBlock components and the
+     renderer header to give a lesson real typographic hierarchy. `.label-eyebrow`
+     is deliberately untouched — it stays the 11px SUBJECT·GRADE chip. */
+  .lesson-title {
+    @apply font-display font-bold tracking-tight;
+    font-size: 1.6875rem;   /* 27px */
+    line-height: 1.2;
+  }
+  .lesson-section-title {
+    @apply font-display font-bold tracking-tight;
+    font-size: 1.25rem;     /* 20px */
+    line-height: 1.3;
+  }
+  .lesson-block-title {
+    @apply font-semibold;
+    font-size: 0.90625rem;  /* 14.5px */
+    line-height: 1.4;
+  }
+  .lesson-body {
+    @apply font-normal;
+    font-size: 0.875rem;    /* 14px — full readable body size, not shrunk */
+    line-height: 1.6;
+    max-width: 62ch;        /* prose measure cap */
+  }
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 rounded-lg bg-accent-500 px-4 py-2.5
            text-sm font-semibold text-white transition-colors hover:bg-accent-600

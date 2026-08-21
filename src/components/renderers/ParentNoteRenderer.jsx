@@ -65,13 +65,13 @@ export default function ParentNoteRenderer({ lesson }) {
             <p className="text-xs text-ink-500 mt-0.5">Share with families via email or newsletter.</p>
           </div>
         </div>
-        <h2 className="text-2xl font-display font-semibold text-ink-50">{lesson.title}</h2>
+        <h2 className="lesson-title text-ink-50">{lesson.title}</h2>
         {lesson.unit && <p className="text-sm text-ink-400">{lesson.unit}</p>}
       </header>
 
       {/* Intro paragraph */}
       {intro && (
-        <section className="space-y-2">
+        <section className="space-y-3">
           <p className="text-ink-200 leading-relaxed whitespace-pre-line">{intro}</p>
         </section>
       )}

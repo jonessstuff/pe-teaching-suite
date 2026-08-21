@@ -101,7 +101,7 @@ export default function ArtPlanRenderer({ lesson }) {
             </span>
           </div>
         </div>
-        <h2 className="text-2xl font-display font-semibold text-ink-50">{lesson.title}</h2>
+        <h2 className="lesson-title text-ink-50">{lesson.title}</h2>
         {lesson.unit && <p className="text-sm text-ink-400">{lesson.unit}</p>}
         {(lesson.skill_focus ?? []).length > 0 && (
           <div className="flex flex-wrap gap-1.5 pt-1">
@@ -357,9 +357,9 @@ function Section({ title, copyText, children }) {
   }
 
   return (
-    <section className="space-y-2">
+    <section className="space-y-3">
       <div className="flex items-center justify-between border-b border-ink-900 pb-1">
-        <h3 className="label-eyebrow text-ink-400">{title}</h3>
+        <h3 className="lesson-section-title text-ink-400">{title}</h3>
         {copyText && (
           <button
             type="button"
@@ -372,7 +372,7 @@ function Section({ title, copyText, children }) {
           </button>
         )}
       </div>
-      <div className="text-sm text-ink-200 leading-relaxed">{children}</div>
+      <div className="lesson-body text-ink-200">{children}</div>
     </section>
   )
 }
@@ -380,11 +380,11 @@ function Section({ title, copyText, children }) {
 function GradeBandBlock({ grade, subtitle, children }) {
   return (
     <div className="mb-2">
-      <p className="font-semibold text-ink-50">
+      <p className="lesson-block-title text-ink-50">
         Grade {formatGrade(grade)}
         {subtitle ? `: ${subtitle}` : ''}
       </p>
-      <div className="mt-0.5 whitespace-pre-line">{children}</div>
+      <div className="mt-1 whitespace-pre-line">{children}</div>
     </div>
   )
 }
@@ -394,8 +394,8 @@ function InstructionBlock({ label, text }) {
   if (!text || !String(text).trim()) return null
   return (
     <div className="phase-block mb-2">
-      <p className="text-sm font-semibold text-ink-200">{label}</p>
-      <p className="mt-0.5 text-ink-300 whitespace-pre-line">{text}</p>
+      <p className="lesson-block-title text-ink-200">{label}</p>
+      <p className="mt-1 text-ink-300 whitespace-pre-line">{text}</p>
     </div>
   )
 }

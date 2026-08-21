@@ -25,7 +25,7 @@ export default function StaffPdRenderer({ lesson }) {
             </span>
           )}
         </div>
-        <h2 className="text-2xl font-display font-semibold text-ink-50">{lesson.title}</h2>
+        <h2 className="lesson-title text-ink-50">{lesson.title}</h2>
         {lesson.focus && <p className="text-sm text-ink-400">{lesson.focus}</p>}
       </header>
 
@@ -154,9 +154,9 @@ function Section({ title, copyText, children }) {
     try { await navigator.clipboard.writeText(copyText ?? ''); setCopied(true); setTimeout(() => setCopied(false), 1500) } catch { /* ignore */ }
   }
   return (
-    <section className="space-y-2">
+    <section className="space-y-3">
       <div className="flex items-center justify-between border-b border-ink-900 pb-1">
-        <h3 className="label-eyebrow text-ink-400">{title}</h3>
+        <h3 className="lesson-section-title text-ink-400">{title}</h3>
         {copyText && (
           <button type="button" onClick={handleCopy} className="flex items-center gap-1 text-xs text-ink-400 hover:text-gold-400 transition-colors print:hidden" title="Copy this section">
             {copied ? <Check size={14} /> : <Copy size={14} />}{copied ? 'Copied' : 'Copy'}

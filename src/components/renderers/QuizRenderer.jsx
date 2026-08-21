@@ -99,7 +99,7 @@ export default function QuizRenderer({ quiz_questions }) {
           onClick={() => setShowAnswers((v) => !v)}
           className="flex w-full items-center justify-between text-left"
         >
-          <h2 className="label-eyebrow text-ink-400">Answer Key</h2>
+          <h2 className="lesson-section-title text-ink-400">Answer Key</h2>
           {showAnswers
             ? <ChevronUp size={16} className="text-ink-500" />
             : <ChevronDown size={16} className="text-ink-500" />}

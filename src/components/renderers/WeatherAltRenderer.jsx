@@ -30,7 +30,7 @@ export default function WeatherAltRenderer({ lesson }) {
             <p className="text-xs text-ink-500 mt-0.5">Use this version if outdoor space isn't available.</p>
           </div>
         </div>
-        <h2 className="text-2xl font-display font-semibold text-ink-50">{lesson.title}</h2>
+        <h2 className="lesson-title text-ink-50">{lesson.title}</h2>
         {lesson.unit && <p className="text-sm text-ink-400">{lesson.unit}</p>}
       </header>
 
@@ -126,9 +126,9 @@ function Section({ title, copyText, children }) {
   }
 
   return (
-    <section className="space-y-2">
+    <section className="space-y-3">
       <div className="flex items-center justify-between border-b border-ink-900 pb-1">
-        <h3 className="label-eyebrow text-ink-400">{title}</h3>
+        <h3 className="lesson-section-title text-ink-400">{title}</h3>
         {copyText && (
           <button
             type="button"
@@ -141,7 +141,7 @@ function Section({ title, copyText, children }) {
           </button>
         )}
       </div>
-      <div className="text-sm text-ink-200 leading-relaxed">{children}</div>
+      <div className="lesson-body text-ink-200">{children}</div>
     </section>
   )
 }
@@ -150,8 +150,8 @@ function AltBlock({ label, text }) {
   if (!text) return null
   return (
     <div className="mb-3">
-      <p className="text-sm font-semibold text-ink-200">{label}</p>
-      <p className="mt-0.5 text-ink-300 whitespace-pre-line">{text}</p>
+      <p className="lesson-block-title text-ink-200">{label}</p>
+      <p className="mt-1 text-ink-300 whitespace-pre-line">{text}</p>
     </div>
   )
 }

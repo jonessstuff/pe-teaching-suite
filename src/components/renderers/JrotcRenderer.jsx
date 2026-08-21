@@ -31,7 +31,7 @@ export default function JrotcRenderer({ lesson }) {
             </span>
           )}
         </div>
-        <h2 className="text-2xl font-display font-semibold text-ink-50">{lesson.title}</h2>
+        <h2 className="lesson-title text-ink-50">{lesson.title}</h2>
         <p className="text-sm text-ink-400">
           {lesson.topic}
           {lesson.duration_minutes ? ` · ${lesson.duration_minutes} min` : ''}
@@ -187,9 +187,9 @@ function Section({ title, copyText, children }) {
     }
   }
   return (
-    <section className="space-y-2">
+    <section className="space-y-3">
       <div className="flex items-center justify-between border-b border-ink-900 pb-1">
-        <h3 className="label-eyebrow text-ink-400">{title}</h3>
+        <h3 className="lesson-section-title text-ink-400">{title}</h3>
         {copyText && (
           <button
             type="button"
@@ -202,7 +202,7 @@ function Section({ title, copyText, children }) {
           </button>
         )}
       </div>
-      <div className="text-sm text-ink-200 leading-relaxed">{children}</div>
+      <div className="lesson-body text-ink-200">{children}</div>
     </section>
   )
 }

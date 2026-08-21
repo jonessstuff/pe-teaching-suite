@@ -28,7 +28,7 @@ export default function SubPlanRenderer({ lesson }) {
             {lesson.grade_bands?.length ? `Grades ${lesson.grade_bands.map(formatGrade).join('/')}` : ''}
           </span>
         </div>
-        <h2 className="text-2xl font-display font-semibold text-ink-50">
+        <h2 className="lesson-title text-ink-50">
           {lesson.title} — Sub Plan
         </h2>
       </header>
@@ -77,7 +77,7 @@ export default function SubPlanRenderer({ lesson }) {
 
 function Section({ title, children }) {
   return (
-    <section className="space-y-2">
+    <section className="space-y-3">
       <h3 className="label-eyebrow text-ink-400 border-b border-ink-900 pb-1">
         {title}
       </h3>

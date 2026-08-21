@@ -43,7 +43,7 @@ function PrivateSession({ lesson, a }) {
           {lesson.session_label ? ` · ${lesson.session_label}` : ''}
           {bands.length > 0 ? ` · Grade${bands.length > 1 ? 's' : ''} ${bands.map(formatGrade).join('/')}` : ''}
         </span>
-        <h2 className="text-2xl font-display font-semibold text-ink-50">{lesson.title}</h2>
+        <h2 className="lesson-title text-ink-50">{lesson.title}</h2>
         <p className="text-sm text-ink-400">
           {[lesson.topic_area, lesson.focus].filter(Boolean).join(' · ')}
           {lesson.duration_minutes ? ` · ${lesson.duration_minutes} min` : ''}
@@ -117,7 +117,7 @@ function InClassSession({ lesson, a }) {
           Tutoring · In-Class Pull-Aside
           {bands.length > 0 ? ` · Grade${bands.length > 1 ? 's' : ''} ${bands.map(formatGrade).join('/')}` : ''}
         </span>
-        <h2 className="text-2xl font-display font-semibold text-ink-50">{lesson.title}</h2>
+        <h2 className="lesson-title text-ink-50">{lesson.title}</h2>
         <p className="text-sm text-ink-400">
           {[lesson.topic_area, lesson.focus].filter(Boolean).join(' · ')}
           {lesson.duration_minutes ? ` · ${lesson.duration_minutes} min` : ''}
@@ -190,7 +190,7 @@ function Block({ label, text }) {
   if (!text) return null
   return (
     <div>
-      <p className="text-sm font-semibold text-ink-200">{label}</p>
+      <p className="lesson-block-title text-ink-200">{label}</p>
       <p className="mt-0.5 text-sm text-ink-300 whitespace-pre-line">{text}</p>
     </div>
   )
@@ -247,9 +247,9 @@ function Section({ title, copyText, children, a }) {
     }
   }
   return (
-    <section className="space-y-2">
+    <section className="space-y-3">
       <div className="flex items-center justify-between border-b border-ink-900 pb-1">
-        <h3 className="label-eyebrow text-ink-400">{title}</h3>
+        <h3 className="lesson-section-title text-ink-400">{title}</h3>
         {copyText && (
           <button
             type="button"
@@ -262,7 +262,7 @@ function Section({ title, copyText, children, a }) {
           </button>
         )}
       </div>
-      <div className="text-sm text-ink-200 leading-relaxed">{children}</div>
+      <div className="lesson-body text-ink-200">{children}</div>
     </section>
   )
 }

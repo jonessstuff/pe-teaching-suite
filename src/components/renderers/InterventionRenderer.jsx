@@ -40,7 +40,7 @@ export default function InterventionRenderer({ lesson }) {
             </span>
           )}
         </div>
-        <h2 className="text-2xl font-display font-semibold text-ink-50">{lesson.title}</h2>
+        <h2 className="lesson-title text-ink-50">{lesson.title}</h2>
       </header>
 
       {/* Concern + targeted skill */}
@@ -288,7 +288,7 @@ function Section({ title, icon: Icon, copyText, children }) {
     }
   }
   return (
-    <section className="space-y-2">
+    <section className="space-y-3">
       <div className="flex items-center justify-between border-b border-ink-900 pb-1">
         <h3 className="label-eyebrow text-ink-400 flex items-center gap-1.5">
           {Icon && <Icon size={13} className="text-stone-400" />}
@@ -306,7 +306,7 @@ function Section({ title, icon: Icon, copyText, children }) {
           </button>
         )}
       </div>
-      <div className="text-sm text-ink-200 leading-relaxed">{children}</div>
+      <div className="lesson-body text-ink-200">{children}</div>
     </section>
   )
 }
