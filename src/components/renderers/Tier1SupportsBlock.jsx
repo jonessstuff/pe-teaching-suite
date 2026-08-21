@@ -13,13 +13,13 @@ export default function Tier1SupportsBlock({ supports }) {
 
   return (
     <section className="space-y-3 rounded-lg border border-emerald-500/25 bg-emerald-500/5 p-4 print:border-emerald-700">
-      <h3 className="label-eyebrow flex items-center gap-1.5 text-emerald-400">
+      <h3 className="lesson-section-title flex items-center gap-1.5 text-emerald-400">
         <Accessibility size={13} /> Tier 1 UDL &amp; Executive-Function Supports
       </h3>
 
       {hasUdl && (
         <div>
-          <p className="mb-1 text-xs font-semibold text-ink-300">Universal Design for Learning (CAST)</p>
+          <p className="lesson-block-title mb-1 text-ink-300">Universal Design for Learning (CAST)</p>
           <dl className="space-y-1.5">
             {udl.engagement && <Row label="Engagement (the why)" value={udl.engagement} />}
             {udl.representation && <Row label="Representation (the what)" value={udl.representation} />}
@@ -30,10 +30,10 @@ export default function Tier1SupportsBlock({ supports }) {
 
       {ef.length > 0 && (
         <div>
-          <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold text-ink-300">
+          <p className="lesson-block-title mb-1 flex items-center gap-1.5 text-ink-300">
             <Brain size={12} /> Executive-function supports
           </p>
-          <ul className="space-y-1 text-sm text-ink-300">
+          <ul className="lesson-body space-y-1 text-ink-300">
             {ef.map((e, i) => (
               <li key={i}><span className="font-semibold text-ink-100">{e.skill}: </span>{e.support}</li>
             ))}
@@ -48,7 +48,7 @@ function Row({ label, value }) {
   return (
     <div>
       <dt className="text-xs font-semibold text-ink-400">{label}</dt>
-      <dd className="text-sm text-ink-300">{value}</dd>
+      <dd className="lesson-body text-ink-300">{value}</dd>
     </div>
   )
 }
