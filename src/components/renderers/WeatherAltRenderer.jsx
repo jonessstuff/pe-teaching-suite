@@ -20,14 +20,14 @@ export default function WeatherAltRenderer({ lesson }) {
   return (
     <div className="card lesson-doc p-8 space-y-6">
       {/* Header */}
-      <header className="space-y-3 border-b border-ink-900 pb-5">
+      <header className="lesson-header-band space-y-3">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sky-500/15">
-            <CloudRain size={18} className="text-sky-400" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sky-500/25">
+            <CloudRain size={18} className="text-sky-300" />
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-sky-400">Indoor Alternative</p>
-            <p className="text-xs text-ink-500 mt-0.5">Use this version if outdoor space isn't available.</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-sky-300">Indoor Alternative</p>
+            <p className="text-xs text-brand-200 mt-0.5">Use this version if outdoor space isn't available.</p>
           </div>
         </div>
         <h2 className="lesson-title text-ink-50">{lesson.title}</h2>
@@ -127,8 +127,8 @@ function Section({ title, copyText, children }) {
 
   return (
     <section className="space-y-3">
-      <div className="flex items-center justify-between border-b border-ink-900 pb-1">
-        <h3 className="lesson-section-title text-ink-400">{title}</h3>
+      <div className="lesson-section-rule flex items-center justify-between pb-1">
+        <h3 className="lesson-section-title text-ink-200">{title}</h3>
         {copyText && (
           <button
             type="button"
