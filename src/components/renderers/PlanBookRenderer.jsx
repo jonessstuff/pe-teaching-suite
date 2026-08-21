@@ -26,6 +26,7 @@ const SUBJECT_STYLES = {
   Health: 'bg-subject-health/15 text-subject-health',
   'Family Life': 'bg-subject-family/15 text-subject-family',
   "Driver's Ed": 'bg-subject-drivers/15 text-subject-drivers',
+  'Strength & Conditioning': 'bg-accent-500/15 text-accent-400',
 }
 
 export default function PlanBookRenderer({ lesson }) {

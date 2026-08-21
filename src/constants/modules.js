@@ -21,7 +21,7 @@ export const SUBJECT_TAB_STYLES = {
   'Family Life': 'bg-subject-family/20 text-ink-50',
   "Driver's Ed": 'bg-subject-drivers/20 text-ink-50',
   'Strength & Conditioning': 'bg-accent-500/20 text-ink-50',
-  'Adaptive PE': 'bg-teal-500/20 text-ink-50',
+  'Adaptive PE': 'bg-rose-500/20 text-ink-50',
   // Other specialist modules — match their module-card accent colors
   'Library/Media': 'bg-blue-500/20 text-ink-50',
   Art: 'bg-orange-500/20 text-ink-50',
@@ -175,7 +175,7 @@ export const PE_HEALTH_SUBJECTS = subjectsForModule('PE & Health')
 //   cobalt (Teacher of the Visually Impaired) · magenta (Teacher of the Deaf & Hard of Hearing) ·
 //   saffron (Elementary Technology / Computer Lab) · maroon (Theater / Drama) ·
 //   mocha (Instructional Coaching) · olive (Dance) · denim (JROTC) ·
-//   teal (Adaptive PE lesson tabs)
+//   teal (RESERVED — the Pacing Guide / scheduling tool color, not a module accent)
 //
 // AVAILABLE for future modules (School Counselors is next, then more). Each
 // entry's strings are full/literal so Tailwind's JIT compiles them and a new
