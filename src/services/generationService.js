@@ -81,6 +81,21 @@ export async function generateWeatherAlt(lessonId) {
   return data
 }
 
+/**
+ * Second-pass Visual Teaching Resources for a saved lesson. Returns
+ * { visual_resources: [...] } (empty array when the lesson genuinely needs none)
+ * plus { skipped_visuals } (informational — true diagrams left for a future
+ * image-generation capability).
+ */
+export async function generateVisualResources(lessonId) {
+  const { data, error } = await supabase.functions.invoke('generate-visual-resources', {
+    body: { lessonId },
+  })
+
+  if (error) throw await toGenerationError(error)
+  return data
+}
+
 export async function generateParentNote(lessonId) {
   const { data, error } = await supabase.functions.invoke('generate-parent-note', {
     body: { lessonId },

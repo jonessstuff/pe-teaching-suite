@@ -103,6 +103,9 @@
  * @property {string} [obs_overview]           // 2-3 sentence lesson arc summary for evaluator
  * @property {string[]} [obs_differentiation]  // 2-3 differentiation highlights in evaluator language
  * @property {string[]} [obs_look_for]         // 2-3 specific observable indicators
+ *
+ * // --- Visual Teaching Resources (second-pass, derived; null until run, [] = ran/none) ---
+ * @property {Array<Object>|null} [visual_resources]
  */
 
 /**
@@ -174,6 +177,8 @@ export function createEmptyLessonObject() {
     obs_overview: "",
     obs_differentiation: [],
     obs_look_for: [],
+
+    visual_resources: null,
   };
 }
 

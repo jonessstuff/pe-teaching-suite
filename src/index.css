@@ -225,6 +225,17 @@
     background-color: black !important;
   }
 
+  /* Visual Teaching Resources — keep a professional, legible hierarchy in print.
+     The emerald title rule and organizer header bars would otherwise wash to the
+     universal reset's faint #ccc; out-specify them to solid black / light-gray. */
+  .visual-resource .vr-rule { border-bottom-color: black !important; }
+  .visual-resource .vr-colhead {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-color: #f3f4f6 !important;
+    color: black !important;
+  }
+
   /* Classroom Management card — print in full color with the teacher's chosen
      accent. These class-scoped selectors out-specify the universal reset above,
      and print-color-adjust:exact forces Chrome to actually render the colors. */

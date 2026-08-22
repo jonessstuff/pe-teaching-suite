@@ -3,7 +3,7 @@ import {
   FileText, ClipboardList, CloudRain, Mail, ClipboardCheck,
   LayoutTemplate, Loader2, Printer, Download, X, Star, BookOpen,
   CheckSquare, Shuffle, Flame, BookMarked, Send, Globe, Users, FileWarning, ChevronDown,
-  Copy, Check, PencilRuler, FileDown, Lock, Presentation,
+  Copy, Check, PencilRuler, FileDown, Lock, Presentation, Files,
 } from 'lucide-react'
 import {
   generateSubPlan, generateQuiz, generateWeatherAlt,
@@ -11,6 +11,7 @@ import {
   generateRubric, generateFamilyNewsletter, generateDifferentiatedLesson,
   generateProgressNote, generateExitTicket, generateCrossCurricular,
   generateWarmup, generateBehaviorNote, generateConferencePrep, generateWorksheet,
+  generateVisualResources,
 } from '../../services/generationService'
 import { updateLesson } from '../../services/lessonsService'
 import { createAssessment } from '../../services/assessmentService'
@@ -24,6 +25,7 @@ import RubricRenderer from '../renderers/RubricRenderer'
 import FamilyNewsletterRenderer from '../renderers/FamilyNewsletterRenderer'
 import DifferentiatedLessonRenderer from '../renderers/DifferentiatedLessonRenderer'
 import WorksheetRenderer from '../renderers/WorksheetRenderer'
+import VisualResourceRenderer from '../renderers/VisualResourceRenderer'
 import { useTrial } from '../../context/TrialContext'
 import { WATERMARK_TEXT } from '../../services/trialService'
 import { printArtifact } from '../../lib/printArtifact'
@@ -46,6 +48,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
   const [generatingSubPlan, setGeneratingSubPlan] = useState(false)
   const [generatingQuiz, setGeneratingQuiz] = useState(false)
   const [generatingWeatherAlt, setGeneratingWeatherAlt] = useState(false)
+  const [generatingVisualResources, setGeneratingVisualResources] = useState(false)
   const [generatingParentNote, setGeneratingParentNote] = useState(false)
   const [generatingObsSummary, setGeneratingObsSummary] = useState(false)
   const [generatingPoster, setGeneratingPoster] = useState(false)
@@ -99,6 +102,11 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
   const hasSubPlan = Boolean(lo?.sub_script)
   const hasQuiz = Boolean(lo?.quiz_questions && Object.keys(lo.quiz_questions).length > 0)
   const hasWeatherAlt = Boolean(lo?.weather_alt_warm_up || lo?.weather_alt_notes)
+  // Visual resources: null = pass not run; [] = ran and correctly found none;
+  // non-empty = ready-to-use materials built from the lesson.
+  const visualResources = Array.isArray(lo?.visual_resources) ? lo.visual_resources : []
+  const visualResourcesRun = Array.isArray(lo?.visual_resources)
+  const hasVisualResources = visualResources.length > 0
   const hasParentNote = Boolean(lo?.parent_note_intro || lo?.parent_note_skills?.length)
   const hasObsSummary = Boolean(lo?.obs_overview)
   const hasPoster = Boolean(lo?.poster_content?.steps?.length)
@@ -200,6 +208,17 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
       const updated = await updateLesson(savedId, { lessonObject: fields })
       setLo(updated.lesson_object)
       setToolView('weatheralt')
+    })
+  }
+
+  async function handleGenerateVisualResources() {
+    await run(setGeneratingVisualResources, async () => {
+      const { visual_resources } = await generateVisualResources(savedId)
+      const updated = await updateLesson(savedId, { lessonObject: { visual_resources } })
+      setLo(updated.lesson_object)
+      // Open the preview when something was built; otherwise leave it closed —
+      // "found none" is a valid outcome and the button reflects it.
+      setToolView((visual_resources ?? []).length > 0 ? 'visualresources' : null)
     })
   }
 
@@ -518,6 +537,27 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
               )
             )}
 
+            {/* Visual teaching resources — buildable, text-based materials the
+                lesson calls for (checklists, vocab/scenario/cue cards, organizers).
+                Available for every subject; "found none" is a valid outcome. */}
+            {!visualResourcesRun ? (
+              <button onClick={handleGenerateVisualResources} disabled={generatingVisualResources} className="btn-secondary">
+                {generatingVisualResources ? <Loader2 size={16} className="animate-spin" /> : <Files size={16} />}
+                Visual resources
+              </button>
+            ) : hasVisualResources ? (
+              <button onClick={() => toggle('visualresources')} className={toolView === 'visualresources' ? 'btn-primary' : 'btn-secondary'}>
+                <Files size={16} />
+                Visual resources ({visualResources.length})
+              </button>
+            ) : (
+              <button onClick={handleGenerateVisualResources} disabled={generatingVisualResources} className="btn-secondary opacity-60"
+                title="This lesson didn't call for any buildable materials. Click to re-scan.">
+                {generatingVisualResources ? <Loader2 size={16} className="animate-spin" /> : <Files size={16} />}
+                No visual resources needed
+              </button>
+            )}
+
             {/* Poster */}
             {!hasPoster ? (
               <button onClick={handleGeneratePoster} disabled={generatingPoster} className="btn-secondary">
@@ -605,6 +645,25 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
         )}
 
         {error && <p className="text-sm text-red-400">{error}</p>}
+
+        {/* Visual-resource callouts: small chips near the lesson that link to the
+            separate preview/print area (keeps the core lesson document clean). */}
+        {hasVisualResources && (
+          <div className="no-print flex flex-wrap items-center gap-2 border-t border-ink-900/50 pt-3">
+            <span className="text-xs font-medium text-ink-400">Visual resources generated:</span>
+            {visualResources.map((r, i) => (
+              <button
+                key={i}
+                onClick={() => setToolView('visualresources')}
+                className="inline-flex items-center gap-1 rounded-full border border-accent-500/40 bg-accent-500/10 px-2.5 py-0.5 text-xs text-accent-300 transition-colors hover:bg-accent-500/20"
+                title={r.supports ? `Supports: ${r.supports}` : undefined}
+              >
+                <Files size={12} />
+                {r.title}{r.supports ? ` · ${r.supports}` : ''}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Active tool output */}
@@ -654,6 +713,15 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
       {toolView === 'weatheralt' && hasWeatherAlt && (
         <div ref={toolPrintRef} className="space-y-3">
           <WeatherAltRenderer lesson={lo} />
+          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={() => setToolView(null)} />
+        </div>
+      )}
+      {toolView === 'visualresources' && hasVisualResources && (
+        <div ref={toolPrintRef} className="space-y-3">
+          <p className="no-print text-xs text-ink-500">
+            {visualResources.length} ready-to-use resource{visualResources.length > 1 ? 's' : ''} built from this lesson. Diagrams and illustrations aren't included yet (a future image-generation capability).
+          </p>
+          <VisualResourceRenderer resources={visualResources} />
           <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={() => setToolView(null)} />
         </div>
       )}

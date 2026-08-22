@@ -68,5 +68,9 @@ export function createEmptyLessonObject() {
     obs_overview: "",
     obs_differentiation: [],
     obs_look_for: [],
+
+    // Visual Teaching Resources (second-pass, derived). null = the pass has
+    // not run; [] = it ran and correctly found nothing to build.
+    visual_resources: null,
   };
 }
