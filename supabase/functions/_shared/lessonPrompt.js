@@ -41,10 +41,20 @@ FIELD USAGE FOR STRENGTH & CONDITIONING:
 - closure: Cool-down (5 min) — static stretching targeting muscles worked. Include workout log prompt (what students should record: exercises, sets, reps, load). Include brief reflection question tied to today's focus.
 - safety_notes: Include weight room safety rules (collars on all barbells, no horseplay, controlled descent, re-rack weights), and specific spotting protocols for any barbell movements in this lesson.
 - standards: Align to NSCA Youth Resistance Training Position Statement principles and, where applicable, ${stateName} physical education standards for fitness/strength content. Use NSCA citation format for NSCA standards (e.g. "NSCA YRT 2009 — Principle 3: Technique before load").`;
-    default: // PE
-      return isVirginia
-        ? "Focus on motor skill development, game play, fitness, and SOL-aligned physical education standards (Virginia PE SOL format — grade.standard.substrand, e.g. 6.2.a)."
-        : `Focus on motor skill development, game play, fitness, and ${stateName} physical education standards. Use the correct standard code format for ${stateName}.`;
+    default: { // PE
+      const peStrandGuidance = `
+
+PE STANDARDS — SELECT BY CONTENT (do NOT default to one strand): Read this lesson's skill_focus and its ACTUAL activities, then cite the standard STRAND that matches what students really do. Map the lesson's PRIMARY focus to the matching strand in the ${stateName} PE framework:
+- Motor skills & techniques — serving, dribbling, striking, throwing, catching, locomotor / non-locomotor patterns, sport/game skill execution → MOTOR SKILL DEVELOPMENT strand.
+- Movement principles — biomechanics, anatomy/physiology of movement, tactics & strategy / game concepts, applying feedback to improve performance → MOVEMENT PRINCIPLES / ANATOMICAL BASIS OF MOVEMENT strand.
+- Health-related fitness — fitness testing (PACER, curl-ups, push-ups, mile run, FitnessGram), fitness components, personal fitness planning, training principles, monitoring intensity → FITNESS PLANNING strand.
+- Responsible / social behavior — cooperation, teamwork, sportsmanship, respect, safety, communication, conflict resolution (e.g. cooperative games, team-building) → SOCIAL DEVELOPMENT / RESPONSIBLE BEHAVIOR strand.
+- Energy balance & nutrition — hydration, nutrition, caloric / energy balance for activity → ENERGY BALANCE strand.
+Cite the ONE or TWO strands the lesson genuinely targets, with the correct grade prefix for EACH grade band. Different lessons MUST cite different strands when their content differs — a volleyball-skills lesson, a FitnessGram testing lesson, and a cooperative-games lesson should NOT all cite the same strand. Do not reuse a habitual code across lessons; choose from the lesson in front of you.`;
+      return (isVirginia
+        ? "Focus on motor skill development, game play, fitness, and SOL-aligned physical education standards. Virginia PE SOL codes follow the pattern grade.strand.substrand (the middle number is the strand; the trailing lowercase letter is the substrand) — choose the strand by content, never assume a single default one."
+        : `Focus on motor skill development, game play, fitness, and ${stateName} physical education standards. Use the correct standard code format for ${stateName}.`) + peStrandGuidance;
+    }
   }
 }
 
@@ -134,7 +144,7 @@ You must return ONLY a single JSON object — no markdown fences, no commentary,
 
 Rules:
 - REQUIRED: suggested_video_searches must always contain exactly 2-3 search queries — this field should never be empty. Write specific, well-formed YouTube search queries directly relevant to this lesson's topic, skill, or vocabulary. Write queries a teacher or student could paste straight into YouTube and find useful results — not generic topic names. Examples for a nutrition lesson: "MyPlate nutrition for kids", "how to read a food label tutorial". Examples for a PE lesson on passing: "chest pass basketball technique middle school", "basketball passing drills for beginners".
-- Provide one standards entry PER grade band. Only use a standard code if you are confident it matches the official ${stateName} ${subject} standards framework. If you are not certain of the exact code for a given grade, use the closest real code structure you can reasonably infer and append '(verify against official standards)' to the end of that standard's description text — do not present an uncertain code as definitively correct.
+- Provide one standards entry PER grade band, choosing the standard that matches THIS lesson's actual content and focus (see the subject focus above) — never reuse a generic or habitual default code across different lessons. Present an exact standard code ONLY when you are confident it matches the official ${stateName} ${subject} standards framework. If you are NOT certain of the precise strand number or substrand for a given grade, name the correct strand/competency in that standard's "text" and append '(verify against official standards)' — prefer hedging to the strand by name over emitting a guessed code as if it were definitive.
 - learning_targets, success_criteria, and modifications must have one entry per grade band, keyed by the grade number as a string.
 - success_criteria arrays should have exactly 3 bullets per grade band, phrased as "I can..." statements.
 - learning_targets should be phrased as "Today I will..." statements.
