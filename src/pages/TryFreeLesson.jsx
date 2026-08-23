@@ -171,6 +171,13 @@ export default function TryFreeLesson() {
                 </div>
               </div>
 
+              {/* The free sample is limited to K-8 general subjects; make sure high-school
+                  and CTE teachers know the full app goes well beyond it. */}
+              <p className="rounded-lg border border-brand-500/30 bg-brand-500/5 px-3.5 py-2.5 text-sm text-ink-700">
+                <span className="font-medium text-ink-900">Teaching high school or CTE?</span>{' '}
+                The full app covers 20+ CTE pathways including graphic design, video, and more.
+              </p>
+
               {isStem && (
                 <div>
                   <label className="mb-1 block text-sm font-medium text-ink-700">STEM focus</label>
