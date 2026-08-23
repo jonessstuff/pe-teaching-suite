@@ -42,17 +42,22 @@ FIELD USAGE FOR STRENGTH & CONDITIONING:
 - safety_notes: Include weight room safety rules (collars on all barbells, no horseplay, controlled descent, re-rack weights), and specific spotting protocols for any barbell movements in this lesson.
 - standards: Align to NSCA Youth Resistance Training Position Statement principles and, where applicable, ${stateName} physical education standards for fitness/strength content. Use NSCA citation format for NSCA standards (e.g. "NSCA YRT 2009 — Principle 3: Technique before load").`;
     default: { // PE
+      // Virginia adopted UPDATED PE Standards of Learning in 2022 (approved Jan 2022),
+      // which use different strand names than the 2015 version. We identify the correct
+      // 2022 strand by content but do NOT fabricate the numeric code — the exact 2022
+      // numbering/format must be verified against the official framework.
       const peStrandGuidance = `
 
-PE STANDARDS — SELECT BY CONTENT (do NOT default to one strand): Read this lesson's skill_focus and its ACTUAL activities, then cite the standard STRAND that matches what students really do. Map the lesson's PRIMARY focus to the matching strand in the ${stateName} PE framework:
-- Motor skills & techniques — serving, dribbling, striking, throwing, catching, locomotor / non-locomotor patterns, sport/game skill execution → MOTOR SKILL DEVELOPMENT strand.
-- Movement principles — biomechanics, anatomy/physiology of movement, tactics & strategy / game concepts, applying feedback to improve performance → MOVEMENT PRINCIPLES / ANATOMICAL BASIS OF MOVEMENT strand.
-- Health-related fitness — fitness testing (PACER, curl-ups, push-ups, mile run, FitnessGram), fitness components, personal fitness planning, training principles, monitoring intensity → FITNESS PLANNING strand.
-- Responsible / social behavior — cooperation, teamwork, sportsmanship, respect, safety, communication, conflict resolution (e.g. cooperative games, team-building) → SOCIAL DEVELOPMENT / RESPONSIBLE BEHAVIOR strand.
-- Energy balance & nutrition — hydration, nutrition, caloric / energy balance for activity → ENERGY BALANCE strand.
-Cite the ONE or TWO strands the lesson genuinely targets, with the correct grade prefix for EACH grade band. Different lessons MUST cite different strands when their content differs — a volleyball-skills lesson, a FitnessGram testing lesson, and a cooperative-games lesson should NOT all cite the same strand. Do not reuse a habitual code across lessons; choose from the lesson in front of you.`;
+PE STANDARDS — VIRGINIA 2022 PE SOL, SELECT BY CONTENT (do NOT default to one strand): Virginia's CURRENT physical education standards are the 2022 SOL (approved January 2022). Use the 2022 STRAND NAMES. Read this lesson's skill_focus and its ACTUAL activities, then identify the 2022 strand that matches the lesson's PRIMARY focus:
+- Motor skills & techniques — serving, dribbling, striking, throwing, catching, locomotor / non-locomotor patterns, sport/game skill execution → SKILLED MOVEMENT.
+- Movement principles — biomechanics, anatomy/physiology of movement, tactics & strategy / game concepts, applying feedback to refine performance → MOVEMENT PRINCIPLES AND CONCEPTS.
+- Health-related fitness — fitness testing (PACER, curl-ups, push-ups, mile run, FitnessGram), fitness components, fitness planning, training principles, monitoring intensity → PERSONAL FITNESS.
+- Cooperation & behavior — teamwork, sportsmanship, respect, safety, communication, conflict resolution (e.g. cooperative games, team-building) → RESPONSIBLE BEHAVIORS.
+- Valuing lifelong activity — pursuing physical activity beyond class, enjoyment / motivation, and the role of nutrition and energy in an active lifestyle → PHYSICALLY ACTIVE LIFESTYLE.
+Different lessons MUST identify different strands when their content differs — a volleyball-skills lesson (Skilled Movement), a FitnessGram testing lesson (Personal Fitness), and a cooperative-games lesson (Responsible Behaviors) must NOT all get the same strand.
+CODES — HEDGE, do NOT guess numbers: do NOT invent a numeric 2022 SOL code; the exact 2022 numbering and format must be verified against the official Virginia framework. Set each standard's "code" to the 2022 STRAND NAME (e.g. "Skilled Movement"), and in "text" give the competency description for this grade followed by "(verify against official Virginia 2022 PE SOL)".`;
       return (isVirginia
-        ? "Focus on motor skill development, game play, fitness, and SOL-aligned physical education standards. Virginia PE SOL codes follow the pattern grade.strand.substrand (the middle number is the strand; the trailing lowercase letter is the substrand) — choose the strand by content, never assume a single default one."
+        ? "Focus on motor skill development, game play, fitness, and Virginia's 2022 Physical Education Standards of Learning — use the 2022 strand names and terminology (see the standards guidance below), and choose the strand by content, never a single default."
         : `Focus on motor skill development, game play, fitness, and ${stateName} physical education standards. Use the correct standard code format for ${stateName}.`) + peStrandGuidance;
     }
   }
