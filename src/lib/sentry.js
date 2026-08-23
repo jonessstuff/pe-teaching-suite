@@ -20,6 +20,29 @@ export function initSentry() {
     tracesSampleRate: 0,
     // Never attach cookies/headers/IP or other default PII.
     sendDefaultPii: false,
+    // Only report errors whose stack originates from OUR bundle. Browser
+    // extensions and mobile in-app WebViews (Facebook/Instagram/etc.) inject
+    // scripts that throw in the page context; those frames live at
+    // chrome-extension://, host-app, or anonymous origins and are dropped here.
+    // Genuine app errors — including real fetch/network TypeErrors thrown from
+    // our own fetch calls — carry our stack frames and are KEPT. Sentry's
+    // InboundFilters fails OPEN when it cannot attribute a URL, so a stackless
+    // network error is still reported rather than hidden. (Edge-function errors
+    // report via the separate server SDK and are unaffected by this browser-only
+    // allowlist.)
+    allowUrls: [/plansk12\.com/, /pehealthk12\.netlify\.app/, /localhost/],
+    // Unambiguous non-app noise: iOS WKWebView / Android WebView JS-bridge
+    // errors injected by in-app browsers. We use none of these APIs (verified:
+    // no window.webkit / messageHandlers / postMessage in our code), so these
+    // strings cannot match a real PlansK12 error. Deliberately NOT ignoring
+    // "Failed to fetch" — real Supabase/network failures share that message and
+    // must keep reporting (allowUrls already drops the extension-origin ones).
+    ignoreErrors: [
+      'Java object is gone',
+      'Java exception was raised',
+      'window.webkit',
+      'webkit.messageHandlers',
+    ],
   })
   ready = true
 }
