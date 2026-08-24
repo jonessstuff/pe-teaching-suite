@@ -54,6 +54,7 @@ Deno.serve(async (req) => {
     includeELL,
     handsOn,
     includeUdlEf,
+    includeMtss,
     coreActivityOnly,
   } = input ?? {};
 
@@ -78,6 +79,7 @@ Deno.serve(async (req) => {
       includeELL: includeELL === true,
       handsOn: handsOn === true,
       includeUdlEf: includeUdlEf === true,
+      includeMtss: includeMtss === true,
       coreActivityOnly: coreActivityOnly === true,
     });
 

@@ -16,6 +16,7 @@
 import { useState } from 'react'
 import { Copy, Check } from 'lucide-react'
 import Tier1SupportsBlock from './Tier1SupportsBlock'
+import MtssSupportsBlock from './MtssSupportsBlock'
 
 function formatGrade(g) {
   return g === 0 ? "K" : String(g)
@@ -205,6 +206,9 @@ export default function PlanBookRenderer({ lesson }) {
 
       {/* Tier 1 UDL / Executive-Function supports (optional toggle) */}
       <Tier1SupportsBlock supports={lesson.tier1_udl_ef} />
+
+      {/* MTSS Tier 1 & Tier 2 supports (optional toggle) */}
+      <MtssSupportsBlock supports={lesson.mtss_supports} />
 
       {/* ELL Accommodations */}
       {ell && (

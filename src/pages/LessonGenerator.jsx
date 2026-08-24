@@ -42,6 +42,7 @@ export default function LessonGenerator() {
   const [includeELL, setIncludeELL] = useState(false)
   const [handsOn, setHandsOn] = useState(false)
   const [includeUdlEf, setIncludeUdlEf] = useState(false)
+  const [includeMtss, setIncludeMtss] = useState(false)
   const [coreActivityOnly, setCoreActivityOnly] = useState(false)
   // Hands-on/kinesthetic toggle: lesson mode + elementary (K–5) grades only.
   const showHandsOn = mode === 'lesson' && gradeBands.some((g) => g <= 5)
@@ -206,6 +207,7 @@ export default function LessonGenerator() {
           includeELL,
           handsOn: showHandsOn && handsOn,
           includeUdlEf,
+          includeMtss,
           coreActivityOnly,
         })
 
@@ -754,6 +756,23 @@ export default function LessonGenerator() {
                 <span className="text-sm font-medium text-ink-200">Add Tier 1 UDL &amp; executive-function supports</span>
                 <p className="mt-0.5 text-xs text-ink-400">
                   Weaves universal-design supports (multiple means of engagement, representation, action &amp; expression) and executive-function supports into the lesson for all students, where they genuinely fit. Tier 2 targeted intervention lives in the Intervention Planning tool.
+                </p>
+              </div>
+            </label>
+          </div>
+
+          <div className="space-y-3">
+            <label className="flex cursor-pointer items-start gap-3">
+              <input
+                type="checkbox"
+                checked={includeMtss}
+                onChange={(e) => setIncludeMtss(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-sky-500"
+              />
+              <div>
+                <span className="text-sm font-medium text-ink-200">Add MTSS Tier 1 &amp; Tier 2 supports</span>
+                <p className="mt-0.5 text-xs text-ink-400">
+                  Adds an MTSS section — Tier 1 universal supports with whole-class look-fors (monitoring), plus a Tier 2 targeted layer with progress monitoring. For schools that require MTSS in the planbook; off by default.
                 </p>
               </div>
             </label>

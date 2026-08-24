@@ -72,5 +72,8 @@ export function createEmptyLessonObject() {
     // Visual Teaching Resources (second-pass, derived). null = the pass has
     // not run; [] = it ran and correctly found nothing to build.
     visual_resources: null,
+
+    // Optional MTSS Tier 1 & Tier 2 supports (opt-in toggle); null when off.
+    mtss_supports: null,
   };
 }

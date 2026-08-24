@@ -106,6 +106,9 @@
  *
  * // --- Visual Teaching Resources (second-pass, derived; null until run, [] = ran/none) ---
  * @property {Array<Object>|null} [visual_resources]
+ *
+ * // --- MTSS supports (optional toggle; null when off) ---
+ * @property {{tier_1: {support: string, look_for: string}[], tier_2: {focus: string, support: string, monitoring: string}[]}|null} [mtss_supports]
  */
 
 /**
@@ -179,6 +182,7 @@ export function createEmptyLessonObject() {
     obs_look_for: [],
 
     visual_resources: null,
+    mtss_supports: null,
   };
 }
 
