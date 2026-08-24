@@ -35,6 +35,9 @@ export default function PlanBookRenderer({ lesson }) {
 
   const gradeBands = lesson.grade_bands ?? []
   const subjectStyle = SUBJECT_STYLES[lesson.subject] ?? 'bg-ink-700 text-ink-300'
+  // PE-only: relabel Learning Targets / Lesson Sequence and show the two core
+  // PE planbook sections (Instructional Practices, Evidence of Learning).
+  const isPeCore = lesson.subject === 'PE' || lesson.subject === 'PE & Health'
 
   const standardsText = gradeBands
     .map((grade) => {
@@ -128,8 +131,8 @@ export default function PlanBookRenderer({ lesson }) {
         ))}
       </Section>
 
-      {/* 4. Learning Target (Relevance) — per grade band */}
-      <Section title="Learning Target (Relevance)" copyText={learningTargetsText}>
+      {/* 4. Learning Targets — per grade band (labeled "Learning Targets" for PE) */}
+      <Section title={isPeCore ? 'Learning Targets' : 'Learning Target (Relevance)'} copyText={learningTargetsText}>
         {gradeBands.map((grade) => (
           <GradeBandBlock key={`target-${grade}`} grade={grade}>
             {lesson.learning_targets?.[grade] ?? ''}
@@ -154,14 +157,32 @@ export default function PlanBookRenderer({ lesson }) {
         ))}
       </Section>
 
-      {/* 6. Lesson / Instruction (shared) */}
-      <Section title="Lesson / Instruction" copyText={instructionText}>
+      {/* 6. Lesson Sequence (the ordered flow; labeled "Lesson Sequence" for PE) */}
+      <Section title={isPeCore ? 'Lesson Sequence' : 'Lesson / Instruction'} copyText={instructionText}>
         <InstructionBlock label="Warm Up" text={lesson.warm_up} />
         <InstructionBlock label="Fitness Activities" text={lesson.fitness_activities} />
         <InstructionBlock label="Whole Group Lesson Instruction" text={lesson.whole_group_instruction} />
         <InstructionBlock label="Independent Practice" text={lesson.independent_practice} />
         <InstructionBlock label="Closure (Cool Down)" text={lesson.closure} />
       </Section>
+
+      {/* 7. Instructional Practices (core PE section) */}
+      {isPeCore && (lesson.instructional_practices ?? []).length > 0 && (
+        <Section title="Instructional Practices" copyText={(lesson.instructional_practices ?? []).map((p) => `- ${p}`).join('\n')}>
+          <ul className="list-disc list-inside space-y-1 text-ink-300">
+            {(lesson.instructional_practices ?? []).map((p, i) => <li key={i}>{p}</li>)}
+          </ul>
+        </Section>
+      )}
+
+      {/* 8. Evidence of Learning (core PE section) */}
+      {isPeCore && (lesson.evidence_of_learning ?? []).length > 0 && (
+        <Section title="Evidence of Learning" copyText={(lesson.evidence_of_learning ?? []).map((e) => `- ${e}`).join('\n')}>
+          <ul className="list-disc list-inside space-y-1 text-ink-300">
+            {(lesson.evidence_of_learning ?? []).map((e, i) => <li key={i}>{e}</li>)}
+          </ul>
+        </Section>
+      )}
 
       {/* 7. Differentiation / Accommodations — per grade band */}
       <Section title="Differentiation / Accommodations" copyText={modificationsText}>

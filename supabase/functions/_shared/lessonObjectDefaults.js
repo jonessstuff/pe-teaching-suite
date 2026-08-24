@@ -75,5 +75,9 @@ export function createEmptyLessonObject() {
 
     // Optional MTSS Tier 1 & Tier 2 supports (opt-in toggle); null when off.
     mtss_supports: null,
+
+    // Core PE-only planbook sections (always populated for PE).
+    instructional_practices: [],
+    evidence_of_learning: [],
   };
 }

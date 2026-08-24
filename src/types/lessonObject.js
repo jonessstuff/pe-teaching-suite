@@ -109,6 +109,10 @@
  *
  * // --- MTSS supports (optional toggle; null when off) ---
  * @property {{tier_1: {support: string, look_for: string}[], tier_2: {focus: string, support: string, monitoring: string}[]}|null} [mtss_supports]
+ *
+ * // --- Core PE-only planbook sections (always populated for PE) ---
+ * @property {string[]} [instructional_practices]
+ * @property {string[]} [evidence_of_learning]
  */
 
 /**
@@ -183,6 +187,8 @@ export function createEmptyLessonObject() {
 
     visual_resources: null,
     mtss_supports: null,
+    instructional_practices: [],
+    evidence_of_learning: [],
   };
 }
 
