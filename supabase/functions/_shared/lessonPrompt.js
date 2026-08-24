@@ -56,9 +56,11 @@ PE STANDARDS — VIRGINIA 2022 PE SOL, SELECT BY CONTENT (do NOT default to one 
 - Valuing lifelong activity — pursuing physical activity beyond class, enjoyment / motivation, and the role of nutrition and energy in an active lifestyle → PHYSICALLY ACTIVE LIFESTYLE.
 Different lessons MUST identify different strands when their content differs — a volleyball-skills lesson (Skilled Movement), a FitnessGram testing lesson (Personal Fitness), and a cooperative-games lesson (Responsible Behaviors) must NOT all get the same strand.
 CODES — HEDGE, do NOT guess numbers: do NOT invent a numeric 2022 SOL code; the exact 2022 numbering and format must be verified against the official Virginia framework. Set each standard's "code" to the 2022 STRAND NAME (e.g. "Skilled Movement"), and in "text" give the competency description for this grade followed by "(verify against official Virginia 2022 PE SOL)".`;
-      return (isVirginia
-        ? "Focus on motor skill development, game play, fitness, and Virginia's 2022 Physical Education Standards of Learning — use the 2022 strand names and terminology (see the standards guidance below), and choose the strand by content, never a single default."
-        : `Focus on motor skill development, game play, fitness, and ${stateName} physical education standards. Use the correct standard code format for ${stateName}.`) + peStrandGuidance;
+      // Virginia-only: the 2022 VA PE SOL strand guidance must NOT be appended for
+      // other states (it would make e.g. a Texas lesson cite Virginia strands).
+      return isVirginia
+        ? "Focus on motor skill development, game play, fitness, and Virginia's 2022 Physical Education Standards of Learning — use the 2022 strand names and terminology (see the standards guidance below), and choose the strand by content, never a single default." + peStrandGuidance
+        : `Focus on motor skill development, game play, fitness, and ${stateName} physical education standards. Use the correct standard code format for ${stateName}, and choose the standard whose focus matches THIS lesson's content — never default to a single standard across different lessons.`;
     }
   }
 }
