@@ -19,6 +19,8 @@ import { callClaudeForJson } from "../_shared/anthropic.js";
 import { createEmptyLessonObject } from "../_shared/lessonObjectDefaults.js";
 import { captureLessonGenerated } from "../_shared/analytics.js";
 import { reportError } from "../_shared/sentry.js";
+import { resolveStateName } from "../_shared/stateNames.js";
+import { classifiedPeStandards } from "../_shared/peSolStrand.js";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -109,6 +111,21 @@ Deno.serve(async (req) => {
         `${focus} ${subj} demonstration for students`,
         `how to teach ${focus || subj} in physical education`,
       ].filter((q) => q.trim().length > 3);
+    }
+
+    // Virginia PE standards: the model cannot reliably name the 2022 VA PE SOL
+    // strands (it confabulates), so for VA physical-education lessons we assign
+    // the strand DETERMINISTICALLY from the lesson's content — the same logic
+    // used to backfill legacy lessons — guaranteeing one of the five official
+    // strand names. Numeric codes stay hedged (verify note). Non-VA and non-PE
+    // lessons keep the model's standards.
+    if (
+      (subject === "PE" || subject === "PE & Health") &&
+      resolveStateName(state) === "Virginia" &&
+      Array.isArray(lessonObject.grade_bands) &&
+      lessonObject.grade_bands.length > 0
+    ) {
+      lessonObject.standards = classifiedPeStandards(lessonObject);
     }
 
     // Analytics: successful generation (metadata only — never lesson text).
