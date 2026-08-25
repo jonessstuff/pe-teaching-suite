@@ -307,7 +307,7 @@ export default function LessonGenerator() {
   return (
     <div className="max-w-2xl">
       <p className="label-eyebrow mb-2">New lesson</p>
-      <h1 className="text-2xl font-semibold mb-1">Generate a Lesson Object</h1>
+      <h1 className="text-2xl font-semibold mb-1">Generate a Lesson</h1>
       <p className="text-ink-500 mb-6">
         One generation builds the full lesson — standards, learning targets, success
         criteria, lesson flow, differentiation, vocabulary, and classroom management.
