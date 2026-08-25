@@ -221,7 +221,7 @@ export default function ImportLesson() {
         </button>
 
         {status === 'generating' && (
-          <p className="text-sm text-ink-500">This usually takes 30–60 seconds…</p>
+          <p className="text-sm text-ink-500">This usually takes 1–2 minutes…</p>
         )}
       </form>
     </div>

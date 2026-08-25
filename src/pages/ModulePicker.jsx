@@ -122,7 +122,7 @@ export default function ModulePicker() {
           {getTimeGreeting()}{firstName ? `, ${firstName}` : ''}!
         </h1>
         <p className="mt-2 text-lg text-ink-400">
-          Standards-aligned, ready-to-teach lessons for your subject — in about a minute. Pick your area below to start.
+          Standards-aligned, ready-to-teach lessons for your subject — in about 1–2 minutes. Pick your area below to start.
         </p>
       </div>
 

@@ -461,7 +461,7 @@ export default function UnitBuilder() {
           <Sparkles size={18} />
           Build {dayCount}-day unit
         </button>
-        <p className="text-center text-xs text-ink-500">Each day takes ~30–60 seconds · Do not close this tab</p>
+        <p className="text-center text-xs text-ink-500">Each day takes about 1–2 minutes · Do not close this tab</p>
       </form>
     </div>
   )

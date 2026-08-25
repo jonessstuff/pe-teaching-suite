@@ -154,7 +154,7 @@ export default function TryFreeLesson() {
         {step === 'form' && (
           <div className="print:hidden">
             <h1 className="text-2xl font-display font-bold text-ink-950">Build your free lesson</h1>
-            <p className="mt-1.5 text-sm text-ink-600">Pick a subject, grade, and topic. It generates in under a minute.</p>
+            <p className="mt-1.5 text-sm text-ink-600">Pick a subject, grade, and topic. It generates in about 1–2 minutes.</p>
             <form onSubmit={handleGenerate} className="mt-6 space-y-5 rounded-xl border border-ink-200 bg-white p-6">
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -213,7 +213,7 @@ export default function TryFreeLesson() {
           <div className="flex flex-col items-center gap-3 py-24 text-center print:hidden">
             <Loader2 size={28} className="animate-spin text-accent-500" />
             <p className="text-lg font-medium text-ink-800">Building your lesson…</p>
-            <p className="text-sm text-ink-500">This usually takes 30–60 seconds. Don't close this tab.</p>
+            <p className="text-sm text-ink-500">This usually takes 1–2 minutes. Don't close this tab.</p>
           </div>
         )}
 

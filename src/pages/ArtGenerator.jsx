@@ -550,7 +550,7 @@ export default function ArtGenerator() {
 
         {loading && (
           <p className="text-center text-xs text-ink-500">
-            This usually takes 1–3 minutes · Do not close this tab
+            This usually takes 1–2 minutes · Do not close this tab
           </p>
         )}
       </form>

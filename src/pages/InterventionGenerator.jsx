@@ -361,7 +361,7 @@ export default function InterventionGenerator() {
         </button>
 
         {loading && (
-          <p className="text-center text-xs text-ink-500">This usually takes 20–40 seconds · Do not close this tab</p>
+          <p className="text-center text-xs text-ink-500">This usually takes 1–2 minutes · Do not close this tab</p>
         )}
       </form>
     </div>

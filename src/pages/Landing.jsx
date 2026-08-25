@@ -220,7 +220,7 @@ export default function Landing() {
             </div>
           </div>
           <p className="mt-4 text-xs text-ink-600">
-            Your first lesson takes about 30 seconds · Trial is 7 days free, cancel anytime
+            Your first lesson takes about 1–2 minutes · Trial is 7 days free, cancel anytime
           </p>
         </div>
       </section>
