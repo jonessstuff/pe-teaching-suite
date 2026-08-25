@@ -45,7 +45,7 @@ const COMPARE_ROWS = [
   },
   {
     need: 'Built for your subject',
-    plansk12: '30+ specialist modules — PE, art, music, library, reading intervention, special education, counseling and more.',
+    plansk12: '30+ specialist modules — PE & Health, art, music, library, reading intervention, special education, counseling and more.',
     generic: 'General-purpose chat with no specialist pedagogy behind it.',
   },
   {
@@ -243,7 +243,7 @@ export default function Landing() {
               n={1}
               icon={MousePointerClick}
               title="Pick your subject or specialty"
-              description="Choose from 30 built-in specialties — from PE and Art to reading intervention, speech-language, therapy services, world languages, and staff PD."
+              description="Choose from 30 built-in specialties — from PE & Health and Art to reading intervention, speech-language, therapy services, world languages, and staff PD."
             />
             <StepCard
               n={2}
