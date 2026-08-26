@@ -41,6 +41,12 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
   const [lo, setLo] = useState(lessonObject)
   const [toolView, setToolView] = useState(null)
   const [error, setError] = useState(null)
+  // Feedback shown right next to the export buttons (Word/PPT/Poster).
+  const [exportNotice, setExportNotice] = useState(null) // { type:'error'|'success', msg }
+  function flashExport(type, msg) {
+    setExportNotice({ type, msg })
+    if (type === 'success') setTimeout(() => setExportNotice(null), 4000)
+  }
   const [showPoster, setShowPoster] = useState(false)
   const posterSvgRef = useRef(null)
   const toolPrintRef = useRef(null)
@@ -161,12 +167,13 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
   // upgrade prompt instead (the server also enforces the gate).
   async function handleDownloadLessonDocx() {
     if (!isPaid) { openPaywall('docx-export'); return }
-    setError(null)
+    setExportNotice(null)
     try {
       await requestDocx({ filename: lo?.title ?? 'lesson', title: lo?.title, blocks: lessonToBlocks(lo) })
+      flashExport('success', 'Word document downloaded.')
     } catch (err) {
       if (err.status === 403) openPaywall('docx-export')
-      else setError(err.message ?? 'Download failed')
+      else flashExport('error', err.message ?? 'Word download failed — please try again.')
     }
   }
 
@@ -174,13 +181,14 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
   // upgrade prompt instead (the server also enforces the gate).
   async function handleDownloadLessonPptx() {
     if (!isPaid) { openPaywall('pptx-export'); return }
-    setError(null)
+    setExportNotice(null)
     try {
       const spec = lessonToSlides(lo)
       await requestPptx({ filename: lo?.title ?? 'lesson', ...spec })
+      flashExport('success', 'PowerPoint downloaded.')
     } catch (err) {
       if (err.status === 403) openPaywall('pptx-export')
-      else setError(err.message ?? 'Download failed')
+      else flashExport('error', err.message ?? 'PowerPoint download failed — please try again.')
     }
   }
 
@@ -392,31 +400,37 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
     const svgEl = posterSvgRef.current
     if (!svgEl) return
     if (!(await requestExport('pdf'))) return
-    const SCALE = 2
-    const SVG_W = 816
-    const SVG_H = 1056
-    const svgStr = new XMLSerializer().serializeToString(svgEl)
-    const blobUrl = URL.createObjectURL(new Blob([svgStr], { type: 'image/svg+xml' }))
-    const img = new Image()
-    img.src = blobUrl
-    await new Promise((res, rej) => { img.onload = res; img.onerror = rej })
-    const canvas = document.createElement('canvas')
-    canvas.width = SVG_W * SCALE
-    canvas.height = SVG_H * SCALE
-    const ctx = canvas.getContext('2d')
-    ctx.scale(SCALE, SCALE)
-    ctx.drawImage(img, 0, 0)
-    URL.revokeObjectURL(blobUrl)
-    const { jsPDF } = await import('jspdf')
-    const pdf = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'letter' })
-    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 612, 792)
-    // Trial exports carry a watermark footer (paid users don't).
-    if (!isPaid) {
-      pdf.setFontSize(8)
-      pdf.setTextColor(107, 114, 128)
-      pdf.text(WATERMARK_TEXT, 306, 782, { align: 'center' })
+    setExportNotice(null)
+    try {
+      const SCALE = 2
+      const SVG_W = 816
+      const SVG_H = 1056
+      const svgStr = new XMLSerializer().serializeToString(svgEl)
+      const blobUrl = URL.createObjectURL(new Blob([svgStr], { type: 'image/svg+xml' }))
+      const img = new Image()
+      img.src = blobUrl
+      await new Promise((res, rej) => { img.onload = res; img.onerror = rej })
+      const canvas = document.createElement('canvas')
+      canvas.width = SVG_W * SCALE
+      canvas.height = SVG_H * SCALE
+      const ctx = canvas.getContext('2d')
+      ctx.scale(SCALE, SCALE)
+      ctx.drawImage(img, 0, 0)
+      URL.revokeObjectURL(blobUrl)
+      const { jsPDF } = await import('jspdf')
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'letter' })
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 612, 792)
+      // Trial exports carry a watermark footer (paid users don't).
+      if (!isPaid) {
+        pdf.setFontSize(8)
+        pdf.setTextColor(107, 114, 128)
+        pdf.text(WATERMARK_TEXT, 306, 782, { align: 'center' })
+      }
+      pdf.save(`${(lo?.title ?? 'lesson').replace(/\s+/g, '-').toLowerCase()}-poster.pdf`)
+      flashExport('success', 'Poster PDF downloaded.')
+    } catch (err) {
+      flashExport('error', err?.message ?? 'Poster PDF failed to generate — please try again.')
     }
-    pdf.save(`${(lo?.title ?? 'lesson').replace(/\s+/g, '-').toLowerCase()}-poster.pdf`)
   }
 
   return (
@@ -510,6 +524,13 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
             PowerPoint (.pptx)
           </button>
         </div>
+
+        {exportNotice && (
+          <p role="status" aria-live="polite"
+             className={`mt-2 text-sm ${exportNotice.type === 'error' ? 'text-red-400' : 'text-green-400'}`}>
+            {exportNotice.msg}
+          </p>
+        )}
 
         {/* Separator + expand toggle */}
         <div className="border-t border-ink-900/50 pt-3">
@@ -1051,6 +1072,11 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
 function ToolActions({ copyText, onClose, printRef, printWatermark, docxTitle }) {
   const { requestExport, isPaid, openPaywall } = useTrial()
   const [copied, setCopied] = useState(false)
+  const [notice, setNotice] = useState(null) // { type:'error'|'success', msg }
+  function flashNotice(type, msg) {
+    setNotice({ type, msg })
+    if (type === 'success') setTimeout(() => setNotice(null), 4000)
+  }
   function handleCopy() {
     navigator.clipboard.writeText(copyText)
     setCopied(true)
@@ -1061,20 +1087,26 @@ function ToolActions({ copyText, onClose, printRef, printWatermark, docxTitle })
   // the underlying lesson instead). Without one, fall back to the page print.
   async function handlePrint() {
     if (!(await requestExport())) return
-    if (printRef?.current) printArtifact(printRef.current, printWatermark)
-    else window.print()
+    if (printRef?.current) {
+      if (printArtifact(printRef.current, printWatermark) === false)
+        flashNotice('error', 'Your browser blocked the print window. Allow pop-ups for this site and try again.')
+    } else window.print()
   }
   // Word (.docx) — PAID ONLY, built from this artifact's rendered content.
   async function handleDocx() {
     if (!isPaid) { openPaywall('docx-export'); return }
     if (!printRef?.current) return
+    setNotice(null)
     try {
       await requestDocx({ filename: docxTitle || 'plansk12-export', title: docxTitle, blocks: domToBlocks(printRef.current) })
+      flashNotice('success', 'Word document downloaded.')
     } catch (err) {
       if (err.status === 403) openPaywall('docx-export')
+      else flashNotice('error', err.message ?? 'Word download failed — please try again.')
     }
   }
   return (
+    <>
     <div className="no-print flex gap-2 border-t border-ink-900 pt-3 mt-1">
       {copyText !== undefined && (
         <button onClick={handleCopy} className="no-print btn-secondary text-xs">
@@ -1094,5 +1126,12 @@ function ToolActions({ copyText, onClose, printRef, printWatermark, docxTitle })
         <X size={13} /> Close
       </button>
     </div>
+    {notice && (
+      <p role="status" aria-live="polite"
+         className={`no-print mt-2 text-xs ${notice.type === 'error' ? 'text-red-400' : 'text-green-400'}`}>
+        {notice.msg}
+      </p>
+    )}
+    </>
   )
 }

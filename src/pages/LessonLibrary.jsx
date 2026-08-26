@@ -23,6 +23,7 @@ export default function LessonLibrary() {
   const [favoritesOnly, setFavoritesOnly] = useState(false)
   const { isPaid, openPaywall } = useTrial()
   const [exporting, setExporting] = useState(false)
+  const [exportError, setExportError] = useState(null)
 
   // Bulk "Export all my lessons as .docx" — PAID ONLY (server also enforces it).
   // Builds ONE Word document with every lesson as its own page/section.
@@ -30,11 +31,12 @@ export default function LessonLibrary() {
     if (!isPaid) { openPaywall('docx-export'); return }
     if (!(lessons ?? []).length) return
     setExporting(true)
+    setExportError(null)
     try {
       await requestDocx({ filename: 'my-plansk12-lessons', title: 'My PlansK12 Lessons', blocks: lessonsToDocxBlocks(lessons) })
     } catch (err) {
       if (err?.status === 403) openPaywall('docx-export')
-      else setError(err.message ?? 'Export failed')
+      else setExportError(err.message ?? 'Export failed — please try again.')
     } finally {
       setExporting(false)
     }
@@ -136,6 +138,10 @@ export default function LessonLibrary() {
           </Link>
         </div>
       </div>
+
+      {exportError && (
+        <p role="status" aria-live="polite" className="text-sm text-red-400">{exportError}</p>
+      )}
 
       {/* Search */}
       <div className="relative">

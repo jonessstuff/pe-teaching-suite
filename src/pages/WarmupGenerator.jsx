@@ -57,7 +57,10 @@ export default function WarmupGenerator() {
   }
 
   async function handlePrint() {
-    if (await requestExport()) printArtifact(printRef.current, isPaid ? null : WATERMARK_TEXT)
+    if (await requestExport()) {
+      if (printArtifact(printRef.current, isPaid ? null : WATERMARK_TEXT) === false)
+        setError('Your browser blocked the print window. Allow pop-ups for this site and try again.')
+    }
   }
 
   async function handleSave() {

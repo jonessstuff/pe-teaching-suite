@@ -4,9 +4,9 @@
 // window with ONLY the artifact's DOM + the document's stylesheets, so exactly
 // that element prints (and trial users still get the watermark).
 export function printArtifact(el, watermark) {
-  if (!el) return
+  if (!el) return false
   const w = window.open('', '_blank', 'width=850,height=1100')
-  if (!w) return
+  if (!w) return false   // pop-up blocked — let the caller surface a message
   const styles = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'))
     .map((n) => n.outerHTML).join('\n')
   const wm = watermark ? `<div class="trial-watermark-print">${watermark}</div>` : ''
@@ -15,4 +15,5 @@ export function printArtifact(el, watermark) {
   w.focus()
   // Let the linked stylesheets load before printing (else it prints unstyled).
   setTimeout(() => { try { w.print() } catch { /* user closed the window */ } }, 450)
+  return true
 }
