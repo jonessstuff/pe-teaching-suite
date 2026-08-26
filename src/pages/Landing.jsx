@@ -65,7 +65,7 @@ const COMPARE_ROWS = [
   },
   {
     need: 'Save, print & share',
-    plansk12: 'A personal lesson library, print-ready PDFs, and share links for colleagues.',
+    plansk12: 'A personal lesson library, print-ready lessons (Word & PowerPoint export), and share links for colleagues.',
     generic: 'Copy-paste into another document and format it yourself.',
   },
   {
