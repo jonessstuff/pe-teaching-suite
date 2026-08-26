@@ -40,7 +40,7 @@ function CheckItem({ children }) {
 const COMPARE_ROWS = [
   {
     need: 'State-standards alignment',
-    plansk12: "Aligned to your state's actual standards, with confidence indicators so you know what to trust.",
+    plansk12: "Grounded in your field's recognized standards framework — and any code it isn't sure of is flagged to verify, never passed off as fact.",
     generic: 'Guesses or invents standard codes, with no way to tell what is real.',
   },
   {
@@ -276,7 +276,7 @@ export default function Landing() {
             Not generic AI. Grounded in the frameworks your field is actually held to.
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-ink-400">
-            Every specialty is aligned to the recognized standards body for its field — so what you plan, teach, and hand in holds up.
+            Every specialty is anchored to the recognized standards body for its field — and anything it can't cite with certainty is flagged for you to verify, not invented.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-2.5">
@@ -501,8 +501,8 @@ export default function Landing() {
             <FeatureGroup label="Core Planning">
               <FeatureCard
                 icon={BookOpen}
-                title="Real state standards"
-                description="Aligned to your state's specific standards, with confidence indicators so you know what to trust."
+                title="Real standards, honestly flagged"
+                description="Anchored to the recognized standards framework for your subject, with any uncertain code flagged to verify against your state's official standards."
               />
               <FeatureCard
                 icon={Globe}
