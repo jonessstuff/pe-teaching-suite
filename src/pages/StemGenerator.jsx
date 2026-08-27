@@ -8,6 +8,7 @@ import LessonPrintFix from '../components/LessonPrintFix'
 import StationsToggle from '../components/StationsToggle'
 import UdlEfToggle from '../components/UdlEfToggle'
 import CoreActivityToggle from '../components/CoreActivityToggle'
+import GenerationProgress from '../components/GenerationProgress'
 import StemPlanRenderer from '../components/renderers/StemPlanRenderer'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 import { useProfileDefaults, useGradeStateDefaults } from '../hooks/useProfileDefaults'
@@ -654,11 +655,7 @@ export default function StemGenerator() {
           )}
         </button>
 
-        {loading && (
-          <p className="text-center text-xs text-ink-500">
-            This usually takes 1–2 minutes · Do not close this tab
-          </p>
-        )}
+        <GenerationProgress loading={loading} label="STEM lesson" />
       </form>
     </div>
   )

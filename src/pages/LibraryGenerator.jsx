@@ -5,6 +5,7 @@ import { generateLibraryLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
 import LessonPrintFix from '../components/LessonPrintFix'
+import GenerationProgress from '../components/GenerationProgress'
 import StationsToggle from '../components/StationsToggle'
 import UdlEfToggle from '../components/UdlEfToggle'
 import CoreActivityToggle from '../components/CoreActivityToggle'
@@ -476,11 +477,7 @@ export default function LibraryGenerator() {
           )}
         </button>
 
-        {loading && (
-          <p className="text-center text-xs text-ink-500">
-            This usually takes 1–2 minutes · Do not close this tab
-          </p>
-        )}
+        <GenerationProgress loading={loading} label="library lesson" />
       </form>
     </div>
   )

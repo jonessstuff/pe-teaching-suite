@@ -11,6 +11,7 @@ import { getProfile } from '../services/profilesService'
 import { listPresets, savePreset, deletePreset } from '../services/presetsService'
 import { US_STATES } from '../constants/usStates'
 import LessonPrintFix from '../components/LessonPrintFix'
+import GenerationProgress from '../components/GenerationProgress'
 import PlanBookRenderer from '../components/renderers/PlanBookRenderer'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 import { useProfileDefaults, useGradeStateDefaults } from '../hooks/useProfileDefaults'
@@ -818,13 +819,15 @@ export default function LessonGenerator() {
             )}
           </button>
 
-          {isGenerating && (
+          {/* Fitness-test prep is a multi-lesson loop (one call per component), so it
+              keeps its own accurate "per lesson" message; the single-lesson path gets
+              the staged progress indicator. */}
+          {isGenerating && mode === 'fitness_test' && (
             <p className="text-sm text-ink-400">
-              {mode === 'fitness_test'
-                ? 'Generating fitness test prep lessons — one per selected component. This usually takes 1–2 minutes per lesson.'
-                : 'Hang tight — your lesson is being crafted. This usually takes 1–2 minutes.'}
+              Generating fitness test prep lessons — one per selected component. This usually takes 1–2 minutes per lesson.
             </p>
           )}
+          <GenerationProgress loading={isGenerating && mode !== 'fitness_test'} label="lesson" className="pt-1" />
         </div>
 
       </form>

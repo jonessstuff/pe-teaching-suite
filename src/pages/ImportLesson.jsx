@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, FileInput, Loader2 } from 'lucide-react'
 import { generateImportedLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
+import GenerationProgress from '../components/GenerationProgress'
 
 // Core specials reformat into the PlanBook schema; the "More modules" group each
 // reformat into their OWN module structure (server-side per-module dispatch).
@@ -220,9 +221,7 @@ export default function ImportLesson() {
           )}
         </button>
 
-        {status === 'generating' && (
-          <p className="text-sm text-ink-500">This usually takes 1–2 minutes…</p>
-        )}
+        <GenerationProgress loading={status === 'generating'} label="lesson" />
       </form>
     </div>
   )

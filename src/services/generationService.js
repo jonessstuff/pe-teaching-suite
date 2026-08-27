@@ -20,12 +20,57 @@ import { supabase } from '../lib/supabaseClient'
  * Response (with our `{ error }` body) on `error.context`. Read it so callers
  * surface e.g. "Anthropic API error (529): overloaded" instead of the wrapper.
  */
+/** A generation that ran past the platform's wall-clock window. Carries a
+ *  clear, actionable message every generator can render as-is. */
+export class GenerationTimeoutError extends Error {
+  constructor() {
+    super(
+      'This took too long to generate — it can happen with very dense topics. ' +
+      'Please try again. Narrowing the topic or splitting it into two usually helps.'
+    )
+    this.name = 'GenerationTimeoutError'
+    this.isTimeout = true
+  }
+}
+
+// Client-side backstop so the UI never hangs forever if the platform never
+// responds. Real timeouts normally surface sooner as a 504/546 from Supabase's
+// ~150s function limit and are mapped by toGenerationError below; this only
+// guards a fully dropped/hung connection. Kept generous so it never cuts a
+// generation the platform would have finished.
+const GENERATION_TIMEOUT_MS = 5 * 60 * 1000
+
+// Invoke an edge function but never wait past GENERATION_TIMEOUT_MS. Returns the
+// same { data, error } shape as functions.invoke, or rejects with a
+// GenerationTimeoutError (surfaced directly to the caller's catch).
+async function invokeWithTimeout(name, options) {
+  let timer
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new GenerationTimeoutError()), GENERATION_TIMEOUT_MS)
+  })
+  try {
+    return await Promise.race([supabase.functions.invoke(name, options), timeout])
+  } finally {
+    clearTimeout(timer)
+  }
+}
+
 async function toGenerationError(error) {
-  let message = error?.message ?? 'Generation failed'
+  // Prefer the function's real error body (e.g. "Anthropic API error (529): overloaded").
   try {
     const body = await error?.context?.json?.()
-    if (body?.error) message = body.error
-  } catch { /* body already consumed or not JSON — keep the wrapper message */ }
+    if (body?.error) return new Error(body.error)
+  } catch { /* no JSON body — e.g. a gateway timeout returns HTML/empty */ }
+  const message = error?.message ?? 'Generation failed'
+  // No structured body → detect a platform timeout / gateway / dropped connection
+  // and turn the generic wrapper into a clear, retryable message.
+  const status = error?.context?.status
+  if (
+    status === 504 || status === 546 ||
+    /timeout|timed out|gateway|failed to send a request|network error|deadline exceeded/i.test(message)
+  ) {
+    return new GenerationTimeoutError()
+  }
   return new Error(message)
 }
 
@@ -47,7 +92,7 @@ async function toGenerationError(error) {
  * @returns {Promise<import("../types/lessonObject").LessonObject>}
  */
 export async function generateLesson(input) {
-  const { data, error } = await supabase.functions.invoke('generate-lesson', {
+  const { data, error } = await invokeWithTimeout('generate-lesson', {
     body: input,
   })
 
@@ -602,18 +647,11 @@ export async function generateReadingSpecialist(input) {
 }
 
 export async function generateStemLesson(input) {
-  const { data, error } = await supabase.functions.invoke('generate-stem-lesson', {
+  const { data, error } = await invokeWithTimeout('generate-stem-lesson', {
     body: input,
   })
 
-  if (error) {
-    let message = error.message ?? 'Generation failed'
-    try {
-      const body = await error.context?.json?.()
-      if (body?.error) message = body.error
-    } catch {}
-    throw new Error(message)
-  }
+  if (error) throw await toGenerationError(error)
   return data
 }
 
@@ -640,18 +678,11 @@ export async function generateCteLesson(input) {
 }
 
 export async function generateMusicLesson(input) {
-  const { data, error } = await supabase.functions.invoke('generate-music-lesson', {
+  const { data, error } = await invokeWithTimeout('generate-music-lesson', {
     body: input,
   })
 
-  if (error) {
-    let message = error.message ?? 'Generation failed'
-    try {
-      const body = await error.context?.json?.()
-      if (body?.error) message = body.error
-    } catch {}
-    throw new Error(message)
-  }
+  if (error) throw await toGenerationError(error)
   return data
 }
 
@@ -773,7 +804,7 @@ export async function generateFieldDay({ numStudents, gradeLevels, duration, spa
 }
 
 export async function generateFitnessTestPrep({ gradeBands, testName, component, state, classSize, duration }) {
-  const { data, error } = await supabase.functions.invoke('generate-fitness-test-prep', {
+  const { data, error } = await invokeWithTimeout('generate-fitness-test-prep', {
     body: { gradeBands, testName, component, state, classSize, duration },
   })
   if (error) throw await toGenerationError(error)
@@ -781,7 +812,7 @@ export async function generateFitnessTestPrep({ gradeBands, testName, component,
 }
 
 export async function generateImportedLesson({ rawText, subject, gradeBand, targetLanguage, stemFocusArea }) {
-  const { data, error } = await supabase.functions.invoke('generate-imported-lesson', {
+  const { data, error } = await invokeWithTimeout('generate-imported-lesson', {
     body: { rawText, subject, gradeBand, targetLanguage, stemFocusArea },
   })
   if (error) throw await toGenerationError(error)
@@ -807,30 +838,7 @@ export async function generatePortfolio({ subject, yearsTeaching, philosophySeed
 // ── Unit builders ─────────────────────────────────────────────────────────────
 
 export async function generateLibraryUnit(input) {
-  const CLIENT_TIMEOUT_MS = 5 * 60 * 1000
-
-  const invokePromise = supabase.functions.invoke('generate-library-unit', { body: input })
-  const timeoutPromise = new Promise((_, reject) =>
-    setTimeout(() => reject(new Error('timeout')), CLIENT_TIMEOUT_MS)
-  )
-
-  let result
-  try {
-    result = await Promise.race([invokePromise, timeoutPromise])
-  } catch {
-    throw new Error('timeout')
-  }
-
-  const { data, error } = result
-
-  if (error) {
-    let message = error.message ?? 'Generation failed'
-    try {
-      const body = await error.context?.json?.()
-      if (body?.error) message = body.error
-    } catch {}
-    throw new Error(message)
-  }
-
+  const { data, error } = await invokeWithTimeout('generate-library-unit', { body: input })
+  if (error) throw await toGenerationError(error)
   return data
 }
