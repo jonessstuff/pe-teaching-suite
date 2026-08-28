@@ -3,7 +3,7 @@ import {
   FileText, ClipboardList, CloudRain, Mail, ClipboardCheck,
   LayoutTemplate, Loader2, Printer, Download, X, Star, BookOpen,
   CheckSquare, Shuffle, Flame, BookMarked, Send, Globe, Users, FileWarning, ChevronDown,
-  Copy, Check, PencilRuler, FileDown, Lock, Presentation, Files,
+  Copy, Check, PencilRuler, FileDown, Lock, Presentation, Files, Eye,
 } from 'lucide-react'
 import {
   generateSubPlan, generateQuiz, generateWeatherAlt,
@@ -26,6 +26,8 @@ import FamilyNewsletterRenderer from '../renderers/FamilyNewsletterRenderer'
 import DifferentiatedLessonRenderer from '../renderers/DifferentiatedLessonRenderer'
 import WorksheetRenderer from '../renderers/WorksheetRenderer'
 import VisualResourceRenderer from '../renderers/VisualResourceRenderer'
+import MakeTomorrowReady from './MakeTomorrowReady'
+import TeachingView from './TeachingView'
 import { useTrial } from '../../context/TrialContext'
 import { WATERMARK_TEXT } from '../../services/trialService'
 import { printArtifact } from '../../lib/printArtifact'
@@ -506,6 +508,17 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
             </button>
           )}
 
+          {/* Make Tomorrow Ready — one-click Teacher Packet (PE & Health) */}
+          {isPE && <MakeTomorrowReady savedId={savedId} lessonObject={lo} />}
+
+          {/* Teaching view — condensed at-a-glance (PE & Health) */}
+          {isPE && (
+            <button onClick={() => toggle('teachingview')} className={toolView === 'teachingview' ? 'btn-primary' : 'btn-secondary'}>
+              <Eye size={16} />
+              Teaching view
+            </button>
+          )}
+
           {/* Print */}
           <button onClick={async () => { if (await requestExport()) window.print() }} className="btn-secondary">
             <Printer size={16} />
@@ -688,6 +701,12 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
       </div>
 
       {/* Active tool output */}
+      {toolView === 'teachingview' && (
+        <div ref={toolPrintRef} className="space-y-3">
+          <TeachingView lesson={lo} />
+          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={() => setToolView(null)} />
+        </div>
+      )}
       {toolView === 'subplan' && hasSubPlan && (
         <div ref={toolPrintRef} className="space-y-3">
           <SubPlanRenderer lesson={lo} />
