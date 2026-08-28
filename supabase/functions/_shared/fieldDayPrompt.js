@@ -58,3 +58,53 @@ Return the JSON object now.`;
 
   return { system, user };
 }
+
+// A single, structured game/activity proposal — the kind a teacher writes up
+// to PROPOSE or DOCUMENT a new field-day game idea for a colleague or admin.
+export function buildGameProposalPrompt({ gameIdea, gradeLevels, space, equipmentOnHand }) {
+  const gradesStr = (gradeLevels ?? []).map(g => g === 0 ? 'K' : String(g)).join(', ') || 'K–5';
+  const spaceStr = Array.isArray(space) ? space.join(' + ') : (space ?? 'Outdoor');
+
+  const system = `You are a PE specialist writing a clear, structured GAME/ACTIVITY PROPOSAL. This is a one-page write-up a teacher hands to a colleague or administrator to propose or document a single new field-day game idea. Keep it practical, inclusive, and safe — detailed enough that another teacher could run the game from this document alone.
+
+Return ONLY a single JSON object with this exact schema:
+{
+  "game_proposal": {
+    "game_name": string,
+    "one_liner": string,
+    "grade_level_fit": string,
+    "recommended_players": string,
+    "equipment_needed": [string],
+    "setup": string,
+    "rules": [string],
+    "objective": string,
+    "safety_notes": [string],
+    "variations": [string]
+  }
+}
+
+Rules:
+- "game_name": clear and appealing (a real, runnable game — not a vague concept).
+- "one_liner": a single sentence summarizing how the game plays.
+- "grade_level_fit": which of the given grade levels it suits and WHY (developmental fit — skills, attention span, physical demand).
+- "recommended_players": group size / how many play at once (and whether it scales for a rotation).
+- "equipment_needed": itemized list; if the teacher listed equipment on hand, prefer those and note simple substitutions.
+- "setup": 2–4 sentences on arranging the space and equipment before play.
+- "rules": 4–8 ordered, plain-language steps a non-PE volunteer could follow to run the game.
+- "objective": the movement skill(s) and/or social goal the game develops (e.g. throwing accuracy, teamwork, cooperation).
+- "safety_notes": 2–4 concrete, specific safety considerations for THIS game (spacing, equipment, collisions, heat/hydration where relevant).
+- "variations": 1–3 ways to make it easier, harder, or more inclusive (e.g. for younger grades or students with mobility needs).
+- Respect the space available and the grade levels given.
+- No markdown fences, no commentary — only the JSON object.`;
+
+  const user = `Write a field day game/activity proposal:
+
+Game idea: ${gameIdea?.trim() || 'Not specified — propose an original, fun, inclusive field-day game'}
+Grade levels: ${gradesStr}
+Space available: ${spaceStr}
+Equipment on hand: ${equipmentOnHand?.trim() || 'Not specified — keep equipment simple and commonly available'}
+
+Return the JSON object now.`;
+
+  return { system, user };
+}

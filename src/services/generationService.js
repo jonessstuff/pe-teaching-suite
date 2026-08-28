@@ -795,9 +795,9 @@ export async function generateActivityBank({ subject, gradeBand, duration, occas
   return data
 }
 
-export async function generateFieldDay({ numStudents, gradeLevels, duration, space, numStations, theme }) {
+export async function generateFieldDay({ mode, numStudents, gradeLevels, duration, space, numStations, theme, gameIdea, equipmentOnHand }) {
   const { data, error } = await supabase.functions.invoke('generate-field-day', {
-    body: { numStudents, gradeLevels, duration, space, numStations, theme },
+    body: { mode, numStudents, gradeLevels, duration, space, numStations, theme, gameIdea, equipmentOnHand },
   })
   if (error) throw await toGenerationError(error)
   return data

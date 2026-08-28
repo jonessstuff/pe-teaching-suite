@@ -40,6 +40,97 @@ function StationCard({ station }) {
   )
 }
 
+// Strip a leading "1. " / "2) " the model sometimes adds to each rule, so the
+// ordered list doesn't double-number.
+function stripLeadingNumber(s) {
+  return String(s).replace(/^\s*\d+[.)]\s*/, '')
+}
+
+function ProposalSection({ title, children }) {
+  return (
+    <div>
+      <h3 className="text-sm font-semibold text-ink-300 mb-2 uppercase tracking-wide">{title}</h3>
+      {children}
+    </div>
+  )
+}
+
+function GameProposalDoc({ proposal: p }) {
+  if (!p) return null
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-xl font-bold text-ink-50 print:text-black">{p.game_name || 'Game Proposal'}</h2>
+        {p.one_liner && <p className="mt-1 text-sm text-ink-400 print:text-gray-600">{p.one_liner}</p>}
+        {p.recommended_players && (
+          <p className="mt-2 text-xs text-ink-500"><span className="font-medium">Players: </span>{p.recommended_players}</p>
+        )}
+      </div>
+
+      {p.grade_level_fit && (
+        <ProposalSection title="Grade-Level Fit">
+          <p className="text-sm text-ink-700">{p.grade_level_fit}</p>
+        </ProposalSection>
+      )}
+
+      {p.objective && (
+        <ProposalSection title="Objective / Skills">
+          <p className="text-sm text-ink-700">{p.objective}</p>
+        </ProposalSection>
+      )}
+
+      {p.equipment_needed?.length > 0 && (
+        <ProposalSection title="Equipment Needed">
+          <ul className="space-y-1">
+            {p.equipment_needed.map((item, i) => (
+              <li key={i} className="flex items-start gap-1.5 text-sm text-ink-700">
+                <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-green-400" />{item}
+              </li>
+            ))}
+          </ul>
+        </ProposalSection>
+      )}
+
+      {p.setup && (
+        <ProposalSection title="Setup">
+          <p className="text-sm text-ink-700">{p.setup}</p>
+        </ProposalSection>
+      )}
+
+      {p.rules?.length > 0 && (
+        <ProposalSection title="Rules / How to Play">
+          <ol className="list-decimal list-inside space-y-1.5 text-sm text-ink-700">
+            {p.rules.map((r, i) => <li key={i}>{stripLeadingNumber(r)}</li>)}
+          </ol>
+        </ProposalSection>
+      )}
+
+      {p.safety_notes?.length > 0 && (
+        <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 print:break-inside-avoid">
+          <p className="text-sm font-semibold text-amber-700 dark:text-amber-400 mb-1">Safety Notes</p>
+          <ul className="space-y-1">
+            {p.safety_notes.map((s, i) => (
+              <li key={i} className="text-sm text-amber-800 dark:text-amber-200">• {s}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {p.variations?.length > 0 && (
+        <ProposalSection title="Variations">
+          <ul className="space-y-1.5">
+            {p.variations.map((v, i) => (
+              <li key={i} className="flex items-start gap-1.5 text-sm text-ink-700">
+                <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-green-400" />{v}
+              </li>
+            ))}
+          </ul>
+        </ProposalSection>
+      )}
+    </div>
+  )
+}
+
 export default function FieldDayPlanner() {
   const { requestExport } = useTrial()
   const [view, setView] = useState('list')
@@ -50,12 +141,16 @@ export default function FieldDayPlanner() {
   const [status, setStatus] = useState('idle')
   const [planName, setPlanName] = useState('')
   const [fieldDay, setFieldDay] = useState(null)
+  const [gameProposal, setGameProposal] = useState(null)
   const [saveStatus, setSaveStatus] = useState('idle')
 
   const [form, setForm] = useState({
+    mode: 'plan',
     numStudents: 100, gradeLevels: [3, 4, 5], duration: 180,
     space: ['Outdoor'], numStations: 8, theme: '',
+    gameIdea: '', equipmentOnHand: '',
   })
+  const isProposalMode = form.mode === 'proposal'
 
   useEffect(() => {
     listPlans().then(setPlans).catch(e => setError(e.message))
@@ -73,9 +168,11 @@ export default function FieldDayPlanner() {
     setStatus('generating')
     setError(null)
     setFieldDay(null)
+    setGameProposal(null)
     try {
       const result = await generateFieldDay(form)
-      setFieldDay(result.field_day)
+      if (isProposalMode) setGameProposal(result.game_proposal)
+      else setFieldDay(result.field_day)
       setStatus('done')
     } catch (err) {
       setError(err.message ?? 'Generation failed')
@@ -86,7 +183,11 @@ export default function FieldDayPlanner() {
   async function handleSave() {
     setSaveStatus('saving')
     try {
-      const saved = await createPlan({ name: planName || `Field Day ${new Date().toLocaleDateString()}`, planData: fieldDay })
+      const data = gameProposal ?? fieldDay
+      const defaultName = gameProposal
+        ? (gameProposal.game_name || 'Game Proposal')
+        : `Field Day ${new Date().toLocaleDateString()}`
+      const saved = await createPlan({ name: planName || defaultName, planData: data })
       setPlans(prev => [{ id: saved.id, name: saved.name, created_at: saved.created_at }, ...(prev ?? [])])
       setSaveStatus('saved')
     } catch (err) {
@@ -116,6 +217,7 @@ export default function FieldDayPlanner() {
 
   if (view === 'detail' && selected) {
     const fd = selected.plan_data
+    const isProposal = !!fd?.game_name
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-3 flex-wrap print:hidden">
@@ -132,7 +234,8 @@ export default function FieldDayPlanner() {
             </button>
           </div>
         </div>
-        {fd && (
+        {fd && isProposal && <GameProposalDoc proposal={fd} />}
+        {fd && !isProposal && (
           <div className="space-y-8">
             <div>
               <h2 className="text-xl font-bold text-ink-50 print:text-black">{fd.theme || 'Field Day'}</h2>
@@ -216,21 +319,50 @@ export default function FieldDayPlanner() {
 
       {/* Form */}
       <form onSubmit={handleGenerate} className="card p-6 space-y-5 max-w-2xl">
-        <h2 className="font-semibold text-ink-200">Generate a new plan</h2>
+        <h2 className="font-semibold text-ink-200">{isProposalMode ? 'Propose a game / activity' : 'Generate a new plan'}</h2>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-ink-300 mb-1.5">Number of students</label>
-            <input type="number" min={1} value={form.numStudents} onChange={e => setForm(f => ({ ...f, numStudents: Number(e.target.value) }))}
-              className="w-full rounded-lg border border-ink-700 bg-white dark:bg-ink-800 px-3 py-2 text-sm text-ink-50 outline-none focus:border-green-500" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-ink-300 mb-1.5">Total duration (min)</label>
-            <input type="number" min={30} value={form.duration} onChange={e => setForm(f => ({ ...f, duration: Number(e.target.value) }))}
-              className="w-full rounded-lg border border-ink-700 bg-white dark:bg-ink-800 px-3 py-2 text-sm text-ink-50 outline-none focus:border-green-500" />
-          </div>
+        {/* Mode toggle */}
+        <div className="flex gap-2">
+          {[{ key: 'plan', label: 'Full Field Day Plan' }, { key: 'proposal', label: 'Game Proposal' }].map(m => (
+            <button key={m.key} type="button" onClick={() => setForm(f => ({ ...f, mode: m.key }))}
+              className={`flex-1 rounded-lg border py-2 text-sm font-semibold transition-colors ${form.mode === m.key ? 'border-green-500 bg-green-500/15 text-green-400' : 'border-ink-700 text-ink-500 hover:border-ink-500'}`}>
+              {m.label}
+            </button>
+          ))}
         </div>
+        <p className="-mt-2 text-xs text-ink-500">
+          {isProposalMode
+            ? 'A one-page write-up of a single game (name, equipment, setup, rules, safety, grade fit) — for proposing or documenting an idea.'
+            : 'A complete rotation-station field day plan with schedule, stations, and materials.'}
+        </p>
 
+        {/* Proposal: game idea */}
+        {isProposalMode && (
+          <div>
+            <label className="block text-sm font-medium text-ink-300 mb-1.5">Game idea (optional)</label>
+            <textarea value={form.gameIdea} onChange={e => setForm(f => ({ ...f, gameIdea: e.target.value }))}
+              rows={3} placeholder="Describe your idea, or leave blank for a suggestion — e.g. a cooperative relay moving a beach ball with pool noodles, no hands"
+              className="w-full rounded-lg border border-ink-700 bg-white dark:bg-ink-800 px-3 py-2 text-sm text-ink-50 placeholder:text-ink-700 dark:placeholder:text-ink-600 outline-none focus:border-green-500" />
+          </div>
+        )}
+
+        {/* Plan: students + duration */}
+        {!isProposalMode && (
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-ink-300 mb-1.5">Number of students</label>
+              <input type="number" min={1} value={form.numStudents} onChange={e => setForm(f => ({ ...f, numStudents: Number(e.target.value) }))}
+                className="w-full rounded-lg border border-ink-700 bg-white dark:bg-ink-800 px-3 py-2 text-sm text-ink-50 outline-none focus:border-green-500" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-ink-300 mb-1.5">Total duration (min)</label>
+              <input type="number" min={30} value={form.duration} onChange={e => setForm(f => ({ ...f, duration: Number(e.target.value) }))}
+                className="w-full rounded-lg border border-ink-700 bg-white dark:bg-ink-800 px-3 py-2 text-sm text-ink-50 outline-none focus:border-green-500" />
+            </div>
+          </div>
+        )}
+
+        {/* Grade levels (shared) */}
         <div>
           <label className="block text-sm font-medium text-ink-300 mb-2">Grade levels</label>
           <div className="flex flex-wrap gap-2">
@@ -243,19 +375,22 @@ export default function FieldDayPlanner() {
           </div>
         </div>
 
+        {/* Stations (plan only) + Space (shared) */}
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-ink-300 mb-2">Number of stations</label>
-            <div className="flex gap-2">
-              {STATION_OPTIONS.map(n => (
-                <button key={n} type="button" onClick={() => setForm(f => ({ ...f, numStations: n }))}
-                  className={`flex-1 rounded-lg border py-2 text-sm font-semibold transition-colors ${form.numStations === n ? 'border-green-500 bg-green-500/15 text-green-400' : 'border-ink-700 text-ink-500 hover:border-ink-500'}`}>
-                  {n}
-                </button>
-              ))}
+          {!isProposalMode && (
+            <div>
+              <label className="block text-sm font-medium text-ink-300 mb-2">Number of stations</label>
+              <div className="flex gap-2">
+                {STATION_OPTIONS.map(n => (
+                  <button key={n} type="button" onClick={() => setForm(f => ({ ...f, numStations: n }))}
+                    className={`flex-1 rounded-lg border py-2 text-sm font-semibold transition-colors ${form.numStations === n ? 'border-green-500 bg-green-500/15 text-green-400' : 'border-ink-700 text-ink-500 hover:border-ink-500'}`}>
+                    {n}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-          <div>
+          )}
+          <div className={isProposalMode ? 'col-span-2' : ''}>
             <label className="block text-sm font-medium text-ink-300 mb-2">Space</label>
             <div className="flex gap-2">
               {SPACE_OPTIONS.map(s => (
@@ -268,28 +403,45 @@ export default function FieldDayPlanner() {
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-ink-300 mb-1.5">Theme (optional)</label>
-          <input value={form.theme} onChange={e => setForm(f => ({ ...f, theme: e.target.value }))}
-            placeholder="e.g. Olympics, Carnival, Around the World…"
-            className="w-full rounded-lg border border-ink-700 bg-white dark:bg-ink-800 px-3 py-2 text-sm text-ink-50 placeholder:text-ink-700 dark:placeholder:text-ink-600 outline-none focus:border-green-500" />
-        </div>
+        {/* Proposal: equipment on hand */}
+        {isProposalMode && (
+          <div>
+            <label className="block text-sm font-medium text-ink-300 mb-1.5">Equipment on hand (optional)</label>
+            <input value={form.equipmentOnHand} onChange={e => setForm(f => ({ ...f, equipmentOnHand: e.target.value }))}
+              placeholder="e.g. pool noodles, beach balls, cones, hula hoops"
+              className="w-full rounded-lg border border-ink-700 bg-white dark:bg-ink-800 px-3 py-2 text-sm text-ink-50 placeholder:text-ink-700 dark:placeholder:text-ink-600 outline-none focus:border-green-500" />
+          </div>
+        )}
+
+        {/* Plan: theme */}
+        {!isProposalMode && (
+          <div>
+            <label className="block text-sm font-medium text-ink-300 mb-1.5">Theme (optional)</label>
+            <input value={form.theme} onChange={e => setForm(f => ({ ...f, theme: e.target.value }))}
+              placeholder="e.g. Olympics, Carnival, Around the World…"
+              className="w-full rounded-lg border border-ink-700 bg-white dark:bg-ink-800 px-3 py-2 text-sm text-ink-50 placeholder:text-ink-700 dark:placeholder:text-ink-600 outline-none focus:border-green-500" />
+          </div>
+        )}
 
         {error && <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">{error}</p>}
 
         <button type="submit" disabled={status === 'generating'}
           className="flex items-center gap-2 rounded-xl bg-green-500 px-6 py-3 font-semibold text-white hover:bg-green-400 disabled:opacity-50 transition-colors">
-          {status === 'generating' ? <><Loader2 size={16} className="animate-spin" /> Generating…</> : <><Trophy size={16} /> Generate field day plan</>}
+          {status === 'generating'
+            ? <><Loader2 size={16} className="animate-spin" /> Generating…</>
+            : <><Trophy size={16} /> {isProposalMode ? 'Generate game proposal' : 'Generate field day plan'}</>}
         </button>
       </form>
 
       {/* Generated result */}
-      {fieldDay && status === 'done' && (
+      {status === 'done' && (fieldDay || gameProposal) && (
         <div className="space-y-4">
           <div className="flex items-center gap-3 flex-wrap">
-            <h2 className="text-lg font-semibold text-ink-50">{fieldDay.theme || 'Field Day Plan'}</h2>
+            <h2 className="text-lg font-semibold text-ink-50">
+              {gameProposal?.game_name || fieldDay?.theme || (gameProposal ? 'Game Proposal' : 'Field Day Plan')}
+            </h2>
             <div className="ml-auto flex items-center gap-2">
-              <input value={planName} onChange={e => setPlanName(e.target.value)} placeholder="Plan name (optional)"
+              <input value={planName} onChange={e => setPlanName(e.target.value)} placeholder={gameProposal ? 'Proposal name (optional)' : 'Plan name (optional)'}
                 className="rounded-lg border border-ink-700 bg-white dark:bg-ink-800 px-3 py-1.5 text-sm text-ink-50 placeholder:text-ink-700 dark:placeholder:text-ink-600 outline-none focus:border-green-500 w-48" />
               <button type="button" onClick={handleSave} disabled={saveStatus !== 'idle'}
                 className="inline-flex items-center gap-1.5 rounded-xl bg-green-500 px-4 py-1.5 text-sm font-semibold text-white hover:bg-green-400 disabled:opacity-50 transition-colors">
@@ -297,9 +449,9 @@ export default function FieldDayPlanner() {
               </button>
             </div>
           </div>
-          <button type="button" onClick={() => { setSelected({ name: planName || 'Field Day', plan_data: fieldDay }); setView('detail') }}
+          <button type="button" onClick={() => { setSelected({ name: planName || (gameProposal?.game_name || 'Field Day'), plan_data: gameProposal ?? fieldDay }); setView('detail') }}
             className="text-sm text-green-400 hover:text-green-300 underline underline-offset-2">
-            View full plan →
+            {gameProposal ? 'View full proposal →' : 'View full plan →'}
           </button>
         </div>
       )}
