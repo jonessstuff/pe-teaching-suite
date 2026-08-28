@@ -126,9 +126,9 @@ export default function ModulePicker() {
 
   // Filter row: All · Favorites (if any) · one chip per group.
   const chips = [
-    { key: 'all', label: 'All' },
-    ...(showFavorites ? [{ key: 'favorites', label: 'Favorites', star: true }] : []),
-    ...GROUPS.map((g) => ({ key: g.label, label: g.chip })),
+    { key: 'all', label: 'All', count: ALL_MODULES.length },
+    ...(showFavorites ? [{ key: 'favorites', label: 'Favorites', star: true, count: favoriteModules.length }] : []),
+    ...GROUPS.map((g) => ({ key: g.label, label: g.chip, count: g.modules.length })),
   ]
 
   return (
@@ -153,8 +153,9 @@ export default function ModulePicker() {
 
       {/* Specialty picker: heading + filter chips */}
       <div id="choose-specialty" className="scroll-mt-24 space-y-4">
-        <h2 className="text-lg font-semibold text-ink-100">Choose your specialty</h2>
-        <div className="flex flex-wrap gap-2">
+        <h2 className="text-lg font-semibold text-ink-100">Browse by area</h2>
+        {/* Horizontal scroll on small screens; wraps on sm+ */}
+        <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible sm:pb-0">
           {chips.map((c) => {
             const active = filter === c.key
             return (
@@ -163,7 +164,7 @@ export default function ModulePicker() {
                 type="button"
                 onClick={() => setFilter(c.key)}
                 aria-pressed={active}
-                className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium ring-1 ring-inset transition-colors ${
+                className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium ring-1 ring-inset transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500 ${
                   active
                     ? 'bg-accent-500/15 text-accent-700 ring-accent-500/30 dark:text-accent-400'
                     : 'text-ink-400 ring-ink-800 hover:bg-ink-900 hover:text-ink-200'
@@ -171,6 +172,9 @@ export default function ModulePicker() {
               >
                 {c.star && <Star size={13} className={active ? 'fill-amber-400 text-amber-400' : 'text-amber-400'} />}
                 {c.label}
+                {c.count != null && (
+                  <span className={active ? 'text-accent-600/70 dark:text-accent-400/60' : 'text-ink-600'}>· {c.count}</span>
+                )}
               </button>
             )
           })}
@@ -189,13 +193,14 @@ export default function ModulePicker() {
           <>
             {showFavorites && (
               <Section
-                label={<span className="flex items-center gap-1.5 text-amber-400"><Star size={13} className="fill-amber-400" /> Favorites</span>}
+                label={<span className="flex items-center gap-1.5 text-amber-400"><Star size={13} className="fill-amber-400" /> Favorites <span className="font-normal text-ink-600">· {favoriteModules.length}</span></span>}
               >
                 <ModuleGrid modules={favoriteModules} favorites={favorites} toggle={toggle} />
               </Section>
             )}
             {GROUPS.map((group) => (
-              <Section key={group.label} label={group.label}>
+              /* Section heading uses the short chip name (matches the filter chip) */
+              <Section key={group.label} label={<>{group.chip} <span className="font-normal text-ink-600">· {group.modules.length}</span></>}>
                 <ModuleGrid modules={group.modules} favorites={favorites} toggle={toggle} />
               </Section>
             ))}
@@ -262,7 +267,7 @@ function CreateLessonMenu({ favorites }) {
           <div className="my-1 border-t border-ink-900" />
           <button type="button" role="menuitem" onClick={browse}
             className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-medium text-ink-300 hover:bg-ink-950">
-            <LayoutGrid size={14} className="shrink-0 text-ink-500" /> Browse all specialties
+            <LayoutGrid size={14} className="shrink-0 text-ink-500" /> Browse all areas
           </button>
         </div>
       )}
@@ -283,7 +288,8 @@ function ModuleGrid({ modules, favorites, toggle }) {
 function Section({ label, children }) {
   return (
     <section className="space-y-5">
-      <p className="text-xs font-bold uppercase tracking-widest text-ink-500">{label}</p>
+      {/* Lighter, sentence-case heading (was heavy uppercase) for a friendlier tone */}
+      <p className="text-sm font-semibold text-ink-400">{label}</p>
       {children}
     </section>
   )

@@ -106,7 +106,7 @@ function DarkModeToggle() {
     <button
       onClick={toggle}
       aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-      className="flex items-center justify-center rounded-lg p-2 text-ink-500 transition-colors hover:bg-ink-900 hover:text-ink-200"
+      className="flex h-10 w-10 items-center justify-center rounded-lg text-ink-500 transition-colors hover:bg-ink-900 hover:text-ink-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
     >
       {dark ? <Sun size={18} strokeWidth={2} /> : <Moon size={18} strokeWidth={2} />}
     </button>
@@ -201,7 +201,7 @@ function Topbar({ showSidebar }) {
         <NavLink
           to="/settings"
           className={({ isActive }) =>
-            `flex items-center justify-center rounded-lg p-2 transition-colors ${
+            `flex h-10 w-10 items-center justify-center rounded-lg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500 ${
               isActive
                 ? 'bg-accent-500/10 text-accent-700'
                 : 'text-ink-500 hover:bg-ink-900 hover:text-ink-100'
