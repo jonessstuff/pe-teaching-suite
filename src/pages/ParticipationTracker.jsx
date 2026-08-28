@@ -34,6 +34,7 @@ export default function ParticipationTracker() {
   const [configOpen, setConfigOpen] = useState(false)
   const [notice, setNotice] = useState(null)
   const [loadingRoster, setLoadingRoster] = useState(false)
+  const [justSaved, setJustSaved] = useState(() => new Set()) // studentIds showing a transient "Saved"
 
   // Initial load: periods + config.
   useEffect(() => {
@@ -68,6 +69,9 @@ export default function ParticipationTracker() {
     setRecords((rs) => [...rs.filter((r) => !(r.student_id === studentId && r.date === date)), optimistic])
     try {
       await upsertRecord({ classPeriodId: periodId, studentId, date, status: st.key, points: st.points, exempt: st.exempt })
+      // Brief per-student "Saved" confirmation so it's obvious taps persist.
+      setJustSaved((s) => new Set(s).add(studentId))
+      setTimeout(() => setJustSaved((s) => { const n = new Set(s); n.delete(studentId); return n }), 1600)
     } catch (err) {
       setRecords(prev)
       console.error('[participation] save failed', err)
@@ -132,7 +136,7 @@ export default function ParticipationTracker() {
               {view === 'record' && students && <span className="text-sm text-ink-500">{recordedCount}/{students.length} recorded</span>}
               <div className="flex rounded-lg border border-ink-800 p-0.5">
                 <button onClick={() => setView('record')} className={`rounded-md px-3 py-1.5 text-sm font-medium ${view === 'record' ? 'bg-accent-500/15 text-accent-700 dark:text-accent-400' : 'text-ink-400'}`}>Record</button>
-                <button onClick={() => setView('week')} className={`rounded-md px-3 py-1.5 text-sm font-medium ${view === 'week' ? 'bg-accent-500/15 text-accent-700 dark:text-accent-400' : 'text-ink-400'}`}>This week</button>
+                <button onClick={() => setView('week')} className={`rounded-md px-3 py-1.5 text-sm font-medium ${view === 'week' ? 'bg-accent-500/15 text-accent-700 dark:text-accent-400' : 'text-ink-400'}`}>Weekly grades</button>
               </div>
             </div>
           </div>
@@ -148,6 +152,11 @@ export default function ParticipationTracker() {
 
           {/* RECORD view */}
           {view === 'record' && students && students.length > 0 && (
+            <p className="text-xs text-ink-500">
+              Tap a status to grade each student — <span className="font-medium text-ink-400">it saves automatically, no Save button needed</span>. Use ‹ › above to view or edit a past day; switch to <span className="font-medium text-ink-400">Weekly grades</span> for the running week.
+            </p>
+          )}
+          {view === 'record' && students && students.length > 0 && (
             <div className="space-y-2.5">
               {students.map((s) => {
                 const rec = recordFor(s.id)
@@ -155,7 +164,9 @@ export default function ParticipationTracker() {
                   <div key={s.id} className="rounded-xl border border-ink-800 p-3">
                     <div className="mb-2 flex items-center justify-between gap-2">
                       <span className="text-base font-semibold text-ink-100">{s.name_or_initials}</span>
-                      {rec ? <Check size={16} className="text-green-500" /> : <span className="text-xs text-ink-600">not recorded</span>}
+                      {justSaved.has(s.id)
+                        ? <span className="flex items-center gap-1 text-xs font-semibold text-green-500"><Check size={14} /> Saved</span>
+                        : rec ? <Check size={16} className="text-green-500" /> : <span className="text-xs text-ink-600">not recorded</span>}
                     </div>
                     <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
                       {config.statuses.map((st) => {
