@@ -98,6 +98,9 @@ export function domToBlocks(el) {
   const walk = (node) => {
     for (const child of node.children ?? []) {
       if (skip(child)) continue
+      // A <div data-pagebreak> marker becomes a docx page break (generate-docx
+      // maps { style: 'pagebreak' } → PageBreak). Lets callers control pagination.
+      if (child.hasAttribute?.('data-pagebreak')) { blocks.push({ style: 'pagebreak' }); continue }
       const tag = child.tagName?.toLowerCase()
       if (/^h[1-6]$/.test(tag)) {
         const lvl = Number(tag[1])

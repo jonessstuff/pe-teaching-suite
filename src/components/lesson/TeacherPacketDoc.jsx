@@ -1,6 +1,8 @@
 import { gradeBandsLabel } from '../../types/lessonObject'
 import PlanBookRenderer from '../renderers/PlanBookRenderer'
-import TeachingView from './TeachingView'
+
+// A page-break marker; domToBlocks turns <div data-pagebreak> into a docx PageBreak.
+const PageBreak = () => <div data-pagebreak="true" aria-hidden="true" />
 
 // The full Teacher Packet composition, rendered (hidden) purely so domToBlocks can
 // serialize it into ONE .docx. Order: cover → teaching view → full plan → materials
@@ -58,14 +60,14 @@ export default function TeacherPacketDoc({ innerRef, lesson: lo, materials = [],
       <h1>{lo.title || 'Lesson'} — Teacher Packet</h1>
       {meta && <p>{meta}</p>}
 
-      <h2>Teaching View (at a glance)</h2>
-      <TeachingView lesson={lo} />
-
+      {/* The Teaching View lives as an on-screen tab only — the full plan below
+          already covers the same content, so it's not repeated in the packet. */}
       <h2>Full Lesson Plan</h2>
       <PlanBookRenderer lesson={lo} />
 
       {materials.length > 0 && (
         <>
+          <PageBreak />
           <h2>Teaching Materials</h2>
           {materials.map((r, i) => <MaterialBlock key={i} r={r} />)}
         </>
@@ -73,6 +75,7 @@ export default function TeacherPacketDoc({ innerRef, lesson: lo, materials = [],
 
       {hasVariants && (
         <>
+          <PageBreak />
           <h2>Differentiation</h2>
           <VariantBlock label="Extension / Advanced" v={variants.advanced} />
           <VariantBlock label="Modified / Below Grade" v={variants.below_grade} />
