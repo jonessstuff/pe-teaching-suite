@@ -68,9 +68,10 @@ export default function ParticipationTracker() {
     setRecords((rs) => [...rs.filter((r) => !(r.student_id === studentId && r.date === date)), optimistic])
     try {
       await upsertRecord({ classPeriodId: periodId, studentId, date, status: st.key, points: st.points, exempt: st.exempt })
-    } catch {
+    } catch (err) {
       setRecords(prev)
-      setNotice({ type: 'error', msg: `Couldn't save — tap again.` })
+      console.error('[participation] save failed', err)
+      setNotice({ type: 'error', msg: err?.message ? `Couldn't save: ${err.message}` : `Couldn't save — tap again.` })
     }
   }
 

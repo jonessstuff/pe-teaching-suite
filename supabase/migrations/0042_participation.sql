@@ -38,6 +38,12 @@ create table if not exists participation_records (
   unique (student_id, date)
 );
 
+-- Self-heal: if an OLDER participation_records table already existed, the
+-- create-if-not-exists above was a no-op and these columns are missing. Idempotent.
+alter table participation_records
+  add column if not exists points numeric not null default 0,
+  add column if not exists exempt boolean not null default false;
+
 alter table participation_records enable row level security;
 create policy "Users manage their own participation_records" on participation_records
   for all using (auth.uid() = teacher_id) with check (auth.uid() = teacher_id);
