@@ -195,8 +195,6 @@ Lesson structure — 5 required phases:
 
 5. ${phases.closure.name} (closure field): ${phases.closure.desc}
 
-Teacher Prep (teacher_prep field): Everything the teacher must do BEFORE students arrive. Write specific, actionable steps: what materials to pre-sort into group containers or stations, what technology to set up and test (log in, open links, test projector), what examples to print or display, what recording sheets to copy, how to arrange tables and materials for this lesson. Write as a practical pre-class checklist.
-
 Standards: ${standardsGuidance}
 
 You must return ONLY a single JSON object — no markdown fences, no commentary, no preamble — matching this exact schema:
@@ -215,12 +213,8 @@ You must return ONLY a single JSON object — no markdown fences, no commentary,
   "success_criteria": { "<grade>": string[] },
   "skill_focus": string[],
   "assessment_type": "formative" | "summative" | "self-assessment",
-  "teacher_prep": string,
   "equipment_needed": string[],
-  "equipment_alternatives": string[],
-  "tools_and_platforms": string[],
   "location": string,
-  "setup_diagram": string,
   "warm_up": string,
   "whole_group_instruction": string,
   "fitness_activities": string,
@@ -233,8 +227,7 @@ You must return ONLY a single JSON object — no markdown fences, no commentary,
   "sub_friendly_instructions": "",
   "sub_script": "",
   "sub_management_script": "",
-  "sub_diagram": "",
-  "suggested_video_searches": string[]
+  "sub_diagram": ""
 }
 
 Field notes:
@@ -245,16 +238,12 @@ Field notes:
 - stage_label: ${isMultiStage ? `"${stageLabel}" — required exactly as shown` : `"" (empty string — standalone lesson)`}
 - standards: one entry per grade band; use 0 for K in the grade field; the framework field must match the standards framework name exactly (e.g., "NGSS", "CSTA", "ISTE", "VA Science SOL", "VA CS")
 - equipment_needed: specific and detailed with quantities per student or group (e.g., "Popsicle sticks — 20 per group of 3", "Masking tape — 1 roll per group", "Chromebook — 1 per student, Scratch account pre-created by teacher"). NOT vague entries like "tape" or "computers".
-- equipment_alternatives: lower-cost or lower-tech alternatives that achieve the same learning objective
-- tools_and_platforms: 2–4 specific named digital tools, apps, or platforms with a brief note on their role in this lesson (e.g., "Scratch (scratch.mit.edu) — free, browser-based, no download; students animate their character using loop blocks", "Tinkercad (tinkercad.com) — free 3D design tool for documenting design sketches", "Seesaw — students photograph their build for digital portfolio"). For science/engineering lessons include documentation tools if relevant (Google Slides, Seesaw). For coding lessons name the specific platform and course/activity.
 - location: how the classroom or STEM lab should be arranged for this lesson (e.g., "STEM lab — tables in groups of 3–4 with shared material bins centered on each table, clear workspace for building")
-- setup_diagram: brief text description of the station or material layout
 - learning_targets: "Today I will…" statements, one per grade band, keyed by grade number (0 for K)
 - success_criteria: exactly 3 "I can…" statements per grade band, keyed by grade number (0 for K)
 - modifications: differentiation for each grade band — both scaffolds for students who need support and extensions for early finishers. Keyed by grade number (0 for K).
 - skill_focus: 2–4 specific STEM skills this lesson develops (e.g., "Engineering Design Process — Define and Constrain", "Debugging and iteration", "Fair testing / controlled variables", "Sequencing and loop structures")
 - safety_notes: specific safety considerations for this lesson. Science: chemical or material safety, heat, sharp objects. Engineering/Maker: hot glue gun supervision, cutting tools, structural testing safety. Coding: appropriate platform use, account privacy. Leave as [] only if there are genuinely no considerations.
-- suggested_video_searches: exactly 2–3 specific search queries a teacher can paste directly into YouTube or Google — named and specific (e.g., "engineering design process elementary school kids", "Scratch loops tutorial Grade 3", "sink or float science experiment elementary")
 - known_vocabulary: STEM terms students should already know coming in
 - new_vocabulary: STEM terms students will learn in this lesson${isMultiStage ? `
 
@@ -273,12 +262,9 @@ CRITICAL requirements for this stage:
 - The "focus_area" field MUST be: "${focusArea}"
 - The "stage_label" field MUST be: "${stageLabel}"${sessionNumber > 1 ? `
 - Do NOT re-introduce concepts or skills already covered in prior stages listed above
-- teacher_prep must include retrieving students' in-progress work from storage
-- The ${phases.warm_up.name} phase MUST explicitly reference what students made or learned in the prior stage` : ""}${sessionNumber === totalSessions && totalSessions > 1 ? `
-- This is the FINAL stage: closure must bring the project to a satisfying conclusion (presentation, gallery walk, reflection protocol — not a preview of another session)
-- teacher_prep must include preparation for displaying or collecting finished work` : sessionNumber > 0 && sessionNumber < totalSessions ? `
-- Closure must preview specifically what students will do in Stage ${sessionNumber + 1}
-- teacher_prep must include how to store in-progress work between sessions` : ""}` : ""}${includeELL ? `\n\nELL ACCOMMODATIONS: This lesson will be taught to a class that includes English Language Learners. In addition to all fields in the schema above, add an "ell_accommodations" object to the JSON with these subfields:\n- language_objectives: 2–3 strings in format "Students will [language skill] in order to [content purpose]"\n- tiered_vocabulary: { tier_1: [everyday words students likely know], tier_2: [academic cross-subject vocabulary], tier_3: [content-specific STEM vocabulary unique to this lesson] } — each value is an array of strings\n- sentence_frames: 4–6 strings, each labeled with the specific STEM lesson context (e.g. "During the design phase: 'My plan is to ___ because ___'", "During share-out: 'Our design worked / did not work because ___'")\n- visual_supports: 4–6 specific, concrete suggestions for visual supports, step-by-step picture cards, or gesture cues tied to this lesson's actual activities and materials\n- simplified_instructions: single string — 2–3 short sentences describing the core challenge or task at a 2nd-grade reading level, no idioms, no figurative language` : ""}${handsOn ? HANDS_ON_DIRECTIVE : ""}${stationsMode ? stationsDirective({ stationCount, field: "independent_practice", unit: "investigation / build", note: "Each station is an investigation or build station (e.g., a testing station, a materials/prototyping station, a data-collection station, a design-challenge station)." }) : ""}${includeUdlEf ? udlEfDirective() : ""}${coreActivityOnly ? coreActivityDirective() : ""}`
+- The ${phases.warm_up.name} phase MUST explicitly reference what students made or learned in the prior stage, and include getting their in-progress work back out from storage` : ""}${sessionNumber === totalSessions && totalSessions > 1 ? `
+- This is the FINAL stage: closure must bring the project to a satisfying conclusion (presentation, gallery walk, reflection protocol — not a preview of another session), including collecting or displaying students' finished work` : sessionNumber > 0 && sessionNumber < totalSessions ? `
+- Closure must preview specifically what students will do in Stage ${sessionNumber + 1}, and tell students how to store their in-progress work between sessions` : ""}` : ""}${includeELL ? `\n\nELL ACCOMMODATIONS: This lesson will be taught to a class that includes English Language Learners. In addition to all fields in the schema above, add an "ell_accommodations" object to the JSON with these subfields:\n- language_objectives: 2–3 strings in format "Students will [language skill] in order to [content purpose]"\n- tiered_vocabulary: { tier_1: [everyday words students likely know], tier_2: [academic cross-subject vocabulary], tier_3: [content-specific STEM vocabulary unique to this lesson] } — each value is an array of strings\n- sentence_frames: 4–6 strings, each labeled with the specific STEM lesson context (e.g. "During the design phase: 'My plan is to ___ because ___'", "During share-out: 'Our design worked / did not work because ___'")\n- visual_supports: 4–6 specific, concrete suggestions for visual supports, step-by-step picture cards, or gesture cues tied to this lesson's actual activities and materials\n- simplified_instructions: single string — 2–3 short sentences describing the core challenge or task at a 2nd-grade reading level, no idioms, no figurative language` : ""}${handsOn ? HANDS_ON_DIRECTIVE : ""}${stationsMode ? stationsDirective({ stationCount, field: "independent_practice", unit: "investigation / build", note: "Each station is an investigation or build station (e.g., a testing station, a materials/prototyping station, a data-collection station, a design-challenge station)." }) : ""}${includeUdlEf ? udlEfDirective() : ""}${coreActivityOnly ? coreActivityDirective() : ""}`
 
   const user = `Generate a complete K–5 ${focusAreaLabel} lesson${isMultiStage ? ` project stage (${stageLabel})` : ""} with these parameters:
 
