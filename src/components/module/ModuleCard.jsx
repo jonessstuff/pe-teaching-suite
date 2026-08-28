@@ -13,7 +13,7 @@ export default function ModuleCard({ module: m, isFavorite, toggle }) {
     <div className="relative">
       <Link
         to={m.to}
-        className={`card group flex h-full flex-col gap-6 border-t-2 p-8 transition-colors ${a.topBorder}`}
+        className={`card group flex h-full flex-col gap-4 border-t-2 p-6 transition-colors ${a.topBorder} ${isFavorite ? 'ring-1 ring-amber-400/50' : ''}`}
       >
         <div className={`flex h-14 w-14 items-center justify-center rounded-2xl ${a.wrap}`}>
           {m.key === 'pe-health' ? (
@@ -34,7 +34,9 @@ export default function ModuleCard({ module: m, isFavorite, toggle }) {
         <div className="flex-1 space-y-1.5">
           {/* pr-8 keeps the title clear of the star button in the corner */}
           <h2 className="pr-8 text-xl font-semibold text-ink-50">{m.label}</h2>
-          <p className="text-sm text-ink-400 leading-relaxed">{m.desc}</p>
+          {/* line-clamp-3 caps description height so cards stay uniform (Theater/Dance
+              were ~6 lines); full text remains in the DOM for screen readers. */}
+          <p className="text-sm text-ink-400 leading-relaxed line-clamp-3">{m.desc}</p>
         </div>
 
         {/* Pseudo-button — visual affordance; the card Link handles the tap.
@@ -51,16 +53,24 @@ export default function ModuleCard({ module: m, isFavorite, toggle }) {
       {/* Favorite toggle — a sibling overlay (not nested in the Link) so it
           doesn't navigate and isn't invalid interactive-in-anchor markup. */}
       {toggle && (
-        <button
-          type="button"
-          onClick={() => toggle(m.key)}
-          aria-pressed={isFavorite}
-          aria-label={isFavorite ? `Remove ${m.label} from favorites` : `Add ${m.label} to favorites`}
-          title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-          className="absolute right-4 top-4 z-10 rounded-full p-1.5 text-ink-600 transition-colors hover:bg-ink-800/60 hover:text-amber-400"
-        >
-          <Star size={20} className={isFavorite ? 'fill-amber-400 text-amber-400' : 'fill-transparent'} />
-        </button>
+        <div className="group/fav absolute right-3 top-3 z-10">
+          <button
+            type="button"
+            onClick={() => toggle(m.key)}
+            aria-pressed={isFavorite}
+            aria-label={isFavorite ? `Remove ${m.label} from favorites` : `Add ${m.label} to favorites`}
+            className="rounded-full p-1.5 text-ink-600 transition-colors hover:bg-ink-800/60 hover:text-amber-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-ink-900"
+          >
+            <Star size={20} className={isFavorite ? 'fill-amber-400 text-amber-400' : 'fill-transparent'} />
+          </button>
+          {/* Visible label on hover AND keyboard focus (native title only shows on hover). */}
+          <span
+            role="tooltip"
+            className="pointer-events-none absolute right-0 top-full mt-1 whitespace-nowrap rounded-md bg-ink-100 px-2 py-1 text-xs font-medium text-ink-900 opacity-0 shadow transition-opacity group-hover/fav:opacity-100 group-focus-within/fav:opacity-100"
+          >
+            {isFavorite ? 'Remove from favorites' : `Add ${m.label} to favorites`}
+          </span>
+        </div>
       )}
     </div>
   )

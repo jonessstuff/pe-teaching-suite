@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Library, Palette, Music, Drama, Wind, FlaskConical, Monitor, Award, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, Handshake, PersonStanding, ScanEye, Ear, PartyPopper, Target, Globe, Users, Blocks, Baby, Layers, Presentation, Star, Plus, Clock } from 'lucide-react'
+import { Library, Palette, Music, Drama, Wind, FlaskConical, Monitor, Award, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, Handshake, PersonStanding, ScanEye, Ear, PartyPopper, Target, Globe, Users, Blocks, Baby, Layers, Presentation, Star, Plus, Clock, ChevronDown, LayoutGrid } from 'lucide-react'
 import { useDisplayName, getTimeGreeting } from '../hooks/useDisplayName'
 import { useFavorites } from '../hooks/useFavorites'
 import ModuleCard from '../components/module/ModuleCard'
@@ -144,9 +144,7 @@ export default function ModulePicker() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Link to="/generate" className="btn-primary">
-            <Plus size={16} /> Create Lesson
-          </Link>
+          <CreateLessonMenu favorites={favoriteModules} />
           <Link to="/lessons" className="btn-secondary">
             <Clock size={16} /> Recent
           </Link>
@@ -154,7 +152,7 @@ export default function ModulePicker() {
       </div>
 
       {/* Specialty picker: heading + filter chips */}
-      <div className="space-y-4">
+      <div id="choose-specialty" className="scroll-mt-24 space-y-4">
         <h2 className="text-lg font-semibold text-ink-100">Choose your specialty</h2>
         <div className="flex flex-wrap gap-2">
           {chips.map((c) => {
@@ -213,6 +211,61 @@ export default function ModulePicker() {
           />
         )}
       </div>
+    </div>
+  )
+}
+
+// "Create Lesson" quick action — resolves the "which specialty?" ambiguity with a
+// small menu: starred specialties as one-tap links + a jump to the full grid.
+// Closes on outside-click and Escape.
+function CreateLessonMenu({ favorites }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+
+  useEffect(() => {
+    if (!open) return
+    const onDown = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false) }
+    const onKey = (e) => { if (e.key === 'Escape') setOpen(false) }
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onDown)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [open])
+
+  function browse() {
+    setOpen(false)
+    document.getElementById('choose-specialty')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  return (
+    <div className="relative" ref={ref}>
+      <button type="button" onClick={() => setOpen((o) => !o)} aria-haspopup="menu" aria-expanded={open} className="btn-primary">
+        <Plus size={16} /> Create Lesson
+        <ChevronDown size={15} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+      {open && (
+        <div role="menu" className="absolute left-0 top-full z-20 mt-2 w-64 max-w-[calc(100vw-3rem)] overflow-hidden rounded-xl border border-ink-800 bg-white py-1 shadow-lg dark:bg-ink-900">
+          {favorites.length > 0 ? (
+            favorites.map((m) => (
+              <Link key={m.key} to={m.to} role="menuitem" onClick={() => setOpen(false)}
+                className="flex items-start gap-2 px-4 py-2.5 text-sm text-ink-100 hover:bg-ink-950">
+                <Plus size={14} className="mt-0.5 shrink-0 text-ink-500" /> New {m.label} lesson
+              </Link>
+            ))
+          ) : (
+            <p className="flex items-start gap-2 px-4 py-2.5 text-sm text-ink-500">
+              <Star size={14} className="mt-0.5 shrink-0" /> Star a specialty for one-tap access here.
+            </p>
+          )}
+          <div className="my-1 border-t border-ink-900" />
+          <button type="button" role="menuitem" onClick={browse}
+            className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-medium text-ink-300 hover:bg-ink-950">
+            <LayoutGrid size={14} className="shrink-0 text-ink-500" /> Browse all specialties
+          </button>
+        </div>
+      )}
     </div>
   )
 }
