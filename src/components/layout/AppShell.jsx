@@ -10,6 +10,7 @@ import {
   Sun,
   Moon,
   ClipboardList,
+  ClipboardCheck,
   BarChart3,
 } from 'lucide-react'
 import { useTheme } from '../../hooks/useTheme'
@@ -42,6 +43,7 @@ const NAV_ITEMS = [
   { to: '/lessons', label: 'Lesson Library', mobileLabel: 'Library', icon: BookOpen },
   { to: '/schedule', label: 'My Schedule', mobileLabel: 'Schedule', icon: CalendarDays },
   { to: '/students', label: 'My Students', mobileLabel: 'Students', icon: Users2 },
+  { to: '/participation', label: 'Participation', mobileLabel: 'Track', icon: ClipboardCheck },
   { to: '/curriculum-map', label: 'Year Plan', mobileLabel: 'Year', icon: CalendarRange, mobileHidden: true },
 ]
 
