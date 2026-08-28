@@ -50,6 +50,28 @@ export async function createStudent({ name_or_initials, grade, accommodation_typ
   return data;
 }
 
+// Bulk-create — one round-trip for a whole pasted class list. Each row shares
+// the batch's grade + class period; caller de-dupes before calling.
+export async function createStudents(rows) {
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+  if (userError) throw userError;
+  const teacher_id = userData.user.id;
+
+  const payload = (rows ?? []).map((r) => ({
+    teacher_id,
+    name_or_initials: r.name_or_initials,
+    grade: r.grade != null && r.grade !== '' ? Number(r.grade) : null,
+    accommodation_type: r.accommodation_type || 'None',
+    accommodation_notes: r.accommodation_notes || null,
+    class_period_id: r.class_period_id || null,
+  }));
+  if (payload.length === 0) return [];
+
+  const { data, error } = await supabase.from("students").insert(payload).select();
+  if (error) throw error;
+  return data;
+}
+
 export async function updateStudent(id, { name_or_initials, grade, accommodation_type, accommodation_notes, class_period_id }) {
   const { data, error } = await supabase
     .from("students")

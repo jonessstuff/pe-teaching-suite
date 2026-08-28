@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
-import { Plus, Pencil, Trash2, Loader2, X, Check, ShieldAlert } from 'lucide-react'
-import { listStudents, createStudent, updateStudent, deleteStudent } from '../services/studentsService'
+import { useEffect, useMemo, useState } from 'react'
+import { Plus, Pencil, Trash2, Loader2, X, Check, ShieldAlert, ClipboardPaste } from 'lucide-react'
+import { listStudents, createStudent, createStudents, updateStudent, deleteStudent } from '../services/studentsService'
 import { listPeriods } from '../services/classPeriodsService'
 import { gradeLabel } from '../types/lessonObject'
 
@@ -32,6 +32,14 @@ export default function Students() {
   const [form, setForm] = useState(BLANK_FORM)
   const [saving, setSaving] = useState(false)
   const [formError, setFormError] = useState(null)
+
+  // Bulk-paste roster
+  const [bulkOpen, setBulkOpen] = useState(false)
+  const [bulkPeriod, setBulkPeriod] = useState('')
+  const [bulkGrade, setBulkGrade] = useState('')
+  const [bulkText, setBulkText] = useState('')
+  const [bulkSaving, setBulkSaving] = useState(false)
+  const [bulkError, setBulkError] = useState(null)
 
   useEffect(() => {
     listStudents()
@@ -101,6 +109,68 @@ export default function Students() {
     }
   }
 
+  // Parse the pasted list: one name per line, trimmed, de-duped within the paste
+  // AND against names already in the chosen period.
+  const bulkParsed = useMemo(() => {
+    const lines = bulkText.split('\n').map((l) => l.trim()).filter(Boolean)
+    const seen = new Set()
+    const unique = []
+    for (const l of lines) {
+      const k = l.toLowerCase()
+      if (!seen.has(k)) { seen.add(k); unique.push(l) }
+    }
+    const inPeriod = new Set(
+      (students ?? [])
+        .filter((s) => s.class_period_id === bulkPeriod)
+        .map((s) => (s.name_or_initials ?? '').trim().toLowerCase()),
+    )
+    const toAdd = unique.filter((l) => !inPeriod.has(l.toLowerCase()))
+    return {
+      pasted: lines.length,
+      toAdd,
+      dupInPaste: lines.length - unique.length,
+      dupInPeriod: unique.length - toAdd.length,
+    }
+  }, [bulkText, students, bulkPeriod])
+
+  function openBulk() {
+    setBulkOpen(true)
+    setBulkError(null)
+    setBulkPeriod((cur) => cur || periods[0]?.id || '')
+  }
+  function closeBulk() {
+    setBulkOpen(false)
+    setBulkText('')
+    setBulkGrade('')
+    setBulkError(null)
+  }
+
+  async function handleBulkAdd(e) {
+    e.preventDefault()
+    if (!bulkPeriod) { setBulkError('Pick a class period for the batch.'); return }
+    if (bulkParsed.toAdd.length === 0) { setBulkError('No new names to add.'); return }
+    setBulkSaving(true)
+    setBulkError(null)
+    try {
+      const rows = bulkParsed.toAdd.map((name) => ({
+        name_or_initials: name,
+        grade: bulkGrade !== '' ? Number(bulkGrade) : null,
+        class_period_id: bulkPeriod,
+        accommodation_type: 'None',
+        accommodation_notes: null,
+      }))
+      const created = await createStudents(rows)
+      setStudents((prev) =>
+        [...(prev ?? []), ...created].sort((a, b) => a.name_or_initials.localeCompare(b.name_or_initials)),
+      )
+      closeBulk()
+    } catch (err) {
+      setBulkError(err.message)
+    } finally {
+      setBulkSaving(false)
+    }
+  }
+
   async function handleDelete(id) {
     if (!window.confirm('Delete this student profile?')) return
     try {
@@ -125,11 +195,17 @@ export default function Students() {
             IEP/504 profiles — accommodations are automatically included when you generate a lesson for that class period.
           </p>
         </div>
-        {formMode === null && (
-          <button onClick={openAdd} className="btn-primary shrink-0">
-            <Plus size={16} />
-            Add student
-          </button>
+        {formMode === null && !bulkOpen && (
+          <div className="flex shrink-0 gap-2">
+            <button onClick={openBulk} className="btn-secondary">
+              <ClipboardPaste size={16} />
+              Bulk add
+            </button>
+            <button onClick={openAdd} className="btn-primary">
+              <Plus size={16} />
+              Add student
+            </button>
+          </div>
         )}
       </div>
 
@@ -143,6 +219,60 @@ export default function Students() {
 
       {error && (
         <div className="card border-red-500/30 p-4 text-sm text-red-400">{error}</div>
+      )}
+
+      {bulkOpen && (
+        <form onSubmit={handleBulkAdd} className="card space-y-4 p-6">
+          <div className="flex items-center justify-between">
+            <h2 className="font-semibold text-ink-100">Bulk add roster</h2>
+            <button type="button" onClick={closeBulk} className="text-ink-500 hover:text-ink-200"><X size={18} /></button>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-ink-300">Class period</label>
+              <select value={bulkPeriod} onChange={(e) => setBulkPeriod(e.target.value)}
+                className="w-full rounded-lg border border-ink-700 bg-white px-3 py-2 text-sm text-ink-50 dark:bg-ink-800">
+                <option value="">Select…</option>
+                {periods.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-ink-300">Grade for batch (optional)</label>
+              <select value={bulkGrade} onChange={(e) => setBulkGrade(e.target.value)}
+                className="w-full rounded-lg border border-ink-700 bg-white px-3 py-2 text-sm text-ink-50 dark:bg-ink-800">
+                <option value="">—</option>
+                {GRADE_OPTIONS.map((g) => <option key={g} value={g}>{gradeLabel(g)}</option>)}
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-ink-300">Paste names — one per line</label>
+            <textarea value={bulkText} onChange={(e) => setBulkText(e.target.value)} rows={8}
+              placeholder={'Smith, John\nJohn D.\nA.K.\n…'}
+              className="w-full rounded-lg border border-ink-700 bg-white px-3 py-2 font-mono text-sm text-ink-50 dark:bg-ink-800" />
+            <p className="mt-1.5 text-xs text-ink-500">Initials or nicknames only (see privacy note). Paste a copied column from a spreadsheet or SIS list — each line becomes one student.</p>
+          </div>
+
+          {bulkText.trim() && (
+            <div className="rounded-lg border border-ink-800 bg-ink-950 px-3 py-2 text-sm text-ink-300">
+              <span className="font-semibold text-ink-100">{bulkParsed.toAdd.length}</span> to add
+              {bulkParsed.dupInPeriod > 0 && <span className="text-ink-500"> · {bulkParsed.dupInPeriod} already in this period (skipped)</span>}
+              {bulkParsed.dupInPaste > 0 && <span className="text-ink-500"> · {bulkParsed.dupInPaste} duplicate line{bulkParsed.dupInPaste > 1 ? 's' : ''} skipped</span>}
+            </div>
+          )}
+
+          {bulkError && <p className="text-sm text-red-400">{bulkError}</p>}
+
+          <div className="flex gap-2">
+            <button type="submit" disabled={bulkSaving || bulkParsed.toAdd.length === 0 || !bulkPeriod} className="btn-primary disabled:opacity-50">
+              {bulkSaving ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />}
+              Add {bulkParsed.toAdd.length || ''} student{bulkParsed.toAdd.length === 1 ? '' : 's'}
+            </button>
+            <button type="button" onClick={closeBulk} className="btn-secondary">Cancel</button>
+          </div>
+        </form>
       )}
 
       {formMode !== null && (
