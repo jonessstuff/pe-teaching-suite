@@ -37,12 +37,14 @@ export default function ModuleCard({ module: m, isFavorite, toggle }) {
           <p className="text-sm text-ink-400 leading-relaxed">{m.desc}</p>
         </div>
 
-        {/* Pseudo-button — visual affordance; the card Link handles the tap. */}
+        {/* Pseudo-button — visual affordance; the card Link handles the tap.
+            w-full (never auto) so a long module name can't overflow a narrow
+            card and push the grid wider than its container. */}
         <span
-          className={`inline-flex w-full items-center justify-center gap-1.5 self-start rounded-lg px-3.5 py-2 text-sm font-semibold transition-colors sm:w-auto ${a.buttonBg} ${a.buttonText}`}
+          className={`inline-flex w-full items-center justify-center gap-1.5 rounded-lg px-3.5 py-2 text-center text-sm font-semibold transition-colors ${a.buttonBg} ${a.buttonText}`}
         >
           Open {m.label}
-          <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
+          <ArrowRight size={15} className="shrink-0 transition-transform group-hover:translate-x-0.5" />
         </span>
       </Link>
 
