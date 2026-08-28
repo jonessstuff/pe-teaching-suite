@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { ClipboardList, ChevronLeft, ChevronRight, SlidersHorizontal, Loader2, Users2, X, Check } from 'lucide-react'
 import { listPeriods } from '../services/classPeriodsService'
 import { listStudentsByPeriod } from '../services/studentsService'
-import { getConfig, saveConfig, listRecords, upsertRecord } from '../services/participationService'
+import { getConfig, saveConfig, listRecords, upsertRecord, upsertRecords } from '../services/participationService'
 import { summarize, todayStr, addDays, weekRange } from '../lib/participationGrades'
 
 // Literal Tailwind classes per status color (JIT-safe). Unknown keys → slate.
@@ -35,6 +35,7 @@ export default function ParticipationTracker() {
   const [notice, setNotice] = useState(null)
   const [loadingRoster, setLoadingRoster] = useState(false)
   const [justSaved, setJustSaved] = useState(() => new Set()) // studentIds showing a transient "Saved"
+  const [markingAll, setMarkingAll] = useState(false)
 
   // Initial load: periods + config.
   useEffect(() => {
@@ -61,6 +62,7 @@ export default function ParticipationTracker() {
 
   const recordFor = (studentId) => records.find((r) => r.student_id === studentId && r.date === date)
   const recordedCount = (students ?? []).filter((s) => recordFor(s.id)).length
+  const unrecordedCount = (students ?? []).length - recordedCount
 
   async function record(studentId, st) {
     if (!config) return
@@ -76,6 +78,32 @@ export default function ParticipationTracker() {
       setRecords(prev)
       console.error('[participation] save failed', err)
       setNotice({ type: 'error', msg: err?.message ? `Couldn't save: ${err.message}` : `Couldn't save — tap again.` })
+    }
+  }
+
+  // "Mark all Full" — fill every student who has NO record yet for this date as
+  // Full, in one round-trip. Leaves already-tapped exceptions untouched. Nothing
+  // is written until the teacher presses it (no phantom meetings on browsing).
+  async function markAllFull() {
+    if (!config || !students) return
+    const full = config.statuses.find((s) => s.key === 'full') ?? config.statuses.find((s) => !s.exempt)
+    if (!full) return
+    const missing = students.filter((s) => !recordFor(s.id))
+    if (missing.length === 0) return
+    const prev = records
+    const optimistic = missing.map((s) => ({ student_id: s.id, date, class_period_id: periodId, status: full.key, points: full.points, exempt: full.exempt }))
+    setRecords((rs) => [...rs, ...optimistic])
+    setMarkingAll(true)
+    try {
+      await upsertRecords(missing.map((s) => ({ classPeriodId: periodId, studentId: s.id, date, status: full.key, points: full.points, exempt: full.exempt })))
+      setJustSaved(new Set(missing.map((s) => s.id)))
+      setTimeout(() => setJustSaved(new Set()), 1600)
+    } catch (err) {
+      setRecords(prev)
+      console.error('[participation] mark-all-full failed', err)
+      setNotice({ type: 'error', msg: err?.message ? `Couldn't mark all Full: ${err.message}` : `Couldn't mark all Full — try again.` })
+    } finally {
+      setMarkingAll(false)
     }
   }
 
@@ -152,9 +180,20 @@ export default function ParticipationTracker() {
 
           {/* RECORD view */}
           {view === 'record' && students && students.length > 0 && (
-            <p className="text-xs text-ink-500">
-              Tap a status to grade each student — <span className="font-medium text-ink-400">it saves automatically, no Save button needed</span>. Use ‹ › above to view or edit a past day; switch to <span className="font-medium text-ink-400">Weekly grades</span> for the running week.
-            </p>
+            <div className="space-y-2">
+              {unrecordedCount > 0 && (
+                <button onClick={markAllFull} disabled={markingAll} className="btn-primary w-full sm:w-auto">
+                  {markingAll ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />}
+                  Mark all Full ({unrecordedCount})
+                </button>
+              )}
+              <p className="text-xs text-ink-500">
+                {unrecordedCount > 0
+                  ? <>Start everyone at <span className="font-medium text-ink-400">Full</span> with one tap, then change only the exceptions — </>
+                  : <>Tap any status to change a student — </>}
+                <span className="font-medium text-ink-400">everything saves automatically, no Save button</span>. Use ‹ › above to view/edit a past day; switch to <span className="font-medium text-ink-400">Weekly grades</span> for the running week.
+              </p>
+            </div>
           )}
           {view === 'record' && students && students.length > 0 && (
             <div className="space-y-2.5">

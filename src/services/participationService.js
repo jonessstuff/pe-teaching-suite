@@ -84,3 +84,25 @@ export async function upsertRecord({ classPeriodId, studentId, date, status, poi
   if (error) throw error
   return data
 }
+
+// Bulk upsert (e.g. "Mark all Full") — one round-trip for a set of student/date rows.
+export async function upsertRecords(rows) {
+  const teacher_id = await uid()
+  const payload = (rows ?? []).map((r) => ({
+    teacher_id,
+    class_period_id: r.classPeriodId,
+    student_id: r.studentId,
+    date: r.date,
+    status: r.status,
+    points: r.points,
+    exempt: r.exempt,
+    updated_at: new Date().toISOString(),
+  }))
+  if (payload.length === 0) return []
+  const { data, error } = await supabase
+    .from('participation_records')
+    .upsert(payload, { onConflict: 'student_id,date' })
+    .select()
+  if (error) throw error
+  return data
+}
