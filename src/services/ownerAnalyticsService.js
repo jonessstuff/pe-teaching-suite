@@ -1,13 +1,16 @@
 import { supabase } from '../lib/supabaseClient'
 
 export async function getOwnerAnalytics() {
-  const { data, error } = await supabase.functions.invoke('owner-dashboard', { body: {} })
-  if (error) {
-    let message = error.message || 'Could not load owner analytics.'
-    try { message = (await error.context?.json?.())?.error || message } catch { /* keep message */ }
-    throw new Error(message)
+  let lastError
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    const { data, error } = await supabase.functions.invoke('owner-dashboard', { body: {} })
+    if (!error) return data
+    lastError = error
+    if (attempt === 0) await new Promise((resolve) => setTimeout(resolve, 650))
   }
-  return data
+  let message = lastError?.message || 'Could not load owner analytics.'
+  try { message = (await lastError?.context?.json?.())?.error || message } catch { /* keep message */ }
+  throw new Error(message)
 }
 
 export async function saveOwnerContact(payload) {

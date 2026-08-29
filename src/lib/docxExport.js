@@ -149,16 +149,26 @@ export async function requestDocx({ filename, title, blocks }) {
     return
   }
   const { data: { session } } = await supabase.auth.getSession()
+  if (!session?.access_token) {
+    const err = new Error('Your sign-in has expired. Refresh the page, sign in again, and retry the Word download.')
+    err.status = 401
+    throw err
+  }
   const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-docx`
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${session?.access_token}`,
-      apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ filename, title, blocks }),
-  })
+  let res
+  try {
+    res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${session.access_token}`,
+        apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ filename, title, blocks }),
+    })
+  } catch {
+    throw new Error('Could not reach the download service. Check your internet connection and try again.')
+  }
   if (!res.ok) {
     let message = 'Download failed'
     try { message = (await res.json()).error ?? message } catch { /* non-JSON */ }
@@ -167,6 +177,7 @@ export async function requestDocx({ filename, title, blocks }) {
     throw err
   }
   const blob = await res.blob()
+  if (!blob.size) throw new Error('The Word file was empty. Please try the download again.')
   const href = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = href

@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { flushSync } from 'react-dom'
-import { Package, Loader2, Check, SkipForward, X } from 'lucide-react'
+import { Package, Loader2, Check, SkipForward, X, RefreshCw } from 'lucide-react'
 import { generateVisualResources, generateDifferentiatedLesson } from '../../services/generationService'
 import { updateLesson } from '../../services/lessonsService'
 import { domToBlocks, requestDocx } from '../../lib/docxExport'
@@ -39,6 +39,29 @@ export default function MakeTomorrowReady({ savedId, lessonObject: lo }) {
 
   function reset() { setDone(false); setError(null); setSteps([]); setSkippedNote([]); setPacket(null) }
 
+  async function downloadPacket(packetData) {
+    flushSync(() => setPacket(packetData))
+    const blocks = domToBlocks(packetRef.current)
+    if (!blocks.length) throw new Error('The packet could not be prepared in this browser. Please refresh the lesson and try again.')
+    const base = (packetData.lesson.title || 'lesson').replace(/\s+/g, '-').toLowerCase()
+    await requestDocx({ filename: `${base}-teacher-packet`, title: `${packetData.lesson.title || 'Lesson'} — Teacher Packet`, blocks })
+  }
+
+  async function retryDownload() {
+    if (!packet) return
+    setRunning(true); setError(null)
+    setSteps((previous) => previous.map((step, i) => i === 3 ? { ...step, state: 'running' } : step))
+    try {
+      await downloadPacket(packet)
+      setSteps((previous) => previous.map((step, i) => i === 3 ? { ...step, state: 'done' } : step))
+      setDone(true)
+    } catch (err) {
+      setSteps((previous) => previous.map((step, i) => i === 3 ? { ...step, state: 'skipped' } : step))
+      if (err?.status === 403) openPaywall('docx-export')
+      else setError(err?.message ?? 'The packet download did not finish. Check your connection and try the download again.')
+    } finally { setRunning(false) }
+  }
+
   async function run() {
     if (!isPaid) { openPaywall('docx-export'); return }
     if (!savedId) { setError('Please save the lesson before building a packet.'); return }
@@ -63,7 +86,7 @@ export default function MakeTomorrowReady({ savedId, lessonObject: lo }) {
       await updateLesson(savedId, { lessonObject: { visual_resources: materials } })
       mark(0, materials.length ? 'done' : 'skipped')
       if (!materials.length) skipped.push('teaching materials (none applicable)')
-    } catch { mark(0, 'skipped'); skipped.push('teaching materials') }
+    } catch { mark(0, 'skipped'); skipped.push('teaching materials (generation unavailable)') }
 
     // 2 — Extension (advanced)
     mark(1, 'running')
@@ -72,7 +95,7 @@ export default function MakeTomorrowReady({ savedId, lessonObject: lo }) {
       variants.advanced = r?.differentiation?.advanced
       mark(1, variants.advanced ? 'done' : 'skipped')
       if (!variants.advanced) skipped.push('extension version')
-    } catch { mark(1, 'skipped'); skipped.push('extension version') }
+    } catch { mark(1, 'skipped'); skipped.push('extension version (generation unavailable)') }
 
     // 3 — Modified (below grade)
     mark(2, 'running')
@@ -81,22 +104,20 @@ export default function MakeTomorrowReady({ savedId, lessonObject: lo }) {
       variants.below_grade = r?.differentiation?.below_grade
       mark(2, variants.below_grade ? 'done' : 'skipped')
       if (!variants.below_grade) skipped.push('modified version')
-    } catch { mark(2, 'skipped'); skipped.push('modified version') }
+    } catch { mark(2, 'skipped'); skipped.push('modified version (generation unavailable)') }
 
     // 4 — Assemble the packet (render hidden → serialize → download)
     mark(3, 'running')
+    const packetData = { lesson: currentLo, materials, variants, skipped }
     try {
-      flushSync(() => setPacket({ lesson: currentLo, materials, variants, skipped }))
-      const blocks = domToBlocks(packetRef.current)
-      const base = (currentLo.title || 'lesson').replace(/\s+/g, '-').toLowerCase()
-      await requestDocx({ filename: `${base}-teacher-packet`, title: `${currentLo.title || 'Lesson'} — Teacher Packet`, blocks })
+      await downloadPacket(packetData)
       mark(3, 'done')
       setSkippedNote(skipped)
       setDone(true)
     } catch (err) {
       mark(3, 'skipped')
       if (err?.status === 403) openPaywall('docx-export')
-      else setError(err?.message ?? 'Could not assemble the packet — please try again.')
+      else setError(err?.message ?? 'The packet download did not finish. Check your connection and try the download again.')
     }
     setRunning(false)
   }
@@ -133,9 +154,10 @@ export default function MakeTomorrowReady({ savedId, lessonObject: lo }) {
             {error && <p className="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400">{error}</p>}
 
             {(done || error) && (
-              <button onClick={reset} className="btn-secondary mt-4 w-full">
-                <X size={14} /> Close
-              </button>
+              <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                {error && packet && <button onClick={retryDownload} disabled={running} className="btn-primary flex-1"><RefreshCw size={14} /> Try download again</button>}
+                <button onClick={reset} className="btn-secondary flex-1"><X size={14} /> Close</button>
+              </div>
             )}
           </div>
         </div>
