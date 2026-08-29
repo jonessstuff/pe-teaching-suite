@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Plus, Pencil, Trash2, Loader2, X, Check, ShieldAlert, ClipboardPaste } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Plus, Pencil, Trash2, Loader2, X, Check, ShieldAlert, ClipboardPaste, Upload, Users2, ClipboardCheck } from 'lucide-react'
 import { listStudents, createStudent, createStudents, updateStudent, deleteStudent } from '../services/studentsService'
 import { listPeriods } from '../services/classPeriodsService'
 import { gradeLabel } from '../types/lessonObject'
+import { parseRosterCsv } from '../lib/rosterImport'
 
 const GRADE_OPTIONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
@@ -40,13 +42,19 @@ export default function Students() {
   const [bulkText, setBulkText] = useState('')
   const [bulkSaving, setBulkSaving] = useState(false)
   const [bulkError, setBulkError] = useState(null)
+  const [csvRows, setCsvRows] = useState(null)
+  const [csvFileName, setCsvFileName] = useState('')
+  const [selectedPeriod, setSelectedPeriod] = useState('')
 
   useEffect(() => {
     listStudents()
       .then(setStudents)
       .catch((err) => setError(err.message))
     listPeriods()
-      .then(setPeriods)
+      .then((data) => {
+        setPeriods(data)
+        setSelectedPeriod((current) => current || data[0]?.id || 'all')
+      })
       .catch(() => setPeriods([]))
   }, [])
 
@@ -112,26 +120,27 @@ export default function Students() {
   // Parse the pasted list: one name per line, trimmed, de-duped within the paste
   // AND against names already in the chosen period.
   const bulkParsed = useMemo(() => {
-    const lines = bulkText.split('\n').map((l) => l.trim()).filter(Boolean)
+    const pastedRows = bulkText.split('\n').map((l) => ({ name: l.trim(), grade: null })).filter((r) => r.name)
+    const incoming = csvRows ?? pastedRows
     const seen = new Set()
     const unique = []
-    for (const l of lines) {
-      const k = l.toLowerCase()
-      if (!seen.has(k)) { seen.add(k); unique.push(l) }
+    for (const row of incoming) {
+      const k = row.name.toLowerCase()
+      if (!seen.has(k)) { seen.add(k); unique.push(row) }
     }
     const inPeriod = new Set(
       (students ?? [])
         .filter((s) => s.class_period_id === bulkPeriod)
         .map((s) => (s.name_or_initials ?? '').trim().toLowerCase()),
     )
-    const toAdd = unique.filter((l) => !inPeriod.has(l.toLowerCase()))
+    const toAdd = unique.filter((row) => !inPeriod.has(row.name.toLowerCase()))
     return {
-      pasted: lines.length,
+      pasted: incoming.length,
       toAdd,
-      dupInPaste: lines.length - unique.length,
+      dupInPaste: incoming.length - unique.length,
       dupInPeriod: unique.length - toAdd.length,
     }
-  }, [bulkText, students, bulkPeriod])
+  }, [bulkText, csvRows, students, bulkPeriod])
 
   function openBulk() {
     setBulkOpen(true)
@@ -141,6 +150,8 @@ export default function Students() {
   function closeBulk() {
     setBulkOpen(false)
     setBulkText('')
+    setCsvRows(null)
+    setCsvFileName('')
     setBulkGrade('')
     setBulkError(null)
   }
@@ -152,9 +163,9 @@ export default function Students() {
     setBulkSaving(true)
     setBulkError(null)
     try {
-      const rows = bulkParsed.toAdd.map((name) => ({
-        name_or_initials: name,
-        grade: bulkGrade !== '' ? Number(bulkGrade) : null,
+      const rows = bulkParsed.toAdd.map((row) => ({
+        name_or_initials: row.name,
+        grade: row.grade ?? (bulkGrade !== '' ? Number(bulkGrade) : null),
         class_period_id: bulkPeriod,
         accommodation_type: 'None',
         accommodation_notes: null,
@@ -168,6 +179,24 @@ export default function Students() {
       setBulkError(err.message)
     } finally {
       setBulkSaving(false)
+    }
+  }
+
+  async function handleCsvFile(event) {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+    setBulkError(null)
+    try {
+      const parsed = parseRosterCsv(await file.text())
+      if (!parsed.rows.length) throw new Error('No student names were found in that CSV.')
+      setCsvRows(parsed.rows)
+      setCsvFileName(file.name)
+      setBulkText('')
+    } catch (err) {
+      setCsvRows(null)
+      setCsvFileName('')
+      setBulkError(err.message ?? 'Could not read that CSV file.')
     }
   }
 
@@ -185,21 +214,25 @@ export default function Students() {
     return periods.find((p) => p.id === periodId)?.label ?? null
   }
 
+  const visibleStudents = selectedPeriod === 'all'
+    ? (students ?? [])
+    : (students ?? []).filter((student) => student.class_period_id === selectedPeriod)
+
   return (
-    <div className="max-w-2xl space-y-6">
-      <div className="flex items-end justify-between">
+    <div className="max-w-4xl space-y-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="label-eyebrow mb-2">Accommodations</p>
-          <h1 className="text-2xl font-semibold">My Students</h1>
+          <p className="label-eyebrow mb-2">PE tools</p>
+          <h1 className="text-2xl font-semibold">My Classes &amp; Rosters</h1>
           <p className="mt-1 text-sm text-ink-500">
-            IEP/504 profiles — accommodations are automatically included when you generate a lesson for that class period.
+            Enter each roster once. The same classes appear in Participation, the Run Tracker, and future PE tools.
           </p>
         </div>
         {formMode === null && !bulkOpen && (
-          <div className="flex shrink-0 gap-2">
+          <div className="grid shrink-0 grid-cols-2 gap-2 sm:flex">
             <button onClick={openBulk} className="btn-secondary">
               <ClipboardPaste size={16} />
-              Bulk add
+              Import roster
             </button>
             <button onClick={openAdd} className="btn-primary">
               <Plus size={16} />
@@ -209,11 +242,26 @@ export default function Students() {
         )}
       </div>
 
+      <div className="grid gap-3 sm:grid-cols-3">
+        <Link to="/schedule" className="card flex items-center gap-3 p-4 transition-colors hover:border-accent-500/40">
+          <Users2 size={20} className="text-accent-600" />
+          <div><p className="font-medium text-ink-100">Manage classes</p><p className="text-xs text-ink-500">Names, periods, and schedules</p></div>
+        </Link>
+        <Link to="/participation" className="card flex items-center gap-3 p-4 transition-colors hover:border-accent-500/40">
+          <ClipboardCheck size={20} className="text-accent-600" />
+          <div><p className="font-medium text-ink-100">Participation</p><p className="text-xs text-ink-500">Uses these rosters automatically</p></div>
+        </Link>
+        <div className="card flex items-center gap-3 p-4 opacity-75">
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-500/15 text-xs font-bold text-accent-600">½</span>
+          <div><p className="font-medium text-ink-100">Run Tracker</p><p className="text-xs text-ink-500">Coming next · uses these rosters</p></div>
+        </div>
+      </div>
+
       {/* Privacy notice */}
       <div className="flex items-start gap-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3">
         <ShieldAlert size={16} className="mt-0.5 shrink-0 text-amber-400" />
         <p className="text-sm text-amber-400">
-          Use initials or nicknames only. Do not store diagnoses, evaluation data, or legally protected health information here. This is a planning reference tool only.
+          Follow your school’s student-data policy. Do not enter diagnoses, medical details, or other sensitive records in roster notes.
         </p>
       </div>
 
@@ -224,11 +272,11 @@ export default function Students() {
       {bulkOpen && (
         <form onSubmit={handleBulkAdd} className="card space-y-4 p-6">
           <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-ink-100">Bulk add roster</h2>
+            <div><h2 className="font-semibold text-ink-100">Import a roster</h2><p className="text-xs text-ink-500">Paste names or upload a CSV. Review the count before adding.</p></div>
             <button type="button" onClick={closeBulk} className="text-ink-500 hover:text-ink-200"><X size={18} /></button>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className="mb-1.5 block text-sm font-medium text-ink-300">Class period</label>
               <select value={bulkPeriod} onChange={(e) => setBulkPeriod(e.target.value)}
@@ -248,14 +296,22 @@ export default function Students() {
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-ink-300">Paste names — one per line</label>
+            <div className="mb-1.5 flex flex-wrap items-center justify-between gap-2">
+              <label className="block text-sm font-medium text-ink-300">Copy and paste — one name per line</label>
+              <label className="btn-secondary cursor-pointer text-xs">
+                <Upload size={14} /> Upload CSV
+                <input type="file" accept=".csv,text/csv" onChange={handleCsvFile} className="sr-only" />
+              </label>
+            </div>
             <textarea value={bulkText} onChange={(e) => setBulkText(e.target.value)} rows={8}
               placeholder={'Smith, John\nJohn D.\nA.K.\n…'}
-              className="w-full rounded-lg border border-ink-700 bg-white px-3 py-2 font-mono text-sm text-ink-50 dark:bg-ink-800" />
-            <p className="mt-1.5 text-xs text-ink-500">Initials or nicknames only (see privacy note). Paste a copied column from a spreadsheet or SIS list — each line becomes one student.</p>
+              disabled={Boolean(csvRows)}
+              className="w-full rounded-lg border border-ink-700 bg-white px-3 py-2 font-mono text-sm text-ink-50 disabled:opacity-50 dark:bg-ink-800" />
+            {csvRows ? <p className="mt-1.5 text-xs text-emerald-600">{csvFileName}: {csvRows.length} name{csvRows.length === 1 ? '' : 's'} found. <button type="button" className="underline" onClick={() => { setCsvRows(null); setCsvFileName('') }}>Remove CSV</button></p>
+              : <p className="mt-1.5 text-xs text-ink-500">Works with copied spreadsheet columns and names formatted as First Last or Last, First.</p>}
           </div>
 
-          {bulkText.trim() && (
+          {(bulkText.trim() || csvRows) && (
             <div className="rounded-lg border border-ink-800 bg-ink-950 px-3 py-2 text-sm text-ink-300">
               <span className="font-semibold text-ink-100">{bulkParsed.toAdd.length}</span> to add
               {bulkParsed.dupInPeriod > 0 && <span className="text-ink-500"> · {bulkParsed.dupInPeriod} already in this period (skipped)</span>}
@@ -386,7 +442,15 @@ export default function Students() {
 
       {students !== null && students.length > 0 && (
         <div className="space-y-3">
-          {students.map((student) => (
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <label className="text-sm font-medium text-ink-300" htmlFor="roster-class-filter">View roster</label>
+            <select id="roster-class-filter" value={selectedPeriod} onChange={(e) => setSelectedPeriod(e.target.value)} className="input-field sm:max-w-xs">
+              <option value="all">All classes ({students.length})</option>
+              {periods.map((period) => <option key={period.id} value={period.id}>{period.label} ({students.filter((student) => student.class_period_id === period.id).length})</option>)}
+            </select>
+          </div>
+          {visibleStudents.length === 0 && <div className="card p-6 text-center text-sm text-ink-500">No students are assigned to this class yet. Use <span className="font-medium text-ink-200">Import roster</span> to add them.</div>}
+          {visibleStudents.map((student) => (
             <div
               key={student.id}
               className={`card px-5 py-4 ${

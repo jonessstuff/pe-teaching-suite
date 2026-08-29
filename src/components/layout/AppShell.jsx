@@ -27,6 +27,7 @@ const PE_ROUTE_PREFIXES = [
   '/lessons',
   '/schedule',
   '/students',
+  '/participation',
   '/curriculum-map',
   '/adaptive-pe',
 ]
@@ -42,8 +43,8 @@ const NAV_ITEMS = [
   { to: '/', label: 'Dashboard', mobileLabel: 'Home', icon: LayoutDashboard },
   { to: '/lessons', label: 'Lesson Library', mobileLabel: 'Library', icon: BookOpen },
   { to: '/schedule', label: 'My Schedule', mobileLabel: 'Schedule', icon: CalendarDays },
-  { to: '/students', label: 'My Students', mobileLabel: 'Students', icon: Users2 },
-  { to: '/participation', label: 'Participation', mobileLabel: 'Track', icon: ClipboardCheck },
+  { to: '/students', label: 'Classes & Rosters', mobileLabel: 'Classes', icon: Users2 },
+  { to: '/participation', label: 'Participation', mobileLabel: 'Participation', icon: ClipboardCheck },
   { to: '/curriculum-map', label: 'Year Plan', mobileLabel: 'Year', icon: CalendarRange, mobileHidden: true },
 ]
 
@@ -222,9 +223,12 @@ function Topbar({ showSidebar }) {
 }
 
 function BottomTabBar() {
-  const tabItems = NAV_ITEMS.filter(({ mobileHidden }) => !mobileHidden)
+  const isPERoute = usePERoute()
+  const tabItems = isPERoute
+    ? [NAV_ITEMS[0], NAV_ITEMS[3], NAV_ITEMS[4], NAV_ITEMS[2]]
+    : NAV_ITEMS.filter(({ mobileHidden }) => !mobileHidden)
   return (
-    <nav data-no-print className="bottom-nav md:hidden fixed bottom-0 inset-x-0 z-50 flex border-t border-ink-900 bg-white dark:bg-ink-950">
+    <nav aria-label={isPERoute ? 'PE tools' : 'Main navigation'} data-no-print className="bottom-nav md:hidden fixed bottom-0 inset-x-0 z-50 flex border-t border-ink-900 bg-white dark:bg-ink-950">
       {tabItems.map(({ to, label, mobileLabel, icon: Icon, end }) => (
         <NavLink
           key={to}
