@@ -36,6 +36,7 @@ import Schedule from './pages/Schedule'
 import Students from './pages/Students'
 import ParticipationTracker from './pages/ParticipationTracker'
 import RunTracker from './pages/RunTracker'
+import SmartGoals from './pages/SmartGoals'
 import Settings from './pages/Settings'
 import Login from './pages/Login'
 import Landing from './pages/Landing'
@@ -340,6 +341,7 @@ function App() {
           <Route path="students" element={<Students />} />
           <Route path="participation" element={<ParticipationTracker />} />
           <Route path="run-tracker" element={<RunTracker />} />
+          <Route path="smart-goals" element={<SmartGoals />} />
           <Route path="curriculum-map" element={<CurriculumMap />} />
           <Route path="library" element={<ModuleHome config={MODULE_HOMES.library} />} />
           <Route path="library/generate" element={<LibraryGenerator />} />

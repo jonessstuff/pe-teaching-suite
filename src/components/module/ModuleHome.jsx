@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Sparkles, BookOpen, CalendarDays, BookCheck, BarChart3, CalendarRange, PartyPopper, Flame, ScrollText, FolderOpen, BookMarked, FileInput, Layers, ArrowRight, ArrowLeft } from 'lucide-react'
+import { Sparkles, BookOpen, CalendarDays, BookCheck, BarChart3, CalendarRange, PartyPopper, Flame, ScrollText, FolderOpen, BookMarked, FileInput, Layers, Target, ArrowRight, ArrowLeft } from 'lucide-react'
 import { listLessons } from '../../services/lessonsService'
 import RecentLessonsPanel from '../lesson/RecentLessonsPanel'
 
@@ -13,6 +13,10 @@ import RecentLessonsPanel from '../lesson/RecentLessonsPanel'
 // Shared utility cards (fixed accents, matching the original module homes).
 // Only surfaced when a module's config opts into them.
 const UTILITY_CARDS = {
+  goals: {
+    Icon: Target, title: 'SMART Goals', desc: 'Class, grade-level, and optional personal progress goals',
+    to: '/smart-goals', well: 'bg-emerald-500/15', text: 'text-emerald-400', hover: 'hover:border-emerald-500/40', arrow: 'group-hover:text-emerald-400',
+  },
   schedule: {
     Icon: CalendarDays, title: 'Set up my schedule', desc: 'Auto-fill your periods every time',
     to: '/schedule', well: 'bg-teal-500/15', text: 'text-teal-400', hover: 'hover:border-teal-500/40', arrow: 'group-hover:text-teal-400',

@@ -19,6 +19,9 @@ export default defineConfig({
       '../../services/lessonsService': path.resolve(__dirname, 'src/preview/mockLessonsService.js'),
       '../../lib/supabaseClient': path.resolve(__dirname, 'src/preview/mockSupabaseClient.js'),
       '../services/ownerAnalyticsService': path.resolve(__dirname, 'src/preview/mockOwnerAnalyticsService.js'),
+      '../services/smartGoalsService': path.resolve(__dirname, 'src/preview/mockSmartGoalsService.js'),
+      '../services/classPeriodsService': path.resolve(__dirname, 'src/preview/mockClassPeriodsService.js'),
+      '../services/studentsService': path.resolve(__dirname, 'src/preview/mockStudentsService.js'),
     },
   },
   build: {

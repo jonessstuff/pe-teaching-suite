@@ -20,6 +20,7 @@ import InterventionGenerator from '../pages/InterventionGenerator'
 import SchoolCounselorGenerator from '../pages/SchoolCounselorGenerator'
 import EarlyChildhoodGenerator from '../pages/EarlyChildhoodGenerator'
 import DemoMode from '../pages/DemoMode'
+import SmartGoals from '../pages/SmartGoals'
 
 /**
  * Standalone preview app.
@@ -40,6 +41,7 @@ export default function PreviewApp() {
           <Route path="lessons" element={<LessonLibrary />} />
           <Route path="lessons/:id" element={<LessonDetail />} />
           <Route path="curriculum-map" element={<CurriculumMap />} />
+          <Route path="smart-goals" element={<SmartGoals />} />
           <Route path="settings" element={<Settings />} />
           <Route path="owner" element={<OwnerDashboard />} />
           <Route path="art" element={<ModuleHome config={MODULE_HOMES.art} />} />

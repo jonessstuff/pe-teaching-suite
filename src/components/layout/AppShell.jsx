@@ -14,6 +14,7 @@ import {
   BarChart3,
   LineChart,
   Timer,
+  Target,
 } from 'lucide-react'
 import { useTheme } from '../../hooks/useTheme'
 import { useTrial } from '../../context/TrialContext'
@@ -51,6 +52,7 @@ const NAV_ITEMS = [
   { to: '/students', label: 'Classes & Rosters', mobileLabel: 'Classes', icon: Users2 },
   { to: '/participation', label: 'Participation', mobileLabel: 'Participation', icon: ClipboardCheck },
   { to: '/run-tracker', label: 'Run Tracker', mobileLabel: 'Run', icon: Timer },
+  { to: '/smart-goals', label: 'SMART Goals', mobileLabel: 'Goals', icon: Target, mobileHidden: true },
   { to: '/curriculum-map', label: 'Year Plan', mobileLabel: 'Year', icon: CalendarRange, mobileHidden: true },
 ]
 
@@ -211,6 +213,20 @@ function Topbar({ showSidebar }) {
       <div className="flex items-center gap-2">
         <TrialBadge />
         <DarkModeToggle />
+        <NavLink
+          to="/smart-goals"
+          className={({ isActive }) =>
+            `flex h-10 w-10 items-center justify-center rounded-lg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500 ${
+              isActive
+                ? 'bg-accent-500/10 text-accent-700'
+                : 'text-ink-500 hover:bg-ink-900 hover:text-ink-100'
+            }`
+          }
+          aria-label="SMART Goals"
+          title="SMART Goals"
+        >
+          <Target size={20} strokeWidth={2} />
+        </NavLink>
         <NavLink
           to="/settings"
           className={({ isActive }) =>
