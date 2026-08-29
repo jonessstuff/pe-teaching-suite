@@ -65,7 +65,7 @@ Deno.serve(async (req) => {
       admin.from("profiles").select("id, full_name, created_at, subscription_status, stripe_customer_id, teaching_areas, is_owner"),
       admin.from("lessons").select("id", { count: "exact", head: true }),
       admin.from("lessons").select("id", { count: "exact", head: true }).gte("created_at", since),
-      admin.from("cancellation_feedback").select("reason, detail, created_at").order("created_at", { ascending: false }).limit(50),
+      admin.from("cancellation_feedback").select("user_id, reason, detail, created_at").order("created_at", { ascending: false }).limit(200),
       admin.from("lessons").select("teacher_id, created_at"),
       admin.from("active_sessions").select("user_id, last_seen_at"),
       admin.from("owner_customer_contacts").select("user_id, last_contacted_at, follow_up_at, outcome, note"),
@@ -78,7 +78,9 @@ Deno.serve(async (req) => {
     const reasons: Record<string, number> = {};
     for (const row of feedback ?? []) reasons[row.reason] = (reasons[row.reason] ?? 0) + 1;
     const newSignups = (profiles ?? []).filter((p) => !p.is_owner && p.created_at >= since).length;
-    const currentProfiles = (profiles ?? []).filter((p) => !p.is_owner && p.stripe_customer_id && currentCustomerIds.has(p.stripe_customer_id));
+    const customerIdsWithSubscriptions = new Set(subscriptions.map((s) => typeof s.customer === "string" ? s.customer : s.customer.id));
+    const customerProfiles = (profiles ?? []).filter((p) => !p.is_owner && p.stripe_customer_id && customerIdsWithSubscriptions.has(p.stripe_customer_id));
+    const currentProfiles = customerProfiles.filter((p) => currentCustomerIds.has(p.stripe_customer_id));
     const lessonDates = new Map<string, string>();
     const lessonOwners = new Set<string>();
     for (const row of lessonActivity ?? []) {
@@ -91,18 +93,22 @@ Deno.serve(async (req) => {
     const activated = currentProfiles.filter((p) => lessonOwners.has(p.id)).length;
     const emailById = new Map((authUsers.data?.users ?? []).map((u) => [u.id, u.email ?? ""]));
     const contactById = new Map((contacts ?? []).map((row) => [row.user_id, row]));
+    const feedbackById = new Map<string, { reason: string; detail: string | null; created_at: string }>();
+    for (const row of feedback ?? []) if (!feedbackById.has(row.user_id)) feedbackById.set(row.user_id, row);
     const autoEmailById = new Map<string, string>();
     for (const row of [...(activationEmails ?? []), ...(trialEmails ?? [])]) {
       if (!autoEmailById.has(row.user_id) || row.sent_at > autoEmailById.get(row.user_id)!) autoEmailById.set(row.user_id, row.sent_at);
     }
     const lessonCounts = new Map<string, number>();
     for (const row of lessonActivity ?? []) lessonCounts.set(row.teacher_id, (lessonCounts.get(row.teacher_id) ?? 0) + 1);
-    const customerRows = currentProfiles.map((p) => {
+    const customerRows = customerProfiles.map((p) => {
       const inactiveDays = Math.max(0, Math.floor(daysInactive(p)));
       const lessons = lessonCounts.get(p.id) ?? 0;
-      const stripeSubs = current.filter((s) => (typeof s.customer === "string" ? s.customer : s.customer.id) === p.stripe_customer_id);
-      const scheduled = stripeSubs.some((s) => s.cancel_at_period_end);
-      const status = scheduled ? "canceling" : stripeSubs.some((s) => s.status === "trialing") ? "trial" : "paying";
+      const stripeSubs = subscriptions.filter((s) => (typeof s.customer === "string" ? s.customer : s.customer.id) === p.stripe_customer_id);
+      const liveSubs = stripeSubs.filter((s) => ["active", "trialing", "past_due"].includes(s.status));
+      const scheduledSub = liveSubs.find((s) => s.cancel_at_period_end);
+      const latestCanceled = stripeSubs.filter((s) => s.status === "canceled").sort((a, b) => (b.canceled_at ?? b.ended_at ?? 0) - (a.canceled_at ?? a.ended_at ?? 0))[0];
+      const status = scheduledSub ? "canceling" : liveSubs.some((s) => s.status === "trialing") ? "trial" : liveSubs.length ? "paying" : "canceled";
       const segment = lessons === 0 ? "never_activated" : inactiveDays >= 30 ? "inactive_30" : inactiveDays >= 7 ? "inactive_7" : "active";
       return {
         id: p.id,
@@ -115,10 +121,17 @@ Deno.serve(async (req) => {
         teachingAreas: p.teaching_areas ?? [],
         status,
         segment,
+        accessEndsAt: scheduledSub?.current_period_end ? new Date(scheduledSub.current_period_end * 1000).toISOString() : null,
+        canceledAt: latestCanceled?.canceled_at || latestCanceled?.ended_at ? new Date((latestCanceled.canceled_at ?? latestCanceled.ended_at!) * 1000).toISOString() : null,
+        canceledRecently: Boolean(latestCanceled && (latestCanceled.canceled_at ?? latestCanceled.ended_at ?? 0) >= thirtyDaysAgoSeconds),
+        cancellationFeedback: feedbackById.get(p.id) ?? null,
         automaticEmailAt: autoEmailById.get(p.id) ?? null,
         contact: contactById.get(p.id) ?? null,
       };
-    }).sort((a, b) => b.inactiveDays - a.inactiveDays);
+    }).sort((a, b) => {
+      const priority = { canceling: 0, canceled: 1, trial: 2, paying: 3 } as Record<string, number>;
+      return (priority[a.status] ?? 4) - (priority[b.status] ?? 4) || b.inactiveDays - a.inactiveDays;
+    });
 
     return jsonResponse({
       generatedAt: new Date().toISOString(),
