@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Sparkles, Loader2, X, Plus, ArrowLeft, ExternalLink } from 'lucide-react'
 import { gradeLabel } from '../types/lessonObject'
 import { PE_HEALTH_SUBJECTS } from '../constants/modules'
@@ -22,7 +22,6 @@ import { track, setPersonProps } from '../lib/analytics'
 const GRADE_OPTIONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
 export default function LessonGenerator() {
-  const navigate = useNavigate()
   const { state: routeState } = useLocation()
   const fromUnit = routeState ?? {}
 
@@ -59,6 +58,7 @@ export default function LessonGenerator() {
   const [periods, setPeriods] = useState([])
   const [selectedPeriodId, setSelectedPeriodId] = useState('')
   const [periodStudents, setPeriodStudents] = useState([])
+  const [profilePreferences, setProfilePreferences] = useState({ location: '', accommodations: '' })
 
   const [presets, setPresets] = useState([])
   const [savingPreset, setSavingPreset] = useState(false)
@@ -72,7 +72,12 @@ export default function LessonGenerator() {
 
   useEffect(() => {
     listPeriods().then(setPeriods).catch(() => {})
-    getProfile().then((p) => { if (p?.state) setState(p.state) }).catch(() => {})
+    getProfile().then((p) => {
+      if (p?.state) setState(p.state)
+      if (p?.default_duration_minutes) setDuration(p.default_duration_minutes)
+      if (p?.default_equipment?.length) setEquipment(p.default_equipment)
+      setProfilePreferences({ location: p?.default_location ?? '', accommodations: p?.default_accommodations ?? '' })
+    }).catch(() => {})
     listPresets().then(setPresets).catch(() => {})
   }, [])
 
@@ -168,6 +173,9 @@ export default function LessonGenerator() {
           name_or_initials: s.name_or_initials,
           accommodation_notes: s.accommodation_notes,
         }))
+      if (profilePreferences.accommodations.trim()) {
+        studentAccommodations.push({ name_or_initials: 'Classwide preferences', accommodation_notes: profilePreferences.accommodations.trim() })
+      }
 
       if (mode === 'fitness_test') {
         const components = fitnessComponents.length ? fitnessComponents : ['cardiovascular']
@@ -192,7 +200,7 @@ export default function LessonGenerator() {
         setSavedId(saved.id)
         setStatus('result')
       } else {
-        const lessonObject = await generateLesson({
+        const generated = await generateLesson({
           gradeBands,
           unit,
           topic,
@@ -211,6 +219,10 @@ export default function LessonGenerator() {
           includeMtss,
           coreActivityOnly,
         })
+
+        const lessonObject = profilePreferences.location.trim()
+          ? { ...generated, location: profilePreferences.location.trim() }
+          : generated
 
         const saved = await createLesson(lessonObject, { aiModel: 'claude-sonnet-4-6' })
         setGeneratedLesson(lessonObject)

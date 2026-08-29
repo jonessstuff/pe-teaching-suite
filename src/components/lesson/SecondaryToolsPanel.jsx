@@ -508,8 +508,8 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
             </button>
           )}
 
-          {/* Make Tomorrow Ready — one-click Teacher Packet (PE & Health) */}
-          {isPE && <MakeTomorrowReady savedId={savedId} lessonObject={lo} />}
+          {/* Complete Resource Bundle — one-click Teacher Packet for lesson-based modules. */}
+          {allowQuizRubric && <MakeTomorrowReady savedId={savedId} lessonObject={lo} />}
 
           {/* Teaching view — condensed at-a-glance (PE & Health) */}
           {isPE && (

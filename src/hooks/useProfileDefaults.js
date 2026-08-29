@@ -22,6 +22,10 @@ export function useProfileDefaults() {
     gradeBands,
     teachingAreas: profile?.teaching_areas ?? [],
     ctePathways: profile?.cte_pathways ?? [],
+    defaultDuration: profile?.default_duration_minutes ?? 45,
+    defaultLocation: profile?.default_location ?? '',
+    defaultEquipment: profile?.default_equipment ?? [],
+    defaultAccommodations: profile?.default_accommodations ?? '',
     refresh,
   }
 }

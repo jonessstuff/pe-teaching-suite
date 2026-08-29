@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Loader2, Printer, ChevronLeft, ChevronRight, Copy, Pencil, Check, X, Share2, Tag, Plus } from 'lucide-react'
+import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { ArrowLeft, Loader2, Printer, ChevronLeft, ChevronRight, Copy, Pencil, Check, X, Share2, Tag, Plus, Play } from 'lucide-react'
 import { getLesson, listLessons, updateLesson, deleteLesson, deleteUnit, duplicateLesson, updateTags } from '../services/lessonsService'
 import { createShare, getShare, deleteShare } from '../services/sharingService'
 import { track } from '../lib/analytics'
@@ -10,10 +10,12 @@ import LessonBody, { cleanLessonForDisplay } from '../components/lesson/lessonBo
 import LessonPrintFix from '../components/LessonPrintFix'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 import { useTrial } from '../context/TrialContext'
+import TeachMode from '../components/lesson/TeachMode'
 
 export default function LessonDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const { requestExport } = useTrial()
   const [lesson, setLesson] = useState(null)
   const [unitLessons, setUnitLessons] = useState([])
@@ -30,6 +32,16 @@ export default function LessonDetail() {
   const [showTags, setShowTags] = useState(false)
   const [tagInput, setTagInput] = useState('')
   const [tags, setTags] = useState([])
+  const [showTeachMode, setShowTeachMode] = useState(searchParams.get('teach') === '1')
+
+  function closeTeachMode() {
+    setShowTeachMode(false)
+    if (searchParams.has('teach')) {
+      const next = new URLSearchParams(searchParams)
+      next.delete('teach')
+      setSearchParams(next, { replace: true })
+    }
+  }
 
   useEffect(() => {
     getLesson(id)
@@ -217,6 +229,7 @@ export default function LessonDetail() {
 
   return (
     <div className="space-y-6">
+      {showTeachMode && <TeachMode lesson={lo} onClose={closeTeachMode} />}
       <div className="no-print flex flex-wrap items-center justify-between gap-4">
         <Link to="/lessons" className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-400 hover:text-ink-50">
           <ArrowLeft size={16} />
@@ -224,6 +237,7 @@ export default function LessonDetail() {
         </Link>
 
         <div className="flex flex-wrap items-center gap-2">
+          {!isAPE && <button onClick={() => setShowTeachMode(true)} className="btn-primary"><Play size={16} /> Teach now</button>}
           {!isAPE && (
             <button onClick={openContentEdit} className="btn-secondary">
               <Pencil size={16} />

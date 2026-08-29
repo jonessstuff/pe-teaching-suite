@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Sparkles, BookOpen, BookMarked, ArrowRight, ArrowLeft, Loader2, CalendarDays, ClipboardList, Layers, Accessibility, BarChart3, CalendarRange, Trophy, Briefcase, ScrollText, PartyPopper, Flame, FileInput, BookCheck } from 'lucide-react'
+import { Sparkles, BookOpen, BookMarked, ArrowRight, ArrowLeft, CalendarDays, ClipboardList, Layers, Accessibility, BarChart3, CalendarRange, Trophy, Briefcase, ScrollText, PartyPopper, Flame, FileInput, BookCheck, Play, Footprints, UsersRound } from 'lucide-react'
 import { listLessons } from '../services/lessonsService'
 import { listPeriods } from '../services/classPeriodsService'
 import { PE_HEALTH_SUBJECTS } from '../constants/modules'
 import { useDisplayName, getTimeGreeting } from '../hooks/useDisplayName'
-import LessonCard from '../components/lesson/LessonCard'
 import RecentLessonsPanel from '../components/lesson/RecentLessonsPanel'
 
 const TIPS = [
@@ -60,11 +59,11 @@ export default function Dashboard() {
     (l) => PE_HEALTH_SUBJECTS.includes(l.lesson_object?.subject ?? l.subject ?? 'PE')
   )
 
-  const totalLessons = allLessons !== null ? lessons.length : null
-  const totalUnits = lessons.length > 0
-    ? new Set(lessons.filter((l) => l.unit_id).map((l) => l.unit_id)).size
-    : 0
   const recent = lessons.slice(0, 3)
+  const now = new Date()
+  const todayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+  const todayLabel = now.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })
+  const todaysLessons = lessons.filter((lesson) => lesson.scheduled_date === todayKey)
   const showOnboarding =
     allLessons !== null && periods !== null && lessons.length === 0 && periods.length === 0
 
@@ -216,6 +215,44 @@ export default function Dashboard() {
         <p className="mt-2 text-lg text-ink-400">What would you like to create today?</p>
         <p className="mt-3 text-xs italic text-ink-600">{tip}</p>
       </div>
+
+      {/* Daily launchpad — the most common in-class actions without hunting through navigation. */}
+      <section className="overflow-hidden rounded-2xl border border-accent-500/30 bg-gradient-to-br from-accent-500/15 via-ink-900 to-violet-500/10 shadow-lg shadow-accent-500/5">
+        <div className="flex flex-wrap items-start justify-between gap-4 border-b border-ink-800/70 p-5 sm:p-6">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-accent-400">Today</p>
+            <h2 className="mt-1 text-xl font-semibold text-ink-50">{todayLabel}</h2>
+            <p className="mt-1 text-sm text-ink-400">Your classes, lessons, and daily trackers in one place.</p>
+          </div>
+          <Link to="/generate" className="btn-primary"><Sparkles size={16} /> Create for today</Link>
+        </div>
+
+        <div className="grid gap-5 p-5 sm:p-6 lg:grid-cols-[1.5fr_1fr]">
+          <div className="space-y-3">
+            {todaysLessons.length > 0 ? todaysLessons.map((lesson) => (
+              <div key={lesson.id} className="flex flex-col gap-3 rounded-xl border border-ink-800 bg-ink-950/50 p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-ink-500">{lesson.period_label || 'Scheduled lesson'}</p>
+                  <p className="truncate font-semibold text-ink-100">{lesson.title || lesson.lesson_object?.title}</p>
+                </div>
+                <Link to={`/lessons/${lesson.id}?teach=1`} className="btn-primary shrink-0"><Play size={16} /> Teach now</Link>
+              </div>
+            )) : (
+              <div className="rounded-xl border border-dashed border-ink-700 bg-ink-950/30 p-5">
+                <p className="font-medium text-ink-200">No lessons are scheduled for today yet.</p>
+                <p className="mt-1 text-sm text-ink-500">Create one now, or open a recent lesson and set its date to today.</p>
+                {recent[0] && <Link to={`/lessons/${recent[0].id}`} className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-accent-400">Open most recent lesson <ArrowRight size={14} /></Link>}
+              </div>
+            )}
+            {periods?.length > 0 && <p className="text-xs text-ink-500">{periods.length} class period{periods.length === 1 ? '' : 's'} saved in My Classes</p>}
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Link to="/participation" className="rounded-xl border border-ink-800 bg-ink-950/50 p-4 transition-colors hover:border-emerald-500/40"><UsersRound size={21} className="text-emerald-400" /><p className="mt-3 font-semibold text-ink-100">Participation</p><p className="mt-1 text-xs text-ink-500">Grade today’s classes</p></Link>
+            <Link to="/run-tracker" className="rounded-xl border border-ink-800 bg-ink-950/50 p-4 transition-colors hover:border-sky-500/40"><Footprints size={21} className="text-sky-400" /><p className="mt-3 font-semibold text-ink-100">Run Tracker</p><p className="mt-1 text-xs text-ink-500">Start or enter a run</p></Link>
+            <Link to="/schedule" className="col-span-2 rounded-xl border border-ink-800 bg-ink-950/50 p-4 transition-colors hover:border-violet-500/40"><CalendarDays size={21} className="text-violet-400" /><p className="mt-2 font-semibold text-ink-100">My Classes</p><p className="mt-1 text-xs text-ink-500">Manage periods and shared rosters</p></Link>
+          </div>
+        </div>
+      </section>
 
       {/* Onboarding banner */}
       {showOnboarding && (

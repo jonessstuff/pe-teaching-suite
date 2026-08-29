@@ -30,13 +30,13 @@ export async function dismissWhatsNew(version) {
   if (error) throw error
 }
 
-export async function updateProfile({ full_name, school_name, district_name, default_subject, state, teaching_areas, cte_pathways, teaching_other }) {
+export async function updateProfile({ full_name, school_name, district_name, default_subject, state, teaching_areas, cte_pathways, teaching_other, default_duration_minutes, default_location, default_equipment, default_accommodations }) {
   const { data: userData, error: userError } = await supabase.auth.getUser()
   if (userError) throw userError
 
   const { data, error } = await supabase
     .from('profiles')
-    .update({ full_name, school_name, district_name, default_subject, state, teaching_areas, cte_pathways, teaching_other })
+    .update({ full_name, school_name, district_name, default_subject, state, teaching_areas, cte_pathways, teaching_other, default_duration_minutes, default_location, default_equipment, default_accommodations })
     .eq('id', userData.user.id)
     .select()
     .single()

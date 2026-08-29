@@ -7,7 +7,7 @@ import { domToBlocks, requestDocx } from '../../lib/docxExport'
 import { useTrial } from '../../context/TrialContext'
 import TeacherPacketDoc from './TeacherPacketDoc'
 
-// One-click "Make Tomorrow Ready": auto-runs the secondary generators (materials +
+// One-click Complete Resource Bundle: auto-runs the secondary generators (materials +
 // the two existing Differentiate variants) and bundles them with the full plan and a
 // condensed teaching view into ONE Teacher Packet .docx. Per-step progress, and
 // partial-failure tolerant — a piece that fails is skipped and the packet still
@@ -105,15 +105,15 @@ export default function MakeTomorrowReady({ savedId, lessonObject: lo }) {
     <>
       <button onClick={run} disabled={running} className="btn-primary w-full sm:w-auto" title="Bundle the plan, a teaching view, materials, and modified/extension versions into one printable packet">
         {running ? <Loader2 size={16} className="animate-spin" /> : <Package size={16} />}
-        Make Tomorrow Ready
+        Complete resource bundle
       </button>
 
       {(running || done || error) && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" role="dialog" aria-modal="true" aria-label="Make Tomorrow Ready progress">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" role="dialog" aria-modal="true" aria-label="Complete resource bundle progress">
           <div className="w-full max-w-sm rounded-xl2 border border-ink-800 bg-white p-6 shadow-lg dark:bg-ink-900">
             <div className="flex items-center gap-2">
               <Package size={18} className="text-accent-500" />
-              <h3 className="font-semibold text-ink-50">Make Tomorrow Ready</h3>
+              <h3 className="font-semibold text-ink-50">Complete Resource Bundle</h3>
             </div>
             <ul className="mt-4 space-y-2.5">
               {steps.map((st, i) => (

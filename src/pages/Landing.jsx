@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { CHECKOUT_URL, YEARLY_CHECKOUT_URL } from '../services/trialService'
 import { submitSchoolInterest } from '../services/schoolInterestService'
-import { BookOpen, Globe, Accessibility, UserCheck, ClipboardList, ClipboardCheck, Mail, CalendarRange, Check, X, Users, BookMarked, PartyPopper, Newspaper, MessageCircle, Share2, Briefcase, BarChart3, ScrollText, Trophy, Dumbbell, Smartphone, SquareCheck, Sparkles, MousePointerClick, PencilLine, BadgeCheck, LogIn, Building2, Loader2 } from 'lucide-react'
+import { BookOpen, Globe, Accessibility, UserCheck, ClipboardList, ClipboardCheck, Mail, CalendarRange, Check, X, Users, BookMarked, PartyPopper, Newspaper, MessageCircle, Share2, Briefcase, BarChart3, ScrollText, Trophy, Dumbbell, Smartphone, SquareCheck, Sparkles, MousePointerClick, PencilLine, BadgeCheck, LogIn, Building2, Loader2, ArrowRight } from 'lucide-react'
 
 // ─── Shared sub-components ───────────────────────────────────────────────────
 
@@ -111,6 +111,7 @@ export default function Landing() {
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
           <PlansK12Logo />
           <div className="flex items-center gap-5">
+            <Link to="/demo" className="hidden text-sm font-semibold text-brand-600 hover:text-brand-500 sm:inline">View live demo</Link>
             <a href="#schools" className="hidden text-sm font-medium text-ink-500 transition-colors hover:text-brand-600 sm:inline">
               For schools &amp; districts
             </a>
@@ -204,6 +205,9 @@ export default function Landing() {
           </div>
 
           <div className="mt-9 flex flex-col items-center gap-4">
+            <Link to="/demo" className="inline-flex items-center gap-2 rounded-xl border border-brand-500 bg-brand-500/10 px-6 py-3 font-semibold text-brand-600 transition-colors hover:bg-brand-500/20">
+              Explore the interactive demo <ArrowRight size={17} />
+            </Link>
             <Link
               to="/try"
               className="btn-primary !bg-brand-500 hover:!bg-brand-600 px-9 py-4 text-lg shadow-lg shadow-brand-500/25"

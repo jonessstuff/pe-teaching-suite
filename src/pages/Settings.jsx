@@ -27,6 +27,10 @@ export default function Settings() {
     teaching_areas: [],
     cte_pathways: [],
     teaching_other: '',
+    default_duration_minutes: 45,
+    default_location: '',
+    default_equipment: [],
+    default_accommodations: '',
   })
   const [loadStatus, setLoadStatus] = useState('loading')
   const [saveStatus, setSaveStatus] = useState('idle') // idle | saving | saved | error
@@ -71,6 +75,10 @@ export default function Settings() {
           teaching_areas: profile.teaching_areas ?? [],
           cte_pathways: profile.cte_pathways ?? [],
           teaching_other: profile.teaching_other ?? '',
+          default_duration_minutes: profile.default_duration_minutes ?? 45,
+          default_location: profile.default_location ?? '',
+          default_equipment: profile.default_equipment ?? [],
+          default_accommodations: profile.default_accommodations ?? '',
         })
         setHasPassword(profile.has_password ?? false)
         setLoadStatus('ready')
@@ -334,6 +342,27 @@ export default function Settings() {
                   setForm((prev) => ({ ...prev, teaching_areas: v.areas, cte_pathways: v.ctePathways, teaching_other: v.other }))
                 }
               />
+            </Field>
+
+            <div className="border-t border-ink-800 pt-5">
+              <h3 className="font-semibold text-ink-100">Reusable teaching preferences</h3>
+              <p className="mt-1 text-xs text-ink-500">Save the details you repeat so new lessons start closer to ready.</p>
+            </div>
+
+            <Field label="Typical class length (minutes)">
+              <input className="input-field" type="number" min="5" max="240" value={form.default_duration_minutes} onChange={(e) => setField('default_duration_minutes', Number(e.target.value))} />
+            </Field>
+
+            <Field label="Usual teaching location">
+              <input className="input-field" placeholder="Main gym, classroom, field…" value={form.default_location} onChange={(e) => setField('default_location', e.target.value)} />
+            </Field>
+
+            <Field label="Equipment I usually have" hint="Comma-separated — e.g. cones, pinnies, playground balls">
+              <input className="input-field" value={form.default_equipment.join(', ')} onChange={(e) => setField('default_equipment', e.target.value.split(',').map((v) => v.trim()).filter(Boolean))} />
+            </Field>
+
+            <Field label="Accommodations to consider" hint="General preferences only. Student-specific accommodations still come from your roster.">
+              <textarea className="input-field min-h-[90px]" placeholder="Visual directions, extra processing time, low-sensory option…" value={form.default_accommodations} onChange={(e) => setField('default_accommodations', e.target.value)} />
             </Field>
 
             {saveError && (

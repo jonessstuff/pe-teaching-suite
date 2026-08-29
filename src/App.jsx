@@ -86,6 +86,7 @@ import TestPrepGenerator from './pages/TestPrepGenerator'
 import SstActivityGenerator from './pages/SstActivityGenerator'
 import TheaterGenerator from './pages/TheaterGenerator'
 import DanceGenerator from './pages/DanceGenerator'
+import DemoMode from './pages/DemoMode'
 
 // Module-level promise reference. When a genuine new login triggers claimSession(),
 // this holds the in-flight Promise so that any concurrent SIGNED_IN events (e.g.
@@ -310,6 +311,7 @@ function App() {
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/shared/:token" element={<SharedLesson />} />
           <Route path="/try" element={<TryFreeLesson />} />
+          <Route path="/demo" element={<DemoMode />} />
           <Route path="/free-lesson/:token" element={<FreeLessonView />} />
           <Route path="/update-card" element={
             <CardUpdateGate>
@@ -329,6 +331,7 @@ function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/welcome" element={<Welcome />} />
         <Route path="/update-card" element={<UpdateCard />} />
+        <Route path="/demo" element={<DemoMode />} />
         <Route path="/" element={<AppShell />}>
           <Route index element={<ModulePicker />} />
           <Route path="pe-health" element={<Dashboard />} />
