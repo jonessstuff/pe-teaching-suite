@@ -93,3 +93,34 @@ export async function completeRunSession(sessionId) {
   if (error) throw error
   return data
 }
+
+export async function createPastRun({ classPeriodId, runDate, distanceLabel, distanceMiles, lapsRequired, entries }) {
+  const teacher_id = await teacherId()
+  const startedAt = new Date(`${runDate}T12:00:00`).toISOString()
+  const { data: session, error: sessionError } = await supabase.from('run_sessions').insert({
+    teacher_id,
+    class_period_id: classPeriodId,
+    run_date: runDate,
+    distance_label: distanceLabel,
+    distance_miles: distanceMiles || null,
+    laps_required: Number(lapsRequired),
+    started_at: startedAt,
+    completed_at: startedAt,
+  }).select().single()
+  if (sessionError) throw sessionError
+
+  const rows = entries.map((entry) => ({
+    teacher_id,
+    session_id: session.id,
+    student_id: entry.studentId,
+    laps_completed: entry.status === 'finished' ? Number(lapsRequired) : 0,
+    lap_times_ms: entry.status === 'finished' ? [entry.finishMs] : [],
+    finish_ms: entry.status === 'finished' ? entry.finishMs : null,
+    status: entry.status,
+  }))
+  if (rows.length) {
+    const { error: resultsError } = await supabase.from('run_results').insert(rows)
+    if (resultsError) throw resultsError
+  }
+  return session
+}

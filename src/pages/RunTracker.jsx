@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Check, CircleDot, Download, Flag, History, Loader2, Play, RotateCcw, Target, TrendingUp, Undo2, Users2 } from 'lucide-react'
+import { CalendarPlus, Check, CircleDot, Download, Flag, History, Loader2, Play, RotateCcw, Target, TrendingUp, Undo2, Users2 } from 'lucide-react'
 import { listPeriods } from '../services/classPeriodsService'
 import { listStudentsByPeriod } from '../services/studentsService'
 import {
   completeRunSession,
   createRunGoal,
+  createPastRun,
   createRunSession,
   getActiveRunSession,
   listRunResults,
@@ -37,6 +38,13 @@ export default function RunTracker() {
   const [goalTime, setGoalTime] = useState('')
   const [goalDate, setGoalDate] = useState('')
   const [savingGoal, setSavingGoal] = useState(false)
+  const [pastPreset, setPastPreset] = useState('mile')
+  const [pastDate, setPastDate] = useState(() => new Date().toISOString().slice(0, 10))
+  const [pastLabel, setPastLabel] = useState('')
+  const [pastMiles, setPastMiles] = useState('')
+  const [pastLaps, setPastLaps] = useState(PRESETS.mile.lapsRequired)
+  const [pastEntries, setPastEntries] = useState({})
+  const [savingPast, setSavingPast] = useState(false)
   const [mode, setMode] = useState('setup')
   const [preset, setPreset] = useState('half')
   const [customLabel, setCustomLabel] = useState('')
@@ -92,6 +100,15 @@ export default function RunTracker() {
   function choosePreset(key) {
     setPreset(key)
     setLapsRequired(PRESETS[key].lapsRequired)
+  }
+
+  function choosePastPreset(key) {
+    setPastPreset(key)
+    setPastLaps(PRESETS[key].lapsRequired)
+  }
+
+  function updatePastEntry(studentId, field, value) {
+    setPastEntries((entries) => ({ ...entries, [studentId]: { ...(entries[studentId] ?? {}), [field]: value } }))
   }
 
   async function startRun() {
@@ -215,6 +232,45 @@ export default function RunTracker() {
     } finally { setSavingGoal(false) }
   }
 
+  async function savePastRun() {
+    const invalidTime = students.some((student) => {
+      const value = pastEntries[student.id]?.time?.trim()
+      return value && !parseRunTime(value)
+    })
+    if (invalidTime) {
+      setNotice({ type: 'error', message: 'Use minutes:seconds for each time, such as 10:42.' })
+      return
+    }
+    const entries = students.flatMap((student) => {
+      const entry = pastEntries[student.id] ?? {}
+      if (entry.status) return [{ studentId: student.id, status: entry.status, finishMs: null }]
+      const finishMs = parseRunTime(entry.time)
+      return finishMs ? [{ studentId: student.id, status: 'finished', finishMs }] : []
+    })
+    if (!pastDate || !entries.length) {
+      setNotice({ type: 'error', message: 'Choose the run date and enter at least one result.' })
+      return
+    }
+    setSavingPast(true); setNotice(null)
+    try {
+      const config = PRESETS[pastPreset]
+      const created = await createPastRun({
+        classPeriodId: periodId,
+        runDate: pastDate,
+        distanceLabel: pastPreset === 'custom' ? (pastLabel.trim() || 'Custom Run') : config.distanceLabel,
+        distanceMiles: pastPreset === 'custom' ? Number(pastMiles) || null : config.distanceMiles,
+        lapsRequired: pastLaps,
+        entries,
+      })
+      const savedResults = await listRunResults(created.id)
+      setSessions((items) => [created, ...items]); setAllResults((items) => [...items, ...savedResults])
+      setSession(created); setResults(savedResults); setPastEntries({}); setMode('history-detail')
+      setNotice({ type: 'success', message: 'Past run saved to History and Student Progress.' })
+    } catch (error) {
+      setNotice({ type: 'error', message: error.message ?? 'Could not save the past run.' })
+    } finally { setSavingPast(false) }
+  }
+
   const selectedPeriod = (periods ?? []).find((period) => period.id === periodId)
   if (periods == null) return <div className="flex items-center gap-2 text-ink-400"><Loader2 size={18} className="animate-spin" /> Loading…</div>
 
@@ -230,7 +286,7 @@ export default function RunTracker() {
     </header>
 
     <div className="grid grid-cols-3 rounded-xl border border-ink-800 p-1">
-      <button onClick={() => setMode(session && !session.completed_at ? 'run' : 'setup')} className={`flex-1 rounded-lg px-3 py-2 text-sm font-semibold ${mode === 'setup' || mode === 'run' ? 'bg-accent-500/15 text-accent-700' : 'text-ink-400'}`}>{session && !session.completed_at ? 'Current run' : 'New run'}</button>
+      <button onClick={() => setMode(session && !session.completed_at ? 'run' : 'setup')} className={`flex-1 rounded-lg px-3 py-2 text-sm font-semibold ${mode === 'setup' || mode === 'run' || mode === 'past' ? 'bg-accent-500/15 text-accent-700' : 'text-ink-400'}`}>{session && !session.completed_at ? 'Current run' : 'New run'}</button>
       <button onClick={() => setMode('history')} className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold ${mode.startsWith('history') ? 'bg-accent-500/15 text-accent-700' : 'text-ink-400'}`}><History size={15} /> History</button>
       <button onClick={() => setMode('progress')} className={`flex items-center justify-center gap-2 rounded-lg px-2 py-2 text-sm font-semibold ${mode === 'progress' ? 'bg-accent-500/15 text-accent-700' : 'text-ink-400'}`}><TrendingUp size={15} /> Progress</button>
     </div>
@@ -240,7 +296,7 @@ export default function RunTracker() {
     {selectedPeriod && students?.length === 0 && <div className="card p-6 text-sm">No students are in {selectedPeriod.label}. <Link to="/students" className="text-accent-600 underline"><Users2 size={14} className="inline" /> Import its roster</Link> first.</div>}
 
     {mode === 'setup' && students?.length > 0 && <section className="card space-y-5 p-5 sm:p-6">
-      <div><h2 className="text-lg font-semibold">Set up today’s run</h2><p className="text-sm text-ink-500">Distance and lap count are separate so this works on any track, gym, or playground loop.</p></div>
+      <div className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="text-lg font-semibold">Set up today’s run</h2><p className="text-sm text-ink-500">Distance and lap count are separate so this works on any track, gym, or playground loop.</p></div><button onClick={() => setMode('past')} className="btn-secondary min-h-11"><CalendarPlus size={16} /> Add past run</button></div>
       <div className="grid grid-cols-3 gap-2">
         {[['half', '½ Mile'], ['mile', '1 Mile'], ['custom', 'Custom']].map(([key, label]) => <button key={key} onClick={() => choosePreset(key)} aria-pressed={preset === key} className={`min-h-[54px] rounded-xl border text-sm font-bold ${preset === key ? 'border-accent-500 bg-accent-500/15 text-accent-700' : 'border-ink-800 text-ink-300'}`}>{label}</button>)}
       </div>
@@ -260,6 +316,18 @@ export default function RunTracker() {
         </ol>
       </div>
       <button onClick={startRun} disabled={starting} className="btn-primary min-h-[52px] w-full text-base">{starting ? <Loader2 size={18} className="animate-spin" /> : <Play size={18} />} Start run</button>
+    </section>}
+
+    {mode === 'past' && students?.length > 0 && <section className="space-y-4">
+      <div className="card space-y-5 p-5 sm:p-6">
+        <div className="flex items-start justify-between gap-3"><div><h2 className="text-lg font-semibold">Add a past run</h2><p className="text-sm text-ink-500">Enter final times only. Lap tapping is not required.</p></div><button onClick={() => setMode('setup')} className="text-sm font-semibold text-accent-600">Cancel</button></div>
+        <label className="block text-sm font-medium text-ink-300">Run date<input type="date" max={new Date().toISOString().slice(0, 10)} value={pastDate} onChange={(event) => setPastDate(event.target.value)} className="input-field mt-1" /></label>
+        <div className="grid grid-cols-3 gap-2">{[['half', '½ Mile'], ['mile', '1 Mile'], ['custom', 'Custom']].map(([key, label]) => <button key={key} onClick={() => choosePastPreset(key)} aria-pressed={pastPreset === key} className={`min-h-[50px] rounded-xl border text-sm font-bold ${pastPreset === key ? 'border-accent-500 bg-accent-500/15 text-accent-700' : 'border-ink-800 text-ink-300'}`}>{label}</button>)}</div>
+        {pastPreset === 'custom' && <div className="grid gap-3 sm:grid-cols-2"><label className="text-sm font-medium text-ink-300">Run name<input value={pastLabel} onChange={(event) => setPastLabel(event.target.value)} placeholder="e.g. 800 meters" className="input-field mt-1" /></label><label className="text-sm font-medium text-ink-300">Miles (optional)<input type="number" min="0.1" step="0.1" value={pastMiles} onChange={(event) => setPastMiles(event.target.value)} className="input-field mt-1" /></label></div>}
+        <label className="block text-sm font-medium text-ink-300">Number of laps<input type="number" min="1" max="50" value={pastLaps} onChange={(event) => setPastLaps(Math.max(1, Math.min(50, Number(event.target.value) || 1)))} className="input-field mt-1 max-w-32" /></label>
+      </div>
+      <div className="card overflow-hidden"><div className="border-b border-ink-800 p-4"><h3 className="font-semibold">Enter results for {selectedPeriod.label}</h3><p className="text-xs text-ink-500">Leave blank if no result was recorded.</p></div><div className="divide-y divide-ink-800">{students.map((student) => { const entry = pastEntries[student.id] ?? {}; return <div key={student.id} className="grid gap-2 p-3 sm:grid-cols-[minmax(0,1fr)_9rem_9rem] sm:items-center"><span className="font-medium text-ink-100">{student.name_or_initials}</span><label className="text-xs text-ink-500">Finish time<input value={entry.time ?? ''} onChange={(event) => updatePastEntry(student.id, 'time', event.target.value)} disabled={!!entry.status} inputMode="decimal" placeholder="10:42" className="input-field mt-1 font-mono disabled:opacity-40" /></label><label className="text-xs text-ink-500">Exception<select value={entry.status ?? ''} onChange={(event) => updatePastEntry(student.id, 'status', event.target.value)} className="input-field mt-1"><option value="">None</option><option value="absent">Absent</option><option value="medical">Medical</option><option value="dnf">Did not finish</option></select></label></div>})}</div></div>
+      <div className="sticky bottom-20 z-10 rounded-xl border border-ink-800 bg-white/95 p-3 shadow-lg backdrop-blur dark:bg-ink-950/95 md:bottom-4"><button onClick={savePastRun} disabled={savingPast} className="btn-primary min-h-[52px] w-full text-base">{savingPast ? <Loader2 size={18} className="animate-spin" /> : <CalendarPlus size={18} />} Save past run</button></div>
     </section>}
 
     {mode === 'run' && session && <>
