@@ -4,6 +4,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes mobile-tools-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(2rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Light mode: ink-50 = near-black, ink-950 = near-white.
    ink-300/400 are tuned to ≥4.5:1 contrast on white (WCAG AA) for body text. */
 :root {

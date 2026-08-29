@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { NavLink, Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard,
@@ -24,6 +24,11 @@ import {
   BookMarked,
   FileInput,
   Layers,
+  MoreHorizontal,
+  X,
+  Trophy,
+  Briefcase,
+  Accessibility,
 } from 'lucide-react'
 import { useTheme } from '../../hooks/useTheme'
 import { useTrial } from '../../context/TrialContext'
@@ -106,6 +111,23 @@ const PE_NAV_ITEMS = [
   { to: '/schedule?module=PE%20%26%20Health', label: 'My Schedule', mobileLabel: 'Schedule', icon: CalendarDays, mobileHidden: true },
 ]
 
+const PE_MOBILE_MORE_ITEMS = [
+  PE_NAV_ITEMS[1],
+  ...PE_NAV_ITEMS.slice(5),
+  { to: '/adaptive-pe', label: 'Adaptive PE & IEP', icon: Accessibility },
+  { to: '/assessments?module=PE%20%26%20Health', label: 'Assessment Bank', icon: BookCheck },
+  { to: '/standards-tracker?module=PE%20%26%20Health', label: 'Standards Tracker', icon: BarChart3 },
+  { to: '/pacing-guide?module=PE%20%26%20Health', label: 'Pacing Guide', icon: CalendarRange },
+  { to: '/activity-bank?module=PE%20%26%20Health', label: 'Activity Bank', icon: PartyPopper },
+  { to: '/warm-up-generator?module=PE%20%26%20Health', label: 'Warm-up Generator', icon: Flame },
+  { to: '/field-day', label: 'Field Day Planner', icon: Trophy },
+  { to: '/portfolio?module=PE%20%26%20Health', label: 'Portfolio Builder', icon: Briefcase },
+  { to: '/sub-binder?subject=pe-health&module=PE%20%26%20Health', label: 'Sub Binder', icon: BookMarked },
+  { to: '/import?subject=pe-health&module=PE%20%26%20Health', label: 'Import & Enhance', icon: FileInput },
+  { to: '/build-unit?subject=pe-health&module=PE%20%26%20Health', label: 'Unit Builder', icon: Layers },
+  { to: '/eoy-narrative?module=PE%20%26%20Health', label: 'EOY Narrative', icon: ScrollText },
+]
+
 const MODULE_TOOL_ITEMS = {
   assessments: { to: '/assessments', label: 'Assessment Bank', icon: BookCheck },
   standards: { to: '/standards-tracker', label: 'Standards Tracker', icon: BarChart3 },
@@ -132,7 +154,7 @@ function getModuleNavItems(slug, config) {
     { to: `/${slug}`, label: `${config.title} Home`, mobileLabel: 'Home', icon: LayoutDashboard, end: true },
     { to: config.generatePath, label: 'Create New', mobileLabel: 'Create', icon: Sparkles },
     { to: browseTo, label: 'My Lessons & Resources', mobileLabel: 'Lessons', icon: BookOpen },
-    { to: withModuleContext('/smart-goals', config, slug), label: 'SMART Goals', mobileLabel: 'Goals', icon: Target },
+    { to: withModuleContext('/smart-goals', config, slug), label: 'SMART Goals', mobileLabel: 'SMART Goal', icon: Target },
     { to: withModuleContext('/students', config, slug), label: 'Classes & Rosters', mobileLabel: 'Classes', icon: Users2 },
     { to: withModuleContext('/schedule', config, slug), label: 'My Schedule', mobileLabel: 'Schedule', icon: CalendarDays },
   ]
@@ -196,7 +218,7 @@ export default function AppShell() {
           </div>
         </main>
       </div>
-      <BottomTabBar navigation={navigation} />
+      <BottomTabBar key={pathname} navigation={navigation} />
       <PaywallModal />
     </div>
   )
@@ -406,33 +428,122 @@ function Topbar({ showSidebar, navigation }) {
 }
 
 function BottomTabBar({ navigation }) {
+  const [toolsOpen, setToolsOpen] = useState(false)
   const isPERoute = navigation.type === 'pe'
-  const moduleItems = navigation.type === 'module'
-    ? getModuleNavItems(navigation.slug, navigation.config).coreItems.slice(0, 5)
+  const moduleNavigation = navigation.type === 'module'
+    ? getModuleNavItems(navigation.slug, navigation.config)
+    : null
+  const peTabs = [PE_NAV_ITEMS[0], PE_NAV_ITEMS[2], PE_NAV_ITEMS[3], {
+    ...PE_NAV_ITEMS[4],
+    mobileLabel: 'SMART Goal',
+  }]
+  const moduleTabs = moduleNavigation
+    ? moduleNavigation.coreItems.slice(0, 4)
     : null
   const tabItems = isPERoute
-    ? PE_NAV_ITEMS.slice(0, 4)
-    : moduleItems
-      ? moduleItems
+    ? peTabs
+    : moduleTabs
+      ? moduleTabs
     : [NAV_ITEMS[0], NAV_ITEMS[1], NAV_ITEMS[2], NAV_ITEMS[3]]
+
+  const moreItems = isPERoute
+    ? PE_MOBILE_MORE_ITEMS
+    : moduleNavigation
+      ? [...moduleNavigation.coreItems.slice(4), ...moduleNavigation.toolItems]
+      : []
+  const hasMoreTools = moreItems.length > 0
+  const workspaceName = isPERoute
+    ? 'PE & Health'
+    : navigation.type === 'module'
+      ? navigation.config.title
+      : null
+
+  useEffect(() => {
+    if (!toolsOpen) return undefined
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [toolsOpen])
+
   return (
-    <nav aria-label={isPERoute ? 'PE tools' : navigation.type === 'module' ? `${navigation.config.title} tools` : 'Main navigation'} data-no-print className="bottom-nav md:hidden fixed bottom-0 inset-x-0 z-50 flex border-t border-ink-900 bg-white dark:bg-ink-950">
-      {tabItems.map(({ to, label, mobileLabel, icon: Icon, end }) => (
-        <NavLink
-          key={to}
-          to={to}
-          end={end}
-          className={({ isActive }) =>
-            `flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-medium leading-none transition-colors ${
-              isActive ? 'text-accent-700' : 'text-ink-400'
-            }`
-          }
-        >
-          <Icon size={20} strokeWidth={2} />
-          {mobileLabel ?? label}
-        </NavLink>
-      ))}
-    </nav>
+    <>
+      <nav aria-label={isPERoute ? 'PE tools' : navigation.type === 'module' ? `${navigation.config.title} tools` : 'Main navigation'} data-no-print className="bottom-nav md:hidden fixed bottom-0 inset-x-0 z-50 flex border-t border-ink-900 bg-white dark:bg-ink-950">
+        {tabItems.map(({ to, label, mobileLabel, icon: Icon, end }) => (
+          <NavLink
+            key={to}
+            to={to}
+            end={end}
+            className={({ isActive }) =>
+              `flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-medium leading-none transition-colors ${
+                isActive ? 'text-accent-700' : 'text-ink-400'
+              }`
+            }
+          >
+            <Icon size={20} strokeWidth={2} />
+            {mobileLabel ?? label}
+          </NavLink>
+        ))}
+        {hasMoreTools && (
+          <button
+            type="button"
+            onClick={() => setToolsOpen(true)}
+            className={`relative flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[10px] font-medium leading-none transition-colors ${
+              toolsOpen ? 'text-accent-700' : 'text-ink-400'
+            }`}
+            aria-label={`More ${workspaceName} tools`}
+            aria-expanded={toolsOpen}
+          >
+            <span className="absolute right-[22%] top-2 h-2 w-2 rounded-full bg-accent-500 ring-2 ring-white dark:ring-ink-950" aria-hidden="true" />
+            <MoreHorizontal size={20} strokeWidth={2} />
+            More
+          </button>
+        )}
+      </nav>
+
+      {toolsOpen && (
+        <div className="fixed inset-0 z-[70] md:hidden" role="dialog" aria-modal="true" aria-label={`${workspaceName} tools`}>
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/55 backdrop-blur-[2px]"
+            onClick={() => setToolsOpen(false)}
+            aria-label="Close tools menu"
+          />
+          <section className="absolute inset-x-0 bottom-0 max-h-[82vh] animate-[mobile-tools-slide-up_180ms_ease-out] overflow-y-auto rounded-t-3xl border-t border-ink-800 bg-white px-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] pt-5 shadow-2xl dark:bg-ink-950">
+            <div className="mb-5 flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-accent-700">Your specialty toolkit</p>
+                <h2 className="mt-1 text-xl font-bold text-ink-100">All {workspaceName} tools</h2>
+                <p className="mt-1 text-sm text-ink-500">Everything available in your workspace, all in one place.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setToolsOpen(false)}
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ink-900 text-ink-400"
+                aria-label="Close tools menu"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              {moreItems.map(({ to, label, icon: Icon }) => (
+                <NavLink
+                  key={`${to}-${label}`}
+                  to={to}
+                  onClick={() => setToolsOpen(false)}
+                  className="flex min-h-24 flex-col justify-between rounded-2xl border border-ink-800 bg-ink-950 p-4 text-left transition-colors hover:border-accent-500/40 hover:bg-accent-500/5"
+                >
+                  <Icon size={22} className="text-accent-600" />
+                  <span className="mt-4 text-sm font-semibold leading-snug text-ink-100">{label}</span>
+                </NavLink>
+              ))}
+            </div>
+          </section>
+        </div>
+      )}
+    </>
   )
 }
 
