@@ -52,9 +52,10 @@ export default function GettingStartedChecklist() {
     <div className="mt-4 h-2 overflow-hidden rounded-full bg-ink-800"><div className="h-full rounded-full bg-accent-500 transition-all" style={{ width: `${completed / steps.length * 100}%` }} /></div>
     <p className="mt-2 text-xs font-semibold text-accent-600">{completed} of {steps.length} complete</p>
     <div className="mt-4 grid gap-2 sm:grid-cols-2">
-      {steps.map((step) => <Link key={step.label} to={step.to} className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 text-sm transition-colors ${step.done ? 'border-emerald-500/20 bg-emerald-500/5 text-ink-400' : 'border-ink-800 bg-white/60 text-ink-200 hover:border-accent-500/40 dark:bg-ink-950/30'}`}>
+      {steps.map((step, index) => <Link key={step.label} to={step.to} className={`${index > 1 ? 'hidden sm:flex' : 'flex'} items-center gap-2 rounded-xl border px-3 py-2.5 text-sm transition-colors ${step.done ? 'border-emerald-500/20 bg-emerald-500/5 text-ink-400' : 'border-ink-800 bg-white/60 text-ink-200 hover:border-accent-500/40 dark:bg-ink-950/30'}`}>
         {step.done ? <Check size={17} className="text-emerald-500" /> : <Circle size={17} className="text-ink-600" />}<span className="flex-1">{step.label}</span>{!step.done && <ChevronRight size={15} className="text-ink-600" />}
       </Link>)}
     </div>
+    <p className="mt-3 text-xs text-ink-500 sm:hidden">Showing your next steps · Open on a larger screen to see all five.</p>
   </section>
 }

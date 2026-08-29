@@ -94,7 +94,6 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
   const [generatingConference, setGeneratingConference] = useState(false)
 
   // Warmup form
-  const [showWarmupForm, setShowWarmupForm] = useState(false)
   const [warmupOptions, setWarmupOptions] = useState(null)
   const [generatingWarmup, setGeneratingWarmup] = useState(false)
 
@@ -441,7 +440,19 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
           (rendered as the earlier siblings), so a generated sub plan/quiz sits
           right under the lesson instead of being wedged beneath these buttons. */}
       <div className="order-last border-t border-ink-900 pt-6 space-y-4">
-        <p className="label-eyebrow text-ink-400">Generate from this lesson</p>
+        <div className="rounded-2xl border border-accent-500/20 bg-gradient-to-r from-accent-500/10 via-transparent to-violet-500/10 p-4">
+          <p className="label-eyebrow text-accent-500">Your Lesson Kit</p>
+          <h2 className="mt-1 text-lg font-semibold text-ink-100">Plan, teach, display, and assess—all from this lesson</h2>
+          <p className="mt-1 text-sm text-ink-500">Choose only what you need. Student materials and assessments are generated separately so the main lesson stays easy to scan.</p>
+          <div className="mt-3 grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
+            <div className="rounded-lg bg-white/60 px-3 py-2 dark:bg-ink-950/40"><strong className="block text-ink-200">Teach</strong><span className="text-ink-500">At-a-glance plan</span></div>
+            <div className="rounded-lg bg-white/60 px-3 py-2 dark:bg-ink-950/40"><strong className="block text-ink-200">Student materials</strong><span className="text-ink-500">Cards &amp; worksheets</span></div>
+            <div className="rounded-lg bg-white/60 px-3 py-2 dark:bg-ink-950/40"><strong className="block text-ink-200">Assess</strong><span className="text-ink-500">Quiz, rubric &amp; exit ticket</span></div>
+            <div className="rounded-lg bg-white/60 px-3 py-2 dark:bg-ink-950/40"><strong className="block text-ink-200">Share &amp; export</strong><span className="text-ink-500">Print, Word &amp; slides</span></div>
+          </div>
+        </div>
+
+        <p className="label-eyebrow text-ink-400">Lesson kit tools</p>
 
         {/* Primary tools — always visible */}
         <div className="flex flex-wrap gap-2">

@@ -18,13 +18,15 @@ function extractTiming(text) {
   return m ? m[0].replace(/minutes/i, 'min') : null
 }
 
-// First 1–2 sentences as the key cue (minimal prose).
-function keyCue(text) {
+// Turn long generated prose into a few glanceable cues without changing the
+// stored lesson. Newlines win; older lessons that are paragraph-only fall back
+// to sentences. This keeps Teach View useful while the full plan stays intact.
+function keyCues(text) {
   const clean = String(text || '').replace(/\s+/g, ' ').trim()
-  if (!clean) return ''
-  const sentences = clean.split(/(?<=[.!?])\s+/)
-  const cue = sentences.slice(0, 2).join(' ')
-  return cue.length > 240 ? cue.slice(0, 237).trimEnd() + '…' : cue
+  if (!clean) return []
+  const raw = String(text || '').split(/\n+/).map((line) => line.replace(/^[-•\d.)\s]+/, '').trim()).filter(Boolean)
+  const parts = raw.length > 1 ? raw : clean.split(/(?<=[.!?])\s+/)
+  return parts.slice(0, 4).map((cue) => cue.length > 170 ? cue.slice(0, 167).trimEnd() + '…' : cue)
 }
 
 export default function TeachingView({ lesson: lo }) {
@@ -41,8 +43,23 @@ export default function TeachingView({ lesson: lo }) {
         {meta && <p className="mt-0.5 text-sm text-ink-500">{meta}</p>}
       </header>
 
+      <div className="grid gap-3 sm:grid-cols-3">
+        {(lo.equipment_needed ?? []).length > 0 && <section className="rounded-xl border border-ink-800 bg-ink-900/40 p-3 print:border-gray-300 print:bg-white">
+          <h3 className="text-xs font-bold uppercase tracking-wide text-ink-500">Equipment</h3>
+          <p className="mt-1 text-sm text-ink-300 print:text-gray-800">{(lo.equipment_needed ?? []).join(' · ')}</p>
+        </section>}
+        {lo.location && <section className="rounded-xl border border-ink-800 bg-ink-900/40 p-3 print:border-gray-300 print:bg-white">
+          <h3 className="text-xs font-bold uppercase tracking-wide text-ink-500">Setup</h3>
+          <p className="mt-1 text-sm text-ink-300 print:text-gray-800">{lo.location}</p>
+        </section>}
+        {(lo.safety_notes ?? []).length > 0 && <section className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-3 print:border-gray-300 print:bg-white">
+          <h3 className="text-xs font-bold uppercase tracking-wide text-amber-600">Safety first</h3>
+          <p className="mt-1 text-sm text-ink-300 print:text-gray-800">{lo.safety_notes[0]}</p>
+        </section>}
+      </div>
+
       {targets.length > 0 && (
-        <section>
+        <section className="rounded-xl border border-accent-500/20 bg-accent-500/5 p-3 print:border-gray-300 print:bg-white">
           <h3 className="text-xs font-bold uppercase tracking-wide text-ink-500">Today students will</h3>
           <ul className="mt-1 space-y-0.5">
             {targets.map((t, i) => <li key={i} className="text-sm text-ink-200">{t}</li>)}
@@ -59,24 +76,19 @@ export default function TeachingView({ lesson: lo }) {
                 <span className="text-accent-500">{i + 1}.</span> {p.label}
                 {timing && <span className="text-xs font-normal text-ink-500">{timing}</span>}
               </h3>
-              <p className="mt-0.5 text-sm text-ink-300">{keyCue(lo[p.field])}</p>
+              <ul className="mt-1 space-y-1">
+                {keyCues(lo[p.field]).map((cue, cueIndex) => <li key={cueIndex} className="flex gap-2 text-sm text-ink-300 print:text-gray-800"><span className="text-accent-500">•</span><span>{cue}</span></li>)}
+              </ul>
             </div>
           )
         })}
       </section>
 
-      {(lo.equipment_needed ?? []).length > 0 && (
+      {(lo.safety_notes ?? []).length > 1 && (
         <section>
-          <h3 className="text-xs font-bold uppercase tracking-wide text-ink-500">Equipment</h3>
-          <p className="mt-1 text-sm text-ink-300">{(lo.equipment_needed ?? []).join(' · ')}</p>
-        </section>
-      )}
-
-      {(lo.safety_notes ?? []).length > 0 && (
-        <section>
-          <h3 className="text-xs font-bold uppercase tracking-wide text-ink-500">Safety</h3>
+          <h3 className="text-xs font-bold uppercase tracking-wide text-ink-500">Additional safety</h3>
           <ul className="mt-1 space-y-0.5">
-            {(lo.safety_notes ?? []).map((s, i) => <li key={i} className="text-sm text-ink-300">{s}</li>)}
+            {(lo.safety_notes ?? []).slice(1).map((s, i) => <li key={i} className="text-sm text-ink-300">{s}</li>)}
           </ul>
         </section>
       )}
