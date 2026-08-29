@@ -17,6 +17,16 @@ export function summarize(records, maxPoints) {
   }
 }
 
+export function dailyPoints(deductions, config) {
+  const base = Number(config?.max_points || 100)
+  const selected = deductions ?? {}
+  const lost = (config?.deductions ?? []).reduce(
+    (total, item) => total + (selected[item.key] ? Number(item.points || 0) : 0),
+    0,
+  )
+  return Math.max(0, base - lost)
+}
+
 // ── Date helpers (local time, 'YYYY-MM-DD' strings) ──────────────────────────
 export function todayStr() {
   const d = new Date()
