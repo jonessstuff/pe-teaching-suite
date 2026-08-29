@@ -186,6 +186,18 @@ export default function RunTracker() {
       {preset === 'custom' && <div className="grid gap-3 sm:grid-cols-2"><label className="text-sm font-medium text-ink-300">Run name<input value={customLabel} onChange={(event) => setCustomLabel(event.target.value)} placeholder="e.g. 800 meters" className="input-field mt-1" /></label><label className="text-sm font-medium text-ink-300">Miles (optional)<input type="number" min="0.1" step="0.1" value={customMiles} onChange={(event) => setCustomMiles(event.target.value)} className="input-field mt-1" /></label></div>}
       <label className="block text-sm font-medium text-ink-300">Number of laps<input type="number" min="1" max="50" value={lapsRequired} onChange={(event) => setLapsRequired(Math.max(1, Math.min(50, Number(event.target.value) || 1)))} className="input-field mt-1 max-w-32 text-lg font-bold" /></label>
       <div className="rounded-xl bg-ink-900/40 p-4 text-sm text-ink-300"><strong>{selectedPeriod.label}</strong> · {students.length} students · {lapsRequired} lap{lapsRequired === 1 ? '' : 's'} each</div>
+      <div className="rounded-xl border border-ink-800 bg-white/50 p-4 dark:bg-ink-950/30">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <div>
+            <h3 className="font-semibold text-ink-100">Students in this run</h3>
+            <p className="text-xs text-ink-500">Confirm the class roster before you start.</p>
+          </div>
+          <span className="rounded-full bg-accent-500/15 px-2.5 py-1 text-xs font-bold text-accent-700">{students.length}</span>
+        </div>
+        <ol className="grid max-h-64 grid-cols-1 gap-1.5 overflow-y-auto pr-1 sm:grid-cols-2">
+          {students.map((student, index) => <li key={student.id} className="flex min-h-10 items-center gap-2 rounded-lg bg-ink-900/40 px-3 py-2 text-sm font-medium text-ink-200"><span className="w-6 shrink-0 text-right text-xs tabular-nums text-ink-500">{index + 1}.</span><span>{student.name_or_initials}</span></li>)}
+        </ol>
+      </div>
       <button onClick={startRun} disabled={starting} className="btn-primary min-h-[52px] w-full text-base">{starting ? <Loader2 size={18} className="animate-spin" /> : <Play size={18} />} Start run</button>
     </section>}
 
