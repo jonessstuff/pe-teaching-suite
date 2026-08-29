@@ -204,27 +204,15 @@ export default function Landing() {
             </a>
           </div>
 
-          <div className="mt-9 flex flex-col items-center gap-4">
-            <Link to="/demo" className="inline-flex items-center gap-2 rounded-xl border border-brand-500 bg-brand-500/10 px-6 py-3 font-semibold text-brand-600 transition-colors hover:bg-brand-500/20">
+          <div className="mt-9 flex flex-col items-center gap-3">
+            <Link to="/demo" className="btn-primary !bg-brand-500 hover:!bg-brand-600 px-8 py-4 text-lg shadow-lg shadow-brand-500/25">
               Explore the interactive demo <ArrowRight size={17} />
             </Link>
-            <Link
-              to="/try"
-              className="btn-primary !bg-brand-500 hover:!bg-brand-600 px-9 py-4 text-lg shadow-lg shadow-brand-500/25"
-            >
-              Try a free lesson — no signup required
-            </Link>
-            <div className="flex items-center gap-3 text-sm text-ink-500">
-              <span aria-hidden="true" className="h-px w-8 bg-ink-800" />
-              <span>or</span>
-              <a href={CHECKOUT_URL} className="btn-secondary px-5 py-2.5">
-                Start your 7-day trial
-              </a>
-              <span aria-hidden="true" className="h-px w-8 bg-ink-800" />
-            </div>
+            <a href={CHECKOUT_URL} className="btn-secondary px-6 py-3">Start my 7-day free trial</a>
+            <Link to="/try" className="text-sm font-medium text-ink-500 underline decoration-ink-700 underline-offset-4 hover:text-brand-600">Or generate one free lesson—no signup</Link>
           </div>
           <p className="mt-4 text-xs text-ink-600">
-            Your first lesson takes about 1–2 minutes · Trial is 7 days free, cancel anytime
+            Your first lesson takes about 1–2 minutes · Then $9.99/month · Cancel anytime
           </p>
         </div>
       </section>
