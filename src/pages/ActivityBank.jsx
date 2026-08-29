@@ -3,6 +3,8 @@ import { PLANNING_SUBJECTS } from '../constants/toolSubjects'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, PartyPopper, Loader2, Copy, Check } from 'lucide-react'
 import { generateActivityBank } from '../services/generationService'
+import useModuleToolContext from '../hooks/useModuleToolContext'
+import ModuleToolContext from '../components/ModuleToolContext'
 
 const SUBJECTS = PLANNING_SUBJECTS
 const GRADES = [
@@ -19,7 +21,9 @@ const OCCASIONS = [
 ]
 
 export default function ActivityBank() {
+  const moduleContext = useModuleToolContext(SUBJECTS)
   const [subject, setSubject] = useState('PE & Health')
+  const [showSubjects, setShowSubjects] = useState(false)
   const [gradeBand, setGradeBand] = useState(5)
   const [duration, setDuration] = useState(30)
   const [occasion, setOccasion] = useState('Emergency sub day')
@@ -34,7 +38,8 @@ export default function ActivityBank() {
     setError(null)
     setActivities(null)
     try {
-      const result = await generateActivityBank({ subject, gradeBand, duration, occasion })
+      const effectiveSubject = moduleContext.active && !showSubjects ? moduleContext.subject : subject
+      const result = await generateActivityBank({ subject: effectiveSubject, gradeBand, duration, occasion })
       setActivities(result.activities)
       setStatus('done')
     } catch (err) {
@@ -53,7 +58,7 @@ export default function ActivityBank() {
   return (
     <div className="space-y-8">
       <div>
-        <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors mb-3">
+        <Link to={moduleContext.homePath} className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors mb-3">
           <ArrowLeft size={14} /> Back
         </Link>
         <div className="flex items-center gap-3">
@@ -67,9 +72,14 @@ export default function ActivityBank() {
         </div>
       </div>
 
+      <ModuleToolContext context={moduleContext} expanded={showSubjects} onToggle={() => {
+        if (!showSubjects && moduleContext.subject) setSubject(moduleContext.subject)
+        setShowSubjects((value) => !value)
+      }} />
+
       <form onSubmit={handleGenerate} className="space-y-5 max-w-2xl">
         {/* Subject */}
-        <div>
+        {(!moduleContext.active || showSubjects) && <div>
           <label className="block text-sm font-medium text-ink-300 mb-2">Subject</label>
           <div className="flex flex-wrap gap-2">
             {SUBJECTS.map(s => (
@@ -79,7 +89,7 @@ export default function ActivityBank() {
               </button>
             ))}
           </div>
-        </div>
+        </div>}
 
         {/* Grade */}
         <div>

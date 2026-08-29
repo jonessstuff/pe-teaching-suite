@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { BookMarked, Sparkles, Loader2, Printer, ArrowLeft, Save, FolderOpen } from 'lucide-react'
+import useModuleToolContext from '../hooks/useModuleToolContext'
+import ModuleToolContext from '../components/ModuleToolContext'
 import {
   generateLesson,
   generateLibraryLesson,
@@ -301,10 +303,12 @@ export default function SubBinderGenerator() {
 
   const [searchParams] = useSearchParams()
   const urlSlug = searchParams.get('subject')
-  const preselected = SUBJECT_FROM_SLUG[urlSlug] ?? 'PE & Health'
+  const moduleContext = useModuleToolContext(SUBJECTS)
+  const preselected = moduleContext.subject ?? SUBJECT_FROM_SLUG[urlSlug] ?? 'PE & Health'
 
   // Form state
   const [subject, setSubject] = useState(preselected)
+  const [showSubjects, setShowSubjects] = useState(false)
   const [stemFocusArea, setStemFocusArea] = useState('engineering')
   const [gradeBands, setGradeBands] = useState(null)
   const [weekCount, setWeekCount] = useState(2)
@@ -588,7 +592,7 @@ export default function SubBinderGenerator() {
       {/* Header */}
       <div>
         <Link
-          to="/"
+          to={moduleContext.homePath}
           className="mb-3 flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors"
         >
           <ArrowLeft size={14} />
@@ -620,13 +624,15 @@ export default function SubBinderGenerator() {
         </p>
       </div>
 
+      <ModuleToolContext context={moduleContext} expanded={showSubjects} onToggle={() => setShowSubjects((value) => !value)} />
+
       <form onSubmit={handleGenerate} className="space-y-6">
 
         {/* ── Subject & focus area ─────────────────────────────────────────── */}
         <div className="card p-6 space-y-5">
           <h2 className="text-sm font-semibold text-ink-200">Subject</h2>
 
-          <div>
+          {(!moduleContext.active || showSubjects) && <div>
             <label className="mb-1 block text-sm text-ink-300" htmlFor="subject">
               Your subject
             </label>
@@ -647,7 +653,7 @@ export default function SubBinderGenerator() {
                 ))}
               </optgroup>
             </select>
-          </div>
+          </div>}
 
           {subject === 'STEM' && (
             <div>

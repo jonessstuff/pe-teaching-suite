@@ -4,6 +4,8 @@ import { subjectMatchesFilter } from '../constants/modules'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, BarChart2, Loader2 } from 'lucide-react'
 import { listLessons } from '../services/lessonsService'
+import useModuleToolContext from '../hooks/useModuleToolContext'
+import ModuleToolContext from '../components/ModuleToolContext'
 
 const SUBJECTS = ['All Subjects', ...ASSESSABLE_SUBJECTS]
 const GRADES = ['All Grades', 'K', 1, 2, 3, 4, 5, 6, 7, 8]
@@ -16,9 +18,11 @@ function frequencyClass(count) {
 }
 
 export default function StandardsTracker() {
+  const moduleContext = useModuleToolContext(ASSESSABLE_SUBJECTS)
   const [lessons, setLessons] = useState(null)
   const [error, setError] = useState(null)
   const [filterSubject, setFilterSubject] = useState('All Subjects')
+  const [showAllSubjects, setShowAllSubjects] = useState(false)
   const [filterGrade, setFilterGrade] = useState('All Grades')
   const [selected, setSelected] = useState(null)
 
@@ -28,8 +32,11 @@ export default function StandardsTracker() {
       .catch(e => setError(e.message))
   }, [])
 
+  const effectiveFilterSubject = moduleContext.active && !showAllSubjects
+    ? moduleContext.moduleLabel
+    : filterSubject
   const filtered = (lessons ?? []).filter(l => {
-    if (filterSubject !== 'All Subjects' && !subjectMatchesFilter(l.subject, filterSubject)) return false
+    if (effectiveFilterSubject !== 'All Subjects' && !subjectMatchesFilter(l.subject, effectiveFilterSubject)) return false
     if (filterGrade !== 'All Grades') {
       const grade = filterGrade === 'K' ? 0 : Number(filterGrade)
       if (!(l.grade_bands ?? []).includes(grade)) return false
@@ -80,7 +87,7 @@ export default function StandardsTracker() {
   return (
     <div className="space-y-8">
       <div>
-        <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors mb-3">
+        <Link to={moduleContext.homePath} className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors mb-3">
           <ArrowLeft size={14} /> Dashboard
         </Link>
         <div className="flex items-center gap-3">
@@ -94,15 +101,17 @@ export default function StandardsTracker() {
         </div>
       </div>
 
+      <ModuleToolContext context={moduleContext} mode="view" expanded={showAllSubjects} onToggle={() => setShowAllSubjects((value) => !value)} />
+
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
-        <select
+        {(!moduleContext.active || showAllSubjects) && <select
           value={filterSubject}
           onChange={e => setFilterSubject(e.target.value)}
           className="rounded-lg border border-ink-700 bg-white dark:bg-ink-800 px-3 py-2 text-sm text-ink-300 outline-none focus:border-violet-500"
         >
           {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
-        </select>
+        </select>}
         <select
           value={filterGrade}
           onChange={e => setFilterGrade(e.target.value)}

@@ -12,6 +12,18 @@ const VALID_OUTPUT_TYPES = ["card", "behavior-chart", "reflection-form", "troubl
 // approach. The card is small, so no keepalive stream is needed (fast generation).
 const MODEL = "claude-haiku-4-5"
 
+function behaviorChartIsComplete(value: unknown) {
+  if (!value || typeof value !== "object") return false
+  const chart = value as { tiers?: Array<{ color?: string; descriptors?: unknown[] }>; move_up_steps?: unknown[] }
+  if (!Array.isArray(chart.tiers) || !Array.isArray(chart.move_up_steps) || chart.move_up_steps.length === 0) return false
+  const colors = new Set(
+    chart.tiers
+      .filter((tier) => Array.isArray(tier?.descriptors) && tier.descriptors.length > 0)
+      .map((tier) => tier.color),
+  )
+  return ["green", "yellow", "red"].every((color) => colors.has(color))
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders })
   if (req.method !== "POST") return errorResponse("Method not allowed", 405)
@@ -63,7 +75,19 @@ Deno.serve(async (req: Request) => {
     })
     // Structured outputs guarantees valid JSON; 4000 tokens is ample for a card.
     const _t0 = Date.now();
-    const anonymousResult = await callClaudeForJson(system, user, 4000, MODEL, schema)
+    let anonymousResult = await callClaudeForJson(system, user, 4000, MODEL, schema)
+    if (outputType === "behavior-chart" && !behaviorChartIsComplete(anonymousResult)) {
+      anonymousResult = await callClaudeForJson(
+        system,
+        `${user}\n\nYour first response was incomplete. Fill every required tier with concrete descriptors and include the complete move-up/reset path. Do not return empty arrays.`,
+        4000,
+        MODEL,
+        schema,
+      )
+    }
+    if (outputType === "behavior-chart" && !behaviorChartIsComplete(anonymousResult)) {
+      throw new Error("The behavior chart came back incomplete. Please try again.")
+    }
     const result = restorePrivateLabels(anonymousResult, replacements)
     await captureLessonGenerated(req, { subject: "Classroom Management", grades: [], type: "classroom_management", durationMs: Date.now() - _t0 });
     return jsonResponse(result)

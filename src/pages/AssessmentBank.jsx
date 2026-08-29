@@ -10,6 +10,8 @@ import WorksheetRenderer from '../components/renderers/WorksheetRenderer'
 import WarmupRenderer from '../components/renderers/WarmupRenderer'
 import { useTrial } from '../context/TrialContext'
 import UpgradeBanner from '../components/UpgradeBanner'
+import useModuleToolContext from '../hooks/useModuleToolContext'
+import ModuleToolContext from '../components/ModuleToolContext'
 
 const TRIAL_PREVIEW_COUNT = 3
 
@@ -25,12 +27,14 @@ const SUBJECTS = ['All Subjects', ...ASSESSABLE_SUBJECTS]
 export default function AssessmentBank() {
   const { isTrial, isExpired, openPaywall } = useTrial()
   const gated = isTrial || isExpired
+  const moduleContext = useModuleToolContext(ASSESSABLE_SUBJECTS)
   const [assessments, setAssessments] = useState(null)
   const [error, setError] = useState(null)
   const [selected, setSelected] = useState(null)
   const [search, setSearch] = useState('')
   const [filterType, setFilterType] = useState('all')
   const [filterSubject, setFilterSubject] = useState('All Subjects')
+  const [showAllSubjects, setShowAllSubjects] = useState(false)
 
   useEffect(() => {
     listAssessments()
@@ -38,10 +42,13 @@ export default function AssessmentBank() {
       .catch(e => setError(e.message))
   }, [])
 
+  const effectiveFilterSubject = moduleContext.active && !showAllSubjects
+    ? moduleContext.moduleLabel
+    : filterSubject
   const filtered = (assessments ?? []).filter(a => {
     if (search && !a.title.toLowerCase().includes(search.toLowerCase())) return false
     if (filterType !== 'all' && a.assessment_type !== filterType) return false
-    if (filterSubject !== 'All Subjects' && !subjectMatchesFilter(a.subject, filterSubject)) return false
+    if (effectiveFilterSubject !== 'All Subjects' && !subjectMatchesFilter(a.subject, effectiveFilterSubject)) return false
     return true
   })
 
@@ -109,12 +116,14 @@ export default function AssessmentBank() {
   return (
     <div className="space-y-8">
       <div>
-        <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors mb-3">
+        <Link to={moduleContext.homePath} className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors mb-3">
           <ArrowLeft size={14} /> Dashboard
         </Link>
         <h1 className="text-2xl font-semibold text-ink-50">Assessment Bank</h1>
         <p className="mt-1 text-sm text-ink-500">Your saved quizzes, rubrics, worksheet activities, and warm-ups — searchable and ready to reuse.</p>
       </div>
+
+      <ModuleToolContext context={moduleContext} mode="view" expanded={showAllSubjects} onToggle={() => setShowAllSubjects((value) => !value)} />
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
@@ -138,13 +147,13 @@ export default function AssessmentBank() {
           <option value="cut_paste">Cut & Paste</option>
           <option value="warmup">Warm-up</option>
         </select>
-        <select
+        {(!moduleContext.active || showAllSubjects) && <select
           value={filterSubject}
           onChange={e => setFilterSubject(e.target.value)}
           className="rounded-lg border border-ink-700 bg-white dark:bg-ink-800 px-3 py-2 text-sm text-ink-300 outline-none focus:border-accent-500"
         >
           {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
-        </select>
+        </select>}
       </div>
 
       {!assessments && !error && (

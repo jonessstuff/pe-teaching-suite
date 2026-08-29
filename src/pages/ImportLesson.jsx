@@ -4,6 +4,8 @@ import { ArrowLeft, FileInput, Loader2 } from 'lucide-react'
 import { generateImportedLesson } from '../services/generationService'
 import { createLesson } from '../services/lessonsService'
 import GenerationProgress from '../components/GenerationProgress'
+import useModuleToolContext from '../hooks/useModuleToolContext'
+import ModuleToolContext from '../components/ModuleToolContext'
 
 // Core specials reformat into the PlanBook schema; the "More modules" group each
 // reformat into their OWN module structure (server-side per-module dispatch).
@@ -44,7 +46,9 @@ const STEM_FOCUS_AREAS = [
 export default function ImportLesson() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const [subject, setSubject] = useState(() => SUBJECT_FROM_SLUG[searchParams.get('subject')] ?? 'PE & Health')
+  const moduleContext = useModuleToolContext([...CORE_SUBJECTS, ...NEWER_SUBJECTS])
+  const [subject, setSubject] = useState(() => moduleContext.subject ?? SUBJECT_FROM_SLUG[searchParams.get('subject')] ?? 'PE & Health')
+  const [showSubjects, setShowSubjects] = useState(false)
   const [gradeBand, setGradeBand] = useState(5)
   const [targetLanguage, setTargetLanguage] = useState('')
   const [stemFocusArea, setStemFocusArea] = useState('engineering')
@@ -75,7 +79,7 @@ export default function ImportLesson() {
   return (
     <div className="space-y-8">
       <div>
-        <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors mb-3">
+        <Link to={moduleContext.homePath} className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors mb-3">
           <ArrowLeft size={14} /> Back
         </Link>
         <div className="flex items-center gap-3">
@@ -91,9 +95,11 @@ export default function ImportLesson() {
         </div>
       </div>
 
+      <ModuleToolContext context={moduleContext} expanded={showSubjects} onToggle={() => setShowSubjects((value) => !value)} />
+
       <form onSubmit={handleImport} className="space-y-6 max-w-2xl">
         {/* Subject */}
-        <div>
+        {(!moduleContext.active || showSubjects) && <div>
           <label className="block text-sm font-medium text-ink-300 mb-2">Subject</label>
           {[
             { heading: 'Core specials', items: CORE_SUBJECTS },
@@ -119,7 +125,7 @@ export default function ImportLesson() {
               </div>
             </div>
           ))}
-        </div>
+        </div>}
 
         {/* World Languages: target language (required — it can't be inferred before reformatting) */}
         {subject === 'World Languages' && (

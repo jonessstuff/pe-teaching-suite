@@ -5,6 +5,9 @@ import { listStudents, createStudent, createStudents, updateStudent, deleteStude
 import { listPeriods } from '../services/classPeriodsService'
 import { gradeLabel } from '../types/lessonObject'
 import { parseRosterCsv } from '../lib/rosterImport'
+import { subjectMatchesFilter } from '../constants/modules'
+import useModuleToolContext from '../hooks/useModuleToolContext'
+import ModuleToolContext from '../components/ModuleToolContext'
 
 const GRADE_OPTIONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
@@ -26,6 +29,7 @@ const BLANK_FORM = {
 }
 
 export default function Students() {
+  const moduleContext = useModuleToolContext()
   const [students, setStudents] = useState(null)
   const [periods, setPeriods] = useState([])
   const [error, setError] = useState(null)
@@ -45,6 +49,14 @@ export default function Students() {
   const [csvRows, setCsvRows] = useState(null)
   const [csvFileName, setCsvFileName] = useState('')
   const [selectedPeriod, setSelectedPeriod] = useState('all')
+  const [showAllPeriods, setShowAllPeriods] = useState(false)
+
+  const availablePeriods = moduleContext.active && !showAllPeriods
+    ? periods.filter((period) => subjectMatchesFilter(period.subject, moduleContext.moduleLabel))
+    : periods
+  const availablePeriodIds = new Set(availablePeriods.map((period) => period.id))
+  const moduleSuffix = moduleContext.active ? `?module=${encodeURIComponent(moduleContext.moduleLabel)}` : ''
+  const showPeLinks = !moduleContext.active || moduleContext.moduleLabel === 'PE & Health'
 
   useEffect(() => {
     listStudents()
@@ -56,7 +68,12 @@ export default function Students() {
   }, [])
 
   function openAdd() {
-    setForm(BLANK_FORM)
+    setForm({
+      ...BLANK_FORM,
+      class_period_id: selectedPeriod !== 'all'
+        ? selectedPeriod
+        : (moduleContext.active && !showAllPeriods ? availablePeriods[0]?.id ?? '' : ''),
+    })
     setEditingId(null)
     setFormMode('add')
     setFormError(null)
@@ -142,7 +159,9 @@ export default function Students() {
   function openBulk() {
     setBulkOpen(true)
     setBulkError(null)
-    setBulkPeriod((current) => current || (selectedPeriod !== 'all' ? selectedPeriod : ''))
+    setBulkPeriod((current) => current || (selectedPeriod !== 'all'
+      ? selectedPeriod
+      : (moduleContext.active && !showAllPeriods ? availablePeriods[0]?.id ?? '' : '')))
   }
   function closeBulk() {
     setBulkOpen(false)
@@ -211,18 +230,21 @@ export default function Students() {
     return periods.find((p) => p.id === periodId)?.label ?? null
   }
 
+  const scopedStudents = moduleContext.active && !showAllPeriods
+    ? (students ?? []).filter((student) => availablePeriodIds.has(student.class_period_id))
+    : (students ?? [])
   const visibleStudents = selectedPeriod === 'all'
-    ? (students ?? [])
-    : (students ?? []).filter((student) => student.class_period_id === selectedPeriod)
+    ? scopedStudents
+    : scopedStudents.filter((student) => student.class_period_id === selectedPeriod)
 
   return (
     <div className="max-w-4xl space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="label-eyebrow mb-2">PE tools</p>
+          <p className="label-eyebrow mb-2">{moduleContext.active ? `${moduleContext.moduleTitle} workspace` : 'Classes & Rosters'}</p>
           <h1 className="text-2xl font-semibold">My Classes &amp; Rosters</h1>
           <p className="mt-1 text-sm text-ink-500">
-            Enter each roster once. The same classes appear in Participation, the Run Tracker, and future PE tools.
+            Enter each roster once. Classes can be reused across the PlansK12 tools that belong to that specialty.
           </p>
         </div>
         {formMode === null && !bulkOpen && (
@@ -239,19 +261,24 @@ export default function Students() {
         )}
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-3">
-        <Link to="/schedule" className="card flex items-center gap-3 p-4 transition-colors hover:border-accent-500/40">
+      <ModuleToolContext context={moduleContext} mode="view" expanded={showAllPeriods} onToggle={() => {
+        setSelectedPeriod('all')
+        setShowAllPeriods((value) => !value)
+      }} />
+
+      <div className={`grid gap-3 ${showPeLinks ? 'sm:grid-cols-3' : ''}`}>
+        <Link to={`/schedule${moduleSuffix}`} className="card flex items-center gap-3 p-4 transition-colors hover:border-accent-500/40">
           <Users2 size={20} className="text-accent-600" />
           <div><p className="font-medium text-ink-100">Manage classes</p><p className="text-xs text-ink-500">Names, periods, and schedules</p></div>
         </Link>
-        <Link to="/participation" className="card flex items-center gap-3 p-4 transition-colors hover:border-accent-500/40">
+        {showPeLinks && <Link to="/participation" className="card flex items-center gap-3 p-4 transition-colors hover:border-accent-500/40">
           <ClipboardCheck size={20} className="text-accent-600" />
           <div><p className="font-medium text-ink-100">Participation</p><p className="text-xs text-ink-500">Uses these rosters automatically</p></div>
-        </Link>
-        <Link to="/run-tracker" className="card flex items-center gap-3 p-4 transition-colors hover:border-accent-500/40">
+        </Link>}
+        {showPeLinks && <Link to="/run-tracker" className="card flex items-center gap-3 p-4 transition-colors hover:border-accent-500/40">
           <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-500/15 text-xs font-bold text-accent-600">½</span>
           <div><p className="font-medium text-ink-100">Run Tracker</p><p className="text-xs text-ink-500">½ mile, mile, and custom runs</p></div>
-        </Link>
+        </Link>}
       </div>
 
       {/* Privacy notice */}
@@ -282,7 +309,7 @@ export default function Students() {
               <select value={bulkPeriod} onChange={(e) => setBulkPeriod(e.target.value)}
                 className="w-full rounded-lg border border-ink-700 bg-white px-3 py-2 text-sm text-ink-50 dark:bg-ink-800">
                 <option value="">Select…</option>
-                {periods.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
+                {availablePeriods.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
               </select>
             </div>
             <div>
@@ -371,7 +398,7 @@ export default function Students() {
               onChange={(e) => setForm((p) => ({ ...p, class_period_id: e.target.value }))}
             >
               <option value="">No period assigned</option>
-              {periods.map((p) => (
+              {availablePeriods.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.label}{p.room_label ? ` · ${p.room_label}` : ''}
                 </option>
@@ -427,7 +454,7 @@ export default function Students() {
         </div>
       )}
 
-      {students !== null && students.length === 0 && formMode === null && (
+      {students !== null && students.length === 0 && availablePeriods.length === 0 && formMode === null && (
         <div className="card p-8 text-center">
           <p className="text-ink-500">No student profiles yet.</p>
           <p className="mt-1 text-sm text-ink-600">
@@ -440,13 +467,13 @@ export default function Students() {
         </div>
       )}
 
-      {students !== null && students.length > 0 && (
+      {students !== null && (students.length > 0 || availablePeriods.length > 0) && (
         <div className="space-y-3">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <label className="text-sm font-medium text-ink-300" htmlFor="roster-class-filter">View roster</label>
             <select id="roster-class-filter" value={selectedPeriod} onChange={(e) => setSelectedPeriod(e.target.value)} className="input-field sm:max-w-xs">
-              <option value="all">All classes ({students.length})</option>
-              {periods.map((period) => <option key={period.id} value={period.id}>{period.label} ({students.filter((student) => student.class_period_id === period.id).length})</option>)}
+              <option value="all">{moduleContext.active && !showAllPeriods ? `All ${moduleContext.moduleTitle} classes` : 'All classes'} ({scopedStudents.length})</option>
+              {availablePeriods.map((period) => <option key={period.id} value={period.id}>{period.label} ({students.filter((student) => student.class_period_id === period.id).length})</option>)}
             </select>
           </div>
           {visibleStudents.length === 0 && <div className="card p-6 text-center text-sm text-ink-500">No students are assigned to this class yet. Use <span className="font-medium text-ink-200">Import roster</span> to add them.</div>}

@@ -64,7 +64,10 @@ export default function MyClassroomCards() {
         <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-500/15">
           <ClipboardCheck size={22} className="text-indigo-400" />
         </div>
-        <h1 className="text-2xl font-semibold text-ink-50">My Classroom Cards</h1>
+        <div>
+          <h1 className="text-2xl font-semibold text-ink-50">Saved Classroom Tools</h1>
+          <p className="mt-1 text-sm text-ink-500">Reopen and print the charts, forms, trackers, and notes you chose to save.</p>
+        </div>
       </div>
 
       {gated ? (
@@ -107,7 +110,8 @@ export default function MyClassroomCards() {
             <div className="flex items-center gap-2 text-sm text-ink-400"><Loader2 size={16} className="animate-spin" /> Loading…</div>
           ) : cards.length === 0 ? (
             <div className="card p-8 text-center">
-              <p className="text-sm text-ink-400">You haven't saved any cards yet.</p>
+              <p className="text-sm text-ink-400">You haven't saved any classroom tools yet.</p>
+              <p className="mt-1 text-xs text-ink-500">Generate a tool, then choose “Save to saved tools” to keep it here.</p>
               <Link to="/classroom-management" className="mt-4 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">
                 <Plus size={15} /> Create a card
               </Link>

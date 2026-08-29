@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react'
 import { ALL_TEACHER_SUBJECTS } from '../constants/toolSubjects'
-import { Link, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Briefcase, Loader2, Trash2, Plus, Printer, Wand2, Check, Save } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { ArrowLeft, Briefcase, Loader2, Trash2, Plus, Printer, Wand2, Save } from 'lucide-react'
 import { generatePortfolio } from '../services/generationService'
 import { createPortfolio, updatePortfolio, listPortfolios, getPortfolio, deletePortfolio } from '../services/portfolioService'
 import { listLessons } from '../services/lessonsService'
 import { useTrial } from '../context/TrialContext'
+import useModuleToolContext from '../hooks/useModuleToolContext'
+import ModuleToolContext from '../components/ModuleToolContext'
+import { subjectMatchesFilter } from '../constants/modules'
 
 const SUBJECTS = ALL_TEACHER_SUBJECTS
 
@@ -14,18 +17,19 @@ function SectionHeader({ label }) {
 }
 
 export default function PortfolioBuilder() {
-  const navigate = useNavigate()
   const { requestExport } = useTrial()
+  const moduleContext = useModuleToolContext(SUBJECTS)
   const [view, setView] = useState('list')
   const [portfolios, setPortfolios] = useState(null)
   const [lessons, setLessons] = useState([])
   const [portfolioId, setPortfolioId] = useState(null)
   const [error, setError] = useState(null)
   const [saveStatus, setSaveStatus] = useState('idle')
+  const [showSubjects, setShowSubjects] = useState(false)
 
   const [form, setForm] = useState({
     title: '',
-    subject: 'PE & Health',
+    subject: moduleContext.subject ?? 'PE & Health',
     yearsTeaching: '',
     teachingPhilosophy: '',
     philosophySeeds: '',
@@ -47,7 +51,7 @@ export default function PortfolioBuilder() {
       setPortfolioId(full.id)
       setForm({
         title: full.title ?? '',
-        subject: full.subject ?? 'PE & Health',
+        subject: full.subject ?? moduleContext.subject ?? 'PE & Health',
         yearsTeaching: full.years_teaching ?? '',
         teachingPhilosophy: full.teaching_philosophy ?? '',
         philosophySeeds: '',
@@ -64,7 +68,7 @@ export default function PortfolioBuilder() {
 
   function startNew() {
     setPortfolioId(null)
-    setForm({ title: '', subject: 'PE & Health', yearsTeaching: '', teachingPhilosophy: '', philosophySeeds: '', selectedLessonIds: [], reflections: {}, studentWorkExamples: '', professionalGoals: '' })
+    setForm({ title: '', subject: moduleContext.subject ?? 'PE & Health', yearsTeaching: '', teachingPhilosophy: '', philosophySeeds: '', selectedLessonIds: [], reflections: {}, studentWorkExamples: '', professionalGoals: '' })
     setSaveStatus('idle')
     setView('edit')
   }
@@ -126,7 +130,10 @@ export default function PortfolioBuilder() {
   }
 
   if (view === 'edit') {
-    const selectedLessons = lessons.filter(l => form.selectedLessonIds.includes(l.id))
+    const availableLessons = moduleContext.active && !showSubjects
+      ? lessons.filter((lesson) => subjectMatchesFilter(lesson.subject, moduleContext.moduleLabel))
+      : lessons.filter((lesson) => subjectMatchesFilter(lesson.subject, form.subject))
+    const selectedLessons = availableLessons.filter(l => form.selectedLessonIds.includes(l.id))
     return (
       <div className="space-y-8 print:text-gray-900">
         <div className="flex items-center gap-3 flex-wrap print:hidden">
@@ -144,6 +151,8 @@ export default function PortfolioBuilder() {
             </button>
           </div>
         </div>
+
+        <ModuleToolContext context={moduleContext} expanded={showSubjects} onToggle={() => setShowSubjects((value) => !value)} />
 
         {error && <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400 print:hidden">{error}</p>}
 
@@ -165,7 +174,7 @@ export default function PortfolioBuilder() {
                   className="w-full rounded-lg border border-ink-700 bg-white dark:bg-ink-800 px-3 py-2 text-sm text-ink-50 placeholder:text-ink-700 dark:placeholder:text-ink-600 outline-none focus:border-fuchsia-500 print:border-gray-400 print:bg-white print:text-gray-900" />
               </div>
             </div>
-            <div>
+            {(!moduleContext.active || showSubjects) && <div>
               <label className="block text-sm font-medium text-ink-300 mb-2 print:text-gray-700">Subject</label>
               <div className="flex flex-wrap gap-2">
                 {SUBJECTS.map(s => (
@@ -176,7 +185,7 @@ export default function PortfolioBuilder() {
                 ))}
                 <p className="hidden print:block text-sm text-gray-900">{form.subject}</p>
               </div>
-            </div>
+            </div>}
           </div>
 
           {/* Section 2: Teaching Philosophy */}
@@ -203,11 +212,11 @@ export default function PortfolioBuilder() {
           {/* Section 3: Selected Lessons */}
           <div className="card p-6 space-y-4 print:border-gray-300">
             <SectionHeader label="Featured Lessons" />
-            {lessons.length > 0 && (
+            {availableLessons.length > 0 && (
               <div className="print:hidden space-y-2">
                 <p className="text-xs text-ink-500 mb-2">Select lessons to feature in your portfolio</p>
                 <div className="max-h-48 overflow-y-auto space-y-1 rounded-lg border border-ink-800 p-2">
-                  {lessons.map(l => (
+                  {availableLessons.map(l => (
                     <label key={l.id} className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-ink-200/30 cursor-pointer">
                       <input type="checkbox" checked={form.selectedLessonIds.includes(l.id)} onChange={() => toggleLesson(l.id)}
                         className="accent-fuchsia-500" />
@@ -265,7 +274,7 @@ export default function PortfolioBuilder() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 mb-3">
+          <Link to={moduleContext.homePath} className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 mb-3">
             <ArrowLeft size={14} /> Dashboard
           </Link>
           <div className="flex items-center gap-3">
@@ -280,6 +289,8 @@ export default function PortfolioBuilder() {
           <Plus size={16} /> New portfolio
         </button>
       </div>
+
+      <ModuleToolContext context={moduleContext} mode="view" />
 
       {!portfolios && <div className="flex items-center gap-2 text-ink-400 text-sm"><Loader2 size={16} className="animate-spin" /> Loading…</div>}
       {error && <p className="text-sm text-red-400">{error}</p>}

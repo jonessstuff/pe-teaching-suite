@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom'
 import { ArrowLeft, ScrollText, Loader2, Copy, Check, Printer } from 'lucide-react'
 import { generateEoyNarrative } from '../services/generationService'
 import { useTrial } from '../context/TrialContext'
+import useModuleToolContext from '../hooks/useModuleToolContext'
+import ModuleToolContext from '../components/ModuleToolContext'
 
 const SUBJECTS = ALL_TEACHER_SUBJECTS
 const GRADES = [
@@ -16,6 +18,8 @@ const GRADES = [
 
 export default function EOYNarrativeGenerator() {
   const { requestExport } = useTrial()
+  const moduleContext = useModuleToolContext(SUBJECTS)
+  const [showSubjects, setShowSubjects] = useState(false)
   const [form, setForm] = useState({
     subject: 'PE & Health',
     gradeLevels: [],
@@ -30,6 +34,7 @@ export default function EOYNarrativeGenerator() {
   const [narrative, setNarrative] = useState(null)
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState(null)
+  const effectiveSubject = moduleContext.active && !showSubjects ? moduleContext.subject : form.subject
 
   function toggleGrade(value) {
     setForm(f => ({
@@ -46,7 +51,7 @@ export default function EOYNarrativeGenerator() {
     setError(null)
     setNarrative(null)
     try {
-      const result = await generateEoyNarrative(form)
+      const result = await generateEoyNarrative({ ...form, subject: effectiveSubject })
       setNarrative(result.eoy_narrative)
       setStatus('done')
     } catch (err) {
@@ -64,7 +69,7 @@ export default function EOYNarrativeGenerator() {
   return (
     <div className="space-y-8">
       <div>
-        <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors mb-3">
+        <Link to={moduleContext.homePath} className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors mb-3">
           <ArrowLeft size={14} /> Back
         </Link>
         <div className="flex items-center gap-3">
@@ -78,11 +83,16 @@ export default function EOYNarrativeGenerator() {
         </div>
       </div>
 
+      <ModuleToolContext context={moduleContext} expanded={showSubjects} onToggle={() => {
+        if (!showSubjects && moduleContext.subject) setForm((value) => ({ ...value, subject: moduleContext.subject }))
+        setShowSubjects((value) => !value)
+      }} />
+
       <div className="grid gap-8 lg:grid-cols-2">
         {/* Form */}
         <form onSubmit={handleGenerate} className="space-y-5">
           {/* Subject */}
-          <div>
+          {(!moduleContext.active || showSubjects) && <div>
             <label className="block text-sm font-medium text-ink-300 mb-2">Subject</label>
             <div className="flex flex-wrap gap-2">
               {SUBJECTS.map(s => (
@@ -92,7 +102,7 @@ export default function EOYNarrativeGenerator() {
                 </button>
               ))}
             </div>
-          </div>
+          </div>}
 
           {/* Grades */}
           <div>

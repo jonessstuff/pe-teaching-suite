@@ -61,6 +61,7 @@ import SubBinderGenerator from '../pages/SubBinderGenerator'
 import ImportLesson from '../pages/ImportLesson'
 import UnitBuilder from '../pages/UnitBuilder'
 import ClassroomManagementGenerator from '../pages/ClassroomManagementGenerator'
+import MyClassroomCards from '../pages/MyClassroomCards'
 import DemoMode from '../pages/DemoMode'
 import SmartGoals from '../pages/SmartGoals'
 import StudentDataPrivacy from '../pages/StudentDataPrivacy'
@@ -100,6 +101,7 @@ export default function PreviewApp() {
           <Route path="import" element={<ImportLesson />} />
           <Route path="build-unit" element={<UnitBuilder />} />
           <Route path="classroom-management" element={<ClassroomManagementGenerator />} />
+          <Route path="my-classroom-cards" element={<MyClassroomCards />} />
           <Route path="settings" element={<Settings />} />
           <Route path="privacy" element={<StudentDataPrivacy />} />
           <Route path="owner" element={<OwnerDashboard />} />

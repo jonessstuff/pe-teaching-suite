@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ClipboardCheck, Sparkles, Loader2, Printer, Save, Check, ArrowLeft, FolderOpen, ShieldCheck } from 'lucide-react'
+import { ClipboardCheck, Sparkles, Loader2, Printer, Save, Check, ArrowLeft, FolderOpen, ShieldCheck, Copy } from 'lucide-react'
 import { useTrial } from '../context/TrialContext'
 import UpgradeBanner from '../components/UpgradeBanner'
 import { generateClassroomCard, createCard } from '../services/classroomManagementService'
@@ -30,18 +30,18 @@ const GRADE_BANDS = [
 ]
 
 const OUTPUT_TYPES = [
-  { id: 'card', label: 'Quick-Reference Card' },
-  { id: 'behavior-chart', label: 'Behavior Chart' },
-  { id: 'reflection-form', label: 'Reflection Form' },
-  { id: 'troubleshoot', label: 'Troubleshoot a Behavior' },
-  { id: 'abc-sheet', label: 'ABC Sheet' },
-  { id: 'cico-tracker', label: 'CICO Tracker' },
-  { id: 'parent-note', label: 'Parent Note' },
+  { id: 'card', label: 'Quick-Reference Card', description: 'A one-page teacher cheat sheet with prevention, redirection, transitions, and reset language for your grade band.' },
+  { id: 'behavior-chart', label: 'Traffic-Light Class Chart', description: 'A student-facing green/yellow/red poster showing what on-track, warning, and stop-and-reset behavior looks like—plus how the whole class can return to green. It is not an individual clip chart.' },
+  { id: 'reflection-form', label: 'Reflection Form', description: 'A printable student reset form for thinking through what happened, who was affected, and what to try next.' },
+  { id: 'troubleshoot', label: 'Troubleshoot a Behavior', description: 'Practical teacher strategies for one specific behavior challenge, tailored to the age group, class setting, and class size.' },
+  { id: 'abc-sheet', label: 'ABC Data Sheet', description: 'A blank observation form for recording what happened before, during, and after a behavior so patterns are easier to spot.' },
+  { id: 'cico-tracker', label: 'CICO Tracker', description: 'A customizable daily Check-In/Check-Out sheet for privately tracking one student’s positively stated goals across class periods.' },
+  { id: 'parent-note', label: 'Parent Note', description: 'A polished positive or incident note built only from the facts you provide. Preview it, copy it into an email, print it, or save it to My Cards—nothing is sent automatically.' },
 ]
 
 const OUTPUT_LABEL = {
   card: 'Quick-Reference Card',
-  'behavior-chart': 'Behavior Chart',
+  'behavior-chart': 'Traffic-Light Class Chart',
   'reflection-form': 'Reflection Form',
   troubleshoot: 'Behavior Troubleshooter',
   'abc-sheet': 'ABC Data Sheet',
@@ -57,6 +57,55 @@ const PARENT_TONES = [
 
 // ABC Sheet and CICO Tracker are static teacher-filled templates — no AI call.
 const STATIC_TYPES = new Set(['abc-sheet', 'cico-tracker'])
+
+function behaviorChartIsComplete(chart) {
+  if (!chart || !Array.isArray(chart.tiers) || !Array.isArray(chart.move_up_steps)) return false
+  const colors = new Set(chart.tiers.filter((tier) => Array.isArray(tier?.descriptors) && tier.descriptors.length > 0).map((tier) => tier.color))
+  return ['green', 'yellow', 'red'].every((color) => colors.has(color)) && chart.move_up_steps.length > 0
+}
+
+function fallbackBehaviorChart(gradeBand, classContext) {
+  const younger = gradeBand === 'K-2'
+  const older = gradeBand === '9-12'
+  const setting = classContext.trim() || 'Class'
+  return {
+    heading: `${setting} — Reset and Rejoin`,
+    tiers: [
+      {
+        color: 'green',
+        label: older ? 'Ready and Engaged' : younger ? 'Ready to Learn' : 'On Track',
+        descriptors: younger
+          ? ['Eyes watching during directions.', 'Hands and feet in your own space.', 'Use materials the way you were shown.']
+          : older
+            ? ['Begin the posted task without repeated prompting.', 'Use the shared space and materials safely.', 'Pause conversations when directions begin.']
+            : ['Start the task when the signal is given.', 'Keep your body and materials in your assigned space.', 'Pause and listen when directions begin.'],
+      },
+      {
+        color: 'yellow',
+        label: older ? 'Pause and Refocus' : younger ? 'Slow Down' : 'Time to Reset',
+        descriptors: younger
+          ? ['Talking while directions are happening.', 'Leaving your spot without checking.', 'Touching materials before the signal.']
+          : older
+            ? ['The task has stopped while side conversations continue.', 'Materials or devices are being used off-task.', 'A reminder has been given but the behavior continues.']
+            : ['Talking or moving while directions are being given.', 'Using materials before the signal or for the wrong purpose.', 'Continuing after a reminder to refocus.'],
+      },
+      {
+        color: 'red',
+        label: older ? 'Stop and Reset' : younger ? 'Stop and Get Help' : 'Stop and Reset',
+        descriptors: younger
+          ? ['Using materials in an unsafe way.', 'Hurting another person or their work.', 'Continuing after the stop signal.']
+          : older
+            ? ['Safety, another person, or the learning space is at risk.', 'Directions are repeatedly ignored after a private reset cue.', 'The activity cannot continue safely without a reset.']
+            : ['Using materials or equipment in an unsafe way.', 'Hurting another person or damaging their work.', 'Continuing the behavior after a stop-and-reset direction.'],
+      },
+    ],
+    move_up_steps: younger
+      ? ['Stop and put materials down.', 'Take one slow breath.', 'Show the ready position.', 'Check with the teacher and rejoin.']
+      : older
+        ? ['Pause the activity and move to the agreed reset space.', 'Name the action that needs to change.', 'Choose the specific action that will make rejoining safe and productive.', 'Check in briefly, then return to the task.']
+        : ['Pause and put materials or equipment in a safe place.', 'Take a breath and name what needs to change.', 'Show the expected ready behavior.', 'Check in with the teacher and rejoin the activity.'],
+  }
+}
 
 export default function ClassroomManagementGenerator() {
   const { isTrial, isExpired } = useTrial()
@@ -86,8 +135,16 @@ export default function ClassroomManagementGenerator() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [saveStatus, setSaveStatus] = useState('idle')
+  const [parentNoteCopied, setParentNoteCopied] = useState(false)
+  const outputRef = useRef(null)
 
   const theme = THEMES.find((t) => t.id === themeId) ?? THEMES[0]
+  const selectedOutput = OUTPUT_TYPES.find((output) => output.id === outputType) ?? OUTPUT_TYPES[0]
+
+  useEffect(() => {
+    if (!card) return
+    window.requestAnimationFrame(() => outputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
+  }, [card])
 
   const setGoal = (i, val) => setGoals((prev) => prev.map((g, idx) => (idx === i ? val : g)))
   const addGoal = () => setGoals((prev) => (prev.length >= 4 ? prev : [...prev, '']))
@@ -97,6 +154,7 @@ export default function ClassroomManagementGenerator() {
     e.preventDefault()
     setError(null)
     setSaveStatus('idle')
+    setParentNoteCopied(false)
 
     // Static templates (ABC Sheet, CICO Tracker) — assemble locally, no edge function.
     if (outputType === 'abc-sheet') {
@@ -144,7 +202,9 @@ export default function ClassroomManagementGenerator() {
         response: noteResponse.trim(),
         tone: noteTone,
       })
-      setCard(result)
+      setCard(outputType === 'behavior-chart' && !behaviorChartIsComplete(result)
+        ? fallbackBehaviorChart(gradeBand, classContext)
+        : result)
     } catch (err) {
       setError(err.message ?? 'Generation failed')
     } finally {
@@ -169,6 +229,22 @@ export default function ClassroomManagementGenerator() {
     }
   }
 
+  async function handleCopyParentNote() {
+    if (!card || card.usable === false) return
+    const signature = signatureName.trim() || teacherName.trim() || 'Your child’s teacher'
+    const text = [
+      card.title,
+      card.greeting,
+      ...(card.paragraphs ?? []),
+      card.closing,
+      signature,
+      classContext.trim(),
+    ].filter(Boolean).join('\n\n')
+    await navigator.clipboard.writeText(text)
+    setParentNoteCopied(true)
+    window.setTimeout(() => setParentNoteCopied(false), 2000)
+  }
+
   return (
     <div className="space-y-8">
       {/* Back to modules */}
@@ -185,14 +261,14 @@ export default function ClassroomManagementGenerator() {
           </div>
           <div>
             <h1 className="text-2xl font-semibold text-ink-50">Classroom Management</h1>
-            <p className="text-sm text-ink-400">Printable quick-reference cards for large-group specials classes</p>
+            <p className="text-sm text-ink-400">Printable behavior supports and teacher-ready tools for large-group specials classes</p>
           </div>
         </div>
         <Link
           to="/my-classroom-cards"
           className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-ink-800 px-3 py-1.5 text-sm font-medium text-ink-300 hover:border-ink-600"
         >
-          <FolderOpen size={15} /> My cards
+          <FolderOpen size={15} /> Saved tools
         </Link>
       </div>
 
@@ -218,7 +294,7 @@ export default function ClassroomManagementGenerator() {
                   <button
                     key={o.id}
                     type="button"
-                    onClick={() => { setOutputType(o.id); setCard(null); setSaveStatus('idle') }}
+                    onClick={() => { setOutputType(o.id); setCard(null); setSaveStatus('idle'); setParentNoteCopied(false) }}
                     className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${
                       outputType === o.id ? 'border-indigo-400 bg-indigo-500/15 text-ink-300' : 'border-ink-800 text-ink-400 hover:border-ink-600'
                     }`}
@@ -226,6 +302,10 @@ export default function ClassroomManagementGenerator() {
                     {o.label}
                   </button>
                 ))}
+              </div>
+              <div className="mt-3 rounded-xl border border-indigo-500/25 bg-indigo-500/10 px-4 py-3">
+                <p className="text-xs font-bold uppercase tracking-wide text-indigo-300">What this makes</p>
+                <p className="mt-1 text-sm leading-relaxed text-ink-300">{selectedOutput.description}</p>
               </div>
             </div>
 
@@ -352,7 +432,7 @@ export default function ClassroomManagementGenerator() {
               <>
                 <div className="flex items-start gap-2 rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-3 py-2 text-xs leading-relaxed text-emerald-300">
                   <ShieldCheck size={14} className="mt-0.5 shrink-0" />
-                  <span>The student display name is anonymized before AI generation. Do not include other student names, diagnoses, medical details, or copied records in your description.</span>
+                  <span>The student display name is anonymized before AI generation. PlansK12 drafts the note but never emails the family. Review and personalize it before you copy or print it. Do not include other student names, diagnoses, medical details, or copied records.</span>
                 </div>
                 <div>
                   <label className="mb-2 block text-sm font-medium text-ink-200">Note type</label>
@@ -573,7 +653,7 @@ export default function ClassroomManagementGenerator() {
 
           {/* Generated output */}
           {card && (
-            <div className="space-y-5">
+            <div ref={outputRef} className="scroll-mt-20 space-y-5">
               {outputType === 'behavior-chart' ? (
                 <BehaviorChartRenderer chart={card} teacherName={teacherName} gradeBand={gradeBand} classContext={classContext} accentHex={theme.hex} />
               ) : outputType === 'reflection-form' ? (
@@ -591,6 +671,16 @@ export default function ClassroomManagementGenerator() {
               )}
 
               <div className="no-print flex flex-wrap items-center gap-3">
+                {outputType === 'parent-note' && card.usable !== false && (
+                  <button
+                    type="button"
+                    onClick={handleCopyParentNote}
+                    className="inline-flex items-center gap-2 rounded-lg border border-indigo-500/40 px-4 py-2 text-sm font-semibold text-indigo-300 transition-colors hover:bg-indigo-500/10"
+                  >
+                    {parentNoteCopied ? <Check size={16} /> : <Copy size={16} />}
+                    {parentNoteCopied ? 'Copied' : 'Copy for email'}
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => window.print()}
@@ -604,7 +694,7 @@ export default function ClassroomManagementGenerator() {
                   disabled={saveStatus !== 'idle'}
                   className="inline-flex items-center gap-2 rounded-lg border border-ink-700 px-4 py-2 text-sm font-medium text-ink-200 transition-colors hover:border-ink-500 disabled:opacity-60"
                 >
-                  {saveStatus === 'saved' ? <><Check size={16} /> Saved</> : saveStatus === 'saving' ? <><Loader2 size={16} className="animate-spin" /> Saving…</> : <><Save size={16} /> Save to my cards</>}
+                  {saveStatus === 'saved' ? <><Check size={16} /> Saved</> : saveStatus === 'saving' ? <><Loader2 size={16} className="animate-spin" /> Saving…</> : <><Save size={16} /> Save to saved tools</>}
                 </button>
               </div>
             </div>

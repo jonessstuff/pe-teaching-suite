@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Library, Sparkles, Layers, BookOpen, BookMarked, ClipboardList, CalendarDays, ArrowRight, ArrowLeft, Loader2, BarChart3, CalendarRange, FileInput, ScrollText, PartyPopper, Flame, BookCheck, Wrench } from 'lucide-react'
+import { Library, Sparkles, Layers, BookOpen, BookMarked, ClipboardList, CalendarDays, ArrowRight, ArrowLeft, BarChart3, CalendarRange, FileInput, ScrollText, PartyPopper, Flame, BookCheck, Wrench } from 'lucide-react'
 import { listLessons } from '../services/lessonsService'
-import LessonCard from '../components/lesson/LessonCard'
 import RecentLessonsPanel from '../components/lesson/RecentLessonsPanel'
 
 export default function LibraryHome() {
@@ -16,8 +15,6 @@ export default function LibraryHome() {
       )))
       .catch((err) => setError(err.message))
   }, [])
-
-  const recent = (lessons ?? []).slice(0, 3)
 
   return (
     <div className="space-y-10">
@@ -196,7 +193,7 @@ export default function LibraryHome() {
           </div>
         </Link>
 
-        <Link to="/assessments" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-indigo-500/40">
+        <Link to="/assessments?module=Library%20%26%20Media" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-indigo-500/40">
           <div className="flex items-start justify-between">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-500/15">
               <BookCheck size={22} className="text-indigo-400" />
@@ -209,7 +206,7 @@ export default function LibraryHome() {
           </div>
         </Link>
 
-        <Link to="/standards-tracker" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-violet-500/40">
+        <Link to="/standards-tracker?module=Library%20%26%20Media" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-violet-500/40">
           <div className="flex items-start justify-between">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-500/15">
               <BarChart3 size={22} className="text-violet-400" />
@@ -222,7 +219,7 @@ export default function LibraryHome() {
           </div>
         </Link>
 
-        <Link to="/pacing-guide" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-teal-500/40">
+        <Link to="/pacing-guide?module=Library%20%26%20Media" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-teal-500/40">
           <div className="flex items-start justify-between">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-500/15">
               <CalendarRange size={22} className="text-teal-400" />
@@ -235,7 +232,7 @@ export default function LibraryHome() {
           </div>
         </Link>
 
-        <Link to="/import" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-rose-500/40">
+        <Link to="/import?subject=library&amp;module=Library%20%26%20Media" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-rose-500/40">
           <div className="flex items-start justify-between">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-rose-500/15">
               <FileInput size={22} className="text-rose-400" />
@@ -248,7 +245,7 @@ export default function LibraryHome() {
           </div>
         </Link>
 
-        <Link to="/eoy-narrative" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-sky-500/40">
+        <Link to="/eoy-narrative?module=Library%20%26%20Media" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-sky-500/40">
           <div className="flex items-start justify-between">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-500/15">
               <ScrollText size={22} className="text-sky-400" />
@@ -261,7 +258,7 @@ export default function LibraryHome() {
           </div>
         </Link>
 
-        <Link to="/activity-bank" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-yellow-500/40">
+        <Link to="/activity-bank?module=Library%20%26%20Media" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-yellow-500/40">
           <div className="flex items-start justify-between">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-yellow-500/15">
               <PartyPopper size={22} className="text-yellow-400" />
@@ -273,7 +270,7 @@ export default function LibraryHome() {
             <p className="mt-0.5 text-sm text-ink-500">Low-prep activities for any occasion</p>
           </div>
         </Link>
-        <Link to="/warm-up-generator" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-orange-500/40">
+        <Link to="/warm-up-generator?module=Library%20%26%20Media" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-orange-500/40">
           <div className="flex items-start justify-between">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-orange-500/15">
               <Flame size={22} className="text-orange-400" />

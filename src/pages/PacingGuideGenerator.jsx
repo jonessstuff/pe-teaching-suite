@@ -7,6 +7,8 @@ import { createGuide } from '../services/pacingGuideService'
 import PacingGuideRenderer from '../components/renderers/PacingGuideRenderer'
 import { useTrial } from '../context/TrialContext'
 import UpgradeBanner from '../components/UpgradeBanner'
+import useModuleToolContext from '../hooks/useModuleToolContext'
+import ModuleToolContext from '../components/ModuleToolContext'
 
 const SUBJECTS = PLANNING_SUBJECTS
 const GRADES = [
@@ -22,6 +24,8 @@ export default function PacingGuideGenerator() {
   const navigate = useNavigate()
   const { isTrial, isExpired, openPaywall } = useTrial()
   const gated = isTrial || isExpired
+  const moduleContext = useModuleToolContext(SUBJECTS)
+  const [showSubjects, setShowSubjects] = useState(false)
   const [form, setForm] = useState({
     subject: 'PE & Health',
     grade: 5,
@@ -38,6 +42,7 @@ export default function PacingGuideGenerator() {
   const [quarters, setQuarters] = useState([])
   const [error, setError] = useState(null)
   const [saveStatus, setSaveStatus] = useState('idle')
+  const effectiveSubject = moduleContext.active && !showSubjects ? moduleContext.subject : form.subject
 
   async function handleGenerate(e) {
     e.preventDefault()
@@ -54,6 +59,7 @@ export default function PacingGuideGenerator() {
         setProgress(`Generating Quarter ${qi + 1} of ${quartersToGenerate}…`)
         const result = await generatePacingGuide({
           ...form,
+          subject: effectiveSubject,
           quarterIndex: qi,
           totalQuarters: 4,
           previousQuarters: generated,
@@ -76,7 +82,7 @@ export default function PacingGuideGenerator() {
       const guideData = {
         quarters,
         meta: {
-          subject: form.subject,
+          subject: effectiveSubject,
           grade: form.grade,
           state: form.state,
           schoolYearStart: form.schoolYearStart,
@@ -86,8 +92,8 @@ export default function PacingGuideGenerator() {
           topics: form.topics,
         },
       }
-      const saved = await createGuide({
-        name: form.name || `${form.subject} — Grade ${form.grade === 0 ? 'K' : form.grade} Pacing Guide`,
+      await createGuide({
+        name: form.name || `${effectiveSubject} — Grade ${form.grade === 0 ? 'K' : form.grade} Pacing Guide`,
         guideData,
       })
       setSaveStatus('saved')
@@ -101,7 +107,7 @@ export default function PacingGuideGenerator() {
   return (
     <div className="space-y-8">
       <div>
-        <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors mb-3">
+        <Link to={moduleContext.homePath} className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors mb-3">
           <ArrowLeft size={14} /> Back
         </Link>
         <div className="flex items-center gap-3">
@@ -115,10 +121,15 @@ export default function PacingGuideGenerator() {
         </div>
       </div>
 
+      <ModuleToolContext context={moduleContext} expanded={showSubjects} onToggle={() => {
+        if (!showSubjects && moduleContext.subject) setForm((value) => ({ ...value, subject: moduleContext.subject }))
+        setShowSubjects((value) => !value)
+      }} />
+
       {status !== 'done' && (
         <form onSubmit={handleGenerate} className="space-y-5 max-w-2xl">
           {/* Subject */}
-          <div>
+          {(!moduleContext.active || showSubjects) && <div>
             <label className="block text-sm font-medium text-ink-300 mb-2">Subject</label>
             <div className="flex flex-wrap gap-2">
               {SUBJECTS.map(s => (
@@ -128,7 +139,7 @@ export default function PacingGuideGenerator() {
                 </button>
               ))}
             </div>
-          </div>
+          </div>}
 
           {/* Grade */}
           <div>
@@ -217,7 +228,7 @@ export default function PacingGuideGenerator() {
         <div className="space-y-6">
           <div className="flex items-center gap-3 flex-wrap">
             <h2 className="text-lg font-semibold text-ink-50">
-              {form.subject} Pacing Guide — Grade {form.grade === 0 ? 'K' : form.grade}
+              {effectiveSubject} Pacing Guide — Grade {form.grade === 0 ? 'K' : form.grade}
             </h2>
             {status === 'done' && (
               <div className="ml-auto flex items-center gap-2">

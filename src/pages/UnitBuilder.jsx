@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { Layers, Sparkles, Loader2, Printer, ArrowLeft, CheckCircle2, FolderOpen } from 'lucide-react'
 import {
-  CORE_SUBJECTS, NEWER_SUBJECTS, CONTENT_SUBJECTS,
+  CORE_SUBJECTS, NEWER_SUBJECTS,
   gradeModel, numToBand,
   K5_GRADES, K12_GRADES, STEM_FOCUS_AREAS, LET_LEVELS,
   CTE_PATHWAYS, CTE_LEVELS, READING_SKILLS, EC_AGE_GROUPS,
@@ -11,6 +11,8 @@ import {
 import { createUnit, createLesson } from '../services/lessonsService'
 import { US_STATES } from '../constants/usStates'
 import UnitRenderer from '../components/renderers/UnitRenderer'
+import useModuleToolContext from '../hooks/useModuleToolContext'
+import ModuleToolContext from '../components/ModuleToolContext'
 
 const DAY_OPTIONS = [1, 2, 3, 4, 5]
 
@@ -69,10 +71,13 @@ function GradeToggle({ options, isSelected, onToggle, accent = 'bg-teal-500' }) 
 
 export default function UnitBuilder() {
   const [searchParams] = useSearchParams()
-  const preselected = SUBJECT_FROM_SLUG[searchParams.get('subject')] ?? 'PE & Health'
+  const supportedSubjects = [...CORE_SUBJECTS, ...Object.keys(NEWER_SUBJECTS)]
+  const moduleContext = useModuleToolContext(supportedSubjects)
+  const preselected = moduleContext.subject ?? SUBJECT_FROM_SLUG[searchParams.get('subject')] ?? 'PE & Health'
 
   // Form
   const [subject, setSubject] = useState(preselected)
+  const [showSubjects, setShowSubjects] = useState(false)
   const [coreGrades, setCoreGrades] = useState([]) // original 6: multi-band lesson per day
   const [grade, setGrade] = useState(null)          // newer modules: single grade
   const [dayCount, setDayCount] = useState(3)
@@ -247,7 +252,7 @@ export default function UnitBuilder() {
   return (
     <div className="max-w-2xl space-y-8">
       <div>
-        <Link to="/" className="mb-3 flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors">
+        <Link to={moduleContext.homePath} className="mb-3 flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors">
           <ArrowLeft size={14} /> All modules
         </Link>
         <div className="flex items-center gap-2">
@@ -265,11 +270,13 @@ export default function UnitBuilder() {
         </p>
       </div>
 
+      <ModuleToolContext context={moduleContext} expanded={showSubjects} onToggle={() => setShowSubjects((value) => !value)} />
+
       <form onSubmit={handleGenerate} className="space-y-6">
         {/* Subject */}
         <div className="card p-6 space-y-5">
           <h2 className="text-sm font-semibold text-ink-200">Subject</h2>
-          <div>
+          {(!moduleContext.active || showSubjects) && <div>
             <label className="mb-1 block text-sm text-ink-300" htmlFor="subject">Your subject</label>
             <select id="subject" value={subject} onChange={(e) => handleSubjectChange(e.target.value)} className="input-field">
               <optgroup label="Core specials">
@@ -279,7 +286,7 @@ export default function UnitBuilder() {
                 {Object.keys(NEWER_SUBJECTS).map((s) => <option key={s} value={s}>{s}</option>)}
               </optgroup>
             </select>
-          </div>
+          </div>}
 
           {subject === 'STEM' && (
             <div>

@@ -4,6 +4,9 @@ import { listPeriods, createPeriod, updatePeriod, deletePeriod } from '../servic
 import { getProfile } from '../services/profilesService'
 import { track } from '../lib/analytics'
 import { SUBJECT_AREAS, gradeLabel } from '../types/lessonObject'
+import { subjectMatchesFilter } from '../constants/modules'
+import useModuleToolContext from '../hooks/useModuleToolContext'
+import ModuleToolContext from '../components/ModuleToolContext'
 
 const GRADE_OPTIONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
@@ -17,6 +20,7 @@ const BLANK_FORM = {
 }
 
 export default function Schedule() {
+  const moduleContext = useModuleToolContext(SUBJECT_AREAS)
   const [periods, setPeriods] = useState(null)
   const [error, setError] = useState(null)
   const [formMode, setFormMode] = useState(null) // null | 'add' | 'edit'
@@ -24,6 +28,11 @@ export default function Schedule() {
   const [form, setForm] = useState(BLANK_FORM)
   const [saving, setSaving] = useState(false)
   const [formError, setFormError] = useState(null)
+  const [showAllPeriods, setShowAllPeriods] = useState(false)
+
+  const visiblePeriods = moduleContext.active && !showAllPeriods
+    ? (periods ?? []).filter((period) => subjectMatchesFilter(period.subject, moduleContext.moduleLabel))
+    : (periods ?? [])
 
   useEffect(() => {
     listPeriods()
@@ -32,7 +41,7 @@ export default function Schedule() {
   }, [])
 
   function openAdd() {
-    setForm(BLANK_FORM)
+    setForm({ ...BLANK_FORM, subject: moduleContext.subject ?? BLANK_FORM.subject })
     setEditingId(null)
     setFormMode('add')
     setFormError(null)
@@ -123,7 +132,7 @@ export default function Schedule() {
     <div className="max-w-2xl space-y-6">
       <div className="flex items-end justify-between">
         <div>
-          <p className="label-eyebrow mb-2">Schedule</p>
+          <p className="label-eyebrow mb-2">{moduleContext.active ? `${moduleContext.moduleTitle} workspace` : 'Schedule'}</p>
           <h1 className="text-2xl font-semibold">My Schedule</h1>
         </div>
         {formMode === null && (
@@ -133,6 +142,8 @@ export default function Schedule() {
           </button>
         )}
       </div>
+
+      <ModuleToolContext context={moduleContext} mode="view" expanded={showAllPeriods} onToggle={() => setShowAllPeriods((value) => !value)} />
 
       {error && (
         <div className="card border-red-500/30 p-4 text-sm text-red-400">{error}</div>
@@ -165,7 +176,11 @@ export default function Schedule() {
           </div>
 
           <FormField label="Subject">
-            <div className="flex flex-wrap gap-2">
+            {moduleContext.active && !showAllPeriods ? (
+              <div className="inline-flex rounded-lg border border-accent-500/30 bg-accent-500/10 px-3 py-2 text-sm font-semibold text-accent-700 dark:text-accent-300">
+                {moduleContext.moduleTitle}
+              </div>
+            ) : <div className="flex flex-wrap gap-2">
               {SUBJECT_AREAS.map((s) => (
                 <button
                   key={s}
@@ -180,7 +195,7 @@ export default function Schedule() {
                   {s}
                 </button>
               ))}
-            </div>
+            </div>}
           </FormField>
 
           <FormField label="Grade bands">
@@ -248,9 +263,9 @@ export default function Schedule() {
         </div>
       )}
 
-      {periods !== null && periods.length === 0 && formMode === null && (
+      {periods !== null && visiblePeriods.length === 0 && formMode === null && (
         <div className="card p-8 text-center">
-          <p className="text-ink-500">No class periods yet.</p>
+          <p className="text-ink-500">{moduleContext.active && !showAllPeriods ? `No ${moduleContext.moduleTitle} class periods yet.` : 'No class periods yet.'}</p>
           <button onClick={openAdd} className="btn-primary mt-4 inline-flex">
             <Plus size={16} />
             Add your first period
@@ -258,9 +273,9 @@ export default function Schedule() {
         </div>
       )}
 
-      {periods !== null && periods.length > 0 && (
+      {periods !== null && visiblePeriods.length > 0 && (
         <div className="space-y-3">
-          {periods.map((period) => (
+          {visiblePeriods.map((period) => (
             <div
               key={period.id}
               className={`card flex items-center justify-between gap-4 px-5 py-4 ${

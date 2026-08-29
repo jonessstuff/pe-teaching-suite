@@ -8,6 +8,8 @@ import { useTrial } from '../context/TrialContext'
 import { WATERMARK_TEXT } from '../services/trialService'
 import { printArtifact } from '../lib/printArtifact'
 import WarmupRenderer from '../components/renderers/WarmupRenderer'
+import useModuleToolContext from '../hooks/useModuleToolContext'
+import ModuleToolContext from '../components/ModuleToolContext'
 
 const SUBJECTS = PLANNING_SUBJECTS
 const GRADES = [
@@ -21,7 +23,9 @@ const DURATIONS = [3, 5, 10]
 
 export default function WarmupGenerator() {
   const { requestExport, isPaid } = useTrial()
+  const moduleContext = useModuleToolContext(SUBJECTS)
   const [subject, setSubject] = useState('PE & Health')
+  const [showSubjects, setShowSubjects] = useState(false)
   const [grades, setGrades] = useState([5])
   const [duration, setDuration] = useState(5)
   const [equipment, setEquipment] = useState('')
@@ -33,7 +37,8 @@ export default function WarmupGenerator() {
   const printRef = useRef(null)
 
   const gradeLabel = [...grades].sort((a, b) => a - b).map(g => (g === 0 ? 'K' : g)).join(', ')
-  const heading = `Warm-up options — ${subject}, Grade${grades.length > 1 ? 's' : ''} ${gradeLabel}`
+  const effectiveSubject = moduleContext.active && !showSubjects ? moduleContext.subject : subject
+  const heading = `Warm-up options — ${effectiveSubject}, Grade${grades.length > 1 ? 's' : ''} ${gradeLabel}`
 
   function toggleGrade(v) {
     setGrades(gs => gs.includes(v) ? gs.filter(x => x !== v) : [...gs, v])
@@ -47,7 +52,7 @@ export default function WarmupGenerator() {
     setWarmups(null)
     setSaved(false)
     try {
-      const result = await generateWarmup({ subject, gradeBand: grades, duration, equipment: equipment.trim() })
+      const result = await generateWarmup({ subject: effectiveSubject, gradeBand: grades, duration, equipment: equipment.trim() })
       setWarmups(result.warmup_options)
       setStatus('done')
     } catch (err) {
@@ -67,7 +72,7 @@ export default function WarmupGenerator() {
     try {
       await createAssessment({
         title: heading.replace('Warm-up options — ', ''),
-        subject,
+        subject: effectiveSubject,
         gradeBands: grades,
         assessmentType: 'warmup',
         content: warmups,
@@ -88,7 +93,7 @@ export default function WarmupGenerator() {
   return (
     <div className="space-y-8">
       <div>
-        <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors mb-3">
+        <Link to={moduleContext.homePath} className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors mb-3">
           <ArrowLeft size={14} /> Back
         </Link>
         <div className="flex items-center gap-3">
@@ -102,9 +107,14 @@ export default function WarmupGenerator() {
         </div>
       </div>
 
+      <ModuleToolContext context={moduleContext} expanded={showSubjects} onToggle={() => {
+        if (!showSubjects && moduleContext.subject) setSubject(moduleContext.subject)
+        setShowSubjects((value) => !value)
+      }} />
+
       <form onSubmit={handleGenerate} className="space-y-5 max-w-2xl">
         {/* Subject */}
-        <div>
+        {(!moduleContext.active || showSubjects) && <div>
           <label className="block text-sm font-medium text-ink-300 mb-2">Subject</label>
           <div className="flex flex-wrap gap-2">
             {SUBJECTS.map(s => (
@@ -114,7 +124,7 @@ export default function WarmupGenerator() {
               </button>
             ))}
           </div>
-        </div>
+        </div>}
 
         {/* Grade — multi-select (pick one grade or a range) */}
         <div>

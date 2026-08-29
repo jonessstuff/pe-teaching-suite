@@ -25,6 +25,7 @@ export default defineConfig({
       '../services/assessmentService': path.resolve(__dirname, 'src/preview/mockAssessmentService.js'),
       '../services/participationService': path.resolve(__dirname, 'src/preview/mockParticipationService.js'),
       '../services/runTrackerService': path.resolve(__dirname, 'src/preview/mockRunTrackerService.js'),
+      '../services/classroomManagementService': path.resolve(__dirname, 'src/preview/mockClassroomManagementService.js'),
     },
   },
   build: {

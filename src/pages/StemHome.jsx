@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { FlaskConical, Sparkles, BookOpen, BookMarked, CalendarDays, ClipboardList, Layers, ArrowRight, ArrowLeft, Loader2, BarChart3, CalendarRange, FileInput, ScrollText, PartyPopper, Flame, BookCheck, Wrench } from 'lucide-react'
+import { FlaskConical, Sparkles, BookOpen, BookMarked, CalendarDays, ClipboardList, Layers, ArrowRight, ArrowLeft, BarChart3, CalendarRange, FileInput, ScrollText, PartyPopper, Flame, BookCheck, Wrench } from 'lucide-react'
 import { listLessons } from '../services/lessonsService'
-import LessonCard from '../components/lesson/LessonCard'
 import RecentLessonsPanel from '../components/lesson/RecentLessonsPanel'
 
 export default function StemHome() {
@@ -16,8 +15,6 @@ export default function StemHome() {
       )))
       .catch((err) => setError(err.message))
   }, [])
-
-  const recent = (lessons ?? []).slice(0, 3)
 
   return (
     <div className="space-y-10">
@@ -198,49 +195,49 @@ export default function StemHome() {
           </div>
         </Link>
 
-        <Link to="/assessments" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-indigo-500/40">
+        <Link to="/assessments?module=STEM" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-indigo-500/40">
           <div className="flex items-start justify-between">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-500/15"><BookCheck size={22} className="text-indigo-400" /></div>
             <ArrowRight size={18} className="mt-0.5 text-ink-700 transition-transform group-hover:translate-x-1 group-hover:text-indigo-400" />
           </div>
           <div><p className="font-semibold text-ink-50">Assessment Bank</p><p className="mt-0.5 text-sm text-ink-500">Quizzes, rubrics, and exit tickets</p></div>
         </Link>
-        <Link to="/standards-tracker" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-violet-500/40">
+        <Link to="/standards-tracker?module=STEM" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-violet-500/40">
           <div className="flex items-start justify-between">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-500/15"><BarChart3 size={22} className="text-violet-400" /></div>
             <ArrowRight size={18} className="mt-0.5 text-ink-700 transition-transform group-hover:translate-x-1 group-hover:text-violet-400" />
           </div>
           <div><p className="font-semibold text-ink-50">Standards Tracker</p><p className="mt-0.5 text-sm text-ink-500">See which standards you&rsquo;ve covered</p></div>
         </Link>
-        <Link to="/pacing-guide" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-teal-500/40">
+        <Link to="/pacing-guide?module=STEM" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-teal-500/40">
           <div className="flex items-start justify-between">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-500/15"><CalendarRange size={22} className="text-teal-400" /></div>
             <ArrowRight size={18} className="mt-0.5 text-ink-700 transition-transform group-hover:translate-x-1 group-hover:text-teal-400" />
           </div>
           <div><p className="font-semibold text-ink-50">Pacing Guide</p><p className="mt-0.5 text-sm text-ink-500">Full-year scope &amp; sequence</p></div>
         </Link>
-        <Link to="/import" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-rose-500/40">
+        <Link to="/import?subject=stem&amp;module=STEM" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-rose-500/40">
           <div className="flex items-start justify-between">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-rose-500/15"><FileInput size={22} className="text-rose-400" /></div>
             <ArrowRight size={18} className="mt-0.5 text-ink-700 transition-transform group-hover:translate-x-1 group-hover:text-rose-400" />
           </div>
           <div><p className="font-semibold text-ink-50">Import &amp; Enhance</p><p className="mt-0.5 text-sm text-ink-500">Paste an existing lesson and upgrade it</p></div>
         </Link>
-        <Link to="/eoy-narrative" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-sky-500/40">
+        <Link to="/eoy-narrative?module=STEM" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-sky-500/40">
           <div className="flex items-start justify-between">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-500/15"><ScrollText size={22} className="text-sky-400" /></div>
             <ArrowRight size={18} className="mt-0.5 text-ink-700 transition-transform group-hover:translate-x-1 group-hover:text-sky-400" />
           </div>
           <div><p className="font-semibold text-ink-50">EOY Narrative</p><p className="mt-0.5 text-sm text-ink-500">Professional end-of-year summary</p></div>
         </Link>
-        <Link to="/activity-bank" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-yellow-500/40">
+        <Link to="/activity-bank?module=STEM" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-yellow-500/40">
           <div className="flex items-start justify-between">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-yellow-500/15"><PartyPopper size={22} className="text-yellow-400" /></div>
             <ArrowRight size={18} className="mt-0.5 text-ink-700 transition-transform group-hover:translate-x-1 group-hover:text-yellow-400" />
           </div>
           <div><p className="font-semibold text-ink-50">Activity Bank</p><p className="mt-0.5 text-sm text-ink-500">Low-prep activities for any occasion</p></div>
         </Link>
-        <Link to="/warm-up-generator" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-orange-500/40">
+        <Link to="/warm-up-generator?module=STEM" className="card group flex flex-col gap-4 p-6 transition-colors hover:border-orange-500/40">
           <div className="flex items-start justify-between">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-orange-500/15"><Flame size={22} className="text-orange-400" /></div>
             <ArrowRight size={18} className="mt-0.5 text-ink-700 transition-transform group-hover:translate-x-1 group-hover:text-orange-400" />
