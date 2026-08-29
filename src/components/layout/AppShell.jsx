@@ -375,6 +375,7 @@ function Sidebar({ navigation }) {
 }
 
 function Topbar({ showSidebar, navigation }) {
+  const { isOwner } = useTrial()
   const goalsPath = navigation.type === 'module'
     ? withModuleContext('/smart-goals', navigation.config, navigation.slug)
     : navigation.type === 'pe'
@@ -392,6 +393,22 @@ function Topbar({ showSidebar, navigation }) {
       <div className="flex items-center gap-2">
         <TrialBadge />
         <DarkModeToggle />
+        {isOwner && (
+          <NavLink
+            to="/owner"
+            className={({ isActive }) =>
+              `flex h-10 w-10 items-center justify-center rounded-lg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500 ${
+                isActive
+                  ? 'bg-accent-500/10 text-accent-700'
+                  : 'text-ink-500 hover:bg-ink-900 hover:text-ink-100'
+              }`
+            }
+            aria-label="Growth & Retention"
+            title="Growth & Retention"
+          >
+            <LineChart size={20} strokeWidth={2} />
+          </NavLink>
+        )}
         <NavLink
           to={goalsPath}
           className={({ isActive }) =>
