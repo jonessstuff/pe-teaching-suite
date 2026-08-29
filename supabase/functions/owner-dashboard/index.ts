@@ -60,7 +60,7 @@ Deno.serve(async (req) => {
     const mrrCents = active.reduce((sum, sub) => sum + monthlyAmount(sub), 0);
 
     const since = new Date(Date.now() - 30 * 86400000).toISOString();
-    const [{ data: events }, { data: profiles }, { count: lessonCount }, { count: recentLessons }, { data: feedback }, { data: lessonActivity }, { data: sessions }, { data: contacts }, { data: activationEmails }, authUsers] = await Promise.all([
+    const [{ data: events }, { data: profiles }, { count: lessonCount }, { count: recentLessons }, { data: feedback }, { data: lessonActivity }, { data: sessions }, { data: contacts }, { data: activationEmails }, { data: trialEmails }, authUsers] = await Promise.all([
       admin.from("conversion_events").select("event_name, section, placement, created_at").gte("created_at", since),
       admin.from("profiles").select("id, full_name, created_at, subscription_status, stripe_customer_id, teaching_areas, is_owner"),
       admin.from("lessons").select("id", { count: "exact", head: true }),
@@ -70,6 +70,7 @@ Deno.serve(async (req) => {
       admin.from("active_sessions").select("user_id, last_seen_at"),
       admin.from("owner_customer_contacts").select("user_id, last_contacted_at, follow_up_at, outcome, note"),
       admin.from("activation_emails").select("user_id, sent_at"),
+      admin.from("trial_emails").select("user_id, email_type, sent_at"),
       admin.auth.admin.listUsers({ page: 1, perPage: 1000 }),
     ]);
     const eventCount = (name: string) => (events ?? []).filter((e) => e.event_name === name).length;
@@ -90,7 +91,10 @@ Deno.serve(async (req) => {
     const activated = currentProfiles.filter((p) => lessonOwners.has(p.id)).length;
     const emailById = new Map((authUsers.data?.users ?? []).map((u) => [u.id, u.email ?? ""]));
     const contactById = new Map((contacts ?? []).map((row) => [row.user_id, row]));
-    const autoEmailById = new Map((activationEmails ?? []).map((row) => [row.user_id, row.sent_at]));
+    const autoEmailById = new Map<string, string>();
+    for (const row of [...(activationEmails ?? []), ...(trialEmails ?? [])]) {
+      if (!autoEmailById.has(row.user_id) || row.sent_at > autoEmailById.get(row.user_id)!) autoEmailById.set(row.user_id, row.sent_at);
+    }
     const lessonCounts = new Map<string, number>();
     for (const row of lessonActivity ?? []) lessonCounts.set(row.teacher_id, (lessonCounts.get(row.teacher_id) ?? 0) + 1);
     const customerRows = currentProfiles.map((p) => {

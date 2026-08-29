@@ -127,6 +127,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
     'Occupational Therapists', 'Physical Therapists', 'Speech-Language Pathologists',
     'Teacher of the Visually Impaired', 'Teacher of the Deaf & Hard of Hearing',
     'School Counselors', 'Intervention Planning', 'Student Support Team Activities',
+    'Adaptive PE',
   ])
   const allowQuizRubric = !NON_EVALUATIVE.has(subject)
   const isWorldLanguages = subject === 'World Languages'

@@ -407,9 +407,7 @@ export default function LessonDetail() {
           One insertion point for all ~30 modules — see LessonPrintFix. */}
       <LessonPrintFix lesson={lesson} />
 
-      {!isAPE && (
-        <SecondaryToolsPanel savedId={id} lessonObject={lo} subject={lesson.subject} />
-      )}
+      <SecondaryToolsPanel savedId={id} lessonObject={lo} subject={lesson.subject} />
 
       {isAPE ? (
         // Adaptive PE renders outside LessonBody, so apply the same display-time
