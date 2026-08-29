@@ -34,6 +34,19 @@ export async function generateLesson(input) {
   }
 }
 
+// The review build only needs these module forms to be navigable. Reuse the
+// stable canned lesson response so reviewers can inspect the local UI without
+// calling production AI services.
+export async function generateArtLesson(input = {}) { return generateLesson({ ...input, subject: 'Art', gradeBands: input.gradeBands ?? [3] }) }
+export async function generateMusicLesson(input = {}) { return generateLesson({ ...input, subject: 'Music', gradeBands: input.gradeBands ?? [3] }) }
+export async function generateLibraryLesson(input = {}) { return generateLesson({ ...input, subject: 'Library/Media', gradeBands: input.gradeBands ?? [3] }) }
+export async function generateMakerProject(input = {}) { return generateLesson({ ...input, subject: 'Library/Media', gradeBands: input.gradeBands ?? [3] }) }
+export async function generateCteLesson(input = {}) { return generateLesson({ ...input, subject: 'CTE', gradeBands: [] }) }
+export async function generateSlp(input = {}) { return generateLesson({ ...input, subject: 'Speech-Language Pathologists', gradeBands: input.gradeBands ?? [3] }) }
+export async function generateIntervention(input = {}) { return generateLesson({ ...input, subject: 'Intervention Planning', gradeBands: input.gradeBands ?? [3] }) }
+export async function generateSchoolCounselor(input = {}) { return generateLesson({ ...input, subject: 'School Counselors', gradeBands: input.gradeBands ?? [3] }) }
+export async function generateEarlyChildhood(input = {}) { return generateLesson({ ...input, subject: 'Early Childhood', gradeBands: input.gradeBands ?? [0] }) }
+
 export async function generateSubPlan() {
   await delay(800)
   return SUB_PLAN_FIELDS

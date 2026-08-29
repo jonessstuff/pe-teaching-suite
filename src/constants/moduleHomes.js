@@ -174,6 +174,11 @@ export const MODULE_HOMES = {
     generatePath: '/school-counselors/generate', generateTitle: 'Generate a guidance lesson',
     generateDesc: 'Classroom guidance across academic, career & social/emotional development',
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: LITE,
+    workspaceFeatures: [
+      { title: 'Whole-class guidance', desc: 'ASCA-aligned lessons for academic, career, and social-emotional development.' },
+      { title: 'Behavior and reflection supports', desc: 'Check-ins, scenarios, coping tools, reflection prompts, and classroom-ready visuals.' },
+      { title: 'Class and grade-level goals', desc: 'Plan measurable group SMART Goals while keeping optional personal goals within the larger goal.' },
+    ],
   },
   'esl-specialist': {
     subject: 'ESL/ELL Specialist', moduleLabel: 'ESL/ELL Specialist', title: 'ESL/ELL Specialist', Icon: Languages, accent: accent('fuchsia'),
@@ -216,6 +221,11 @@ export const MODULE_HOMES = {
     generatePath: '/early-childhood/generate', generateTitle: 'Generate a play-based plan',
     generateDesc: 'Learning centers, circle time & whole-child domains (toddlers–TK)',
     browseTitle: 'Browse my plans', browseNoun: 'plan', cards: LITE_SUB,
+    workspaceFeatures: [
+      { title: 'Centers and guided play', desc: 'Developmentally appropriate invitations, routines, transitions, and teacher prompts.' },
+      { title: 'Low-screen resources', desc: 'Printable picture cards, center signs, family connections, and hands-on materials.' },
+      { title: 'Observation and growth', desc: 'Whole-child observation ideas, class patterns, and optional individual notes without clinical claims.' },
+    ],
   },
   ecse: {
     subject: 'Early Childhood Special Education', moduleLabel: 'Early Childhood Special Education', title: 'Early Childhood Special Education', Icon: Baby, accent: accent('sage'),
@@ -253,6 +263,11 @@ export const MODULE_HOMES = {
     generatePath: '/slp/generate', generateTitle: 'Generate an activity plan',
     generateDesc: 'Articulation, language, fluency, social communication & AAC',
     browseTitle: 'Browse my activity plans', browseNoun: 'activity plan', cards: PRO,
+    workspaceFeatures: [
+      { title: 'Goal-aligned sessions', desc: 'Adaptable activities for articulation, language, fluency, social communication, and AAC.' },
+      { title: 'Visual and language supports', desc: 'Cue cards, modeling prompts, scaffolded practice, and printable student supports.' },
+      { title: 'Progress-ready documentation', desc: 'Observation prompts and progress-note support while preserving professional judgment.' },
+    ],
   },
   tvi: {
     subject: 'Teacher of the Visually Impaired', moduleLabel: 'Teacher of the Visually Impaired', title: 'Teacher of the Visually Impaired', Icon: ScanEye, accent: accent('cobalt'),
@@ -290,6 +305,11 @@ export const MODULE_HOMES = {
     generatePath: '/intervention/generate', generateTitle: 'Generate an intervention plan',
     generateDesc: 'Tiered Reading, Math or Behavior support from a described concern',
     browseTitle: 'Browse my plans', browseNoun: 'plan', cards: PRO,
+    workspaceFeatures: [
+      { title: 'Targeted small-group plans', desc: 'Reading, math, and behavior supports matched to the skill or concern described.' },
+      { title: 'Progress monitoring', desc: 'Define a baseline, measurable target, evidence source, and consistent check-in schedule.' },
+      { title: 'Decision-ready summaries', desc: 'See improvement, stalled growth, or regression and prepare clear MTSS/RTI team updates.' },
+    ],
   },
   'student-support-activities': {
     subject: 'Student Support Team Activities', moduleLabel: 'Student Support Team Activities', title: 'Student Support Team Activities', Icon: Users, accent: accent('plum'),
