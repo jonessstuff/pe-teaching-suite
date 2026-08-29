@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Loader2, Copy, Check, BarChart3, ExternalLink, RefreshCw, Sparkles, Lightbulb } from 'lucide-react'
+import { Loader2, Copy, Check, BarChart3, ExternalLink, RefreshCw, Sparkles, Lightbulb, X } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
 import { getProfile, updateProfile } from '../services/profilesService'
 import { releaseSession } from '../services/sessionService'
@@ -13,6 +13,7 @@ import { useTrial } from '../context/TrialContext'
 import { EXPORT_CAP, UPGRADE_URL } from '../services/trialService'
 import ActivateNowButton from '../components/ActivateNowButton'
 import SuggestionModal from '../components/SuggestionModal'
+import { saveCancellationFeedback } from '../services/ownerAnalyticsService'
 
 const SUBJECTS = ['PE', 'Health', 'Family Life', "Driver's Ed"]
 
@@ -49,6 +50,10 @@ export default function Settings() {
   const trial = useTrial()
   const [statusRefreshing, setStatusRefreshing] = useState(false)
   const [suggestOpen, setSuggestOpen] = useState(false)
+  const [cancelSurveyOpen, setCancelSurveyOpen] = useState(false)
+  const [cancelReason, setCancelReason] = useState('not_using')
+  const [cancelDetail, setCancelDetail] = useState('')
+  const [cancelSaving, setCancelSaving] = useState(false)
 
   async function handleRefreshStatus() {
     setStatusRefreshing(true)
@@ -191,6 +196,14 @@ export default function Settings() {
     }
   }
 
+  async function continueToCancellation() {
+    setCancelSaving(true)
+    try { await saveCancellationFeedback(cancelReason, cancelDetail) } catch { /* feedback must never block account control */ }
+    setCancelSurveyOpen(false)
+    setCancelSaving(false)
+    await handleOpenBillingPortal()
+  }
+
   return (
     <div className="max-w-lg space-y-6">
       <div>
@@ -254,7 +267,7 @@ export default function Settings() {
           </button>
           <button
             type="button"
-            onClick={handleOpenBillingPortal}
+            onClick={() => setCancelSurveyOpen(true)}
             disabled={portalLoading}
             className="btn-ghost text-red-400 hover:text-red-300 hover:bg-red-500/10"
           >
@@ -269,6 +282,8 @@ export default function Settings() {
           your plan, or update payment details.
         </p>
       </div>
+
+      {cancelSurveyOpen && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true" aria-label="Cancellation feedback"><div className="w-full max-w-md rounded-2xl border border-ink-800 bg-white p-6 shadow-xl dark:bg-ink-900"><div className="flex items-start justify-between gap-3"><div><h2 className="font-semibold text-ink-50">Before you go</h2><p className="mt-1 text-sm text-ink-400">What is the main reason you’re considering canceling?</p></div><button aria-label="Close" onClick={() => setCancelSurveyOpen(false)} className="btn-ghost p-2"><X size={17} /></button></div><select className="input-field mt-5" value={cancelReason} onChange={(e) => setCancelReason(e.target.value)}><option value="seasonal">I only need it during part of the school year</option><option value="price">The price</option><option value="not_using">I’m not using it enough</option><option value="missing_feature">It is missing something I need</option><option value="confusing">It is confusing or takes too many steps</option><option value="output_quality">The generated materials need improvement</option><option value="technical">A technical problem</option><option value="other">Another reason</option></select><textarea className="input-field mt-3 min-h-[100px]" maxLength={1000} placeholder="Optional: What could we improve?" value={cancelDetail} onChange={(e) => setCancelDetail(e.target.value)} /><p className="mt-2 text-xs text-ink-500">Your feedback goes directly to the teacher building PlansK12.</p><div className="mt-5 flex flex-col gap-2 sm:flex-row"><button onClick={continueToCancellation} disabled={cancelSaving} className="btn-primary flex-1">{cancelSaving && <Loader2 size={15} className="animate-spin" />} Continue to billing portal</button><button onClick={() => setCancelSurveyOpen(false)} className="btn-secondary">Keep my subscription</button></div></div></div>}
 
       {/* Profile form */}
       <div className="card p-6 space-y-5">

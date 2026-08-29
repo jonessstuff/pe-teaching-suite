@@ -12,6 +12,7 @@
  *    lesson text, student names, or accommodation details as properties.
  */
 import posthog from 'posthog-js'
+import { supabase } from './supabaseClient'
 
 const KEY = import.meta.env.VITE_POSTHOG_KEY
 const HOST = import.meta.env.VITE_POSTHOG_HOST || 'https://us.i.posthog.com'
@@ -70,6 +71,13 @@ export function resetAnalytics() {
  * No-ops inside the student-data area. Pass metadata only.
  */
 export function track(event, properties = {}) {
+  if (['demo_viewed', 'demo_section_viewed', 'demo_trial_clicked', 'demo_csv_downloaded'].includes(event)) {
+    supabase.from('conversion_events').insert({
+      event_name: event,
+      section: typeof properties.section === 'string' ? properties.section.slice(0, 30) : null,
+      placement: typeof properties.placement === 'string' ? properties.placement.slice(0, 30) : null,
+    }).then(() => {}).catch(() => {})
+  }
   if (!ready) return
   if (inStudentArea()) return
   posthog.capture(event, properties)

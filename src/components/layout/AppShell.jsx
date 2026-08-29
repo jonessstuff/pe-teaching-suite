@@ -12,6 +12,7 @@ import {
   ClipboardList,
   ClipboardCheck,
   BarChart3,
+  LineChart,
   Timer,
 } from 'lucide-react'
 import { useTheme } from '../../hooks/useTheme'
@@ -120,6 +121,7 @@ function DarkModeToggle() {
 }
 
 function Sidebar() {
+  const { isOwner } = useTrial()
   return (
     <aside className="hidden md:flex md:w-60 flex-col border-r border-ink-900 bg-white dark:bg-ink-950 px-4 py-6">
       <Link to="/" className="flex items-center gap-2.5 px-2 mb-8">
@@ -147,6 +149,7 @@ function Sidebar() {
       </nav>
 
       <div className="mt-auto pt-6 space-y-1">
+        {isOwner && <NavLink to="/owner" className={({ isActive }) => `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isActive ? 'bg-accent-500/10 text-accent-400' : 'text-ink-500 hover:bg-ink-900 hover:text-ink-100'}`}><LineChart size={18} /> Growth &amp; Retention</NavLink>}
         <NavLink
           to="/assessments"
           className={({ isActive }) =>

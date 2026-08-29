@@ -87,6 +87,7 @@ import SstActivityGenerator from './pages/SstActivityGenerator'
 import TheaterGenerator from './pages/TheaterGenerator'
 import DanceGenerator from './pages/DanceGenerator'
 import DemoMode from './pages/DemoMode'
+import OwnerDashboard from './pages/OwnerDashboard'
 
 // Module-level promise reference. When a genuine new login triggers claimSession(),
 // this holds the in-flight Promise so that any concurrent SIGNED_IN events (e.g.
@@ -427,6 +428,7 @@ function App() {
           <Route path="field-day" element={<FieldDayPlanner />} />
           <Route path="portfolio" element={<PortfolioBuilder />} />
           <Route path="district-report" element={<DistrictReport />} />
+          <Route path="owner" element={<OwnerDashboard />} />
           <Route path="settings" element={<Settings />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
