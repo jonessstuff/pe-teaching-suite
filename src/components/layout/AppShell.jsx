@@ -22,6 +22,7 @@ import TrialWatermark from '../TrialWatermark'
 import WhatsNewBanner from '../WhatsNewBanner'
 import SiteFooter from '../SiteFooter'
 import SetPasswordBanner from '../SetPasswordBanner'
+import GettingStartedChecklist from '../GettingStartedChecklist'
 
 const PE_ROUTE_PREFIXES = [
   '/pe-health',
@@ -76,6 +77,7 @@ export default function AppShell() {
         <main className="flex-1 px-6 pt-8 pb-24 md:px-10 md:pb-8">
           <div className="mx-auto max-w-6xl">
             <SetPasswordBanner />
+            <GettingStartedChecklist />
             <WhatsNewBanner />
             <Outlet />
             <TrialWatermark />

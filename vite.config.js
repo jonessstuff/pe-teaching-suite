@@ -29,6 +29,7 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff,woff2}'],
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         // Take control immediately and purge precache entries from prior
         // releases, so a new build's module list replaces the old one instead
         // of being served from a stale cache.
