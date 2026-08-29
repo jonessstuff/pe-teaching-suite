@@ -21,6 +21,7 @@ import { captureLessonGenerated } from "../_shared/analytics.js";
 import { reportError } from "../_shared/sentry.js";
 import { resolveStateName } from "../_shared/stateNames.js";
 import { classifiedPeStandards } from "../_shared/peSolStrand.js";
+import { anonymizeStudentSupports, restorePrivateLabels } from "../_shared/studentPrivacy.js";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -63,6 +64,9 @@ Deno.serve(async (req) => {
   }
 
   try {
+    const { promptStudents, replacements } = anonymizeStudentSupports(
+      Array.isArray(students) ? students : [],
+    );
     const { system, user } = buildLessonGenerationPrompt({
       gradeBands,
       unit: unit ?? "",
@@ -75,7 +79,7 @@ Deno.serve(async (req) => {
       classSize: Number(classSize) || 28,
       durationMinutes: Number(durationMinutes) || 45,
       targetStandard: targetStandard ?? "",
-      students: Array.isArray(students) ? students : [],
+      students: promptStudents,
       includeELL: includeELL === true,
       handsOn: handsOn === true,
       includeUdlEf: includeUdlEf === true,
@@ -84,7 +88,8 @@ Deno.serve(async (req) => {
     });
 
     const _t0 = Date.now();
-    const generated = await callClaudeForJson(system, user, 16000);
+    const anonymousResult = await callClaudeForJson(system, user, 16000);
+    const generated = restorePrivateLabels(anonymousResult, replacements);
     const durationMs = Date.now() - _t0;
 
     // Merge over a blank LessonObject so any fields the model omits

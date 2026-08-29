@@ -15,6 +15,15 @@ import {
   LineChart,
   Timer,
   Target,
+  Sparkles,
+  BookCheck,
+  PartyPopper,
+  Flame,
+  ScrollText,
+  FolderOpen,
+  BookMarked,
+  FileInput,
+  Layers,
 } from 'lucide-react'
 import { useTheme } from '../../hooks/useTheme'
 import { useTrial } from '../../context/TrialContext'
@@ -25,24 +34,54 @@ import SiteFooter from '../SiteFooter'
 import SetPasswordBanner from '../SetPasswordBanner'
 import GettingStartedChecklist from '../GettingStartedChecklist'
 import CustomerMilestone from '../CustomerMilestone'
+import { SPECIALTY_CONTEXTS } from '../../constants/moduleHomes'
 
+// Only PE-owned routes receive the PE navigation. Shared areas such as the
+// lesson library, schedule, rosters, and SMART goals belong to every specialty.
 const PE_ROUTE_PREFIXES = [
   '/pe-health',
   '/generate',
-  '/lessons',
-  '/schedule',
-  '/students',
   '/participation',
   '/run-tracker',
   '/curriculum-map',
   '/adaptive-pe',
 ]
 
-function usePERoute() {
-  const { pathname } = useLocation()
-  return PE_ROUTE_PREFIXES.some(
-    (prefix) => pathname === prefix || pathname.startsWith(prefix + '/')
-  )
+function matchesPrefix(pathname, prefix) {
+  return pathname === prefix || pathname.startsWith(prefix + '/')
+}
+
+function findModuleByLabel(value) {
+  if (!value) return null
+  return Object.entries(SPECIALTY_CONTEXTS).find(([slug, config]) =>
+    value === slug || value === config.moduleLabel || value === config.title
+  ) ?? null
+}
+
+function useNavigationContext() {
+  const { pathname, search } = useLocation()
+
+  if (PE_ROUTE_PREFIXES.some((prefix) => matchesPrefix(pathname, prefix))) {
+    return { type: 'pe' }
+  }
+
+  const routeSlug = pathname.split('/').filter(Boolean)[0]
+  if (routeSlug && SPECIALTY_CONTEXTS[routeSlug]) {
+    return { type: 'module', slug: routeSlug, config: SPECIALTY_CONTEXTS[routeSlug] }
+  }
+
+  // Shared tools keep the specialty workspace visible when opened from a
+  // module. This lets teachers move between goals, rosters, planning tools,
+  // and their module without losing their place.
+  const requestedModule = new URLSearchParams(search).get('module')
+  if (requestedModule === 'PE & Health') return { type: 'pe' }
+  const moduleEntry = findModuleByLabel(requestedModule)
+  if (moduleEntry) {
+    const [slug, config] = moduleEntry
+    return { type: 'module', slug, config }
+  }
+
+  return { type: 'general' }
 }
 
 const NAV_ITEMS = [
@@ -56,9 +95,77 @@ const NAV_ITEMS = [
   { to: '/curriculum-map', label: 'Year Plan', mobileLabel: 'Year', icon: CalendarRange, mobileHidden: true },
 ]
 
+const PE_NAV_ITEMS = [
+  { to: '/pe-health', label: 'PE Dashboard', mobileLabel: 'PE Home', icon: LayoutDashboard },
+  { to: '/students?module=PE%20%26%20Health', label: 'Classes & Rosters', mobileLabel: 'Classes', icon: Users2 },
+  { to: '/participation', label: 'Participation', mobileLabel: 'Participation', icon: ClipboardCheck },
+  { to: '/run-tracker', label: 'Run Tracker', mobileLabel: 'Run', icon: Timer },
+  { to: '/smart-goals?module=PE%20%26%20Health', label: 'SMART Goals', mobileLabel: 'Goals', icon: Target, mobileHidden: true },
+  { to: '/curriculum-map', label: 'Year Plan', mobileLabel: 'Year', icon: CalendarRange, mobileHidden: true },
+  { to: '/lessons?module=PE%20%26%20Health', label: 'PE Lesson Library', mobileLabel: 'Library', icon: BookOpen, mobileHidden: true },
+  { to: '/schedule?module=PE%20%26%20Health', label: 'My Schedule', mobileLabel: 'Schedule', icon: CalendarDays, mobileHidden: true },
+]
+
+const MODULE_TOOL_ITEMS = {
+  assessments: { to: '/assessments', label: 'Assessment Bank', icon: BookCheck },
+  standards: { to: '/standards-tracker', label: 'Standards Tracker', icon: BarChart3 },
+  pacing: { to: '/pacing-guide', label: 'Pacing Guide', icon: CalendarRange },
+  activity: { to: '/activity-bank', label: 'Activity Bank', icon: PartyPopper },
+  warmup: { to: '/warm-up-generator', label: 'Warm-up Generator', icon: Flame },
+  eoy: { to: '/eoy-narrative', label: 'EOY Narrative', icon: ScrollText },
+  portfolio: { to: '/portfolio', label: 'Portfolio Builder', icon: FolderOpen },
+  subbinder: { to: '/sub-binder', label: 'Sub Binder', icon: BookMarked, needsSubject: true },
+  import: { to: '/import', label: 'Import & Enhance', icon: FileInput, needsSubject: true },
+  unit: { to: '/build-unit', label: 'Unit Builder', icon: Layers, needsSubject: true },
+}
+
+function withModuleContext(to, config, slug, needsSubject = false) {
+  const params = new URLSearchParams()
+  if (needsSubject) params.set('subject', slug)
+  params.set('module', config.moduleLabel)
+  return `${to}?${params.toString()}`
+}
+
+function getModuleNavItems(slug, config) {
+  const browseTo = config.browsePath ?? `/lessons?module=${encodeURIComponent(config.moduleLabel)}`
+  const coreItems = [
+    { to: `/${slug}`, label: `${config.title} Home`, mobileLabel: 'Home', icon: LayoutDashboard, end: true },
+    { to: config.generatePath, label: 'Create New', mobileLabel: 'Create', icon: Sparkles },
+    { to: browseTo, label: 'My Lessons & Resources', mobileLabel: 'Lessons', icon: BookOpen },
+    { to: withModuleContext('/smart-goals', config, slug), label: 'SMART Goals', mobileLabel: 'Goals', icon: Target },
+    { to: withModuleContext('/students', config, slug), label: 'Classes & Rosters', mobileLabel: 'Classes', icon: Users2 },
+    { to: withModuleContext('/schedule', config, slug), label: 'My Schedule', mobileLabel: 'Schedule', icon: CalendarDays },
+  ]
+
+  const toolItems = (config.cards ?? [])
+    .filter((key) => !['goals', 'schedule'].includes(key))
+    .map((key) => {
+      const item = MODULE_TOOL_ITEMS[key]
+      if (!item) return null
+      return { ...item, to: withModuleContext(item.to, config, slug, item.needsSubject) }
+    })
+    .filter(Boolean)
+
+  const specialtyItems = (config.specialtyCards ?? []).map((item) => ({
+    to: item.to,
+    label: item.title,
+    icon: item.Icon,
+  }))
+
+  return { coreItems, toolItems: [...specialtyItems, ...toolItems] }
+}
+
 export default function AppShell() {
-  const showSidebar = usePERoute()
+  const navigation = useNavigationContext()
+  const showSidebar = navigation.type !== 'general'
+  const { pathname } = useLocation()
   const navigate = useNavigate()
+
+  // React Router intentionally preserves document scroll. For a multi-page
+  // teaching app that made a newly opened module appear halfway down the page.
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+  }, [pathname])
 
   // Honor a pending "update card" redirect set by the dunning login gate. Needed for
   // the magic-link sign-in path, which lands the user at the site root rather than at
@@ -74,22 +181,22 @@ export default function AppShell() {
 
   return (
     <div className="flex min-h-screen bg-ink-950">
-      {showSidebar && <Sidebar />}
+      {showSidebar && <Sidebar navigation={navigation} />}
       <div className="flex flex-1 flex-col min-w-0">
-        <Topbar showSidebar={showSidebar} />
+        <Topbar showSidebar={showSidebar} navigation={navigation} />
         <main className="flex-1 px-6 pt-8 pb-24 md:px-10 md:pb-8">
           <div className="mx-auto max-w-6xl">
             <SetPasswordBanner />
             <CustomerMilestone />
             <GettingStartedChecklist />
-            <WhatsNewBanner />
+            {(pathname === '/' || pathname === '/pe-health') && <WhatsNewBanner />}
             <Outlet />
             <TrialWatermark />
             <SiteFooter />
           </div>
         </main>
       </div>
-      <BottomTabBar />
+      <BottomTabBar navigation={navigation} />
       <PaywallModal />
     </div>
   )
@@ -126,16 +233,37 @@ function DarkModeToggle() {
   )
 }
 
-function Sidebar() {
+function Sidebar({ navigation }) {
   const { isOwner } = useTrial()
+  const isPE = navigation.type === 'pe'
+  const moduleNavigation = navigation.type === 'module'
+    ? getModuleNavItems(navigation.slug, navigation.config)
+    : null
+  const primaryItems = isPE ? PE_NAV_ITEMS : moduleNavigation.coreItems
+  const ModuleIcon = navigation.type === 'module' ? navigation.config.Icon : null
+
   return (
-    <aside className="hidden md:flex md:w-60 flex-col border-r border-ink-900 bg-white dark:bg-ink-950 px-4 py-6">
+    <aside className="hidden md:flex md:w-64 md:sticky md:top-0 md:h-screen flex-col overflow-y-auto border-r border-ink-900 bg-white dark:bg-ink-950 px-4 py-6">
       <Link to="/" className="flex items-center gap-2.5 px-2 mb-8">
         <PlansK12Logo />
       </Link>
 
+      {navigation.type === 'module' && (
+        <div className={`mb-5 rounded-xl border border-ink-800 p-3 ${navigation.config.accent.well}`}>
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/70 dark:bg-ink-950/60">
+              <ModuleIcon size={19} className={navigation.config.accent.text} />
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-bold text-ink-100">{navigation.config.title}</p>
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-ink-500">Specialty workspace</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <nav className="flex flex-col gap-1">
-        {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
+        {primaryItems.map(({ to, label, icon: Icon, end }) => (
           <NavLink
             key={to}
             to={to}
@@ -154,10 +282,34 @@ function Sidebar() {
         ))}
       </nav>
 
+      {moduleNavigation?.toolItems.length > 0 && (
+        <div className="mt-6 border-t border-ink-900 pt-5">
+          <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-500">More tools</p>
+          <nav className="flex flex-col gap-1">
+            {moduleNavigation.toolItems.map(({ to, label, icon: Icon }) => (
+              <NavLink
+                key={`${to}-${label}`}
+                to={to}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                    isActive
+                      ? 'bg-accent-500/10 text-accent-700'
+                      : 'text-ink-500 hover:bg-ink-950 hover:text-ink-100'
+                  }`
+                }
+              >
+                <Icon size={17} strokeWidth={2} />
+                {label}
+              </NavLink>
+            ))}
+          </nav>
+        </div>
+      )}
+
       <div className="mt-auto pt-6 space-y-1">
         {isOwner && <NavLink to="/owner" className={({ isActive }) => `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isActive ? 'bg-accent-500/10 text-accent-400' : 'text-ink-500 hover:bg-ink-900 hover:text-ink-100'}`}><LineChart size={18} /> Growth &amp; Retention</NavLink>}
-        <NavLink
-          to="/assessments"
+        {isPE && <NavLink
+          to="/assessments?module=PE%20%26%20Health"
           className={({ isActive }) =>
             `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
               isActive
@@ -168,7 +320,7 @@ function Sidebar() {
         >
           <ClipboardList size={18} strokeWidth={2} />
           Assessment Bank
-        </NavLink>
+        </NavLink>}
         <NavLink
           to="/district-report"
           className={({ isActive }) =>
@@ -200,7 +352,12 @@ function Sidebar() {
   )
 }
 
-function Topbar({ showSidebar }) {
+function Topbar({ showSidebar, navigation }) {
+  const goalsPath = navigation.type === 'module'
+    ? withModuleContext('/smart-goals', navigation.config, navigation.slug)
+    : navigation.type === 'pe'
+      ? '/smart-goals?module=PE%20%26%20Health'
+      : '/smart-goals'
   return (
     <header className="flex items-center justify-between border-b border-ink-900 bg-white dark:bg-ink-950 px-6 py-4 md:px-10">
       {/* Logo shows on mobile always; on desktop only when the sidebar isn't
@@ -214,7 +371,7 @@ function Topbar({ showSidebar }) {
         <TrialBadge />
         <DarkModeToggle />
         <NavLink
-          to="/smart-goals"
+          to={goalsPath}
           className={({ isActive }) =>
             `flex h-10 w-10 items-center justify-center rounded-lg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500 ${
               isActive
@@ -248,13 +405,18 @@ function Topbar({ showSidebar }) {
   )
 }
 
-function BottomTabBar() {
-  const isPERoute = usePERoute()
+function BottomTabBar({ navigation }) {
+  const isPERoute = navigation.type === 'pe'
+  const moduleItems = navigation.type === 'module'
+    ? getModuleNavItems(navigation.slug, navigation.config).coreItems.slice(0, 5)
+    : null
   const tabItems = isPERoute
-    ? [NAV_ITEMS[0], NAV_ITEMS[3], NAV_ITEMS[4], NAV_ITEMS[5]]
+    ? PE_NAV_ITEMS.slice(0, 4)
+    : moduleItems
+      ? moduleItems
     : [NAV_ITEMS[0], NAV_ITEMS[1], NAV_ITEMS[2], NAV_ITEMS[3]]
   return (
-    <nav aria-label={isPERoute ? 'PE tools' : 'Main navigation'} data-no-print className="bottom-nav md:hidden fixed bottom-0 inset-x-0 z-50 flex border-t border-ink-900 bg-white dark:bg-ink-950">
+    <nav aria-label={isPERoute ? 'PE tools' : navigation.type === 'module' ? `${navigation.config.title} tools` : 'Main navigation'} data-no-print className="bottom-nav md:hidden fixed bottom-0 inset-x-0 z-50 flex border-t border-ink-900 bg-white dark:bg-ink-950">
       {tabItems.map(({ to, label, mobileLabel, icon: Icon, end }) => (
         <NavLink
           key={to}

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Mail, Lightbulb } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import SuggestionModal from './SuggestionModal'
 
 // Contact goes to hello@ (the branded address) and Cc's plansk12.com@gmail.com —
@@ -19,6 +20,7 @@ export default function SiteFooter() {
         <div className="flex flex-col items-center justify-between gap-3 text-xs text-ink-500 sm:flex-row">
           <p>© {year} PlansK12</p>
           <div className="flex items-center gap-3">
+            <Link to="/privacy" className="text-xs font-semibold text-ink-500 hover:text-ink-200">Student data &amp; privacy</Link>
             <a href={CONTACT_MAILTO} className="btn-outline">
               <Mail size={15} />
               Contact

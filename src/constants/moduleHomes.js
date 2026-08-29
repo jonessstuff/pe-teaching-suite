@@ -3,6 +3,7 @@ import {
   BookOpen, Calculator, HeartHandshake, Blocks, PartyPopper, Target, Layers,
   Users, Presentation, Handshake, PersonStanding, Speech, ScanEye, Ear,
   Briefcase, Baby, Palette, Music2, Library, Wrench,
+  Atom,
 } from 'lucide-react'
 
 // Per-module config for the reusable <ModuleHome> shell.
@@ -424,5 +425,17 @@ export const MODULE_HOMES = {
       { title: 'Tutoring-ready sessions', desc: 'Timing, strategy instruction, guided practice, independent application, and review.' },
       { title: 'Score-growth goals', desc: 'Track baseline, target, practice evidence, improvement, and regression over time.', to: '/smart-goals' },
     ],
+  },
+}
+
+// STEM keeps its bespoke dashboard and generator, but participates in the
+// shared specialty navigation, filtered libraries, and SMART Goal context.
+// Keeping it out of MODULE_HOMES prevents the preview router from replacing
+// the bespoke <StemHome> route with the reusable <ModuleHome> shell.
+export const SPECIALTY_CONTEXTS = {
+  ...MODULE_HOMES,
+  stem: {
+    subject: 'STEM', moduleLabel: 'STEM', title: 'STEM', Icon: Atom, accent: accent('cobalt'),
+    generatePath: '/stem/generate', browsePath: '/stem/lessons', cards: FULL_SB,
   },
 }

@@ -86,6 +86,7 @@ import TheaterGenerator from './pages/TheaterGenerator'
 import DanceGenerator from './pages/DanceGenerator'
 import DemoMode from './pages/DemoMode'
 import OwnerDashboard from './pages/OwnerDashboard'
+import StudentDataPrivacy from './pages/StudentDataPrivacy'
 
 // Module-level promise reference. When a genuine new login triggers claimSession(),
 // this holds the in-flight Promise so that any concurrent SIGNED_IN events (e.g.
@@ -307,6 +308,7 @@ function App() {
           <Route path="/shared/:token" element={<SharedLesson />} />
           <Route path="/try" element={<TryFreeLesson />} />
           <Route path="/demo" element={<DemoMode />} />
+          <Route path="/privacy" element={<div className="min-h-screen bg-ink-950 px-6 py-10"><StudentDataPrivacy /></div>} />
           <Route path="/free-lesson/:token" element={<FreeLessonView />} />
           <Route path="/update-card" element={
             <CardUpdateGate>
@@ -425,6 +427,7 @@ function App() {
           <Route path="district-report" element={<DistrictReport />} />
           <Route path="owner" element={<OwnerDashboard />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="privacy" element={<StudentDataPrivacy />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

@@ -15,7 +15,10 @@ export function useProfileDefaults() {
   const gradeBands = gradeLevels.map(Number).filter((n) => Number.isFinite(n))
   return {
     ready: loaded && !!profile,
-    onboarded: !!profile?.onboarded_at,
+    // Older accounts may have saved teaching areas before onboarded_at was
+    // introduced. Treat that as completed setup so the large first-run panel
+    // does not keep appearing above every generator.
+    onboarded: !!profile?.onboarded_at || (profile?.teaching_areas?.length ?? 0) > 0,
     fullName: profile?.full_name ?? '',
     state: profile?.state ?? '',
     gradeLevels,

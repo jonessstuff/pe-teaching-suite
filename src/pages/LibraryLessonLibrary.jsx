@@ -167,7 +167,7 @@ export default function LibraryLessonLibrary() {
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {days.map((lesson) => (
-                    <LessonCard key={lesson.id} lesson={lesson} />
+                    <LessonCard key={lesson.id} lesson={lesson} moduleContext="Library & Media" />
                   ))}
                 </div>
               </div>
@@ -182,7 +182,7 @@ export default function LibraryLessonLibrary() {
               )}
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {sortedStandalone.map((lesson) => (
-                  <LessonCard key={lesson.id} lesson={lesson} />
+                  <LessonCard key={lesson.id} lesson={lesson} moduleContext="Library & Media" />
                 ))}
               </div>
             </div>

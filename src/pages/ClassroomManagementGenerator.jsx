@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ClipboardCheck, Sparkles, Loader2, Printer, Save, Check, ArrowLeft, FolderOpen } from 'lucide-react'
+import { ClipboardCheck, Sparkles, Loader2, Printer, Save, Check, ArrowLeft, FolderOpen, ShieldCheck } from 'lucide-react'
 import { useTrial } from '../context/TrialContext'
 import UpgradeBanner from '../components/UpgradeBanner'
 import { generateClassroomCard, createCard } from '../services/classroomManagementService'
@@ -350,6 +350,10 @@ export default function ClassroomManagementGenerator() {
             {/* Parent Note: incident vs positive + specifics + tone */}
             {outputType === 'parent-note' && (
               <>
+                <div className="flex items-start gap-2 rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-3 py-2 text-xs leading-relaxed text-emerald-300">
+                  <ShieldCheck size={14} className="mt-0.5 shrink-0" />
+                  <span>The student display name is anonymized before AI generation. Do not include other student names, diagnoses, medical details, or copied records in your description.</span>
+                </div>
                 <div>
                   <label className="mb-2 block text-sm font-medium text-ink-200">Note type</label>
                   <div className="flex flex-wrap gap-2">
@@ -375,14 +379,14 @@ export default function ClassroomManagementGenerator() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <label htmlFor="cm-pn-student" className="mb-1.5 block text-sm font-medium text-ink-200">
-                      Student name <span className="text-ink-500">(optional — blank uses “your child”)</span>
+                      Student display name or code <span className="text-ink-500">(optional — blank uses “your child”)</span>
                     </label>
                     <input
                       id="cm-pn-student"
                       type="text"
                       value={studentName}
                       onChange={(e) => setStudentName(e.target.value)}
-                      placeholder="e.g. Jordan"
+                      placeholder="e.g. Avery M. or 4X-03"
                       className="input-field"
                     />
                   </div>

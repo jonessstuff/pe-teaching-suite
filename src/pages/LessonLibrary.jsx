@@ -3,10 +3,21 @@ import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Sparkles, Loader2, Search, Star, FileDown, Lock } from 'lucide-react'
 import { listLessons } from '../services/lessonsService'
-import { MODULES, subjectInModule } from '../constants/modules'
+import { MODULES, subjectMatchesFilter } from '../constants/modules'
+import { SPECIALTY_CONTEXTS } from '../constants/moduleHomes'
 import { useTrial } from '../context/TrialContext'
 import { requestDocx, lessonsToDocxBlocks } from '../lib/docxExport'
 import LessonCard from '../components/lesson/LessonCard'
+
+function pluralize(noun) {
+  if (noun.endsWith('y')) return `${noun.slice(0, -1)}ies`
+  if (noun.endsWith('s')) return noun
+  return `${noun}s`
+}
+
+function capitalize(value) {
+  return value ? `${value[0].toUpperCase()}${value.slice(1)}` : value
+}
 
 export default function LessonLibrary() {
   const [searchParams] = useSearchParams()
@@ -14,6 +25,7 @@ export default function LessonLibrary() {
   // that filter when it matches a known module, else default to All.
   const requestedModule = searchParams.get('module')
   const initialFilter = MODULES.some((m) => m.label === requestedModule) ? requestedModule : 'All'
+  const isModuleLibrary = initialFilter !== 'All'
 
   const [lessons, setLessons] = useState(null)
   const [error, setError] = useState(null)
@@ -25,15 +37,29 @@ export default function LessonLibrary() {
   const [exporting, setExporting] = useState(false)
   const [exportError, setExportError] = useState(null)
 
+  const activeModuleFilter = isModuleLibrary ? initialFilter : moduleFilter
+  const selectedModuleHome = Object.values(SPECIALTY_CONTEXTS).find((config) => config.moduleLabel === activeModuleFilter)
+  const newLessonTo = activeModuleFilter === 'PE & Health'
+    ? '/generate'
+    : selectedModuleHome?.generatePath ?? '/'
+  const libraryNoun = selectedModuleHome?.browseNoun ?? 'lesson'
+  const libraryNounPlural = pluralize(libraryNoun)
+  const scopedLessons = (lessons ?? []).filter((lesson) =>
+    activeModuleFilter === 'All' || subjectMatchesFilter(getSubject(lesson), activeModuleFilter)
+  )
+  const exportLessons = isModuleLibrary ? scopedLessons : (lessons ?? [])
+
   // Bulk "Export all my lessons as .docx" — PAID ONLY (server also enforces it).
   // Builds ONE Word document with every lesson as its own page/section.
   async function handleExportAll() {
     if (!isPaid) { openPaywall('docx-export'); return }
-    if (!(lessons ?? []).length) return
+    if (!exportLessons.length) return
     setExporting(true)
     setExportError(null)
     try {
-      await requestDocx({ filename: 'my-plansk12-lessons', title: 'My PlansK12 Lessons', blocks: lessonsToDocxBlocks(lessons) })
+      const fileSubject = isModuleLibrary ? activeModuleFilter.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'plansk12'
+      const documentTitle = isModuleLibrary ? `My ${activeModuleFilter} ${capitalize(libraryNounPlural)}` : 'My PlansK12 Lessons'
+      await requestDocx({ filename: `my-${fileSubject}-lessons`, title: documentTitle, blocks: lessonsToDocxBlocks(exportLessons) })
     } catch (err) {
       if (err?.status === 403) openPaywall('docx-export')
       else setExportError(err.message ?? 'Export failed — please try again.')
@@ -64,9 +90,8 @@ export default function LessonLibrary() {
     return title.includes(searchTerm) || unit.includes(searchTerm)
   }
 
-  const filtered = (lessons ?? []).filter(
+  const filtered = scopedLessons.filter(
     (l) =>
-      (moduleFilter === 'All' || subjectInModule(getSubject(l), moduleFilter)) &&
       matchesSearch(l) &&
       (!favoritesOnly || l.is_favorite)
   )
@@ -119,22 +144,23 @@ export default function LessonLibrary() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="label-eyebrow mb-2">Library</p>
-          <h1 className="text-2xl font-semibold">Lesson Library</h1>
+          <p className="label-eyebrow mb-2">{isModuleLibrary ? `${activeModuleFilter} library` : 'Library'}</p>
+          <h1 className="text-2xl font-semibold">{isModuleLibrary ? `My ${activeModuleFilter} ${capitalize(libraryNounPlural)}` : 'Lesson Library'}</h1>
+          {isModuleLibrary && <p className="mt-1 text-sm text-ink-500">Only {libraryNounPlural} created for this specialty appear here.</p>}
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={handleExportAll}
-            disabled={exporting || (lessons?.length ?? 0) === 0}
+            disabled={exporting || exportLessons.length === 0}
             className="btn-secondary disabled:opacity-50"
             title={isPaid ? 'Download all your lessons as one editable Word document' : 'Upgrade to download your lessons as an editable Word document'}
           >
             {exporting ? <Loader2 size={16} className="animate-spin" /> : (isPaid ? <FileDown size={16} /> : <Lock size={16} />)}
-            Export all (.docx)
+            {isModuleLibrary ? 'Export module (.docx)' : 'Export all (.docx)'}
           </button>
-          <Link to="/generate" className="btn-primary">
+          <Link to={newLessonTo} className="btn-primary">
             <Sparkles size={16} />
-            New lesson
+            {activeModuleFilter === 'All' ? 'Choose specialty' : `New ${libraryNoun}`}
           </Link>
         </div>
       </div>
@@ -148,7 +174,7 @@ export default function LessonLibrary() {
         <Search size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-500" />
         <input
           type="search"
-          placeholder="Search lessons…"
+          placeholder={`Search ${isModuleLibrary ? libraryNounPlural : 'lessons'}…`}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="input-field w-full pl-9"
@@ -157,7 +183,26 @@ export default function LessonLibrary() {
 
       {/* Subject filters + sort */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap gap-2">
+        {!isModuleLibrary && <div className="flex w-full items-center gap-2 sm:hidden">
+          <label className="sr-only" htmlFor="lesson-module-filter">Filter by specialty</label>
+          <select
+            id="lesson-module-filter"
+            value={moduleFilter}
+            onChange={(e) => setModuleFilter(e.target.value)}
+            className="input-field min-w-0 flex-1 py-2 text-sm"
+          >
+            <option value="All">All specialties</option>
+            {MODULES.map((module) => <option key={module.label} value={module.label}>{module.label}</option>)}
+          </select>
+          <button
+            onClick={() => setFavoritesOnly(f => !f)}
+            aria-pressed={favoritesOnly}
+            className={`inline-flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${favoritesOnly ? 'border border-amber-500/30 bg-amber-500/20 text-amber-400' : 'bg-ink-900 text-ink-200'}`}
+          >
+            <Star size={14} className={favoritesOnly ? 'fill-amber-400' : ''} /> Favorites
+          </button>
+        </div>}
+        {!isModuleLibrary && <div className="hidden flex-wrap gap-2 sm:flex">
           {['All', ...MODULES.map((m) => m.label)].map((s) => (
             <button
               key={s}
@@ -182,11 +227,12 @@ export default function LessonLibrary() {
             <Star size={13} className={favoritesOnly ? 'fill-amber-400' : ''} />
             Favorites
           </button>
-        </div>
+        </div>}
+        {isModuleLibrary && <div className="flex flex-wrap items-center gap-3"><button onClick={() => setFavoritesOnly(f => !f)} aria-pressed={favoritesOnly} className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${favoritesOnly ? 'border border-amber-500/30 bg-amber-500/20 text-amber-400' : 'bg-ink-900 text-ink-200 hover:bg-ink-800'}`}><Star size={13} className={favoritesOnly ? 'fill-amber-400' : ''} /> Favorites</button><Link to="/lessons" className="text-sm font-medium text-ink-500 transition-colors hover:text-ink-200">Browse all specialties</Link></div>}
         <select
           value={sortOrder}
           onChange={(e) => setSortOrder(e.target.value)}
-          className="input-field w-auto py-1.5 text-sm"
+          className="input-field ml-auto w-auto py-1.5 text-sm"
         >
           <option value="newest">Newest first</option>
           <option value="oldest">Oldest first</option>
@@ -210,12 +256,14 @@ export default function LessonLibrary() {
       {lessons && filtered.length === 0 && (
         <div className="card p-8 text-center">
           <p className="text-ink-500">
-            {lessons.length === 0 ? 'No lessons saved yet.' : 'No lessons match this filter.'}
+            {scopedLessons.length === 0
+              ? isModuleLibrary ? `No ${activeModuleFilter} ${libraryNounPlural} saved yet.` : 'No lessons saved for this specialty yet.'
+              : `No ${libraryNounPlural} match your search or favorites filter.`}
           </p>
-          {lessons.length === 0 && (
-            <Link to="/generate" className="btn-primary mt-4 inline-flex">
+          {scopedLessons.length === 0 && (
+            <Link to={newLessonTo} className="btn-primary mt-4 inline-flex">
               <Sparkles size={16} />
-              Generate your first lesson
+              {activeModuleFilter === 'All' ? 'Choose a specialty' : `Generate your first ${libraryNoun}`}
             </Link>
           )}
         </div>
@@ -235,7 +283,7 @@ export default function LessonLibrary() {
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {days.map((lesson) => (
-                    <LessonCard key={lesson.id} lesson={lesson} />
+                    <LessonCard key={lesson.id} lesson={lesson} moduleContext={activeModuleFilter === 'All' ? null : activeModuleFilter} />
                   ))}
                 </div>
               </div>
@@ -250,7 +298,7 @@ export default function LessonLibrary() {
               )}
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {sortedStandalone.map((lesson) => (
-                  <LessonCard key={lesson.id} lesson={lesson} />
+                  <LessonCard key={lesson.id} lesson={lesson} moduleContext={activeModuleFilter === 'All' ? null : activeModuleFilter} />
                 ))}
               </div>
             </div>

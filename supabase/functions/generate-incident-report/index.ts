@@ -1,6 +1,7 @@
 import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js";
 import { buildIncidentReportPrompt } from "../_shared/incidentReportPrompt.js";
 import { callClaudeForJson } from "../_shared/anthropic.js";
+import { anonymizeStudentName, redactKnownName, restorePrivateLabels } from "../_shared/studentPrivacy.js";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -15,11 +16,23 @@ Deno.serve(async (req) => {
   if (!incidentDescription?.trim()) return errorResponse("incidentDescription is required", 400);
 
   try {
+    const { promptName, replacements } = anonymizeStudentName(studentName);
+    const displayName = typeof studentName === "string" ? studentName.trim() : "";
+    const witnessList = typeof witnesses === "string" ? witnesses.trim() : "";
+    const promptWitnesses = witnessList ? "Witness list supplied by teacher" : witnesses;
+    if (witnessList) replacements.push(["Witness list supplied by teacher", witnessList]);
     const { system, user } = buildIncidentReportPrompt({
-      dateTime, location, studentName, incidentDescription,
-      witnesses, actionsTaken, followUpNeeded, subject,
+      dateTime,
+      location,
+      studentName: promptName,
+      incidentDescription: redactKnownName(incidentDescription, displayName),
+      witnesses: promptWitnesses,
+      actionsTaken: redactKnownName(actionsTaken, displayName),
+      followUpNeeded: redactKnownName(followUpNeeded, displayName),
+      subject,
     });
-    const result = await callClaudeForJson(system, user, 6000);
+    const anonymousResult = await callClaudeForJson(system, user, 6000);
+    const result = restorePrivateLabels(anonymousResult, replacements);
 
     if (typeof result?.incident_report !== 'string') return errorResponse("Model response missing incident_report", 500);
     return jsonResponse({ incident_report: result.incident_report });

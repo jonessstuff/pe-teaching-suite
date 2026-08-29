@@ -3,6 +3,7 @@ import { buildClassroomOutputPrompt } from "../_shared/classroomManagementPrompt
 import { callClaudeForJson } from "../_shared/anthropic.js"
 import { captureLessonGenerated } from "../_shared/analytics.js";
 import { reportError } from "../_shared/sentry.js";
+import { anonymizeStudentName, redactKnownName, restorePrivateLabels } from "../_shared/studentPrivacy.js";
 
 const VALID_GRADE_BANDS = ["K-2", "3-5", "6-8", "9-12"]
 const VALID_OUTPUT_TYPES = ["card", "behavior-chart", "reflection-form", "troubleshoot", "parent-note"]
@@ -46,21 +47,24 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
+    const { promptName, replacements } = anonymizeStudentName(studentName as string);
+    const displayName = typeof studentName === "string" ? studentName.trim() : "";
     const { system, user, schema } = buildClassroomOutputPrompt(outputType as string, {
       gradeBand: gradeBand as string,
       classContext: (classContext as string) ?? "",
       challenge: (challenge as string) ?? "",
       classSize: (classSize as string) ?? "",
       noteType: (noteType as string) ?? "incident",
-      studentName: (studentName as string) ?? "",
+      studentName: promptName,
       noteDate: (noteDate as string) ?? "",
-      details: (details as string) ?? "",
-      response: (response as string) ?? "",
+      details: redactKnownName((details as string) ?? "", displayName),
+      response: redactKnownName((response as string) ?? "", displayName),
       tone: (tone as string) ?? "balanced",
     })
     // Structured outputs guarantees valid JSON; 4000 tokens is ample for a card.
     const _t0 = Date.now();
-    const result = await callClaudeForJson(system, user, 4000, MODEL, schema)
+    const anonymousResult = await callClaudeForJson(system, user, 4000, MODEL, schema)
+    const result = restorePrivateLabels(anonymousResult, replacements)
     await captureLessonGenerated(req, { subject: "Classroom Management", grades: [], type: "classroom_management", durationMs: Date.now() - _t0 });
     return jsonResponse(result)
   } catch (err) {

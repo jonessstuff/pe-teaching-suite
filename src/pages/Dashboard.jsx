@@ -283,7 +283,7 @@ export default function Dashboard() {
       </div>
 
       {/* My lessons — compact preview below the tools */}
-      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/lessons" accentText="text-accent-400" />
+      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/lessons?module=PE%20%26%20Health" accentText="text-accent-400" moduleContext="PE & Health" />
 
     </div>
   )

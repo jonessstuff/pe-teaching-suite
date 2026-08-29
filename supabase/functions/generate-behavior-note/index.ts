@@ -1,6 +1,7 @@
 import { corsHeaders, jsonResponse, errorResponse } from "../_shared/cors.js";
 import { buildBehaviorNotePrompt } from "../_shared/behaviorNotePrompt.js";
 import { callClaudeForJson } from "../_shared/anthropic.js";
+import { anonymizeStudentName, redactKnownName, restorePrivateLabels } from "../_shared/studentPrivacy.js";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -15,8 +16,16 @@ Deno.serve(async (req) => {
   if (!incidentDescription?.trim()) return errorResponse("incidentDescription is required", 400);
 
   try {
-    const { system, user } = buildBehaviorNotePrompt({ studentName, incidentDescription, gradeLevel, subject });
-    const result = await callClaudeForJson(system, user, 6000);
+    const { promptName, replacements } = anonymizeStudentName(studentName);
+    const displayName = typeof studentName === "string" ? studentName.trim() : "";
+    const { system, user } = buildBehaviorNotePrompt({
+      studentName: promptName,
+      incidentDescription: redactKnownName(incidentDescription, displayName),
+      gradeLevel,
+      subject,
+    });
+    const anonymousResult = await callClaudeForJson(system, user, 6000);
+    const result = restorePrivateLabels(anonymousResult, replacements);
 
     if (typeof result?.behavior_note !== 'string') return errorResponse("Model response missing behavior_note", 500);
     return jsonResponse({ behavior_note: result.behavior_note });

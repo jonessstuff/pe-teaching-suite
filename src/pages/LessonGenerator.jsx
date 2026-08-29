@@ -433,7 +433,7 @@ export default function LessonGenerator() {
               </select>
               {periodStudents.filter((s) => s.accommodation_notes).length > 0 && (
                 <p className="mt-1.5 text-xs text-accent-400">
-                  {periodStudents.filter((s) => s.accommodation_notes).length} student accommodation{periodStudents.filter((s) => s.accommodation_notes).length !== 1 ? 's' : ''} will be included in this lesson.
+                  {periodStudents.filter((s) => s.accommodation_notes).length} student support{periodStudents.filter((s) => s.accommodation_notes).length !== 1 ? 's' : ''} will be included. Roster labels are replaced with anonymous labels before AI generation.
                 </p>
               )}
               <p className="mt-1.5 text-xs">

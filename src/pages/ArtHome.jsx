@@ -227,7 +227,7 @@ export default function ArtHome() {
       </div>
 
       {/* My lessons — compact preview below the tools */}
-      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/art/lessons" accentText="text-orange-400" />
+      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/art/lessons" accentText="text-orange-400" moduleContext="Art" />
 
     </div>
   )

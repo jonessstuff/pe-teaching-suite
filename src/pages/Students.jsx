@@ -255,11 +255,14 @@ export default function Students() {
       </div>
 
       {/* Privacy notice */}
-      <div className="flex items-start gap-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3">
-        <ShieldAlert size={16} className="mt-0.5 shrink-0 text-amber-400" />
-        <p className="text-sm text-amber-400">
-          Follow your school’s student-data policy. Do not enter diagnoses, medical details, or other sensitive records in roster notes.
-        </p>
+      <div className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-500/30 dark:bg-amber-500/10">
+        <ShieldAlert size={16} className="mt-0.5 shrink-0 text-amber-700 dark:text-amber-300" />
+        <div className="text-sm text-amber-950 dark:text-amber-200">
+          <p className="font-semibold">Use a roster code or first name plus last initial.</p>
+          <p className="mt-0.5 text-xs leading-relaxed text-amber-900 dark:text-amber-300">
+            Follow your school’s student-data policy. Do not enter full legal names, student ID numbers, birth dates, diagnoses, medical details, parent information, or copied IEP/504 records. When lesson supports are generated, PlansK12 sends anonymous labels such as “Student 1” to the AI.
+          </p>
+        </div>
       </div>
 
       {error && (
@@ -269,7 +272,7 @@ export default function Students() {
       {bulkOpen && (
         <form onSubmit={handleBulkAdd} className="card space-y-4 p-6">
           <div className="flex items-center justify-between">
-            <div><h2 className="font-semibold text-ink-100">Import a roster</h2><p className="text-xs text-ink-500">Paste names or upload a CSV. Review the count before adding.</p></div>
+            <div><h2 className="font-semibold text-ink-100">Import a roster</h2><p className="text-xs text-ink-500">Paste display names or roster codes, or upload a CSV. Review the count before adding.</p></div>
             <button type="button" onClick={closeBulk} className="text-ink-500 hover:text-ink-200"><X size={18} /></button>
           </div>
 
@@ -294,18 +297,18 @@ export default function Students() {
 
           <div>
             <div className="mb-1.5 flex flex-wrap items-center justify-between gap-2">
-              <label className="block text-sm font-medium text-ink-300">Copy and paste — one name per line</label>
+              <label className="block text-sm font-medium text-ink-300">Copy and paste — one display name or code per line</label>
               <label className="btn-secondary cursor-pointer text-xs">
                 <Upload size={14} /> Upload CSV
                 <input type="file" accept=".csv,text/csv" onChange={handleCsvFile} className="sr-only" />
               </label>
             </div>
             <textarea value={bulkText} onChange={(e) => setBulkText(e.target.value)} rows={8}
-              placeholder={'Smith, John\nJohn D.\nA.K.\n…'}
+              placeholder={'Avery M.\nJordan R.\n4X-03\n…'}
               disabled={Boolean(csvRows)}
               className="w-full rounded-lg border border-ink-700 bg-white px-3 py-2 font-mono text-sm text-ink-50 disabled:opacity-50 dark:bg-ink-800" />
             {csvRows ? <p className="mt-1.5 text-xs text-emerald-600">{csvFileName}: {csvRows.length} name{csvRows.length === 1 ? '' : 's'} found. <button type="button" className="underline" onClick={() => { setCsvRows(null); setCsvFileName('') }}>Remove CSV</button></p>
-              : <p className="mt-1.5 text-xs text-ink-500">Works with copied spreadsheet columns and names formatted as First Last or Last, First.</p>}
+              : <p className="mt-1.5 text-xs text-ink-500">Works with copied spreadsheet columns. First name plus last initial or a roster code is recommended.</p>}
           </div>
 
           {(bulkText.trim() || csvRows) && (
@@ -335,10 +338,10 @@ export default function Students() {
           </h2>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <FormField label="Name or initials">
+            <FormField label="Student display name or roster code" hint="Recommended: Avery M. or 4X-03. Avoid a full legal name unless your school has approved it.">
               <input
                 className="input-field"
-                placeholder="J.S. or Jordan"
+                placeholder="Avery M. or 4X-03"
                 value={form.name_or_initials}
                 onChange={(e) => setForm((p) => ({ ...p, name_or_initials: e.target.value }))}
                 required
@@ -389,12 +392,12 @@ export default function Students() {
           </FormField>
 
           <FormField
-            label="Accommodation notes"
-            hint="Extended time, preferential seating, modified equipment, behavior plans, etc."
+            label="Instructional support notes"
+            hint="Describe only the support the teacher should provide. Do not enter a diagnosis, medical information, or copy text from an IEP/504 plan."
           >
             <textarea
               className="input-field min-h-[100px]"
-              placeholder="e.g. Extended time on written tasks, preferential seating near teacher, modified grip for fine motor challenges."
+              placeholder="e.g. Give one-step directions, provide a visual schedule, allow extra processing time, or offer modified equipment."
               value={form.accommodation_notes}
               onChange={(e) => setForm((p) => ({ ...p, accommodation_notes: e.target.value }))}
             />
@@ -428,7 +431,7 @@ export default function Students() {
         <div className="card p-8 text-center">
           <p className="text-ink-500">No student profiles yet.</p>
           <p className="mt-1 text-sm text-ink-600">
-            Add IEP/504 students and their accommodations will be woven into lesson generation automatically.
+            Add students who need instructional supports, and those supports can be woven into lessons without sending roster labels to the AI.
           </p>
           <button onClick={openAdd} className="btn-primary mt-4 inline-flex">
             <Plus size={16} />

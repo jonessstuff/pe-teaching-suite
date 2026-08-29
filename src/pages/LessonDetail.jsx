@@ -12,6 +12,7 @@ import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 import { useTrial } from '../context/TrialContext'
 import TeachMode from '../components/lesson/TeachMode'
 import TeachingView from '../components/lesson/TeachingView'
+import { SPECIALTY_CONTEXTS } from '../constants/moduleHomes'
 
 export default function LessonDetail() {
   const { id } = useParams()
@@ -35,6 +36,14 @@ export default function LessonDetail() {
   const [tags, setTags] = useState([])
   const [showTeachMode, setShowTeachMode] = useState(searchParams.get('teach') === '1')
   const [lessonView, setLessonView] = useState('quick')
+  const moduleContext = searchParams.get('module')
+  const moduleConfig = Object.values(SPECIALTY_CONTEXTS).find((config) =>
+    config.moduleLabel === moduleContext || config.title === moduleContext
+  )
+  const libraryPath = moduleContext
+    ? moduleConfig?.browsePath ?? `/lessons?module=${encodeURIComponent(moduleContext)}`
+    : '/lessons'
+  const lessonPath = (lessonId) => `/lessons/${lessonId}${moduleContext ? `?module=${encodeURIComponent(moduleContext)}` : ''}`
 
   function closeTeachMode() {
     setShowTeachMode(false)
@@ -108,7 +117,7 @@ export default function LessonDetail() {
   async function handleDuplicateLesson() {
     try {
       const copy = await duplicateLesson(id)
-      navigate(`/lessons/${copy.id}`)
+      navigate(lessonPath(copy.id))
     } catch (err) {
       setError(err.message)
     }
@@ -189,7 +198,7 @@ export default function LessonDetail() {
     if (!window.confirm('Delete this lesson? This cannot be undone.')) return
     try {
       await deleteLesson(id)
-      navigate('/lessons')
+      navigate(libraryPath)
     } catch (err) {
       setError(err.message)
     }
@@ -199,7 +208,7 @@ export default function LessonDetail() {
     if (!window.confirm('Delete this entire unit and all its lessons? This cannot be undone.')) return
     try {
       await deleteUnit(lesson.unit_id)
-      navigate('/lessons')
+      navigate(libraryPath)
     } catch (err) {
       setError(err.message)
     }
@@ -233,9 +242,9 @@ export default function LessonDetail() {
     <div className="space-y-6">
       {showTeachMode && <TeachMode lesson={lo} onClose={closeTeachMode} />}
       <div className="no-print flex flex-wrap items-center justify-between gap-4">
-        <Link to="/lessons" className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-400 hover:text-ink-50">
+        <Link to={libraryPath} className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-400 hover:text-ink-50">
           <ArrowLeft size={16} />
-          Back to library
+          {moduleContext ? `Back to ${moduleContext} library` : 'Back to library'}
         </Link>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -381,7 +390,7 @@ export default function LessonDetail() {
       {unitLessons.length > 1 && (
         <div className="no-print flex items-center justify-between rounded-lg bg-ink-900 px-4 py-2">
           <button
-            onClick={() => prevLesson && navigate(`/lessons/${prevLesson.id}`)}
+            onClick={() => prevLesson && navigate(lessonPath(prevLesson.id))}
             disabled={!prevLesson}
             className="inline-flex items-center gap-1 text-sm font-medium text-ink-400 hover:text-ink-50 disabled:opacity-30 disabled:hover:text-ink-400"
           >
@@ -394,7 +403,7 @@ export default function LessonDetail() {
           </span>
 
           <button
-            onClick={() => nextLesson && navigate(`/lessons/${nextLesson.id}`)}
+            onClick={() => nextLesson && navigate(lessonPath(nextLesson.id))}
             disabled={!nextLesson}
             className="inline-flex items-center gap-1 text-sm font-medium text-ink-400 hover:text-ink-50 disabled:opacity-30 disabled:hover:text-ink-400"
           >

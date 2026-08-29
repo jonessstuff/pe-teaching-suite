@@ -107,9 +107,16 @@ export default function ModuleHome({ config }) {
   // default. Derive the slug from the module's own route (e.g. /theater/generate).
   const TOOL_CARDS = { subbinder: true, import: true, unit: true }
   const slug = (generatePath || '').split('/').filter(Boolean)[0]
+  const moduleAwarePath = (to) => {
+    if (!to) return generatePath
+    const destinationSlug = to.split('?')[0].split('/').filter(Boolean)[0]
+    if (destinationSlug === slug) return to
+    const separator = to.includes('?') ? '&' : '?'
+    return `${to}${separator}module=${encodeURIComponent(moduleLabel)}`
+  }
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8 md:space-y-10">
       <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 transition-colors">
         <ArrowLeft size={14} />
         All modules
@@ -117,7 +124,7 @@ export default function ModuleHome({ config }) {
 
       {/* Specialty hero — a consistent, welcoming dashboard identity while
           each module keeps its own accent and teacher-specific language. */}
-      <section className={`relative overflow-hidden rounded-3xl border border-ink-800 ${accent.well} p-6 sm:p-8`}>
+      <section className={`relative overflow-hidden rounded-3xl border border-ink-800 ${accent.well} p-5 sm:p-8`}>
         <div aria-hidden="true" className="absolute -right-12 -top-16 h-44 w-44 rounded-full bg-white/30 blur-2xl dark:bg-white/5" />
         <div aria-hidden="true" className="absolute -bottom-16 right-24 h-32 w-32 rounded-full bg-white/25 blur-2xl dark:bg-white/5" />
         <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
@@ -126,7 +133,7 @@ export default function ModuleHome({ config }) {
               <Icon size={27} className={accent.text} />
             </div>
             <div>
-              <p className={`text-xs font-bold uppercase tracking-[0.16em] ${accent.text}`}>Specialty workspace</p>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-ink-600 dark:text-ink-200">Specialty workspace</p>
               <h1 className="mt-1 text-3xl font-bold tracking-tight text-ink-50">{title}</h1>
               {tagline && <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-500">{tagline}</p>}
             </div>
@@ -138,10 +145,10 @@ export default function ModuleHome({ config }) {
       </section>
 
       {workspaceFeatures.length > 0 && (
-        <section className={`rounded-2xl border border-ink-800 bg-gradient-to-r ${accent.well} p-5`}>
+        <section className={`rounded-2xl border border-ink-800 bg-gradient-to-r ${accent.well} p-4 sm:p-5`}>
           <div className="flex flex-wrap items-end justify-between gap-2">
             <div>
-              <p className={`text-xs font-semibold uppercase tracking-wide ${accent.text}`}>Your {title} workspace</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-ink-600 dark:text-ink-200">Your {title === 'Speech-Language Pathologists' ? 'SLP' : title} workspace</p>
               <h2 className="mt-1 text-lg font-semibold text-ink-100">Built around the work you actually do</h2>
             </div>
             <span className="text-xs font-medium text-ink-500">Choose a workspace area</span>
@@ -150,16 +157,16 @@ export default function ModuleHome({ config }) {
             {workspaceFeatures.map(({ title: featureTitle, desc, to }) => (
               <Link
                 key={featureTitle}
-                to={to || generatePath}
+                to={moduleAwarePath(to)}
                 className="group rounded-xl border border-transparent bg-white/60 p-3 transition hover:-translate-y-0.5 hover:border-ink-700 hover:bg-white hover:shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-500 dark:bg-ink-950/40 dark:hover:bg-ink-950/70"
                 aria-label={`Open ${featureTitle}`}
               >
                 <span className="flex items-start justify-between gap-2">
                   <span className="text-sm font-semibold text-ink-100">{featureTitle}</span>
-                  <ArrowRight size={15} className={`mt-0.5 shrink-0 ${accent.text} transition-transform group-hover:translate-x-0.5`} />
+                  <ArrowRight size={15} className="mt-0.5 shrink-0 text-ink-500 transition-transform group-hover:translate-x-0.5" />
                 </span>
                 <span className="mt-1 block text-xs leading-relaxed text-ink-500">{desc}</span>
-                <span className={`mt-2 block text-[11px] font-semibold ${accent.text}`}>{to ? 'Open tool' : 'Create with this'}</span>
+                <span className="mt-2 block text-[11px] font-bold text-ink-400 dark:text-ink-200">{to ? 'Open tool' : 'Open generator'}</span>
               </Link>
             ))}
           </div>
@@ -188,14 +195,17 @@ export default function ModuleHome({ config }) {
           {cards.map((key) => {
           const c = UTILITY_CARDS[key]
           if (!c) return null
-          const to = TOOL_CARDS[key] && slug ? `${c.to}?subject=${slug}` : c.to
+          const params = new URLSearchParams()
+          if (TOOL_CARDS[key] && slug) params.set('subject', slug)
+          params.set('module', moduleLabel)
+          const to = `${c.to}?${params.toString()}`
           return <ActionCard key={key} {...c} to={to} />
         })}
         </div>
       </details>}
 
       {/* My lessons — compact preview below the tools */}
-      <RecentLessonsPanel lessons={lessons} error={error} browseNoun={browseNoun} browseTo={browseTo} accentText={accent.text} />
+      <RecentLessonsPanel lessons={lessons} error={error} browseNoun={browseNoun} browseTo={browseTo} accentText={accent.text} moduleContext={moduleLabel} />
 
     </div>
   )

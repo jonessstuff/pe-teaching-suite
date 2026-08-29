@@ -28,6 +28,7 @@ export default function DemoMode() {
   const [seconds, setSeconds] = useState(0)
   const [timerRunning, setTimerRunning] = useState(false)
   const [featurePreview, setFeaturePreview] = useState(null)
+  const todayLabel = new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).format(new Date())
 
   useEffect(() => {
     track('demo_viewed')
@@ -85,7 +86,7 @@ export default function DemoMode() {
 
         {view === 'today' && <section className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
           <div className="rounded-2xl bg-gradient-to-br from-teal-700 to-cyan-600 p-6 text-white shadow-xl">
-            <p className="text-xs font-bold uppercase tracking-wider text-teal-100">Today · Tuesday, August 28</p><h2 className="mt-2 text-2xl font-bold">Good morning, Coach Taylor!</h2><p className="mt-1 text-teal-50">Everything you need for today’s classes.</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-teal-100">Today · {todayLabel}</p><h2 className="mt-2 text-2xl font-bold">Good morning, Coach Taylor!</h2><p className="mt-1 text-teal-50">Everything you need for today’s classes.</p>
             <div className="mt-6 space-y-3">
               {[['Period 2 · Grade 6', 'Pacing for the Half-Mile', true], ['Period 4 · Grade 7', 'Cooperative Challenges', false], ['Period 6 · Grade 8', 'Cardiovascular Fitness Stations', false]].map(([period, title, active]) => <div key={period} className="flex flex-col gap-3 rounded-xl bg-white/95 p-4 text-slate-900 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-xs font-bold uppercase text-slate-500">{period}</p><p className="font-bold">{title}</p></div><button onClick={() => { setView('teach'); setPhase(0) }} className={active ? 'btn-primary' : 'btn-secondary'}><Play size={15} /> Teach now</button></div>)}
             </div>
@@ -156,7 +157,7 @@ function SupportDemo() {
   const [checked, setChecked] = useState([])
   const [noteSaved, setNoteSaved] = useState(false)
   const activities = service === 'slp'
-    ? ['Minimal-pair picture warm-up', 'Barrier-game direction practice', 'Student self-rating and carryover cue']
+    ? ['Listen-and-do first/then warm-up', 'Barrier-game direction practice', 'Classroom carryover and student self-rating']
     : ['Phoneme-grapheme review', 'Word-building with letter tiles', 'Decodable reading and one-minute check']
   function toggleActivity(index) { setChecked((current) => current.includes(index) ? current.filter((item) => item !== index) : [...current, index]) }
   return <section>

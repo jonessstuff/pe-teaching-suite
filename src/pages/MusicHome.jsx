@@ -227,7 +227,7 @@ export default function MusicHome() {
       </div>
 
       {/* My lessons — compact preview below the tools */}
-      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/music/lessons" accentText="text-purple-400" />
+      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/music/lessons" accentText="text-purple-400" moduleContext="Music" />
 
     </div>
   )

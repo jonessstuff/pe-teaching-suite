@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Search, Loader2, Star } from 'lucide-react'
 import LessonCard from './LessonCard'
@@ -19,16 +19,20 @@ const titleOf = (l) => (l.title ?? '').toLowerCase()
 const topicOf = (l) => (l.lesson_object?.unit ?? l.lesson_object?.topic ?? '').toLowerCase()
 const dateOf = (l) => new Date(l.updated_at ?? l.created_at ?? 0).getTime()
 
-export default function RecentLessonsPanel({ lessons, error, browseNoun = 'lesson', browseTo, accentText = 'text-accent-400', previewLimit = 6 }) {
-  const [items, setItems] = useState(lessons ?? null)
+export default function RecentLessonsPanel({ lessons, error, browseNoun = 'lesson', browseTo, accentText = 'text-accent-400', previewLimit = 6, moduleContext = null }) {
+  const [favoriteOverrides, setFavoriteOverrides] = useState({})
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState('recent')
   const [starredOnly, setStarredOnly] = useState(false)
   const [expanded, setExpanded] = useState(false)
-  useEffect(() => { setItems(lessons ?? null) }, [lessons])
+  const items = useMemo(() => lessons === null
+    ? null
+    : (lessons ?? []).map((lesson) => favoriteOverrides[lesson.id] === undefined
+      ? lesson
+      : { ...lesson, is_favorite: favoriteOverrides[lesson.id] }), [lessons, favoriteOverrides])
 
   function handleFav(updated) {
-    setItems((prev) => prev ? prev.map((l) => (l.id === updated.id ? { ...l, is_favorite: updated.is_favorite } : l)) : prev)
+    setFavoriteOverrides((current) => ({ ...current, [updated.id]: updated.is_favorite }))
   }
 
   const total = (items ?? []).length
@@ -113,7 +117,7 @@ export default function RecentLessonsPanel({ lessons, error, browseNoun = 'lesso
       )}
       {results.length > 0 && (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {visible.map((lesson) => <LessonCard key={lesson.id} lesson={lesson} onFavoriteToggle={handleFav} />)}
+          {visible.map((lesson) => <LessonCard key={lesson.id} lesson={lesson} onFavoriteToggle={handleFav} moduleContext={moduleContext} />)}
         </div>
       )}
       {/* Expand / collapse the preview (only when not actively filtering). */}

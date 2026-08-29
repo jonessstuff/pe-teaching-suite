@@ -250,7 +250,7 @@ export default function StemHome() {
       </div>
 
       {/* My lessons — compact preview below the tools */}
-      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/stem/lessons" accentText="text-cyan-400" />
+      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/stem/lessons" accentText="text-cyan-400" moduleContext="STEM" />
 
     </div>
   )

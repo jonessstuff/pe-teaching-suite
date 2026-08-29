@@ -19,6 +19,9 @@ import LibraryLessonLibrary from '../pages/LibraryLessonLibrary'
 import MakerProjectGenerator from '../pages/MakerProjectGenerator'
 import CteGenerator from '../pages/CteGenerator'
 import CteLessonLibrary from '../pages/CteLessonLibrary'
+import StemHome from '../pages/StemHome'
+import StemGenerator from '../pages/StemGenerator'
+import StemLessonLibrary from '../pages/StemLessonLibrary'
 import SlpGenerator from '../pages/SlpGenerator'
 import InterventionGenerator from '../pages/InterventionGenerator'
 import SchoolCounselorGenerator from '../pages/SchoolCounselorGenerator'
@@ -60,6 +63,7 @@ import UnitBuilder from '../pages/UnitBuilder'
 import ClassroomManagementGenerator from '../pages/ClassroomManagementGenerator'
 import DemoMode from '../pages/DemoMode'
 import SmartGoals from '../pages/SmartGoals'
+import StudentDataPrivacy from '../pages/StudentDataPrivacy'
 
 /**
  * Standalone preview app.
@@ -97,6 +101,7 @@ export default function PreviewApp() {
           <Route path="build-unit" element={<UnitBuilder />} />
           <Route path="classroom-management" element={<ClassroomManagementGenerator />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="privacy" element={<StudentDataPrivacy />} />
           <Route path="owner" element={<OwnerDashboard />} />
           {Object.entries(MODULE_HOMES).map(([slug, config]) => (
             <Route key={slug} path={slug} element={<ModuleHome config={config} />} />
@@ -108,6 +113,10 @@ export default function PreviewApp() {
           <Route path="library/generate" element={<LibraryGenerator />} />
           <Route path="library/lessons" element={<LibraryLessonLibrary />} />
           <Route path="library/makerspace" element={<MakerProjectGenerator origin="library" />} />
+          <Route path="stem" element={<StemHome />} />
+          <Route path="stem/generate" element={<StemGenerator />} />
+          <Route path="stem/lessons" element={<StemLessonLibrary />} />
+          <Route path="stem/makerspace" element={<MakerProjectGenerator origin="stem" />} />
           <Route path="cte/generate" element={<CteGenerator />} />
           <Route path="cte/lessons" element={<CteLessonLibrary />} />
           <Route path="theater/generate" element={<TheaterGenerator />} />

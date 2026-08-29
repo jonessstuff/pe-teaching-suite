@@ -261,6 +261,18 @@ function CreateLessonMenu({ favorites }) {
     document.getElementById('choose-specialty')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  function generatePath(module) {
+    return module.key === 'pe-health' ? '/generate' : `${module.to}/generate`
+  }
+
+  if (favorites.length === 0) {
+    return <button type="button" onClick={browse} className="btn-primary"><Plus size={16} /> Choose a specialty</button>
+  }
+
+  if (favorites.length === 1) {
+    return <Link to={generatePath(favorites[0])} className="btn-primary"><Plus size={16} /> Create {favorites[0].label} lesson</Link>
+  }
+
   return (
     <div className="relative" ref={ref}>
       <button type="button" onClick={() => setOpen((o) => !o)} aria-haspopup="menu" aria-expanded={open} className="btn-primary">
@@ -271,7 +283,7 @@ function CreateLessonMenu({ favorites }) {
         <div role="menu" className="absolute left-0 top-full z-20 mt-2 w-64 max-w-[calc(100vw-3rem)] overflow-hidden rounded-xl border border-ink-800 bg-white py-1 shadow-lg dark:bg-ink-900">
           {favorites.length > 0 ? (
             favorites.map((m) => (
-              <Link key={m.key} to={m.to} role="menuitem" onClick={() => setOpen(false)}
+              <Link key={m.key} to={generatePath(m)} role="menuitem" onClick={() => setOpen(false)}
                 className="flex items-start gap-2 px-4 py-2.5 text-sm text-ink-100 hover:bg-ink-950">
                 <Plus size={14} className="mt-0.5 shrink-0 text-ink-500" /> New {m.label} lesson
               </Link>

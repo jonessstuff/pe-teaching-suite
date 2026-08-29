@@ -24,7 +24,7 @@ function formatGrade(g) {
   return g === 0 ? "K" : String(g)
 }
 
-export default function LessonCard({ lesson, onFavoriteToggle }) {
+export default function LessonCard({ lesson, onFavoriteToggle, moduleContext = null }) {
   const [isFavorite, setIsFavorite] = useState(lesson.is_favorite ?? false)
   const gradeBands = lesson.grade_bands ?? lesson.lesson_object?.grade_bands ?? []
   const subject = lesson.subject ?? lesson.lesson_object?.subject ?? 'PE'
@@ -47,7 +47,7 @@ export default function LessonCard({ lesson, onFavoriteToggle }) {
   }
 
   return (
-    <Link to={`/lessons/${lesson.id}`} className="card flex flex-col gap-3 p-4 transition-colors hover:border-accent-500/40">
+    <Link to={`/lessons/${lesson.id}${moduleContext ? `?module=${encodeURIComponent(moduleContext)}` : ''}`} className="card flex flex-col gap-3 p-4 transition-colors hover:border-accent-500/40">
       <div className="flex items-center justify-between">
         <span
           className={`label-eyebrow rounded px-2 py-0.5 ${subjectTabStyle(subject)}`}

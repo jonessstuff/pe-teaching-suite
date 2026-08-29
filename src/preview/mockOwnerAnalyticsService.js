@@ -1,5 +1,5 @@
 const customers = [
-  { id: 'a', name: 'Alex Rivera', email: 'alex@example.com', status: 'canceling', segment: 'canceling', lessonCount: 8, inactiveDays: 12, teachingAreas: ['PE & Health'], joinedAt: '2026-06-03', lastActivityAt: '2026-08-17' },
+  { id: 'a', name: 'Alex Rivera', email: 'alex@example.com', status: 'canceling', segment: 'canceling', lessonCount: 8, inactiveDays: 12, teachingAreas: ['PE & Health'], joinedAt: '2026-06-03', lastActivityAt: '2026-08-17', accessEndsAt: '2026-09-03T12:00:00.000Z' },
   { id: 'b', name: 'Morgan Lee', email: 'morgan@example.com', status: 'trial', segment: 'never_activated', lessonCount: 0, inactiveDays: 3, teachingAreas: ['Art'], joinedAt: '2026-08-24', lastActivityAt: '2026-08-26', automaticEmailAt: '2026-08-27' },
   { id: 'c', name: 'Jamie Patel', email: 'jamie@example.com', status: 'paying', segment: 'inactive_30', lessonCount: 3, inactiveDays: 38, teachingAreas: ['SLP', 'Intervention'], joinedAt: '2026-04-11', lastActivityAt: '2026-07-22' },
   { id: 'd', name: 'Taylor Brooks', email: 'taylor@example.com', status: 'paying', segment: 'active', lessonCount: 21, inactiveDays: 0, teachingAreas: ['Early Childhood'], joinedAt: '2026-03-19', lastActivityAt: '2026-08-29' },

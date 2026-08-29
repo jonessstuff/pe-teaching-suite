@@ -4,7 +4,7 @@ import {
   LayoutTemplate, Loader2, Printer, Download, X, Star, BookOpen,
   CheckSquare, Shuffle, Flame, BookMarked, Send, Globe, Users, FileWarning, ChevronDown,
   Copy, Check, PencilRuler, FileDown, Lock, Presentation, Files, Eye,
-  ArrowLeft, ChevronRight,
+  ArrowLeft, ChevronRight, ShieldCheck,
 } from 'lucide-react'
 import {
   generateSubPlan, generateQuiz, generateWeatherAlt,
@@ -164,8 +164,35 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
     }
   }
 
+  function closeInlineForms() {
+    setShowProgressForm(false)
+    setShowBehaviorForm(false)
+    setShowConferenceForm(false)
+    setShowWorksheetForm(false)
+  }
+
+  function showTool(view) {
+    closeInlineForms()
+    setToolView(view)
+  }
+
   function toggle(view) {
+    closeInlineForms()
     setToolView((prev) => (prev === view ? null : view))
+  }
+
+  function toggleInlineForm(form) {
+    const next = {
+      progress: !showProgressForm,
+      behavior: !showBehaviorForm,
+      conference: !showConferenceForm,
+      worksheet: !showWorksheetForm,
+    }[form]
+    setToolView(null)
+    setShowProgressForm(form === 'progress' ? next : false)
+    setShowBehaviorForm(form === 'behavior' ? next : false)
+    setShowConferenceForm(form === 'conference' ? next : false)
+    setShowWorksheetForm(form === 'worksheet' ? next : false)
   }
 
   function jumpTo(id) {
@@ -174,6 +201,10 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
 
   function returnToLessonKit() {
     setToolView(null)
+    setShowProgressForm(false)
+    setShowBehaviorForm(false)
+    setShowConferenceForm(false)
+    setShowWorksheetForm(false)
     jumpTo('lesson-kit-home')
   }
 
@@ -228,7 +259,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
       const fields = await generateSubPlan(savedId)
       const updated = await updateLesson(savedId, { lessonObject: fields })
       setLo(updated.lesson_object)
-      setToolView('subplan')
+      showTool('subplan')
     })
   }
 
@@ -237,7 +268,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
       const fields = await generateQuiz(savedId)
       const updated = await updateLesson(savedId, { lessonObject: fields })
       setLo(updated.lesson_object)
-      setToolView('quiz')
+      showTool('quiz')
     })
   }
 
@@ -246,7 +277,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
       const fields = await generateWeatherAlt(savedId)
       const updated = await updateLesson(savedId, { lessonObject: fields })
       setLo(updated.lesson_object)
-      setToolView('weatheralt')
+      showTool('weatheralt')
     })
   }
 
@@ -257,7 +288,8 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
       setLo(updated.lesson_object)
       // Open the preview when something was built; otherwise leave it closed —
       // "found none" is a valid outcome and the button reflects it.
-      setToolView((visual_resources ?? []).length > 0 ? 'visualresources' : null)
+      if ((visual_resources ?? []).length > 0) showTool('visualresources')
+      else setToolView(null)
     })
   }
 
@@ -266,7 +298,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
       const fields = await generateParentNote(savedId)
       const updated = await updateLesson(savedId, { lessonObject: fields })
       setLo(updated.lesson_object)
-      setToolView('parentnote')
+      showTool('parentnote')
     })
   }
 
@@ -275,7 +307,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
       const fields = await generateObservationSummary(savedId)
       const updated = await updateLesson(savedId, { lessonObject: fields })
       setLo(updated.lesson_object)
-      setToolView('observation')
+      showTool('observation')
     })
   }
 
@@ -292,7 +324,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
     await run(setGeneratingRubric, async () => {
       const result = await generateRubric(savedId)
       setRubric(result.rubric)
-      setToolView('rubric')
+      showTool('rubric')
     })
   }
 
@@ -316,7 +348,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
     await run(setGeneratingNewsletter, async () => {
       const result = await generateFamilyNewsletter(savedId)
       setNewsletter(result.family_newsletter)
-      setToolView('newsletter')
+      showTool('newsletter')
     })
   }
 
@@ -324,7 +356,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
     await run(setGeneratingDiff, async () => {
       const result = await generateDifferentiatedLesson(savedId, type)
       setDiffLesson(result.differentiation)
-      setToolView('diff')
+      showTool('diff')
     })
   }
 
@@ -332,7 +364,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
     await run(setGeneratingExitTicket, async () => {
       const result = await generateExitTicket(savedId)
       setExitTickets(result.exit_tickets)
-      setToolView('exitticket')
+      showTool('exitticket')
     })
   }
 
@@ -340,7 +372,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
     await run(setGeneratingCross, async () => {
       const result = await generateCrossCurricular(savedId)
       setCrossConnections(result.connections)
-      setToolView('cross')
+      showTool('cross')
     })
   }
 
@@ -349,7 +381,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
     await run(setGeneratingProgress, async () => {
       const result = await generateProgressNote(savedId, progressForm)
       setProgressNote(result.progress_note)
-      setToolView('progress')
+      showTool('progress')
       setShowProgressForm(false)
     })
   }
@@ -359,7 +391,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
     await run(setGeneratingBehavior, async () => {
       const result = await generateBehaviorNote({ ...behaviorForm, subject: resolvedSubject })
       setBehaviorNote(result.behavior_note)
-      setToolView('behavior')
+      showTool('behavior')
       setShowBehaviorForm(false)
     })
   }
@@ -369,7 +401,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
     await run(setGeneratingConference, async () => {
       const result = await generateConferencePrep({ ...conferenceForm, subject: resolvedSubject })
       setConferencePrep(result.conference_prep)
-      setToolView('conference')
+      showTool('conference')
       setShowConferenceForm(false)
     })
   }
@@ -378,7 +410,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
     await run(setGeneratingWarmup, async () => {
       const result = await generateWarmup({ subject: resolvedSubject, gradeBand: lo?.grade_bands?.[0] ?? 5, duration: 10, equipment: lo?.equipment_needed ?? [] })
       setWarmupOptions(result.warmup_options)
-      setToolView('warmup')
+      showTool('warmup')
     })
   }
 
@@ -389,7 +421,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
       const result = await generateWorksheet(savedId, worksheetFormats)
       setWorksheet(result.worksheet)
       setWorksheetSaved({})
-      setToolView('worksheet')
+      showTool('worksheet')
       setShowWorksheetForm(false)
     })
   }
@@ -519,7 +551,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
             <p className="label-eyebrow text-violet-500">Student materials</p>
             <p className="mt-1 text-xs text-ink-500">Create only what students will see, hold, complete, or discuss.</p>
             <div className="mt-3 flex flex-wrap gap-2">
-              {allowQuizRubric && <button id="lesson-kit-worksheet" onClick={() => setShowWorksheetForm(f => !f)} className={showWorksheetForm || toolView === 'worksheet' ? 'btn-primary' : 'btn-secondary'}><PencilRuler size={16} /> Worksheet</button>}
+              {allowQuizRubric && <button id="lesson-kit-worksheet" onClick={() => toggleInlineForm('worksheet')} className={showWorksheetForm || toolView === 'worksheet' ? 'btn-primary' : 'btn-secondary'}><PencilRuler size={16} /> Worksheet</button>}
               {!visualResourcesRun ? (
                 <button onClick={handleGenerateVisualResources} disabled={generatingVisualResources} className="btn-secondary">{generatingVisualResources ? <Loader2 size={16} className="animate-spin" /> : <Files size={16} />} Visual resources</button>
               ) : hasVisualResources ? (
@@ -549,7 +581,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
               ))}
               {allowQuizRubric && <button id="lesson-kit-assess" onClick={rubric ? () => toggle('rubric') : handleGenerateRubric} disabled={generatingRubric} className={rubric && toolView === 'rubric' ? 'btn-primary' : 'btn-secondary'}>{generatingRubric ? <Loader2 size={16} className="animate-spin" /> : <Star size={16} />} {rubric ? 'Rubric' : 'Generate rubric'}</button>}
               <button onClick={exitTickets ? () => toggle('exitticket') : handleGenerateExitTicket} disabled={generatingExitTicket} className={exitTickets && toolView === 'exitticket' ? 'btn-primary' : 'btn-secondary'}>{generatingExitTicket ? <Loader2 size={16} className="animate-spin" /> : <CheckSquare size={16} />} Exit ticket</button>
-              <button onClick={() => setShowProgressForm(f => !f)} className={showProgressForm || toolView === 'progress' ? 'btn-primary' : 'btn-secondary'}><BookOpen size={16} /> Progress note</button>
+              <button onClick={() => toggleInlineForm('progress')} className={showProgressForm || toolView === 'progress' ? 'btn-primary' : 'btn-secondary'}><BookOpen size={16} /> Progress note</button>
             </div>
           </section>
 
@@ -637,13 +669,13 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
             </button>
 
             {/* Behavior note */}
-            <button onClick={() => setShowBehaviorForm(f => !f)} className={showBehaviorForm || toolView === 'behavior' ? 'btn-primary' : 'btn-secondary'}>
+            <button onClick={() => toggleInlineForm('behavior')} className={showBehaviorForm || toolView === 'behavior' ? 'btn-primary' : 'btn-secondary'}>
               <FileWarning size={16} />
               Behavior note
             </button>
 
             {/* Conference prep */}
-            <button onClick={() => setShowConferenceForm(f => !f)} className={showConferenceForm || toolView === 'conference' ? 'btn-primary' : 'btn-secondary'}>
+            <button onClick={() => toggleInlineForm('conference')} className={showConferenceForm || toolView === 'conference' ? 'btn-primary' : 'btn-secondary'}>
               <Users size={16} />
               Conference prep
             </button>
@@ -660,7 +692,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
             {visualResources.map((r, i) => (
               <button
                 key={i}
-                onClick={() => setToolView('visualresources')}
+                onClick={() => showTool('visualresources')}
                 className="inline-flex items-center gap-1 rounded-full border border-emerald-300 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-900 transition-colors hover:bg-emerald-100 dark:border-emerald-700 dark:bg-emerald-950 dark:text-emerald-100 dark:hover:bg-emerald-900"
                 title={r.supports ? `Supports: ${r.supports}` : undefined}
               >
@@ -673,11 +705,6 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
       </div>
 
       {/* Active tool output */}
-      {toolView && (
-        <button type="button" onClick={returnToLessonKit} className="no-print btn-secondary w-fit text-sm">
-          <ArrowLeft size={15} /> Back to Lesson Kit
-        </button>
-      )}
       {toolView === 'teachingview' && (
         <div id="lesson-kit-output" ref={toolPrintRef} className="scroll-mt-24 space-y-3">
           <TeachingView lesson={lo} />
@@ -935,10 +962,11 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
       {showProgressForm && (
         <form onSubmit={handleGenerateProgress} className="card p-5 space-y-3">
           <p className="label-eyebrow text-ink-400">IEP Progress Note</p>
+          <StudentPrivacyHint detail="Summarize the goal—do not paste an official IEP record. The display name is anonymized before AI generation." />
           {[
-            { key: 'studentName', label: 'Student name', placeholder: 'First name or initials' },
-            { key: 'iepGoal', label: 'IEP goal', placeholder: 'Describe the specific IEP goal…' },
-            { key: 'observationNotes', label: 'Observation notes', placeholder: 'What did you observe this week?' },
+            { key: 'studentName', label: 'Student display name or code', placeholder: 'Avery M. or 4X-03' },
+            { key: 'iepGoal', label: 'Goal summary', placeholder: 'Summarize the skill being monitored…' },
+            { key: 'observationNotes', label: 'Observation notes', placeholder: 'Use objective observations without other student names…' },
           ].map(({ key, label, placeholder }) => (
             <div key={key}>
               <label className="block text-xs font-medium text-ink-500 mb-1">{label}</label>
@@ -968,8 +996,9 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
       {showBehaviorForm && (
         <form onSubmit={handleGenerateBehavior} className="card p-5 space-y-3">
           <p className="label-eyebrow text-ink-400">Behavior Management Note</p>
+          <StudentPrivacyHint detail="The display name is anonymized before AI generation. Do not include other student names, diagnoses, or medical details in the description." />
           {[
-            { key: 'studentName', label: 'Student name', placeholder: 'First name or initials' },
+            { key: 'studentName', label: 'Student display name or code', placeholder: 'Avery M. or 4X-03' },
             { key: 'gradeLevel', label: 'Grade level', placeholder: 'e.g. 4' },
             { key: 'incidentDescription', label: 'Incident description', placeholder: 'Describe what happened objectively…' },
           ].map(({ key, label, placeholder }) => (
@@ -987,8 +1016,9 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
       {showConferenceForm && (
         <form onSubmit={handleGenerateConference} className="card p-5 space-y-3">
           <p className="label-eyebrow text-ink-400">Parent Conference Prep</p>
+          <StudentPrivacyHint detail="The display name is anonymized before AI generation. Keep notes instructional and avoid diagnoses, medical details, or copied student records." />
           {[
-            { key: 'studentName', label: 'Student name', placeholder: 'First name or initials' },
+            { key: 'studentName', label: 'Student display name or code', placeholder: 'Avery M. or 4X-03' },
             { key: 'gradeBand', label: 'Grade band', placeholder: 'e.g. 3-5' },
             { key: 'strengths', label: 'Strengths', placeholder: 'What is this student doing well?' },
             { key: 'areasOfConcern', label: 'Areas of concern', placeholder: 'What needs to improve?' },
@@ -1061,6 +1091,15 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+function StudentPrivacyHint({ detail }) {
+  return (
+    <div className="flex items-start gap-2 rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-3 py-2 text-xs leading-relaxed text-emerald-300">
+      <ShieldCheck size={14} className="mt-0.5 shrink-0" />
+      <span>{detail}</span>
     </div>
   )
 }

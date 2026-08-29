@@ -12,6 +12,17 @@ const goals = [{
     { id: 'update-2', goal_id: 'goal-1', student_id: null, observed_at: '2026-08-27', value: 694, note: 'Second class run · steadier pacing' },
   ],
   smart_goal_students: previewStudents.slice(0, 4).map((student, index) => ({ id: `student-goal-${index}`, goal_id: 'goal-1', student_id: student.id, students: student, baseline_value: 720 + index * 12, target_value: 660 + index * 8, current_value: 694 + index * 10, status: 'active' })),
+}, {
+  id: 'goal-library-1', scope: 'grade', class_period_id: null, grade_label: '4', subject: 'Library & Media',
+  title: 'Strengthen research and source evaluation',
+  specific_statement: 'By October 30, Grade 4 students will increase independent use of the research criteria from 40% to 80%, as measured by source-evaluation checks and student research organizers.',
+  metric_name: 'students independently meeting the research criteria', metric_unit: 'percent', direction: 'increase', baseline_value: 40, target_value: 80,
+  target_date: '2026-10-30', status: 'active', source_type: 'manual', source_label: null, created_at: now,
+  smart_goal_updates: [
+    { id: 'update-library-1', goal_id: 'goal-library-1', student_id: null, observed_at: '2026-08-21', value: 40, note: 'Baseline source check' },
+    { id: 'update-library-2', goal_id: 'goal-library-1', student_id: null, observed_at: '2026-08-28', value: 56, note: 'Students used the source checklist independently' },
+  ],
+  smart_goal_students: [],
 }]
 
 export async function listSmartGoals() { return structuredClone(goals) }

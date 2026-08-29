@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { AlertCircle, ArrowLeft, Check, ChevronDown, ChevronUp, Download, Loader2, Plus, Printer, RefreshCw, Target, Users } from 'lucide-react'
 import { listPeriods } from '../services/classPeriodsService'
 import { listStudents } from '../services/studentsService'
 import { addSmartGoalUpdate, createSmartGoal, getRunTrackerClassProgress, listSmartGoals, updateSmartGoalStatus, updateStudentGoal } from '../services/smartGoalsService'
+import { SPECIALTY_CONTEXTS } from '../constants/moduleHomes'
+import { subjectMatchesFilter } from '../constants/modules'
 
 const TODAY = new Date().toISOString().slice(0, 10)
 const FUTURE = new Date(Date.now() + 70 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
@@ -16,8 +18,31 @@ const TEMPLATES = [
   { key: 'music', subject: 'Music', label: 'Performance accuracy', title: 'Improve performance accuracy', metricName: 'students meeting the performance criteria', unit: 'percent', baseline: 55, target: 85, direction: 'increase' },
   { key: 'library', subject: 'Library & Media', label: 'Research skills', title: 'Strengthen research and source evaluation', metricName: 'students independently meeting the research criteria', unit: 'percent', baseline: 40, target: 80, direction: 'increase' },
   { key: 'cte', subject: 'CTE', label: 'Safety and competency', title: 'Increase safe technical skill performance', metricName: 'students meeting the safety and competency checklist', unit: 'percent', baseline: 60, target: 90, direction: 'increase' },
+  { key: 'theater', subject: 'Theater / Drama', label: 'Ensemble performance', title: 'Strengthen ensemble performance skills', metricName: 'students meeting the rehearsal and performance criteria', unit: 'percent', baseline: 50, target: 85, direction: 'increase' },
+  { key: 'dance', subject: 'Dance', label: 'Movement performance', title: 'Improve movement phrase performance', metricName: 'students meeting the movement and choreography criteria', unit: 'percent', baseline: 50, target: 85, direction: 'increase' },
+  { key: 'stem', subject: 'STEM', label: 'Engineering design growth', title: 'Improve use of the engineering design process', metricName: 'students meeting the design-process success criteria', unit: 'percent', baseline: 45, target: 80, direction: 'increase' },
+  { key: 'world-languages', subject: 'World Languages', label: 'Target-language communication', title: 'Increase target-language communication', metricName: 'students meeting the interpersonal communication criteria', unit: 'percent', baseline: 45, target: 80, direction: 'increase' },
+  { key: 'jrotc', subject: 'JROTC', label: 'Leadership application', title: 'Strengthen applied leadership skills', metricName: 'cadets meeting the leadership performance criteria', unit: 'percent', baseline: 55, target: 85, direction: 'increase' },
+  { key: 'elementary-tech', subject: 'Elementary Technology / Computer Lab', label: 'Independent digital skills', title: 'Increase independent use of the target digital skill', metricName: 'students completing the digital task independently', unit: 'percent', baseline: 45, target: 85, direction: 'increase' },
+  { key: 'school-counselors', subject: 'School Counselors', label: 'SEL skill application', title: 'Increase use of the target SEL strategy', metricName: 'students applying the strategy in classroom scenarios', unit: 'percent', baseline: 40, target: 75, direction: 'increase' },
+  { key: 'esl-specialist', subject: 'ESL/ELL Specialist', label: 'Language growth', title: 'Increase successful use of the language objective', metricName: 'students meeting the language-domain success criteria', unit: 'percent', baseline: 40, target: 75, direction: 'increase' },
+  { key: 'gifted-talented', subject: 'Gifted & Talented', label: 'Depth and complexity', title: 'Increase depth and complexity in student products', metricName: 'students meeting the advanced product criteria', unit: 'percent', baseline: 50, target: 85, direction: 'increase' },
+  { key: 'reading-specialists', subject: 'Reading Specialists', label: 'Targeted literacy growth', title: 'Improve performance on the targeted literacy skill', metricName: 'students meeting the literacy skill criterion', unit: 'percent', baseline: 35, target: 75, direction: 'increase' },
+  { key: 'math-specialists', subject: 'Math Specialists', label: 'Targeted math growth', title: 'Improve mastery of the targeted math skill', metricName: 'students meeting the math skill criterion', unit: 'percent', baseline: 40, target: 80, direction: 'increase' },
+  { key: 'special-education', subject: 'Special Education', label: 'Access and independence', title: 'Increase independence with the target learning routine', metricName: 'students completing the routine with planned supports', unit: 'percent', baseline: 40, target: 75, direction: 'increase' },
+  { key: 'early-childhood', subject: 'Early Childhood / Pre-K', label: 'Learning through play', title: 'Increase demonstration of the target early-learning skill', metricName: 'children demonstrating the skill during play and routines', unit: 'percent', baseline: 40, target: 75, direction: 'increase' },
+  { key: 'ecse', subject: 'Early Childhood Special Education', label: 'Participation and access', title: 'Increase participation in the target classroom routine', metricName: 'successful opportunities with planned supports', unit: 'percent', baseline: 35, target: 70, direction: 'increase' },
+  { key: 'after-school-clubs', subject: 'After-School Clubs', label: 'Engagement and project growth', title: 'Increase active participation in club projects', metricName: 'students meeting the participation and project criteria', unit: 'percent', baseline: 55, target: 85, direction: 'increase' },
+  { key: 'ot', subject: 'Occupational Therapists', label: 'Functional participation', title: 'Increase use of the target participation strategy', metricName: 'successful opportunities with the planned strategy', unit: 'percent', baseline: 40, target: 75, direction: 'increase' },
+  { key: 'pt', subject: 'Physical Therapists', label: 'Movement and access', title: 'Increase success with the target movement skill', metricName: 'successful movement opportunities with planned supports', unit: 'percent', baseline: 40, target: 75, direction: 'increase' },
   { key: 'slp', subject: 'Speech-Language Pathologists', label: 'Group communication target', title: 'Increase successful use of the targeted communication skill', metricName: 'successful opportunities with planned supports', unit: 'percent', baseline: 45, target: 75, direction: 'increase' },
-  { key: 'intervention', subject: 'Intervention', label: 'Intervention response', title: 'Improve performance on the targeted intervention measure', metricName: 'students meeting the intervention aimline', unit: 'percent', baseline: 35, target: 75, direction: 'increase' },
+  { key: 'tvi', subject: 'Teacher of the Visually Impaired', label: 'ECC independence', title: 'Increase independence with the target ECC skill', metricName: 'successful opportunities using the target access skill', unit: 'percent', baseline: 40, target: 75, direction: 'increase' },
+  { key: 'dhh', subject: 'Teacher of the Deaf & Hard of Hearing', label: 'Communication access', title: 'Increase communication access and self-advocacy', metricName: 'successful use of the target access or advocacy strategy', unit: 'percent', baseline: 40, target: 75, direction: 'increase' },
+  { key: 'staff-pd', subject: 'Staff PD & Meeting Planning', label: 'Professional learning implementation', title: 'Increase implementation of the target instructional practice', metricName: 'staff members demonstrating the agreed implementation evidence', unit: 'percent', baseline: 35, target: 80, direction: 'increase' },
+  { key: 'instructional-coaching', subject: 'Instructional Coaching', label: 'Teacher-selected practice', title: 'Increase consistent use of the teacher-selected practice', metricName: 'observed opportunities showing the agreed success criteria', unit: 'percent', baseline: 40, target: 80, direction: 'increase' },
+  { key: 'intervention', subject: 'Intervention Planning', label: 'Intervention response', title: 'Improve performance on the targeted intervention measure', metricName: 'students meeting the intervention aimline', unit: 'percent', baseline: 35, target: 75, direction: 'increase' },
+  { key: 'student-support-activities', subject: 'Student Support Team Activities', label: 'SEL and behavior growth', title: 'Increase use of the target SEL or behavior skill', metricName: 'students demonstrating the skill in planned practice', unit: 'percent', baseline: 40, target: 75, direction: 'increase' },
+  { key: 'test-prep', subject: 'Test Prep', label: 'Targeted test-skill growth', title: 'Improve accuracy on the targeted assessment skill', metricName: 'practice questions answered correctly', unit: 'percent', baseline: 50, target: 80, direction: 'increase' },
 ]
 
 const EMPTY_FORM = {
@@ -25,6 +50,25 @@ const EMPTY_FORM = {
   title: TEMPLATES[0].title, metricName: TEMPLATES[0].metricName, metricUnit: 'percent',
   direction: 'increase', baselineValue: '50', targetValue: '80', targetDate: FUTURE,
   specificStatement: '', sourceType: 'manual', sourceLabel: '', notes: '', includeIndividuals: false,
+}
+
+function formForModule(moduleLabel) {
+  if (!moduleLabel) return EMPTY_FORM
+  const template = TEMPLATES.find((item) => item.subject === moduleLabel)
+  if (!template) return { ...EMPTY_FORM, subject: moduleLabel }
+  return {
+    ...EMPTY_FORM,
+    templateKey: template.key,
+    subject: template.subject,
+    title: template.title,
+    metricName: template.metricName,
+    metricUnit: template.unit,
+    baselineValue: String(template.baseline),
+    targetValue: String(template.target),
+    direction: template.direction,
+    sourceType: template.sourceType || 'manual',
+    sourceLabel: template.sourceLabel || '',
+  }
 }
 
 function formatDate(value) {
@@ -72,10 +116,27 @@ function buildStatement(form, periods) {
 }
 
 export default function SmartGoals() {
+  const [searchParams] = useSearchParams()
+  const requestedModule = searchParams.get('module')
+  return <SmartGoalsWorkspace key={requestedModule || 'all-specialties'} requestedModule={requestedModule} />
+}
+
+function SmartGoalsWorkspace({ requestedModule }) {
+  const moduleEntry = Object.entries(SPECIALTY_CONTEXTS).find(([slug, config]) =>
+    requestedModule === slug || requestedModule === config.moduleLabel || requestedModule === config.title
+  )
+  const moduleBackTo = requestedModule === 'PE & Health'
+    ? '/pe-health'
+    : moduleEntry
+      ? `/${moduleEntry[0]}`
+      : '/'
+  const moduleBackLabel = requestedModule
+    ? `${moduleEntry?.[1].title ?? requestedModule} dashboard`
+    : 'All modules'
   const [goals, setGoals] = useState([])
   const [periods, setPeriods] = useState([])
   const [students, setStudents] = useState([])
-  const [form, setForm] = useState(EMPTY_FORM)
+  const [form, setForm] = useState(() => formForModule(requestedModule))
   const [selectedStudents, setSelectedStudents] = useState([])
   const [creating, setCreating] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -85,8 +146,15 @@ export default function SmartGoals() {
   const [expandedGoal, setExpandedGoal] = useState(null)
   const [progressDrafts, setProgressDrafts] = useState({})
   const [savingGoalId, setSavingGoalId] = useState(null)
+  const [allViewModule, setAllViewModule] = useState(null)
 
   const classStudents = useMemo(() => students.filter((student) => student.class_period_id === form.classPeriodId), [students, form.classPeriodId])
+  const visiblePeriods = requestedModule
+    ? periods.filter((period) => subjectMatchesFilter(period.subject, requestedModule))
+    : periods
+  const templateOptions = requestedModule
+    ? TEMPLATES.filter((template) => template.key === 'general' || template.subject === requestedModule)
+    : TEMPLATES
 
   async function load() {
     setLoading(true); setError(null)
@@ -119,7 +187,7 @@ export default function SmartGoals() {
 
   function applyTemplate(key) {
     const template = TEMPLATES.find((item) => item.key === key) ?? TEMPLATES[0]
-    setForm((current) => ({ ...current, templateKey: key, subject: template.subject, title: template.title, metricName: template.metricName, metricUnit: template.unit, baselineValue: String(template.baseline), targetValue: String(template.target), direction: template.direction, sourceType: template.sourceType || 'manual', sourceLabel: template.sourceLabel || '', specificStatement: '' }))
+    setForm((current) => ({ ...current, templateKey: key, subject: requestedModule && template.key === 'general' ? requestedModule : template.subject, title: template.title, metricName: template.metricName, metricUnit: template.unit, baselineValue: String(template.baseline), targetValue: String(template.target), direction: template.direction, sourceType: template.sourceType || 'manual', sourceLabel: template.sourceLabel || '', specificStatement: '' }))
   }
 
   function chooseClass(classPeriodId) {
@@ -142,7 +210,7 @@ export default function SmartGoals() {
     try {
       await createSmartGoal({ ...form, specificStatement: form.specificStatement.trim() || buildStatement(form, periods) }, form.includeIndividuals ? selectedStudents : [])
       setNotice({ type: 'success', message: 'SMART Goal saved.' })
-      setForm(EMPTY_FORM); setSelectedStudents([]); setShowCreate(false)
+      setForm(formForModule(requestedModule)); setSelectedStudents([]); setShowCreate(false)
       await load()
     } catch (err) { setError(err.message ?? 'Could not save the SMART Goal.') }
     finally { setCreating(false) }
@@ -179,9 +247,17 @@ export default function SmartGoals() {
     finally { setSavingGoalId(null) }
   }
 
+  const showingAllSpecialties = Boolean(requestedModule && allViewModule === requestedModule)
+  const visibleGoals = requestedModule && !showingAllSpecialties
+    ? goals.filter((goal) => subjectMatchesFilter(goal.subject, requestedModule))
+    : goals
+  const activeGoals = visibleGoals.filter((goal) => goal.status !== 'archived')
+  const achieved = activeGoals.filter((goal) => goal.status === 'achieved').length
+  const needsSupport = activeGoals.filter((goal) => goal.status === 'needs_support').length
+
   function downloadCsv() {
     const rows = [['Goal', 'Scope', 'Subject', 'Measure', 'Baseline', 'Current', 'Target', 'Unit', 'Target date', 'Status', 'Student']]
-    goals.forEach((goal) => {
+    visibleGoals.forEach((goal) => {
       rows.push([goal.title, goal.scope, goal.subject, goal.metric_name, goal.baseline_value, currentValue(goal), goal.target_value, goal.metric_unit, goal.target_date, goal.status, 'Whole group'])
       ;(goal.smart_goal_students ?? []).forEach((studentGoal) => rows.push([goal.title, 'individual within group', goal.subject, goal.metric_name, studentGoal.baseline_value, studentGoal.current_value, studentGoal.target_value, goal.metric_unit, goal.target_date, studentGoal.status, studentGoal.students?.name_or_initials || 'Student']))
     })
@@ -190,26 +266,24 @@ export default function SmartGoals() {
     const anchor = document.createElement('a'); anchor.href = href; anchor.download = 'plansk12-smart-goals.csv'; anchor.click(); URL.revokeObjectURL(href)
   }
 
-  const activeGoals = goals.filter((goal) => goal.status !== 'archived')
-  const achieved = activeGoals.filter((goal) => goal.status === 'achieved').length
-  const needsSupport = activeGoals.filter((goal) => goal.status === 'needs_support').length
-
   return <div className="space-y-6">
     <div className="no-print flex flex-wrap items-center justify-between gap-3">
-      <Link to="/" className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-500 hover:text-ink-100"><ArrowLeft size={15} /> All modules</Link>
-      <div className="flex flex-wrap gap-2"><button onClick={downloadCsv} disabled={!goals.length} className="btn-secondary"><Download size={16} /> CSV</button><button onClick={() => window.print()} className="btn-secondary"><Printer size={16} /> Print</button><button onClick={() => setShowCreate((value) => !value)} className="btn-primary"><Plus size={16} /> New SMART Goal</button></div>
+      <Link to={moduleBackTo} className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-500 hover:text-ink-100"><ArrowLeft size={15} /> {moduleBackLabel}</Link>
+      <div className="flex flex-wrap gap-2"><button onClick={downloadCsv} disabled={!visibleGoals.length} className="btn-secondary"><Download size={16} /> CSV</button><button onClick={() => window.print()} className="btn-secondary"><Printer size={16} /> Print</button><button onClick={() => setShowCreate((value) => !value)} className="btn-primary"><Plus size={16} /> New SMART Goal</button></div>
     </div>
 
-    <header><p className="label-eyebrow text-accent-500">Shared teacher workspace</p><h1 className="mt-1 text-3xl font-bold text-ink-50">SMART Goals</h1><p className="mt-2 max-w-3xl text-ink-500">Create one measurable class or grade-level goal, keep optional personal targets inside it, and show improvement or regression with evidence over time.</p></header>
+    <header><p className="label-eyebrow text-accent-500">{requestedModule ? `${requestedModule} · shared teacher workspace` : 'Shared teacher workspace'}</p><h1 className="mt-1 text-3xl font-bold text-ink-50">SMART Goals</h1><p className="mt-2 max-w-3xl text-ink-500">Create one measurable class or grade-level goal, keep optional personal targets inside it, and show improvement or regression with evidence over time.</p></header>
+
+    {requestedModule && <section className="no-print flex flex-wrap items-center justify-between gap-3 rounded-xl border border-accent-500/20 bg-accent-500/5 px-4 py-3"><div><p className="text-sm font-semibold text-ink-100">{showingAllSpecialties ? 'Showing goals from all your specialties' : `Showing only ${requestedModule} goals`}</p><p className="mt-0.5 text-xs text-ink-500">New goals created here will stay connected to {requestedModule}.</p></div><button onClick={() => setAllViewModule(showingAllSpecialties ? null : requestedModule)} className="btn-secondary py-2 text-xs">{showingAllSpecialties ? `Show only ${requestedModule}` : 'View all specialties'}</button></section>}
 
     <div className="grid gap-3 sm:grid-cols-3"><SummaryCard Icon={Target} label="Active goals" value={activeGoals.length} color="text-accent-500" /><SummaryCard Icon={Check} label="Achieved" value={achieved} color="text-emerald-500" /><SummaryCard Icon={AlertCircle} label="Need support" value={needsSupport} color="text-amber-500" /></div>
 
     {notice && <p role="status" className={`rounded-xl border p-3 text-sm ${notice.type === 'success' ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300' : 'border-red-500/30 bg-red-500/10 text-red-600'}`}>{notice.message}</p>}
     {error && <p role="alert" className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-500">{error}</p>}
 
-    {showCreate && <GoalForm form={form} setForm={setForm} periods={periods} classStudents={classStudents} selectedStudents={selectedStudents} setSelectedStudents={setSelectedStudents} applyTemplate={applyTemplate} chooseClass={chooseClass} toggleIndividuals={toggleIndividuals} submitGoal={submitGoal} creating={creating} statement={buildStatement(form, periods)} />}
+    {showCreate && <GoalForm form={form} setForm={setForm} periods={visiblePeriods} templates={templateOptions} lockedSubject={requestedModule} classStudents={classStudents} selectedStudents={selectedStudents} setSelectedStudents={setSelectedStudents} applyTemplate={applyTemplate} chooseClass={chooseClass} toggleIndividuals={toggleIndividuals} submitGoal={submitGoal} creating={creating} statement={buildStatement(form, periods)} />}
 
-    {loading ? <p className="flex items-center gap-2 text-sm text-ink-500"><Loader2 size={16} className="animate-spin" /> Loading SMART Goals…</p> : activeGoals.length === 0 ? <div className="card p-8 text-center"><Target size={32} className="mx-auto text-accent-500" /><h2 className="mt-3 text-xl font-semibold">Create your first measurable goal</h2><p className="mx-auto mt-2 max-w-lg text-sm text-ink-500">Start with a template, attach a class or grade level, and add progress checks during the grading period.</p><button onClick={() => setShowCreate(true)} className="btn-primary mt-4"><Plus size={16} /> New SMART Goal</button></div> : <div className="space-y-4">{activeGoals.map((goal) => <GoalCard key={goal.id} goal={goal} expanded={expandedGoal === goal.id} onToggle={() => setExpandedGoal((current) => current === goal.id ? null : goal.id)} draft={progressDrafts[goal.id] ?? {}} setDraft={(draft) => setProgressDrafts((current) => ({ ...current, [goal.id]: draft }))} onSaveProgress={() => saveProgress(goal)} onSync={() => syncRunTracker(goal)} onStatus={(status) => changeStatus(goal.id, status)} saving={savingGoalId === goal.id} onStudentSaved={load} />)}</div>}
+    {loading ? <p className="flex items-center gap-2 text-sm text-ink-500"><Loader2 size={16} className="animate-spin" /> Loading SMART Goals…</p> : activeGoals.length === 0 ? <div className="card p-8 text-center"><Target size={32} className="mx-auto text-accent-500" /><h2 className="mt-3 text-xl font-semibold">{requestedModule && !showingAllSpecialties ? `Create your first ${requestedModule} goal` : 'Create your first measurable goal'}</h2><p className="mx-auto mt-2 max-w-lg text-sm text-ink-500">Start with a template, attach a class or grade level, and add progress checks during the grading period.</p><button onClick={() => setShowCreate(true)} className="btn-primary mt-4"><Plus size={16} /> New SMART Goal</button></div> : <div className="space-y-4">{activeGoals.map((goal) => <GoalCard key={goal.id} goal={goal} expanded={expandedGoal === goal.id} onToggle={() => setExpandedGoal((current) => current === goal.id ? null : goal.id)} draft={progressDrafts[goal.id] ?? {}} setDraft={(draft) => setProgressDrafts((current) => ({ ...current, [goal.id]: draft }))} onSaveProgress={() => saveProgress(goal)} onSync={() => syncRunTracker(goal)} onStatus={(status) => changeStatus(goal.id, status)} saving={savingGoalId === goal.id} onStudentSaved={load} />)}</div>}
   </div>
 }
 
@@ -217,12 +291,12 @@ function SummaryCard({ Icon, label, value, color }) {
   return <div className="card flex items-center gap-3 p-4"><div className="rounded-xl bg-ink-900/50 p-2.5"><Icon size={20} className={color} /></div><div><p className="text-2xl font-bold text-ink-50">{value}</p><p className="text-xs text-ink-500">{label}</p></div></div>
 }
 
-function GoalForm({ form, setForm, periods, classStudents, selectedStudents, setSelectedStudents, applyTemplate, chooseClass, toggleIndividuals, submitGoal, creating, statement }) {
+function GoalForm({ form, setForm, periods, templates, lockedSubject, classStudents, selectedStudents, setSelectedStudents, applyTemplate, chooseClass, toggleIndividuals, submitGoal, creating, statement }) {
   const field = (key, value) => setForm((current) => ({ ...current, [key]: value }))
   return <form onSubmit={submitGoal} className="card space-y-5 p-5 sm:p-6">
     <div><p className="label-eyebrow text-accent-500">New goal</p><h2 className="mt-1 text-xl font-semibold">Build a measurable goal</h2></div>
-    <div className="grid gap-4 sm:grid-cols-2"><label className="text-sm font-medium text-ink-300">Goal template<select value={form.templateKey} onChange={(event) => applyTemplate(event.target.value)} className="input-field mt-1">{TEMPLATES.map((template) => <option key={template.key} value={template.key}>{template.subject} · {template.label}</option>)}</select></label><label className="text-sm font-medium text-ink-300">Scope<select value={form.scope} onChange={(event) => field('scope', event.target.value)} className="input-field mt-1"><option value="class">Whole class</option><option value="grade">Whole grade level</option></select></label></div>
-    <div className="grid gap-4 sm:grid-cols-2">{form.scope === 'class' ? <label className="text-sm font-medium text-ink-300">Class<select value={form.classPeriodId} onChange={(event) => chooseClass(event.target.value)} className="input-field mt-1"><option value="">Choose a class…</option>{periods.map((period) => <option key={period.id} value={period.id}>{period.label} · {period.subject}</option>)}</select></label> : <label className="text-sm font-medium text-ink-300">Grade level<input value={form.gradeLabel} onChange={(event) => field('gradeLabel', event.target.value)} placeholder="e.g. 4 or 6–8" className="input-field mt-1" /></label>}<label className="text-sm font-medium text-ink-300">Subject / specialty<input value={form.subject} onChange={(event) => field('subject', event.target.value)} className="input-field mt-1" /></label></div>
+    <div className="grid gap-4 sm:grid-cols-2"><label className="text-sm font-medium text-ink-300">Goal template<select value={form.templateKey} onChange={(event) => applyTemplate(event.target.value)} className="input-field mt-1">{templates.map((template) => <option key={template.key} value={template.key}>{template.key === 'general' && lockedSubject ? lockedSubject : template.subject} · {template.label}</option>)}</select></label><label className="text-sm font-medium text-ink-300">Scope<select value={form.scope} onChange={(event) => field('scope', event.target.value)} className="input-field mt-1"><option value="class">Whole class</option><option value="grade">Whole grade level</option></select></label></div>
+    <div className="grid gap-4 sm:grid-cols-2">{form.scope === 'class' ? <label className="text-sm font-medium text-ink-300">Class<select value={form.classPeriodId} onChange={(event) => chooseClass(event.target.value)} className="input-field mt-1"><option value="">Choose a class…</option>{periods.map((period) => <option key={period.id} value={period.id}>{period.label} · {period.subject}</option>)}</select>{periods.length === 0 && <span className="mt-1 block text-xs font-normal text-ink-500">Add a {lockedSubject} class in Classes &amp; Rosters, or choose a whole grade-level goal.</span>}</label> : <label className="text-sm font-medium text-ink-300">Grade level<input value={form.gradeLabel} onChange={(event) => field('gradeLabel', event.target.value)} placeholder="e.g. 4 or 6–8" className="input-field mt-1" /></label>}<label className="text-sm font-medium text-ink-300">Subject / specialty<input value={form.subject} onChange={(event) => field('subject', event.target.value)} readOnly={Boolean(lockedSubject)} className="input-field mt-1" />{lockedSubject && <span className="mt-1 block text-xs font-normal text-ink-500">Set by the {lockedSubject} workspace.</span>}</label></div>
     <label className="block text-sm font-medium text-ink-300">Goal title<input value={form.title} onChange={(event) => field('title', event.target.value)} className="input-field mt-1" /></label>
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><label className="text-sm font-medium text-ink-300">Measure<input value={form.metricName} onChange={(event) => field('metricName', event.target.value)} className="input-field mt-1" /></label><label className="text-sm font-medium text-ink-300">Unit<select value={form.metricUnit} onChange={(event) => field('metricUnit', event.target.value)} className="input-field mt-1"><option value="percent">Percent</option><option value="seconds">Time (seconds)</option><option value="points">Points</option><option value="score">Score</option><option value="frequency">Frequency</option></select></label><label className="text-sm font-medium text-ink-300">Baseline<input type="number" step="any" value={form.baselineValue} onChange={(event) => field('baselineValue', event.target.value)} className="input-field mt-1" /></label><label className="text-sm font-medium text-ink-300">Target<input type="number" step="any" value={form.targetValue} onChange={(event) => field('targetValue', event.target.value)} className="input-field mt-1" /></label></div>
     <div className="grid gap-4 sm:grid-cols-2"><label className="text-sm font-medium text-ink-300">Change direction<select value={form.direction} onChange={(event) => field('direction', event.target.value)} className="input-field mt-1"><option value="increase">Increase</option><option value="decrease">Decrease</option><option value="maintain">Maintain</option></select></label><label className="text-sm font-medium text-ink-300">Target date<input type="date" value={form.targetDate} onChange={(event) => field('targetDate', event.target.value)} className="input-field mt-1" /></label></div>

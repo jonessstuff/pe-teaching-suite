@@ -130,7 +130,16 @@ Deno.serve(async (req) => {
       };
     }).sort((a, b) => {
       const priority = { canceling: 0, canceled: 1, trial: 2, paying: 3 } as Record<string, number>;
-      return (priority[a.status] ?? 4) - (priority[b.status] ?? 4) || b.inactiveDays - a.inactiveDays;
+      const statusOrder = (priority[a.status] ?? 4) - (priority[b.status] ?? 4);
+      if (statusOrder) return statusOrder;
+      // Put the most urgent scheduled cancellations first so the owner sees
+      // who still has the shortest recovery window.
+      if (a.status === "canceling" && b.status === "canceling") {
+        const aEnd = a.accessEndsAt ? new Date(a.accessEndsAt).getTime() : Number.MAX_SAFE_INTEGER;
+        const bEnd = b.accessEndsAt ? new Date(b.accessEndsAt).getTime() : Number.MAX_SAFE_INTEGER;
+        if (aEnd !== bEnd) return aEnd - bEnd;
+      }
+      return b.inactiveDays - a.inactiveDays;
     });
 
     return jsonResponse({

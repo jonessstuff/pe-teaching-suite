@@ -42,7 +42,7 @@ Rules:
 Student: ${name}
 Subject/Class: ${subject} (Grade ${gradeBands.join('/')})
 Lesson: ${lessonObject.title ?? 'class session'}
-Main activity: ${lessonObject.fitness_activities || lessonObject.whole_group_instruction ?? ''}
+Main activity: ${lessonObject.fitness_activities || (lessonObject.whole_group_instruction ?? '')}
 
 IEP Goal Category: ${goalCategory} — ${categoryContext}
 IEP Goal: "${iepGoal}"

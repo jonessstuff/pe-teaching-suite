@@ -845,6 +845,7 @@ export default function Landing() {
           <div className="flex flex-col items-center gap-2 text-sm text-ink-500 sm:items-end">
             <p>© 2026 PlansK12</p>
             <p className="mt-0.5">Built for the teachers everyone forgets about.</p>
+            <Link to="/privacy" className="font-semibold text-brand-600 hover:text-brand-500">Student data &amp; privacy</Link>
             <a href="mailto:hello@plansk12.com?cc=plansk12.com@gmail.com" className="btn-outline mt-1">
               <Mail size={15} />
               Contact us
