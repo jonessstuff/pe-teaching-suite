@@ -113,3 +113,22 @@ export async function deleteLesson(id) {
 export async function saveSubPlan(id, subPlanFields) {
   return updateLesson(id, { lessonObject: subPlanFields })
 }
+
+export async function deleteUnit(unit) {
+  for (let i = lessons.length - 1; i >= 0; i -= 1) if (lessons[i].lesson_object?.unit === unit) lessons.splice(i, 1)
+}
+
+export async function duplicateLesson(id) {
+  const source = await getLesson(id)
+  return createLesson({ ...source.lesson_object, title: `${source.title} (Copy)` })
+}
+
+export async function updateTags(id, tags) {
+  return updateLesson(id, { meta: { tags } })
+}
+
+export async function toggleFavorite(id) {
+  const lesson = await getLesson(id)
+  lesson.is_favorite = !lesson.is_favorite
+  return lesson
+}

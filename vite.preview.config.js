@@ -14,6 +14,7 @@ export default defineConfig({
       '../services/lessonsService': path.resolve(__dirname, 'src/preview/mockLessonsService.js'),
       '../services/generationService': path.resolve(__dirname, 'src/preview/mockGenerationService.js'),
       '../lib/supabaseClient': path.resolve(__dirname, 'src/preview/mockSupabaseClient.js'),
+      '../services/ownerAnalyticsService': path.resolve(__dirname, 'src/preview/mockOwnerAnalyticsService.js'),
     },
   },
   build: {

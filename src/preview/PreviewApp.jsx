@@ -6,6 +6,8 @@ import LessonLibrary from '../pages/LessonLibrary'
 import LessonDetail from '../pages/LessonDetail'
 import CurriculumMap from '../pages/CurriculumMap'
 import Settings from '../pages/Settings'
+import ModulePicker from '../pages/ModulePicker'
+import OwnerDashboard from '../pages/OwnerDashboard'
 
 /**
  * Standalone preview app.
@@ -19,12 +21,14 @@ export default function PreviewApp() {
     <HashRouter>
       <Routes>
         <Route path="/" element={<AppShell />}>
-          <Route index element={<Dashboard />} />
+          <Route index element={<ModulePicker />} />
+          <Route path="pe-health" element={<Dashboard />} />
           <Route path="generate" element={<LessonGenerator />} />
           <Route path="lessons" element={<LessonLibrary />} />
           <Route path="lessons/:id" element={<LessonDetail />} />
           <Route path="curriculum-map" element={<CurriculumMap />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="owner" element={<OwnerDashboard />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

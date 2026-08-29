@@ -38,3 +38,19 @@ export async function generateSubPlan() {
   await delay(800)
   return SUB_PLAN_FIELDS
 }
+
+export async function generateFitnessTestPrep(input = {}) {
+  return generateLesson({ ...input, topic: input.topic || 'Fitness Test Preparation' })
+}
+
+export async function generateYearPlan() {
+  await delay(500)
+  return { title: 'A Ready-to-Teach Year', overview: 'A balanced year of skill development, fitness, teamwork, and reflection.', units: [] }
+}
+
+export async function generateVisualResources() { await delay(400); return { teacher_materials: ['Setup card', 'Teaching cues'], student_materials: ['Large-print station card', 'Reflection slip'] } }
+export async function generateDifferentiatedLesson() { await delay(400); return sampleKickballLesson }
+export async function generateQuiz() { await delay(400); return { questions: [] } }
+export async function generateRubric() { await delay(400); return { criteria: [] } }
+export async function generateWorksheet() { await delay(400); return { title: 'Student Practice Page', sections: [] } }
+export async function generateAnswerKey() { await delay(400); return { answers: [] } }
