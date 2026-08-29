@@ -18,13 +18,10 @@ import LessonGenerator from './pages/LessonGenerator'
 import LessonLibrary from './pages/LessonLibrary'
 import LessonDetail from './pages/LessonDetail'
 import CurriculumMap from './pages/CurriculumMap'
-import LibraryHome from './pages/LibraryHome'
 import LibraryGenerator from './pages/LibraryGenerator'
 import LibraryLessonLibrary from './pages/LibraryLessonLibrary'
-import ArtHome from './pages/ArtHome'
 import ArtGenerator from './pages/ArtGenerator'
 import ArtLessonLibrary from './pages/ArtLessonLibrary'
-import MusicHome from './pages/MusicHome'
 import MusicGenerator from './pages/MusicGenerator'
 import MusicLessonLibrary from './pages/MusicLessonLibrary'
 import AdaptivePEGenerator from './pages/AdaptivePEGenerator'
@@ -344,14 +341,14 @@ function App() {
           <Route path="participation" element={<ParticipationTracker />} />
           <Route path="run-tracker" element={<RunTracker />} />
           <Route path="curriculum-map" element={<CurriculumMap />} />
-          <Route path="library" element={<LibraryHome />} />
+          <Route path="library" element={<ModuleHome config={MODULE_HOMES.library} />} />
           <Route path="library/generate" element={<LibraryGenerator />} />
           <Route path="library/lessons" element={<LibraryLessonLibrary />} />
           <Route path="library/makerspace" element={<MakerProjectGenerator origin="library" />} />
-          <Route path="art" element={<ArtHome />} />
+          <Route path="art" element={<ModuleHome config={MODULE_HOMES.art} />} />
           <Route path="art/generate" element={<ArtGenerator />} />
           <Route path="art/lessons" element={<ArtLessonLibrary />} />
-          <Route path="music" element={<MusicHome />} />
+          <Route path="music" element={<ModuleHome config={MODULE_HOMES.music} />} />
           <Route path="music/generate" element={<MusicGenerator />} />
           <Route path="music/lessons" element={<MusicLessonLibrary />} />
           <Route path="adaptive-pe" element={<AdaptivePEGenerator />} />

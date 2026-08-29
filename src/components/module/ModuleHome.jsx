@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Sparkles, BookOpen, CalendarDays, BookCheck, BarChart3, CalendarRange, PartyPopper, Flame, ScrollText, FolderOpen, BookMarked, FileInput, Layers, ArrowRight, ArrowLeft, Loader2 } from 'lucide-react'
+import { Sparkles, BookOpen, CalendarDays, BookCheck, BarChart3, CalendarRange, PartyPopper, Flame, ScrollText, FolderOpen, BookMarked, FileInput, Layers, ArrowRight, ArrowLeft } from 'lucide-react'
 import { listLessons } from '../../services/lessonsService'
 import RecentLessonsPanel from '../lesson/RecentLessonsPanel'
 
@@ -82,7 +82,7 @@ export default function ModuleHome({ config }) {
     generatePath, generateTitle, generateDesc,
     browseTitle = 'Browse my lessons', browseNoun = 'lesson',
     browsePath = null,
-    cards = [],
+    cards = [], specialtyCards = [], workspaceFeatures = [],
   } = config
 
   const [lessons, setLessons] = useState(null)
@@ -122,7 +122,22 @@ export default function ModuleHome({ config }) {
         </div>
       </div>
 
-      {/* Action cards — the primary actions come first. */}
+      {workspaceFeatures.length > 0 && (
+        <section className={`rounded-2xl border border-ink-800 bg-gradient-to-r ${accent.well} p-5`}>
+          <p className={`text-xs font-semibold uppercase tracking-wide ${accent.text}`}>Your {title} workspace</p>
+          <div className="mt-3 grid gap-3 sm:grid-cols-3">
+            {workspaceFeatures.map(({ title: featureTitle, desc }) => (
+              <div key={featureTitle} className="rounded-xl bg-white/60 p-3 dark:bg-ink-950/40">
+                <p className="text-sm font-semibold text-ink-100">{featureTitle}</p>
+                <p className="mt-1 text-xs leading-relaxed text-ink-500">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section>
+        <div className="mb-3"><h2 className="font-semibold text-ink-200">Start here</h2><p className="mt-1 text-xs text-ink-500">Create something new or continue work you already started.</p></div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <ActionCard
           Icon={Sparkles} title={generateTitle} desc={generateDesc} to={generatePath}
@@ -132,13 +147,22 @@ export default function ModuleHome({ config }) {
           Icon={BookOpen} title={browseTitle} desc="Everything you've created, organized" to={browseTo}
           well="bg-emerald-500/15" text="text-emerald-400" hover="hover:border-emerald-500/40" arrow="group-hover:text-emerald-400"
         />
-        {cards.map((key) => {
+        {specialtyCards.map((card) => <ActionCard key={card.to} {...card} />)}
+      </div>
+      </section>
+
+      {cards.length > 0 && <details className="card p-5 sm:p-6">
+        <summary className="cursor-pointer font-semibold text-ink-200">More planning and professional tools <span className="ml-1 text-xs font-normal text-ink-500">({cards.length})</span></summary>
+        <p className="mt-2 text-xs text-ink-500">Open these when you need longer-range planning, assessment, documentation, or professional resources.</p>
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {cards.map((key) => {
           const c = UTILITY_CARDS[key]
           if (!c) return null
           const to = TOOL_CARDS[key] && slug ? `${c.to}?subject=${slug}` : c.to
           return <ActionCard key={key} {...c} to={to} />
         })}
-      </div>
+        </div>
+      </details>}
 
       {/* My lessons — compact preview below the tools */}
       <RecentLessonsPanel lessons={lessons} error={error} browseNoun={browseNoun} browseTo={browseTo} accentText={accent.text} />

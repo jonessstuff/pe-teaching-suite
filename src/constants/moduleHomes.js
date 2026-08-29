@@ -2,7 +2,7 @@ import {
   Drama, Hand, Wind, Globe, Award, Monitor, Compass, Languages, Sparkles,
   BookOpen, Calculator, HeartHandshake, Blocks, PartyPopper, Target, Layers,
   Users, Presentation, Handshake, PersonStanding, Speech, ScanEye, Ear,
-  Briefcase, Baby,
+  Briefcase, Baby, Palette, Music2, Library, Wrench,
 } from 'lucide-react'
 
 // Per-module config for the reusable <ModuleHome> shell.
@@ -77,6 +77,46 @@ const FULL_SUB = [...FULL, 'subbinder', 'unit']
 const LITE_SUB = [...LITE, 'subbinder', 'unit'] // Early Childhood
 
 export const MODULE_HOMES = {
+  art: {
+    subject: 'Art', moduleLabel: 'Art', title: 'Art', Icon: Palette, accent: accent('coral'),
+    tagline: 'Elementary K–5 studio lessons — NCAS-aligned and ready to teach',
+    generatePath: '/art/generate', generateTitle: 'Create an art lesson',
+    generateDesc: 'Studio-ready directions, materials, visual concepts, critique, and assessment',
+    browseTitle: 'Browse my art lessons', browseNoun: 'lesson', browsePath: '/art/lessons', cards: FULL_SB,
+    workspaceFeatures: [
+      { title: 'Studio-ready preparation', desc: 'Materials, setup, cleanup, timing, and safety built into the plan.' },
+      { title: 'Student visual supports', desc: 'Vocabulary cards, display slides, directions, and printable resources.' },
+      { title: 'Critique and assessment', desc: 'Age-appropriate reflection prompts, rubrics, and evidence of learning.' },
+    ],
+  },
+  music: {
+    subject: 'Music', moduleLabel: 'Music', title: 'Music', Icon: Music2, accent: accent('violet'),
+    tagline: 'Elementary K–5 general music — NCAS-aligned and active',
+    generatePath: '/music/generate', generateTitle: 'Create a music lesson',
+    generateDesc: 'Listening, performing, creating, movement, and active music-making',
+    browseTitle: 'Browse my music lessons', browseNoun: 'lesson', browsePath: '/music/lessons', cards: FULL_SB,
+    workspaceFeatures: [
+      { title: 'Active music-making', desc: 'Singing, instruments, movement, listening, and creation—not worksheet-only lessons.' },
+      { title: 'Rehearsal-friendly plans', desc: 'Clear cues, transitions, equipment, and pacing teachers can scan while teaching.' },
+      { title: 'Student-facing resources', desc: 'Rhythm supports, listening prompts, display slides, and reflection tools.' },
+    ],
+  },
+  library: {
+    subject: 'Library/Media', moduleLabel: 'Library & Media', title: 'Library & Media', Icon: Library, accent: accent('cobalt'),
+    tagline: 'Elementary K–5 library lessons, research skills, and digital citizenship',
+    generatePath: '/library/generate', generateTitle: 'Create a library lesson',
+    generateDesc: 'Read-aloud, direct instruction, research, media literacy, and hands-on practice',
+    browseTitle: 'Browse my library lessons', browseNoun: 'lesson', browsePath: '/library/lessons', cards: FULL_SB,
+    specialtyCards: [{
+      Icon: Wrench, title: 'Build a makerspace project', desc: 'Safety, station logistics, materials, and cross-curricular making', to: '/library/makerspace',
+      well: 'bg-slate-500/15', text: 'text-slate-400', hover: 'hover:border-slate-500/40', arrow: 'group-hover:text-slate-400',
+    }],
+    workspaceFeatures: [
+      { title: 'Library lesson cycles', desc: 'Plan connected visits for research, genre study, media literacy, and digital citizenship.' },
+      { title: 'Makerspace planning', desc: 'Build safe, realistic projects around the tools and materials you actually have.' },
+      { title: 'Low-screen materials', desc: 'Printable organizers, vocabulary, discussion prompts, and student practice.' },
+    ],
+  },
   // CTE keeps its bespoke lesson library (/cte/lessons), so Browse points there
   // via browsePath instead of the shared /lessons?module= deep-link. Sub Binder
   // is intentionally left off (FULL, not FULL_SB) — CTE isn't wired for it yet.
@@ -86,6 +126,11 @@ export const MODULE_HOMES = {
     generatePath: '/cte/generate', generateTitle: 'Generate a CTE lesson',
     generateDesc: 'A standards-based lesson for your pathway, from exploratory MS to HS concentrator',
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', browsePath: '/cte/lessons', cards: FULL_SUB,
+    workspaceFeatures: [
+      { title: 'Pathway-specific planning', desc: 'Twenty-two pathways with appropriate competencies, terminology, and career context.' },
+      { title: 'Hands-on and safety ready', desc: 'Equipment, demonstrations, supervised practice, and jobsite or lab safety.' },
+      { title: 'Career-connected outputs', desc: 'Projects, credentials, employability skills, and work-based learning connections.' },
+    ],
   },
   // ── Content specials (scheduled classes) → ['schedule'] ──────────────────
   theater: {
