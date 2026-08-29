@@ -21,7 +21,11 @@ create table if not exists smart_goals (
   source_label text,
   notes text,
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  check (
+    (scope = 'class' and class_period_id is not null)
+    or (scope = 'grade' and grade_label is not null and length(trim(grade_label)) > 0)
+  )
 );
 
 create table if not exists smart_goal_students (
@@ -55,12 +59,24 @@ create policy "Users manage their own smart_goals" on smart_goals
   for all using (auth.uid() = teacher_id) with check (auth.uid() = teacher_id);
 
 create policy "Users manage students inside their smart_goals" on smart_goal_students
-  for all using (exists (select 1 from smart_goals g where g.id = goal_id and g.teacher_id = auth.uid()))
-  with check (exists (select 1 from smart_goals g where g.id = goal_id and g.teacher_id = auth.uid()));
+  for all using (
+    exists (select 1 from smart_goals g where g.id = goal_id and g.teacher_id = auth.uid())
+    and exists (select 1 from students s where s.id = student_id and s.teacher_id = auth.uid())
+  )
+  with check (
+    exists (select 1 from smart_goals g where g.id = goal_id and g.teacher_id = auth.uid())
+    and exists (select 1 from students s where s.id = student_id and s.teacher_id = auth.uid())
+  );
 
 create policy "Users manage updates inside their smart_goals" on smart_goal_updates
-  for all using (exists (select 1 from smart_goals g where g.id = goal_id and g.teacher_id = auth.uid()))
-  with check (exists (select 1 from smart_goals g where g.id = goal_id and g.teacher_id = auth.uid()));
+  for all using (
+    exists (select 1 from smart_goals g where g.id = goal_id and g.teacher_id = auth.uid())
+    and (student_id is null or exists (select 1 from students s where s.id = student_id and s.teacher_id = auth.uid()))
+  )
+  with check (
+    exists (select 1 from smart_goals g where g.id = goal_id and g.teacher_id = auth.uid())
+    and (student_id is null or exists (select 1 from students s where s.id = student_id and s.teacher_id = auth.uid()))
+  );
 
 create index if not exists smart_goals_teacher_idx on smart_goals (teacher_id, status, target_date);
 create index if not exists smart_goal_students_goal_idx on smart_goal_students (goal_id);

@@ -155,6 +155,7 @@ function App() {
           const validity = await heartbeat(storedToken)
           if (validity !== 'displaced') {
             setAuthError(null)
+            setDisplaced(false)
             setSession(session)
             return
           }
@@ -173,6 +174,7 @@ function App() {
           try {
             await activeClaimPromise
             setAuthError(null)
+            setDisplaced(false)
             setSession(session)
           } catch {
             // The original claim failed; its handler already set authError and
@@ -188,6 +190,7 @@ function App() {
         try {
           await activeClaimPromise
           setAuthError(null)
+          setDisplaced(false)
           setSession(session)
         } catch (err) {
           if (err === 'ALREADY_ACTIVE') {
@@ -281,13 +284,6 @@ function App() {
     tick() // immediate check on mount / session restore
     const interval = setInterval(tick, HEARTBEAT_MS)
     return () => clearInterval(interval)
-  }, [session])
-
-  // Clear the displacement flag once a session is (re)established, so a stale
-  // flag can't surface the "signed out on another device" notice on a later,
-  // ordinary logout.
-  useEffect(() => {
-    if (session) setDisplaced(false)
   }, [session])
 
   if (session === undefined) {
