@@ -12,6 +12,7 @@ import {
   ClipboardList,
   ClipboardCheck,
   BarChart3,
+  Timer,
 } from 'lucide-react'
 import { useTheme } from '../../hooks/useTheme'
 import { useTrial } from '../../context/TrialContext'
@@ -28,6 +29,7 @@ const PE_ROUTE_PREFIXES = [
   '/schedule',
   '/students',
   '/participation',
+  '/run-tracker',
   '/curriculum-map',
   '/adaptive-pe',
 ]
@@ -45,6 +47,7 @@ const NAV_ITEMS = [
   { to: '/schedule', label: 'My Schedule', mobileLabel: 'Schedule', icon: CalendarDays },
   { to: '/students', label: 'Classes & Rosters', mobileLabel: 'Classes', icon: Users2 },
   { to: '/participation', label: 'Participation', mobileLabel: 'Participation', icon: ClipboardCheck },
+  { to: '/run-tracker', label: 'Run Tracker', mobileLabel: 'Run', icon: Timer },
   { to: '/curriculum-map', label: 'Year Plan', mobileLabel: 'Year', icon: CalendarRange, mobileHidden: true },
 ]
 
@@ -225,7 +228,7 @@ function Topbar({ showSidebar }) {
 function BottomTabBar() {
   const isPERoute = usePERoute()
   const tabItems = isPERoute
-    ? [NAV_ITEMS[0], NAV_ITEMS[3], NAV_ITEMS[4], NAV_ITEMS[2]]
+    ? [NAV_ITEMS[0], NAV_ITEMS[3], NAV_ITEMS[4], NAV_ITEMS[5]]
     : NAV_ITEMS.filter(({ mobileHidden }) => !mobileHidden)
   return (
     <nav aria-label={isPERoute ? 'PE tools' : 'Main navigation'} data-no-print className="bottom-nav md:hidden fixed bottom-0 inset-x-0 z-50 flex border-t border-ink-900 bg-white dark:bg-ink-950">

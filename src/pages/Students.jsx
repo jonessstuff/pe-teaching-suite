@@ -248,10 +248,10 @@ export default function Students() {
           <ClipboardCheck size={20} className="text-accent-600" />
           <div><p className="font-medium text-ink-100">Participation</p><p className="text-xs text-ink-500">Uses these rosters automatically</p></div>
         </Link>
-        <div className="card flex items-center gap-3 p-4 opacity-75">
+        <Link to="/run-tracker" className="card flex items-center gap-3 p-4 transition-colors hover:border-accent-500/40">
           <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-500/15 text-xs font-bold text-accent-600">½</span>
-          <div><p className="font-medium text-ink-100">Run Tracker</p><p className="text-xs text-ink-500">Coming next · uses these rosters</p></div>
-        </div>
+          <div><p className="font-medium text-ink-100">Run Tracker</p><p className="text-xs text-ink-500">½ mile, mile, and custom runs</p></div>
+        </Link>
       </div>
 
       {/* Privacy notice */}

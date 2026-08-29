@@ -38,6 +38,7 @@ import UnitBuilder from './pages/UnitBuilder'
 import Schedule from './pages/Schedule'
 import Students from './pages/Students'
 import ParticipationTracker from './pages/ParticipationTracker'
+import RunTracker from './pages/RunTracker'
 import Settings from './pages/Settings'
 import Login from './pages/Login'
 import Landing from './pages/Landing'
@@ -337,6 +338,7 @@ function App() {
           <Route path="schedule" element={<Schedule />} />
           <Route path="students" element={<Students />} />
           <Route path="participation" element={<ParticipationTracker />} />
+          <Route path="run-tracker" element={<RunTracker />} />
           <Route path="curriculum-map" element={<CurriculumMap />} />
           <Route path="library" element={<LibraryHome />} />
           <Route path="library/generate" element={<LibraryGenerator />} />
