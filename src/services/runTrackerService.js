@@ -43,6 +43,34 @@ export async function listRunResults(sessionId) {
   return data ?? []
 }
 
+export async function listRunResultsForSessions(sessionIds) {
+  if (!sessionIds?.length) return []
+  const { data, error } = await supabase.from('run_results').select('*').in('session_id', sessionIds)
+  if (error) throw error
+  return data ?? []
+}
+
+export async function listRunGoals(studentId) {
+  const { data, error } = await supabase.from('run_goals').select('*')
+    .eq('student_id', studentId).order('created_at', { ascending: false })
+  if (error) throw error
+  return data ?? []
+}
+
+export async function createRunGoal({ studentId, distanceLabel, baselineMs, targetMs, targetDate }) {
+  const teacher_id = await teacherId()
+  const { data, error } = await supabase.from('run_goals').insert({
+    teacher_id,
+    student_id: studentId,
+    distance_label: distanceLabel,
+    baseline_ms: baselineMs,
+    target_ms: targetMs,
+    target_date: targetDate,
+  }).select().single()
+  if (error) throw error
+  return data
+}
+
 export async function saveRunResult({ sessionId, studentId, lapsCompleted, lapTimesMs, finishMs, status }) {
   const teacher_id = await teacherId()
   const { data, error } = await supabase.from('run_results').upsert({
