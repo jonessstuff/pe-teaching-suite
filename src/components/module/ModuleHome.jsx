@@ -115,20 +115,37 @@ export default function ModuleHome({ config }) {
         All modules
       </Link>
 
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${accent.well}`}>
-          <Icon size={20} className={accent.text} />
+      {/* Specialty hero — a consistent, welcoming dashboard identity while
+          each module keeps its own accent and teacher-specific language. */}
+      <section className={`relative overflow-hidden rounded-3xl border border-ink-800 ${accent.well} p-6 sm:p-8`}>
+        <div aria-hidden="true" className="absolute -right-12 -top-16 h-44 w-44 rounded-full bg-white/30 blur-2xl dark:bg-white/5" />
+        <div aria-hidden="true" className="absolute -bottom-16 right-24 h-32 w-32 rounded-full bg-white/25 blur-2xl dark:bg-white/5" />
+        <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-4">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-white/50 bg-white/70 shadow-sm dark:border-white/10 dark:bg-ink-950/50">
+              <Icon size={27} className={accent.text} />
+            </div>
+            <div>
+              <p className={`text-xs font-bold uppercase tracking-[0.16em] ${accent.text}`}>Specialty workspace</p>
+              <h1 className="mt-1 text-3xl font-bold tracking-tight text-ink-50">{title}</h1>
+              {tagline && <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-500">{tagline}</p>}
+            </div>
+          </div>
+          <Link to={generatePath} className="btn-primary shrink-0 self-start sm:self-center">
+            <Sparkles size={16} /> Create now
+          </Link>
         </div>
-        <div>
-          <h1 className="text-2xl font-semibold text-ink-50">{title}</h1>
-          {tagline && <p className="text-sm text-ink-500">{tagline}</p>}
-        </div>
-      </div>
+      </section>
 
       {workspaceFeatures.length > 0 && (
         <section className={`rounded-2xl border border-ink-800 bg-gradient-to-r ${accent.well} p-5`}>
-          <p className={`text-xs font-semibold uppercase tracking-wide ${accent.text}`}>Your {title} workspace</p>
+          <div className="flex flex-wrap items-end justify-between gap-2">
+            <div>
+              <p className={`text-xs font-semibold uppercase tracking-wide ${accent.text}`}>Your {title} workspace</p>
+              <h2 className="mt-1 text-lg font-semibold text-ink-100">Built around the work you actually do</h2>
+            </div>
+            <span className="text-xs font-medium text-ink-500">Choose a workspace area</span>
+          </div>
           <div className="mt-3 grid gap-3 sm:grid-cols-3">
             {workspaceFeatures.map(({ title: featureTitle, desc, to }) => (
               <Link

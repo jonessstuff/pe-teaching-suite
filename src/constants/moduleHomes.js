@@ -139,6 +139,11 @@ export const MODULE_HOMES = {
     generatePath: '/theater/generate', generateTitle: 'Generate a theatre lesson',
     generateDesc: 'A standards-based lesson across Creating, Performing, Responding & Connecting',
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SB,
+    workspaceFeatures: [
+      { title: 'Rehearsal-ready plans', desc: 'Warm-ups, ensemble routines, timing, transitions, and teacher cues that work in the room.' },
+      { title: 'Original performance material', desc: 'Scene starters, improv structures, character work, and devising prompts without copied scripts.' },
+      { title: 'Performance reflection', desc: 'Student reflection, critique prompts, rubrics, and evidence across the Artistic Processes.', to: '/assessments' },
+    ],
   },
   dance: {
     subject: 'Dance', moduleLabel: 'Dance', title: 'Dance', Icon: Wind, accent: accent('olive'),
@@ -146,6 +151,11 @@ export const MODULE_HOMES = {
     generatePath: '/dance/generate', generateTitle: 'Generate a dance lesson',
     generateDesc: 'A standards-based lesson with the elements of dance & body-safety guidance',
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SB,
+    workspaceFeatures: [
+      { title: 'Movement-ready instruction', desc: 'Warm-ups, spatial organization, skill cues, transitions, and cool-downs teachers can scan quickly.' },
+      { title: 'Creative choreography', desc: 'Age-appropriate composition tasks using body, space, time, energy, and relationship.' },
+      { title: 'Safe assessment', desc: 'Body-safety guidance, observation criteria, reflection prompts, and performance rubrics.', to: '/assessments' },
+    ],
   },
   'world-languages': {
     subject: 'World Languages', moduleLabel: 'World Languages', title: 'World Languages', Icon: Globe, accent: accent('jade'),
@@ -153,6 +163,11 @@ export const MODULE_HOMES = {
     generatePath: '/world-languages/generate', generateTitle: 'Generate a language lesson',
     generateDesc: 'The 5 Cs across Interpersonal, Interpretive & Presentational modes',
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SB,
+    workspaceFeatures: [
+      { title: 'Proficiency-first planning', desc: 'ACTFL-aligned communication tasks matched to Novice through Advanced learners.' },
+      { title: 'Three modes of communication', desc: 'Interpersonal, Interpretive, and Presentational practice inside a connected lesson.' },
+      { title: 'Scaffolds students can use', desc: 'Sentence frames, vocabulary supports, comprehensible input, and performance checks.' },
+    ],
   },
   jrotc: {
     subject: 'JROTC', moduleLabel: 'JROTC', title: 'JROTC', Icon: Award, accent: accent('denim'),
@@ -160,6 +175,11 @@ export const MODULE_HOMES = {
     generatePath: '/jrotc/generate', generateTitle: 'Generate a JROTC lesson',
     generateDesc: 'Leadership, character, civics, wellness, service learning & career exploration',
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SB,
+    workspaceFeatures: [
+      { title: 'LET-aligned instruction', desc: 'Leadership, citizenship, wellness, service, and career learning across LET 1–4.' },
+      { title: 'Applied leadership tasks', desc: 'Team challenges, decision scenarios, reflection, and authentic cadet leadership practice.' },
+      { title: 'Program growth evidence', desc: 'Class or grade-level SMART Goals with measurable leadership and wellness outcomes.', to: '/smart-goals' },
+    ],
   },
   'elementary-tech': {
     subject: 'Elementary Technology', moduleLabel: 'Elementary Technology / Computer Lab', title: 'Elementary Technology', Icon: Monitor, accent: accent('saffron'),
@@ -167,6 +187,11 @@ export const MODULE_HOMES = {
     generatePath: '/elementary-tech/generate', generateTitle: 'Generate a tech lesson',
     generateDesc: 'Foundational skills, digital citizenship & online safety, creation tools & intro coding',
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SB,
+    workspaceFeatures: [
+      { title: 'Computer-lab ready', desc: 'Login routines, device setup, pacing, transitions, and troubleshooting prompts for K–5.' },
+      { title: 'Digital citizenship and safety', desc: 'Age-appropriate privacy, media literacy, online behavior, and responsible creation.' },
+      { title: 'Student-facing directions', desc: 'Visual steps, keyboard supports, unplugged alternatives, and printable low-screen resources.' },
+    ],
   },
   'school-counselors': {
     subject: 'School Counselors', moduleLabel: 'School Counselors', title: 'School Counselors', Icon: Compass, accent: accent('crimson'),
@@ -186,6 +211,11 @@ export const MODULE_HOMES = {
     generatePath: '/esl-specialist/generate', generateTitle: 'Generate an ELD lesson',
     generateDesc: 'WIDA proficiency levels, SIOP objectives, all four language domains',
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SB,
+    workspaceFeatures: [
+      { title: 'Language-objective planning', desc: 'Content and language objectives matched to WIDA proficiency and all four domains.' },
+      { title: 'Ready-to-use scaffolds', desc: 'Sentence frames, visuals, modeled language, partner structures, and home-language connections.' },
+      { title: 'Language-growth goals', desc: 'Track measurable class or grade-level language progress with optional personal targets.', to: '/smart-goals' },
+    ],
   },
   'gifted-talented': {
     subject: 'Gifted & Talented', moduleLabel: 'Gifted & Talented', title: 'Gifted & Talented', Icon: Sparkles, accent: accent('amber'),
@@ -193,6 +223,11 @@ export const MODULE_HOMES = {
     generatePath: '/gifted-talented/generate', generateTitle: 'Generate a gifted lesson',
     generateDesc: 'Differentiate, enrich, or support 2e & underachieving gifted learners',
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SB,
+    workspaceFeatures: [
+      { title: 'Depth, not extra work', desc: 'Complexity, inquiry, authentic problems, and intellectual challenge beyond more worksheets.' },
+      { title: 'Flexible learner support', desc: 'Enrichment, acceleration, compacting, and thoughtful scaffolds for 2e learners.' },
+      { title: 'Authentic student products', desc: 'Choice-driven projects, expert audiences, reflection, and clear success criteria.' },
+    ],
   },
   'reading-specialists': {
     subject: 'Reading Specialists', moduleLabel: 'Reading Specialists', title: 'Reading Specialists', Icon: BookOpen, accent: accent('sky'),
@@ -200,6 +235,11 @@ export const MODULE_HOMES = {
     generatePath: '/reading-specialists/generate', generateTitle: 'Generate a reading intervention',
     generateDesc: 'Phonics, fluency, comprehension & more, with dyslexia-indicator flagging',
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SUB,
+    workspaceFeatures: [
+      { title: 'Diagnostic skill focus', desc: 'Target phonological awareness, phonics, fluency, vocabulary, or comprehension needs.' },
+      { title: 'Explicit lesson routines', desc: 'Systematic modeling, guided practice, cumulative review, and controlled application.' },
+      { title: 'Intervention progress', desc: 'Connect baselines, aimlines, evidence checks, and decision points in one SMART Goal.', to: '/smart-goals' },
+    ],
   },
   'math-specialists': {
     subject: 'Math Specialists', moduleLabel: 'Math Specialists', title: 'Math Specialists', Icon: Calculator, accent: accent('lime'),
@@ -207,6 +247,11 @@ export const MODULE_HOMES = {
     generatePath: '/math-specialists/generate', generateTitle: 'Generate a math intervention',
     generateDesc: 'CRA sequencing, Number Talks & NCTM process standards',
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SUB,
+    workspaceFeatures: [
+      { title: 'Concept-first intervention', desc: 'Concrete–Representational–Abstract sequences that build understanding before shortcuts.' },
+      { title: 'Misconception-responsive support', desc: 'Number talks, models, targeted questions, and multiple strategies matched to learner thinking.' },
+      { title: 'Measurable math growth', desc: 'Track class, grade-level, or optional personal progress toward a clear math target.', to: '/smart-goals' },
+    ],
   },
   'special-education': {
     subject: 'Special Education', moduleLabel: 'Special Education', title: 'Special Education', Icon: HeartHandshake, accent: accent('violet'),
@@ -214,6 +259,11 @@ export const MODULE_HOMES = {
     generatePath: '/special-education/generate', generateTitle: 'Generate a lesson',
     generateDesc: 'Multi-tier, functional/life-skills & push-in co-teaching ideas to adapt',
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SB,
+    workspaceFeatures: [
+      { title: 'Accessible instruction', desc: 'Adaptable supports for resource, self-contained, functional, and inclusive settings.' },
+      { title: 'Teacher and student materials', desc: 'Visual directions, scaffolded practice, communication supports, and printable resources.' },
+      { title: 'Group and personal goals', desc: 'Keep optional learner targets connected to a larger class or grade-level SMART Goal.', to: '/smart-goals' },
+    ],
   },
   'early-childhood': {
     subject: 'Early Childhood', moduleLabel: 'Early Childhood / Pre-K', title: 'Early Childhood / Pre-K', Icon: Blocks, accent: accent('grass'),
@@ -233,6 +283,11 @@ export const MODULE_HOMES = {
     generatePath: '/ecse/generate', generateTitle: 'Generate an embedded support plan',
     generateDesc: 'Naturalistic learning embedded in play & routines — birth–3 (IFSP) & preschool (IEP)',
     browseTitle: 'Browse my plans', browseNoun: 'plan', cards: PRO,
+    workspaceFeatures: [
+      { title: 'Embedded instruction', desc: 'Put meaningful practice into arrival, play, centers, meals, transitions, and family routines.' },
+      { title: 'Participation supports', desc: 'Visuals, communication access, positioning ideas, prompts, and environmental adaptations.' },
+      { title: 'Developmental progress', desc: 'Document observable growth within group goals while preserving optional individual targets.', to: '/smart-goals' },
+    ],
   },
   'after-school-clubs': {
     subject: 'After-School Clubs', moduleLabel: 'After-School Clubs', title: 'After-School Clubs', Icon: PartyPopper, accent: accent('coral'),
@@ -240,6 +295,11 @@ export const MODULE_HOMES = {
     generatePath: '/after-school-clubs/generate', generateTitle: 'Generate a session plan',
     generateDesc: 'Low-prep club sessions runnable by a first-time sponsor',
     browseTitle: 'Browse my session plans', browseNoun: 'session plan', cards: LITE,
+    workspaceFeatures: [
+      { title: 'Ready-to-run sessions', desc: 'Opening, activity sequence, timing, transitions, cleanup, and closing reflection.' },
+      { title: 'Realistic materials and safety', desc: 'Low-cost supplies, space considerations, supervision notes, and practical alternatives.' },
+      { title: 'Sponsor continuity', desc: 'Connected session plans and simple documentation another adult can pick up and run.' },
+    ],
   },
 
   // ── Clinical / related services → [] (Generate + Browse, relabeled) ──────
@@ -249,6 +309,11 @@ export const MODULE_HOMES = {
     generatePath: '/ot/generate', generateTitle: 'Generate an activity plan',
     generateDesc: 'Fine-motor, sensory, ADLs, visual-motor & vocational activity ideas',
     browseTitle: 'Browse my activity plans', browseNoun: 'activity plan', cards: PRO,
+    workspaceFeatures: [
+      { title: 'School participation focus', desc: 'Activities tied to classroom access, fine-motor performance, routines, ADLs, and vocational participation.' },
+      { title: 'Adaptation ideas', desc: 'Materials, positioning, sensory and environmental supports to consider with professional judgment.' },
+      { title: 'Progress-ready goals', desc: 'Organize observable group outcomes and optional personal targets without replacing clinical decisions.', to: '/smart-goals' },
+    ],
   },
   pt: {
     subject: 'Physical Therapists', moduleLabel: 'Physical Therapists', title: 'Physical Therapists', Icon: PersonStanding, accent: accent('zinc'),
@@ -256,6 +321,11 @@ export const MODULE_HOMES = {
     generatePath: '/pt/generate', generateTitle: 'Generate an activity plan',
     generateDesc: 'Gross-motor, mobility & positioning, adaptive-PE crossover & functional mobility',
     browseTitle: 'Browse my activity plans', browseNoun: 'activity plan', cards: PRO,
+    workspaceFeatures: [
+      { title: 'Functional school mobility', desc: 'Activity ideas for access, transitions, positioning, endurance, and participation in school routines.' },
+      { title: 'Safety and accessibility', desc: 'Space, equipment, assistance, adaptation, and environmental considerations built into planning.' },
+      { title: 'Visible progress', desc: 'Track group improvement or regression with optional personal targets and evidence notes.', to: '/smart-goals' },
+    ],
   },
   slp: {
     subject: 'Speech-Language Pathologists', moduleLabel: 'Speech-Language Pathologists', title: 'Speech-Language Pathologists', Icon: Speech, accent: accent('bronze'),
@@ -275,6 +345,11 @@ export const MODULE_HOMES = {
     generatePath: '/tvi/generate', generateTitle: 'Generate an activity plan',
     generateDesc: 'Braille & compensatory access, assistive tech, independent living & more',
     browseTitle: 'Browse my activity plans', browseNoun: 'activity plan', cards: PRO,
+    workspaceFeatures: [
+      { title: 'Expanded Core Curriculum', desc: 'Activities spanning access skills, assistive technology, orientation, independence, and self-determination.' },
+      { title: 'Accessible materials', desc: 'Tactile, auditory, large-print, contrast, environmental, and technology considerations.' },
+      { title: 'ECC progress goals', desc: 'Track observable group progress with optional personal targets and professional evidence notes.', to: '/smart-goals' },
+    ],
   },
   dhh: {
     subject: 'Teacher of the Deaf & Hard of Hearing', moduleLabel: 'Teacher of the Deaf & Hard of Hearing', title: 'Teacher of the Deaf & Hard of Hearing', Icon: Ear, accent: accent('magenta'),
@@ -282,6 +357,11 @@ export const MODULE_HOMES = {
     generatePath: '/dhh/generate', generateTitle: 'Generate an activity plan',
     generateDesc: 'Communication, self-advocacy, social-emotional, hearing technology & transition',
     browseTitle: 'Browse my activity plans', browseNoun: 'activity plan', cards: PRO,
+    workspaceFeatures: [
+      { title: 'Communication access', desc: 'Activities that honor communication mode, language access, self-advocacy, and participation.' },
+      { title: 'Technology and environment', desc: 'Hearing technology routines, visual access, classroom acoustics, and communication-partner supports.' },
+      { title: 'ECC-DHH growth', desc: 'Track group outcomes and optional personal targets with clear evidence over time.', to: '/smart-goals' },
+    ],
   },
 
   // ── Adult-facing / support → [] (Generate + Browse, relabeled) ───────────
@@ -291,6 +371,11 @@ export const MODULE_HOMES = {
     generatePath: '/staff-pd/generate', generateTitle: 'Generate a PD plan',
     generateDesc: 'PD sessions, mentoring, walkthroughs, PLC protocols & communication',
     browseTitle: 'Browse my plans', browseNoun: 'plan', cards: PRO,
+    workspaceFeatures: [
+      { title: 'Facilitation-ready agendas', desc: 'Outcomes, timing, protocols, materials, transitions, and facilitator language in one plan.' },
+      { title: 'Participant resources', desc: 'Reflection prompts, discussion structures, practice tasks, and follow-up materials.' },
+      { title: 'Implementation goals', desc: 'Turn professional learning into a measurable staff or grade-level SMART Goal.', to: '/smart-goals' },
+    ],
   },
   'instructional-coaching': {
     subject: 'Instructional Coaching', moduleLabel: 'Instructional Coaching', title: 'Instructional Coaching', Icon: Handshake, accent: accent('mocha'),
@@ -298,6 +383,11 @@ export const MODULE_HOMES = {
     generatePath: '/instructional-coaching/generate', generateTitle: 'Generate a coaching resource',
     generateDesc: 'Conversation frameworks, teacher-driven observation tools & data protocols',
     browseTitle: 'Browse my resources', browseNoun: 'resource', cards: PRO,
+    workspaceFeatures: [
+      { title: 'Partnership-based coaching', desc: 'Teacher-centered Identify, Learn, and Improve conversations that remain non-evaluative.' },
+      { title: 'Observation and evidence tools', desc: 'Focused look-fors, data protocols, reflection questions, and planning resources.' },
+      { title: 'Teacher-driven goals', desc: 'Build and monitor a measurable coaching SMART Goal chosen with the teacher.', to: '/smart-goals' },
+    ],
   },
   intervention: {
     subject: 'Intervention Planning', moduleLabel: 'Intervention Planning', title: 'Intervention Planning', Icon: Layers, accent: accent('stone'),
@@ -317,6 +407,11 @@ export const MODULE_HOMES = {
     generatePath: '/student-support-activities/generate', generateTitle: 'Generate an activity',
     generateDesc: 'Role-tailored, activity-structure-only small-group SEL & behavioral plans',
     browseTitle: 'Browse my activities', browseNoun: 'activity', cards: PRO,
+    workspaceFeatures: [
+      { title: 'Role-aware small groups', desc: 'SEL and behavior activities shaped for counselors, social workers, psychologists, or support teams.' },
+      { title: 'Ready-to-use supports', desc: 'Scenarios, discussion prompts, visuals, coping practice, and reflection materials.' },
+      { title: 'Group progress evidence', desc: 'Monitor a class, grade, or group SMART Goal while keeping optional personal targets inside it.', to: '/smart-goals' },
+    ],
   },
   'test-prep': {
     subject: 'Test Prep', moduleLabel: 'Test Prep', title: 'Test Prep', Icon: Target, accent: accent('steel'),
@@ -324,5 +419,10 @@ export const MODULE_HOMES = {
     generatePath: '/test-prep/generate', generateTitle: 'Generate a test-prep session',
     generateDesc: 'Original practice questions, strategies, content review & test-day prep',
     browseTitle: 'Browse my sessions', browseNoun: 'session', cards: TESTPREP,
+    workspaceFeatures: [
+      { title: 'Original targeted practice', desc: 'Fresh questions and explanations aligned to the selected assessment and skill area.' },
+      { title: 'Tutoring-ready sessions', desc: 'Timing, strategy instruction, guided practice, independent application, and review.' },
+      { title: 'Score-growth goals', desc: 'Track baseline, target, practice evidence, improvement, and regression over time.', to: '/smart-goals' },
+    ],
   },
 }

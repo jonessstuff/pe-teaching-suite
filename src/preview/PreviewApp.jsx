@@ -44,22 +44,17 @@ export default function PreviewApp() {
           <Route path="smart-goals" element={<SmartGoals />} />
           <Route path="settings" element={<Settings />} />
           <Route path="owner" element={<OwnerDashboard />} />
-          <Route path="art" element={<ModuleHome config={MODULE_HOMES.art} />} />
+          {Object.entries(MODULE_HOMES).map(([slug, config]) => (
+            <Route key={slug} path={slug} element={<ModuleHome config={config} />} />
+          ))}
           <Route path="art/generate" element={<ArtGenerator />} />
-          <Route path="music" element={<ModuleHome config={MODULE_HOMES.music} />} />
           <Route path="music/generate" element={<MusicGenerator />} />
-          <Route path="library" element={<ModuleHome config={MODULE_HOMES.library} />} />
           <Route path="library/generate" element={<LibraryGenerator />} />
           <Route path="library/makerspace" element={<MakerProjectGenerator origin="library" />} />
-          <Route path="cte" element={<ModuleHome config={MODULE_HOMES.cte} />} />
           <Route path="cte/generate" element={<CteGenerator />} />
-          <Route path="slp" element={<ModuleHome config={MODULE_HOMES.slp} />} />
           <Route path="slp/generate" element={<SlpGenerator />} />
-          <Route path="intervention" element={<ModuleHome config={MODULE_HOMES.intervention} />} />
           <Route path="intervention/generate" element={<InterventionGenerator />} />
-          <Route path="school-counselors" element={<ModuleHome config={MODULE_HOMES['school-counselors']} />} />
           <Route path="school-counselors/generate" element={<SchoolCounselorGenerator />} />
-          <Route path="early-childhood" element={<ModuleHome config={MODULE_HOMES['early-childhood']} />} />
           <Route path="early-childhood/generate" element={<EarlyChildhoodGenerator />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
