@@ -9,55 +9,8 @@ const asList = (v) => (Array.isArray(v) ? v : v ? [v] : [])
 const gradeLabel = (g) => (g === 0 ? 'K' : String(g))
 const clean = (s) => String(s ?? '').replace(/\s+/g, ' ').trim()
 const truncate = (s, n) => (s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s)
+const MAX_BULLETS = 5
 
-const MAX_BULLETS = 7 // per slide before continuing on a "(cont.)" slide
-const MAX_SLIDES_PER_SECTION = 3 // hard cap; remainder still lives in the notes
-
-// Split a prose/step section into short bullet lines with a light 2-level
-// hierarchy: mini-headers (labels / "PHASE 1 (3 min)" / ALL-CAPS) sit at level 0,
-// their following lines and numbered/dashed steps nest at level 1.
-function sectionToBullets(text) {
-  const lines = String(text ?? '')
-    .split(/\n+/)
-    .map((t) => t.trim())
-    .filter(Boolean)
-  const out = []
-  let haveLabel = false
-  for (const line of lines) {
-    const listItem = /^(\d+[.)]|[-•*•])\s+/.test(line)
-    const stripped = line.replace(/^(\d+[.)]|[-•*•])\s+/, '').trim()
-    const label = !listItem && (
-      /:$/.test(line) ||
-      /^(phase|part|step|section|setup|transition|warm[- ]?up|cool[- ]?down|closure|opening|hook)\b/i.test(line) ||
-      (line === line.toUpperCase() && /[A-Z]/.test(line) && line.split(/\s+/).length <= 8)
-    )
-    if (label) { out.push({ text: truncate(clean(line), 120), level: 0 }); haveLabel = true }
-    else out.push({ text: truncate(clean(stripped), 160), level: haveLabel ? 1 : 0 })
-  }
-  return out
-}
-
-// One lesson section → one or more slides (chunked), each carrying the FULL
-// original section text as speaker notes so the teacher keeps complete guidance.
-function sectionSlides(heading, text) {
-  const bullets = sectionToBullets(text)
-  if (!bullets.length) return []
-  const slides = []
-  const capped = bullets.slice(0, MAX_BULLETS * MAX_SLIDES_PER_SECTION)
-  for (let i = 0; i < capped.length; i += MAX_BULLETS) {
-    const chunk = capped.slice(i, i + MAX_BULLETS)
-    const isCont = i > 0
-    slides.push({
-      heading: isCont ? `${heading} (cont.)` : heading,
-      bullets: chunk,
-      notes: String(text), // full detail in presenter view
-    })
-  }
-  if (bullets.length > capped.length && slides.length) {
-    slides[slides.length - 1].bullets.push({ text: 'Full details in speaker notes ▾', level: 0 })
-  }
-  return slides
-}
 
 // Flatten success_criteria which may be an array OR an object keyed by grade
 // (STEM/CTE use { "<grade>": string[] }).
@@ -69,6 +22,14 @@ function flattenCriteria(sc) {
       .filter(Boolean)
   }
   return []
+}
+
+function sentences(value, max = 5) {
+  return String(value ?? '').split(/\n+|(?<=[.!?])\s+/).map((line) => clean(line.replace(/^(\d+[.)]|[-•*])\s*/, ''))).filter(Boolean).slice(0, max)
+}
+
+function studentSteps(value, max = 5) {
+  return sentences(value, max).map((text, index) => ({ text: truncate(text, 125), level: 0, number: index + 1 }))
 }
 
 // Build the full slide spec from a lesson object. Emits a section only when the
@@ -88,34 +49,14 @@ export function lessonToSlides(lo) {
 
   const slides = []
 
-  // Standards / competencies
-  const standards = asList(lo.standards)
-    .map((s) => (typeof s === 'string' ? s : `${s.code ? s.code + ': ' : ''}${s.text ?? ''}`))
-    .concat(asList(lo.competencies).map((c) =>
-      `${c.framework ? c.framework + ' — ' : ''}${c.text ?? c.competency ?? c.description ?? ''}`))
-    .map(clean).filter(Boolean)
-  if (standards.length) {
-    slides.push({
-      heading: 'Standards',
-      bullets: standards.slice(0, MAX_BULLETS).map((s) => ({ text: truncate(s, 170), level: 0 })),
-      notes: standards.join('\n'),
-    })
-  }
-
-  // Learning target + success criteria (combined — logically one "goals" slide)
+  // Student-facing deck: concise screen content; full teacher wording stays in notes.
   const target = clean(lo.learning_target) ||
-    (lo.learning_targets ? Object.values(lo.learning_targets).map(clean).join('  |  ') : '')
+    (lo.learning_targets ? Object.values(lo.learning_targets).map(clean).find(Boolean) : '')
   const criteria = flattenCriteria(lo.success_criteria)
   if (target || criteria.length) {
-    const bullets = []
-    if (target) bullets.push({ text: truncate(target, 200), level: 0 })
-    if (criteria.length) {
-      bullets.push({ text: 'Success criteria — I can…', level: 0 })
-      criteria.slice(0, MAX_BULLETS - 1).forEach((c) => bullets.push({ text: truncate(c, 160), level: 1 }))
-    }
     slides.push({
-      heading: 'Learning Target',
-      bullets,
+      heading: 'Today We Will…', layout: 'focus', callout: truncate(target || criteria[0], 180),
+      bullets: criteria.slice(0, 3).map((c) => ({ text: truncate(c.replace(/^Grade \w+:\s*/i, ''), 125), level: 0 })),
       notes: [target && `Learning target: ${target}`, criteria.length && `Success criteria:\n- ${criteria.join('\n- ')}`]
         .filter(Boolean).join('\n\n'),
     })
@@ -125,62 +66,37 @@ export function lessonToSlides(lo) {
   const newV = asList(lo.new_vocabulary).map(clean).filter(Boolean)
   const knownV = asList(lo.known_vocabulary).map(clean).filter(Boolean)
   if (newV.length || knownV.length) {
-    const bullets = []
-    if (newV.length) {
-      bullets.push({ text: 'New words', level: 0 })
-      newV.slice(0, 6).forEach((w) => bullets.push({ text: w, level: 1 }))
-    }
-    if (knownV.length) {
-      bullets.push({ text: 'Review words', level: 0 })
-      knownV.slice(0, 4).forEach((w) => bullets.push({ text: w, level: 1 }))
-    }
     slides.push({
-      heading: 'Vocabulary',
-      bullets,
+      heading: 'Words to Know', layout: 'cards', callout: 'Listen for these words during the lesson.',
+      bullets: [...newV, ...knownV].slice(0, 6).map((w) => ({ text: truncate(w, 65), level: 0 })),
       notes: [newV.length && `New: ${newV.join(', ')}`, knownV.length && `Review: ${knownV.join(', ')}`]
         .filter(Boolean).join('\n'),
     })
   }
 
-  // Lesson flow — PE / CTE / specialist shapes share these fields. Only emit
-  // sections that are actually present (Core-Activity-Only lessons drop warm_up/closure).
-  for (const [label, val] of [
-    ['Warm-Up / Opening', lo.warm_up],
-    ['Instruction', lo.whole_group_instruction],
-    ['Main Activity', lo.fitness_activities],
-    ['Independent Practice', lo.independent_practice],
-    ['Closure', lo.closure],
-  ]) {
-    if (val && String(val).trim()) slides.push(...sectionSlides(label, val))
-  }
+  const teachText = lo.whole_group_instruction || lo.direct_instruction || lo.mini_lesson
+  if (teachText) slides.push({ heading: 'Watch & Notice', layout: 'focus', callout: 'What does success look like?', bullets: sentences(teachText, 4).map((text) => ({ text: truncate(text, 125), level: 0 })), notes: String(teachText) })
 
-  // Modifications
-  if (lo.modifications) {
-    const m = lo.modifications
-    let notes = ''
-    let bullets = []
-    if (typeof m === 'string') { bullets = sectionToBullets(m).slice(0, MAX_BULLETS); notes = m }
-    else if (Array.isArray(m)) {
-      const items = m.map((x) => (typeof x === 'string' ? x : Object.values(x).join(' — '))).map(clean).filter(Boolean)
-      bullets = items.slice(0, MAX_BULLETS).map((t) => ({ text: truncate(t, 160), level: 0 }))
-      notes = items.join('\n')
-    } else {
-      const items = Object.entries(m).map(([k, v]) => `${k}: ${clean(v)}`)
-      bullets = items.slice(0, MAX_BULLETS).map((t) => ({ text: truncate(t, 160), level: 0 }))
-      notes = items.join('\n')
-    }
-    if (bullets.length) slides.push({ heading: 'Modifications', bullets, notes })
-  }
+  const warmup = lo.warm_up || lo.opening
+  if (warmup) slides.push({ heading: 'Get Ready', layout: 'steps', callout: 'Start here', bullets: studentSteps(warmup, 4), notes: String(warmup) })
+
+  const activity = lo.independent_practice || lo.fitness_activities || lo.main_activity || lo.guided_practice
+  if (activity) slides.push({ heading: 'Your Activity', layout: 'steps', callout: 'Do these in order', bullets: studentSteps(activity), notes: String(activity) })
 
   // Safety notes
   const safety = asList(lo.safety_notes).map(clean).filter(Boolean)
   if (safety.length) {
     slides.push({
-      heading: 'Safety Notes',
+      heading: 'Be Safe & Ready', layout: 'safety', callout: 'STOP · LOOK · LISTEN',
       bullets: safety.slice(0, MAX_BULLETS).map((s) => ({ text: truncate(s, 170), level: 0 })),
       notes: safety.join('\n'),
     })
   }
+
+  if (criteria.length) slides.push({ heading: 'Check Yourself', layout: 'cards', callout: 'Can you show or explain these?', bullets: criteria.slice(0, 4).map((c) => ({ text: truncate(c.replace(/^Grade \w+:\s*/i, ''), 110), level: 0 })), notes: criteria.join('\n') })
+
+  const closure = sentences(lo.closure, 3)
+  slides.push({ heading: 'Reflect & Share', layout: 'reflection', callout: closure[0] || 'What did you learn, improve, or notice today?', bullets: closure.slice(1).map((text) => ({ text: truncate(text, 120), level: 0 })), notes: String(lo.closure || '') })
 
   return { title, subtitle, meta, slides }
 }

@@ -23,7 +23,7 @@ const COPY = {
   },
   'pptx-export': {
     title: 'Download as PowerPoint slides',
-    body: 'Subscribe to PlansK12 to download your lessons as presentation-ready .pptx decks — clean, brand-styled slides with your full instructions tucked into the speaker notes. Open them in PowerPoint, Google Slides, or Keynote. Trial accounts keep the watermarked print / PDF export.',
+    body: 'Subscribe to PlansK12 to download student-facing .pptx decks — visual learning targets, key concepts, activity steps, safety cues, and reflection prompts, with full teacher guidance in the speaker notes. Open them in PowerPoint, Google Slides, or Keynote.',
   },
 }
 

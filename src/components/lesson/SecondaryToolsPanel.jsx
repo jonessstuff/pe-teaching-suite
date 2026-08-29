@@ -576,7 +576,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
           {/* PowerPoint (.pptx) — paid only; trial users see the upgrade prompt */}
           <button onClick={handleDownloadLessonPptx} className="btn-secondary" title={isPaid ? 'Download as presentation-ready PowerPoint slides' : 'Upgrade to download as PowerPoint slides'}>
             {isPaid ? <Presentation size={16} /> : <Lock size={16} />}
-            PowerPoint (.pptx)
+            Student PowerPoint
           </button>
         </div>
 

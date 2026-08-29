@@ -29,7 +29,7 @@ const LIGHT = "E6EEFF"; // subtitle on blue
 const FONT = "Arial"; // clean, universally available
 
 interface Bullet { text: string; level?: number }
-interface SlideSpec { heading?: string; bullets?: Bullet[]; notes?: string }
+interface SlideSpec { heading?: string; bullets?: Bullet[]; notes?: string; layout?: string; callout?: string }
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -114,7 +114,27 @@ Deno.serve(async (req) => {
       });
 
       const bullets = Array.isArray(s.bullets) ? s.bullets : [];
+      if (s.callout) {
+        slide.addShape(pptx.ShapeType.roundRect, { x: 0.75, y: 1.25, w: W - 1.5, h: 1.0, rectRadius: 0.08, fill: { color: s.layout === "safety" ? "FFF4E5" : "EEF4FF" }, line: { color: s.layout === "safety" ? "F59E0B" : BLUE, width: 1.5 } });
+        slide.addText(String(s.callout), { x: 1.05, y: 1.42, w: W - 2.1, h: 0.65, fontFace: FONT, fontSize: 22, bold: true, color: s.layout === "safety" ? "92400E" : BLUE_DARK, align: "center", valign: "middle", fit: "shrink" });
+      }
       if (bullets.length) {
+        if (s.layout === "steps") {
+          bullets.forEach((bl, index) => {
+            const y = 2.48 + index * 0.78;
+            slide.addShape(pptx.ShapeType.ellipse, { x: 0.95, y, w: 0.55, h: 0.55, fill: { color: index % 2 ? "7C5CE7" : BLUE }, line: { color: "FFFFFF", transparency: 100 } });
+            slide.addText(String(index + 1), { x: 0.95, y: y + 0.02, w: 0.55, h: 0.48, fontFace: FONT, fontSize: 17, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
+            slide.addText(String(bl.text ?? ""), { x: 1.72, y: y - 0.02, w: W - 2.65, h: 0.62, fontFace: FONT, fontSize: 18, color: INK, valign: "middle", fit: "shrink", margin: 0.05 });
+          });
+        } else if (s.layout === "cards") {
+          const cols = bullets.length <= 4 ? 2 : 3;
+          const cardW = (W - 1.5 - (cols - 1) * 0.25) / cols;
+          bullets.forEach((bl, index) => {
+            const row = Math.floor(index / cols); const col = index % cols;
+            slide.addShape(pptx.ShapeType.roundRect, { x: 0.75 + col * (cardW + 0.25), y: 2.55 + row * 1.35, w: cardW, h: 1.05, rectRadius: 0.05, fill: { color: index % 2 ? "F4F0FF" : "EEF4FF" }, line: { color: index % 2 ? "A78BFA" : "8FB0FF", width: 1 } });
+            slide.addText(String(bl.text ?? ""), { x: 0.95 + col * (cardW + 0.25), y: 2.72 + row * 1.35, w: cardW - 0.4, h: 0.7, fontFace: FONT, fontSize: 17, bold: true, color: INK, align: "center", valign: "middle", fit: "shrink" });
+          });
+        } else {
         const runs = bullets.map((bl) => {
           const level = bl.level === 1 ? 1 : 0;
           return {
@@ -133,9 +153,10 @@ Deno.serve(async (req) => {
           };
         });
         slide.addText(runs, {
-          x: 0.75, y: 1.4, w: W - 1.5, h: H - 2.1,
+          x: 0.9, y: s.callout ? 2.55 : 1.4, w: W - 1.8, h: s.callout ? H - 3.2 : H - 2.1,
           valign: "top", align: "left",
         });
+        }
       }
 
       // full guidance in presenter notes
