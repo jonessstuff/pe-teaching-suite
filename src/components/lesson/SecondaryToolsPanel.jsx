@@ -4,7 +4,7 @@ import {
   LayoutTemplate, Loader2, Printer, Download, X, Star, BookOpen,
   CheckSquare, Shuffle, Flame, BookMarked, Send, Globe, Users, FileWarning, ChevronDown,
   Copy, Check, PencilRuler, FileDown, Lock, Presentation, Files, Eye,
-  ChevronRight,
+  ArrowLeft, ChevronRight,
 } from 'lucide-react'
 import {
   generateSubPlan, generateQuiz, generateWeatherAlt,
@@ -168,6 +168,11 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
 
   function jumpTo(id) {
     setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 0)
+  }
+
+  function returnToLessonKit() {
+    setToolView(null)
+    jumpTo('lesson-kit-home')
   }
 
   function openKitShortcut(section) {
@@ -466,7 +471,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
           (rendered as the earlier siblings), so a generated sub plan/quiz sits
           right under the lesson instead of being wedged beneath these buttons. */}
       <div className="order-last border-t border-ink-900 pt-6 space-y-4">
-        <div className="rounded-2xl border border-accent-500/20 bg-gradient-to-r from-accent-500/10 via-transparent to-violet-500/10 p-4">
+        <div id="lesson-kit-home" className="scroll-mt-24 rounded-2xl border border-accent-500/20 bg-gradient-to-r from-accent-500/10 via-transparent to-violet-500/10 p-4">
           <p className="label-eyebrow text-accent-500">Your Lesson Kit</p>
           <h2 className="mt-1 text-lg font-semibold text-ink-100">Plan, teach, display, and assess—all from this lesson</h2>
           <p className="mt-1 text-sm text-ink-500">Choose only what you need. Student materials and assessments are generated separately so the main lesson stays easy to scan.</p>
@@ -743,16 +748,21 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
       </div>
 
       {/* Active tool output */}
+      {toolView && (
+        <button type="button" onClick={returnToLessonKit} className="no-print btn-secondary w-fit text-sm">
+          <ArrowLeft size={15} /> Back to Lesson Kit
+        </button>
+      )}
       {toolView === 'teachingview' && (
         <div id="lesson-kit-output" ref={toolPrintRef} className="scroll-mt-24 space-y-3">
           <TeachingView lesson={lo} />
-          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={() => setToolView(null)} />
+          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={returnToLessonKit} />
         </div>
       )}
       {toolView === 'subplan' && hasSubPlan && (
         <div ref={toolPrintRef} className="space-y-3">
           <SubPlanRenderer lesson={lo} />
-          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={() => setToolView(null)} />
+          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={returnToLessonKit} />
         </div>
       )}
       {toolView === 'quiz' && hasQuiz && (
@@ -769,7 +779,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
             </button>
           )}
           {quizSavedToBank && <p className="no-print text-xs text-green-400">Saved to Assessment Bank ✓</p>}
-          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={() => setToolView(null)} />
+          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={returnToLessonKit} />
         </div>
       )}
       {toolView === 'worksheet' && worksheet && (
@@ -789,13 +799,13 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
                     <BookMarked size={14} /> Save {WORKSHEET_BANK_LABELS[f.type]} to Assessment Bank
                   </button>
             ))}
-          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={() => setToolView(null)} />
+          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={returnToLessonKit} />
         </div>
       )}
       {toolView === 'weatheralt' && hasWeatherAlt && (
         <div ref={toolPrintRef} className="space-y-3">
           <WeatherAltRenderer lesson={lo} />
-          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={() => setToolView(null)} />
+          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={returnToLessonKit} />
         </div>
       )}
       {toolView === 'visualresources' && hasVisualResources && (
@@ -804,19 +814,19 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
             {visualResources.length} ready-to-use resource{visualResources.length > 1 ? 's' : ''} built from this lesson. Diagrams and illustrations aren't included yet (a future image-generation capability).
           </p>
           <VisualResourceRenderer resources={visualResources} />
-          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={() => setToolView(null)} />
+          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={returnToLessonKit} />
         </div>
       )}
       {toolView === 'parentnote' && hasParentNote && (
         <div ref={toolPrintRef} className="space-y-3">
           <ParentNoteRenderer lesson={lo} />
-          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={() => setToolView(null)} />
+          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={returnToLessonKit} />
         </div>
       )}
       {toolView === 'observation' && hasObsSummary && (
         <div ref={toolPrintRef} className="space-y-3">
           <ObservationSummaryRenderer lesson={lo} />
-          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={() => setToolView(null)} />
+          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={returnToLessonKit} />
         </div>
       )}
       {toolView === 'rubric' && rubric && (
@@ -828,7 +838,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
             </button>
           )}
           {rubricSavedToBank && <p className="no-print text-xs text-green-400">Saved to Assessment Bank ✓</p>}
-          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={() => setToolView(null)} />
+          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={returnToLessonKit} />
         </div>
       )}
       {toolView === 'newsletter' && newsletter && (
@@ -845,7 +855,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
               newsletter.coming_up_next ? `COMING UP NEXT\n${newsletter.coming_up_next}` : null,
               newsletter.closing ?? null,
             ].filter(Boolean).join('\n\n')}
-            onClose={() => setToolView(null)}
+            onClose={returnToLessonKit}
           />
         </div>
       )}
@@ -862,7 +872,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
               p.assessment ? `Assessment\n${p.assessment}` : null,
               p.notes ? `Notes\n${p.notes}` : null,
             ].filter(Boolean).join('\n\n')).join('\n\n')}
-            onClose={() => setToolView(null)}
+            onClose={returnToLessonKit}
           />
         </div>
       )}
@@ -888,7 +898,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
                 et.instructions ? `Instructions: ${et.instructions}` : null,
               ].filter(Boolean).join('\n')
             )].join('\n\n')}
-            onClose={() => setToolView(null)}
+            onClose={returnToLessonKit}
           />
         </div>
       )}
@@ -910,7 +920,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
             copyText={['CROSS-CURRICULAR CONNECTIONS', ...crossConnections.map(c =>
               `${c.subject} — ${c.standard_code}\n${c.standard_text}\n${c.connection_description}`
             )].join('\n\n')}
-            onClose={() => setToolView(null)}
+            onClose={returnToLessonKit}
           />
         </div>
       )}
@@ -938,7 +948,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
                 w.equipment_needed?.length ? `Equipment: ${w.equipment_needed.join(', ')}` : null,
               ].filter(Boolean).join('\n')
             )].join('\n\n')}
-            onClose={() => setToolView(null)}
+            onClose={returnToLessonKit}
           />
         </div>
       )}
@@ -946,14 +956,14 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
         <div ref={toolPrintRef} className="card p-5 space-y-3">
           <p className="label-eyebrow text-ink-400">IEP Progress Note</p>
           <p className="text-sm text-ink-700 leading-relaxed whitespace-pre-wrap">{progressNote}</p>
-          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} copyText={progressNote} onClose={() => setToolView(null)} />
+          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} copyText={progressNote} onClose={returnToLessonKit} />
         </div>
       )}
       {toolView === 'behavior' && behaviorNote && (
         <div ref={toolPrintRef} className="card p-5 space-y-3">
           <p className="label-eyebrow text-ink-400">Behavior Management Note</p>
           <p className="text-sm text-ink-700 leading-relaxed whitespace-pre-wrap">{behaviorNote}</p>
-          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} copyText={behaviorNote} onClose={() => setToolView(null)} />
+          <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} copyText={behaviorNote} onClose={returnToLessonKit} />
         </div>
       )}
       {toolView === 'conference' && conferencePrep && (
@@ -991,7 +1001,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
               conferencePrep.next_steps?.length ? `Next Steps:\n${conferencePrep.next_steps.map(s => `· ${s}`).join('\n')}` : null,
               conferencePrep.closing_statement ? `Closing:\n${conferencePrep.closing_statement}` : null,
             ].filter(Boolean).join('\n\n')}
-            onClose={() => { setConferencePrep(null); setToolView(null) }}
+            onClose={() => { setConferencePrep(null); returnToLessonKit() }}
           />
         </div>
       )}
@@ -1184,7 +1194,7 @@ function ToolActions({ copyText, onClose, printRef, printWatermark, docxTitle })
         </button>
       )}
       <button onClick={onClose} className="no-print btn-secondary text-xs">
-        <X size={13} /> Close
+        <ArrowLeft size={13} /> Back to Lesson Kit
       </button>
     </div>
     {notice && (
