@@ -22,6 +22,7 @@ export default defineConfig({
       '../services/smartGoalsService': path.resolve(__dirname, 'src/preview/mockSmartGoalsService.js'),
       '../services/classPeriodsService': path.resolve(__dirname, 'src/preview/mockClassPeriodsService.js'),
       '../services/studentsService': path.resolve(__dirname, 'src/preview/mockStudentsService.js'),
+      '../services/assessmentService': path.resolve(__dirname, 'src/preview/mockAssessmentService.js'),
     },
   },
   build: {

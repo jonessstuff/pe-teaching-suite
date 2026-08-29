@@ -93,6 +93,10 @@ export async function createLesson(lessonObject, meta = {}) {
   return row
 }
 
+export async function createUnit({ name, subject, gradeBands }) {
+  return { id: `unit-${Date.now()}`, name, subject, grade_bands: gradeBands }
+}
+
 export async function updateLesson(id, { lessonObject, meta = {} } = {}) {
   const lesson = lessons.find((l) => l.id === id)
   if (!lesson) throw new Error('Lesson not found')

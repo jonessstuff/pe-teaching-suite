@@ -46,6 +46,29 @@ export async function generateSlp(input = {}) { return generateLesson({ ...input
 export async function generateIntervention(input = {}) { return generateLesson({ ...input, subject: 'Intervention Planning', gradeBands: input.gradeBands ?? [3] }) }
 export async function generateSchoolCounselor(input = {}) { return generateLesson({ ...input, subject: 'School Counselors', gradeBands: input.gradeBands ?? [3] }) }
 export async function generateEarlyChildhood(input = {}) { return generateLesson({ ...input, subject: 'Early Childhood', gradeBands: input.gradeBands ?? [0] }) }
+export async function generateAdaptivePE(input = {}) { return generateLesson({ ...input, subject: 'Adaptive PE', gradeBands: input.gradeBands ?? [3] }) }
+export async function generateStemLesson(input = {}) { return generateLesson({ ...input, subject: 'STEM', gradeBands: input.gradeBands ?? [3] }) }
+export async function generateTheater(input = {}) { return generateLesson({ ...input, subject: 'Theater', gradeBands: input.gradeBands ?? [6] }) }
+export async function generateDance(input = {}) { return generateLesson({ ...input, subject: 'Dance', gradeBands: input.gradeBands ?? [6] }) }
+export async function generateWorldLanguages(input = {}) { return generateLesson({ ...input, subject: 'World Languages', gradeBands: input.gradeBands ?? [6] }) }
+export async function generateJrotc(input = {}) { return generateLesson({ ...input, subject: 'JROTC', gradeBands: input.gradeBands ?? [9] }) }
+export async function generateElementaryTech(input = {}) { return generateLesson({ ...input, subject: 'Elementary Technology', gradeBands: input.gradeBands ?? [3] }) }
+export async function generateEslSpecialist(input = {}) { return generateLesson({ ...input, subject: 'ESL/ELL Specialist', gradeBands: input.gradeBands ?? [3] }) }
+export async function generateGiftedTalented(input = {}) { return generateLesson({ ...input, subject: 'Gifted & Talented', gradeBands: input.gradeBands ?? [5] }) }
+export async function generateSpecialEducation(input = {}) { return generateLesson({ ...input, subject: 'Special Education', gradeBands: input.gradeBands ?? [5] }) }
+export async function generateReadingSpecialist(input = {}) { return generateLesson({ ...input, subject: 'Reading Specialists', gradeBands: input.gradeBands ?? [3] }) }
+export async function generateMathSpecialist(input = {}) { return generateLesson({ ...input, subject: 'Math Specialists', gradeBands: input.gradeBands ?? [3] }) }
+export async function generateTutoringSession(input = {}) { return generateLesson({ ...input, subject: input.subject || 'Specialist Tutoring', gradeBands: input.gradeBands ?? [3] }) }
+export async function generateEcse(input = {}) { return generateLesson({ ...input, subject: 'Early Childhood Special Education', gradeBands: input.gradeBands ?? [0] }) }
+export async function generateAfterSchoolClubs(input = {}) { return generateLesson({ ...input, subject: 'After-School Clubs', gradeBands: input.gradeBands ?? [5] }) }
+export async function generateOt(input = {}) { return generateLesson({ ...input, subject: 'Occupational Therapists', gradeBands: input.gradeBands ?? [3] }) }
+export async function generatePt(input = {}) { return generateLesson({ ...input, subject: 'Physical Therapists', gradeBands: input.gradeBands ?? [3] }) }
+export async function generateTvi(input = {}) { return generateLesson({ ...input, subject: 'Teacher of the Visually Impaired', gradeBands: input.gradeBands ?? [3] }) }
+export async function generateDhh(input = {}) { return generateLesson({ ...input, subject: 'Teacher of the Deaf & Hard of Hearing', gradeBands: input.gradeBands ?? [3] }) }
+export async function generateStaffPd(input = {}) { return generateLesson({ ...input, subject: 'Staff PD & Meeting Planning', gradeBands: [] }) }
+export async function generateInstructionalCoaching(input = {}) { return generateLesson({ ...input, subject: 'Instructional Coaching', gradeBands: [] }) }
+export async function generateSstActivity(input = {}) { return generateLesson({ ...input, subject: 'Student Support Team Activities', gradeBands: input.gradeBands ?? [6] }) }
+export async function generateTestPrep(input = {}) { return generateLesson({ ...input, subject: 'Test Prep', gradeBands: input.gradeBands ?? [10] }) }
 
 export async function generateSubPlan() {
   await delay(800)
@@ -91,3 +114,11 @@ export async function generateCrossCurricular() { return { connections: [{ subje
 export async function generateWarmup() { return { warmup_options: [{ title: 'Dynamic base-path warm-up', duration: 8 }] } }
 export async function generateBehaviorNote() { return { behavior_note: { summary: 'Sample private behavior documentation.' } } }
 export async function generateConferencePrep() { return { conference_prep: { strengths: ['Teamwork'], next_steps: ['Continue skill practice'] } } }
+export async function generateIncidentReport() { return { incident_report: { summary: 'Sample incident report for preview.' } } }
+export async function generateEoyNarrative() { return { title: 'End-of-Year Narrative', narrative: 'A polished sample end-of-year summary for local preview.' } }
+export async function generateActivityBank() { return { title: 'Ready-to-Use Activities', activities: [] } }
+export async function generateFieldDay() { return { title: 'Field Day Plan', stations: [] } }
+export async function generateImportedLesson(input = {}) { return generateLesson({ ...input, subject: input.subject || 'PE & Health', gradeBands: input.gradeBands ?? [3] }) }
+export async function generatePacingGuide() { return { title: 'Pacing Guide', quarters: [] } }
+export async function generatePortfolio() { return { title: 'Teaching Portfolio', sections: [] } }
+export async function generateLibraryUnit(input = {}) { return generateLesson({ ...input, subject: 'Library/Media', gradeBands: input.gradeBands ?? [3] }) }
