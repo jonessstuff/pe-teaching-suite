@@ -44,17 +44,14 @@ export default function Students() {
   const [bulkError, setBulkError] = useState(null)
   const [csvRows, setCsvRows] = useState(null)
   const [csvFileName, setCsvFileName] = useState('')
-  const [selectedPeriod, setSelectedPeriod] = useState('')
+  const [selectedPeriod, setSelectedPeriod] = useState('all')
 
   useEffect(() => {
     listStudents()
       .then(setStudents)
       .catch((err) => setError(err.message))
     listPeriods()
-      .then((data) => {
-        setPeriods(data)
-        setSelectedPeriod((current) => current || data[0]?.id || 'all')
-      })
+      .then(setPeriods)
       .catch(() => setPeriods([]))
   }, [])
 
@@ -145,7 +142,7 @@ export default function Students() {
   function openBulk() {
     setBulkOpen(true)
     setBulkError(null)
-    setBulkPeriod((cur) => cur || periods[0]?.id || '')
+    setBulkPeriod((current) => current || (selectedPeriod !== 'all' ? selectedPeriod : ''))
   }
   function closeBulk() {
     setBulkOpen(false)
