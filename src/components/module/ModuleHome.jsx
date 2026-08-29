@@ -159,7 +159,7 @@ export default function ModuleHome({ config }) {
                   <ArrowRight size={15} className={`mt-0.5 shrink-0 ${accent.text} transition-transform group-hover:translate-x-0.5`} />
                 </span>
                 <span className="mt-1 block text-xs leading-relaxed text-ink-500">{desc}</span>
-                <span className={`mt-2 block text-[11px] font-semibold ${accent.text}`}>Open tool</span>
+                <span className={`mt-2 block text-[11px] font-semibold ${accent.text}`}>{to ? 'Open tool' : 'Create with this'}</span>
               </Link>
             ))}
           </div>
