@@ -5,8 +5,9 @@ import { getOwnerAnalytics, saveOwnerContact } from '../services/ownerAnalyticsS
 
 const REASON_LABELS = { seasonal: 'Seasonal / summer', price: 'Price', not_using: 'Not using it enough', missing_feature: 'Missing feature', confusing: 'Confusing', output_quality: 'Output quality', technical: 'Technical problem', other: 'Other' }
 
-function Metric({ icon: Icon, label, value, note, color = 'text-accent-400' }) {
-  return <div className="card p-5"><Icon size={21} className={color} /><p className="mt-4 text-2xl font-bold text-ink-50">{value}</p><p className="mt-1 text-sm font-semibold text-ink-300">{label}</p>{note && <p className="mt-1 text-xs text-ink-500">{note}</p>}</div>
+function Metric({ icon: Icon, label, value, note, color = 'text-accent-400', onClick }) {
+  const content = <><Icon size={21} className={color} /><p className="mt-4 text-2xl font-bold text-ink-50">{value}</p><p className="mt-1 text-sm font-semibold text-ink-300">{label}</p>{note && <p className="mt-1 text-xs text-ink-500">{note}</p>}</>
+  return onClick ? <button type="button" onClick={onClick} className="card p-5 text-left transition-colors hover:border-accent-500/40">{content}</button> : <div className="card p-5">{content}</div>
 }
 
 export default function OwnerDashboard() {
@@ -14,6 +15,12 @@ export default function OwnerDashboard() {
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [customerFilter, setCustomerFilter] = useState('all')
+
+  function openCustomers(filter) {
+    setCustomerFilter(filter)
+    setTimeout(() => document.getElementById('customer-workspace')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0)
+  }
 
   async function load() {
     setLoading(true); setError(null)
@@ -42,8 +49,8 @@ export default function OwnerDashboard() {
     <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="label-eyebrow mb-2">Private owner view</p><h1 className="text-3xl font-semibold text-ink-50">Growth &amp; Retention</h1><p className="mt-2 text-ink-400">Subscriptions are live from Stripe. Funnel activity covers the last 30 days.</p></div><button onClick={load} className="btn-secondary"><RefreshCw size={16} /> Refresh</button></div>
     <section><h2 className="mb-3 font-semibold text-ink-200">Revenue health</h2><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><Metric icon={CreditCard} label="Paying subscriptions" value={s.active} color="text-emerald-400" /><Metric icon={Users} label="Trials" value={s.trialing} color="text-violet-400" /><Metric icon={DollarSign} label="Estimated MRR" value={`$${(s.mrrCents / 100).toFixed(0)}`} note="Annual plans normalized" color="text-amber-400" /><Metric icon={TrendingUp} label="Current access" value={s.current} note="Paid + trialing subscriptions" /></div></section>
     <section><h2 className="mb-3 font-semibold text-ink-200">Cancellation status</h2><div className="grid gap-4 sm:grid-cols-3"><Metric icon={XCircle} label="Scheduled to cancel" value={s.scheduledCancel} note="Still active until period end" color="text-red-400" /><Metric icon={XCircle} label="Canceled · last 30 days" value={s.canceled30d} note="Completed Stripe cancellations" color="text-orange-400" /><Metric icon={XCircle} label="Total canceled" value={s.canceledTotal} note="Historical canceled subscriptions" color="text-ink-400" /></div></section>
-    {a && <section><div className="mb-3"><h2 className="font-semibold text-ink-200">Customer activation &amp; inactivity</h2><p className="mt-1 text-xs text-ink-500">Private aggregate signals only. “Activated” means the customer has created at least one lesson.</p></div><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5"><Metric icon={UserCheck} label="Activated customers" value={a.activated} note={`${a.activationRate}% of matched customers`} color="text-emerald-400" /><Metric icon={UserX} label="Never activated" value={a.neverActivated} note="No lesson created yet" color="text-amber-400" /><Metric icon={Activity} label="Inactive 7+ days" value={a.inactive7d} note="No recent sign-in or lesson" color="text-orange-400" /><Metric icon={TrendingDown} label="Inactive 30+ days" value={a.inactive30d} note="Highest re-engagement priority" color="text-red-400" /><Metric icon={Users} label="Matched customers" value={a.customers} note="Current Stripe customers linked to accounts" /></div></section>}
-    {data.customers && <CustomerWorkspace customers={data.customers} onRefresh={load} />}
+    {a && <section><div className="mb-3"><h2 className="font-semibold text-ink-200">Customer activation &amp; inactivity</h2><p className="mt-1 text-xs text-ink-500">Click a card to open the matching customer list. “Activated” means at least one lesson created.</p></div><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5"><Metric icon={UserCheck} label="Activated customers" value={a.activated} note={`${a.activationRate}% of matched customers`} color="text-emerald-400" onClick={() => openCustomers('all')} /><Metric icon={UserX} label="Never activated" value={a.neverActivated} note="No lesson created yet" color="text-amber-400" onClick={() => openCustomers('never_activated')} /><Metric icon={Activity} label="Inactive 7+ days" value={a.inactive7d} note="No recent sign-in or lesson" color="text-orange-400" onClick={() => openCustomers('inactive_7')} /><Metric icon={TrendingDown} label="Inactive 30+ days" value={a.inactive30d} note="Highest re-engagement priority" color="text-red-400" onClick={() => openCustomers('inactive_30')} /><Metric icon={Users} label="Matched customers" value={a.customers} note="Current Stripe customers linked to accounts" onClick={() => openCustomers('all')} /></div></section>}
+    {data.customers && <CustomerWorkspace customers={data.customers} filter={customerFilter} setFilter={setCustomerFilter} onRefresh={load} />}
     <section><h2 className="mb-3 font-semibold text-ink-200">Demo funnel · last 30 days</h2><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><Metric icon={Eye} label="Demo visits" value={f.demoViews} /><Metric icon={MousePointerClick} label="Trial clicks" value={f.trialClicks} note={f.demoViews ? `${Math.round(f.trialClicks / f.demoViews * 100)}% of demo visits` : 'Collecting data'} color="text-emerald-400" /><Metric icon={Users} label="New accounts" value={f.newSignups} color="text-violet-400" /><Metric icon={BarChart3} label="Lessons created" value={data.product.lessons30d} note={`${data.product.totalLessons} all time`} color="text-amber-400" /></div></section>
     <div className="grid gap-5 lg:grid-cols-2"><section className="card p-6"><h2 className="font-semibold text-ink-100">Demo sections viewed</h2><div className="mt-5 space-y-4">{Object.entries(f.sections).map(([name, count]) => <div key={name}><div className="flex justify-between text-sm"><span className="capitalize text-ink-300">{name}</span><strong>{count}</strong></div><div className="mt-1.5 h-2 rounded-full bg-ink-800"><div className="h-full rounded-full bg-accent-500" style={{ width: `${count / maxSection * 100}%` }} /></div></div>)}</div></section>
       <section className="card p-6"><h2 className="font-semibold text-ink-100">Cancellation reasons</h2>{reasons.length ? <div className="mt-5 space-y-3">{reasons.map(([reason, count]) => <div key={reason} className="flex justify-between rounded-lg bg-ink-900 p-3 text-sm"><span>{REASON_LABELS[reason] ?? reason}</span><strong>{count}</strong></div>)}</div> : <p className="mt-4 text-sm text-ink-500">No cancellation surveys submitted yet. New responses will appear here.</p>}</section></div>
@@ -65,8 +72,7 @@ function draftFor(customer) {
 
 function csvCell(value) { return `"${String(value ?? '').replaceAll('"', '""')}"` }
 
-function CustomerWorkspace({ customers, onRefresh }) {
-  const [filter, setFilter] = useState('all')
+function CustomerWorkspace({ customers, filter, setFilter, onRefresh }) {
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
   const [note, setNote] = useState('')
@@ -96,7 +102,7 @@ function CustomerWorkspace({ customers, onRefresh }) {
     try { await saveOwnerContact({ userId: selected.id, contacted: true, note, outcome: 'contacted' }); await onRefresh(); setSelected(null); setNote('') } finally { setSaving(false) }
   }
 
-  return <section className="card p-5 sm:p-6">
+  return <section id="customer-workspace" className="card scroll-mt-24 p-5 sm:p-6">
     <div className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="font-semibold text-ink-100">Customer follow-up workspace</h2><p className="mt-1 text-xs text-ink-500">Private owner-only contact information. Drafts open for your review and never send automatically.</p></div><button onClick={exportCsv} className="btn-secondary text-xs"><Download size={14} /> Export {visible.length} to CSV</button></div>
     <div className="mt-4 flex gap-2 overflow-x-auto pb-1">{FILTERS.map(([key, label]) => <button key={key} onClick={() => setFilter(key)} className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold ${filter === key ? 'bg-accent-500 text-white' : 'bg-ink-900 text-ink-400'}`}>{label}</button>)}</div>
     <label className="mt-4 flex items-center gap-2 rounded-lg border border-ink-800 px-3"><Search size={15} className="text-ink-600" /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search name, email, or teaching area" className="w-full bg-transparent py-2.5 text-sm outline-none" /></label>
