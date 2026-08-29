@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, BarChart3, CalendarDays, CheckCircle2, ChevronLeft, ChevronRight, Download, Footprints, Gauge, Pause, Play, RotateCcw, Sparkles, UsersRound, X } from 'lucide-react'
+import { ArrowRight, BarChart3, BookOpen, CalendarDays, Check, CheckCircle2, ChevronLeft, ChevronRight, ClipboardCheck, Download, FileText, Footprints, Gauge, Palette, Pause, Play, Printer, RotateCcw, Scissors, Sparkles, Speech, Target, UsersRound, X } from 'lucide-react'
 import { CHECKOUT_URL } from '../services/trialService'
 import { track } from '../lib/analytics'
 
@@ -22,6 +22,7 @@ function DemoLogo() {
 }
 
 export default function DemoMode() {
+  const [demoArea, setDemoArea] = useState('pe')
   const [view, setView] = useState('today')
   const [phase, setPhase] = useState(0)
   const [seconds, setSeconds] = useState(0)
@@ -57,6 +58,24 @@ export default function DemoMode() {
       </nav>
 
       <main className="mx-auto max-w-6xl px-4 py-7 sm:px-6">
+        <div className="mb-7">
+          <p className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-500">Choose a teacher experience</p>
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              ['pe', Footprints, 'PE & Health', 'Teach, track, and show growth'],
+              ['art', Palette, 'Art', 'Plan, display, and assess'],
+              ['elementary', Scissors, 'Elementary printable', 'Low-screen student materials'],
+              ['support', Speech, 'SLP & Intervention', 'Sessions and progress evidence'],
+            ].map(([key, Icon, label, detail]) => (
+              <button key={key} type="button" onClick={() => { setDemoArea(key); track('demo_module_viewed', { module: key }) }} className={`rounded-xl border p-3 text-left transition ${demoArea === key ? 'border-blue-500 bg-blue-50 shadow-sm' : 'border-slate-200 bg-white hover:border-blue-300 hover:bg-slate-50'}`}>
+                <span className="flex items-center gap-2"><Icon size={18} className={demoArea === key ? 'text-blue-600' : 'text-slate-500'} /><strong className="text-sm">{label}</strong></span>
+                <span className="mt-1 block text-xs text-slate-500">{detail}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {demoArea === 'pe' && <>
         <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div><p className="text-sm font-bold text-teal-600">Interactive product tour</p><h1 className="mt-1 text-3xl font-bold leading-tight">See a PE teacher’s day in PlansK12</h1><p className="mt-2 text-slate-600">Pine Ridge Middle School · Demo PE Class · Nothing here is real student information.</p><p className="mt-3 text-sm font-semibold text-slate-700">Click Today, Teach, and Progress to explore the workflow.</p></div>
           <div className="flex rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
@@ -90,12 +109,64 @@ export default function DemoMode() {
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div className="flex items-center justify-between"><div><p className="text-sm font-bold text-teal-600">Half-mile progress</p><h2 className="text-2xl font-bold">Demo PE Class</h2></div><Gauge className="text-teal-600" /></div><div className="mt-6 space-y-4">{STUDENTS.map(([name, time, change, progress]) => <div key={name}><div className="flex justify-between text-sm"><span className="font-semibold">{name}</span><span>{time} <strong className="ml-2 text-emerald-600">{change}</strong></span></div><div className="mt-1 h-2 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-gradient-to-r from-teal-500 to-cyan-500" style={{ width: `${progress}%` }} /></div></div>)}</div></div>
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><CheckCircle2 size={28} className="text-emerald-600" /><h3 className="mt-4 text-xl font-bold">SMART class goal</h3><p className="mt-2 text-slate-600">By October 15, 80% of students will improve their half-mile time by at least 20 seconds using consistent pacing.</p><div className="mt-5 rounded-xl bg-emerald-50 p-4"><p className="text-sm font-bold text-emerald-800">On track</p><p className="mt-1 text-sm text-emerald-700">72% are currently meeting the target pace.</p></div><a href={`data:text/csv;charset=utf-8,${encodeURIComponent(DEMO_CSV)}`} download="plansk12-demo-half-mile-progress.csv" onClick={() => track('demo_csv_downloaded')} className="btn-secondary mt-5 w-full"><Download size={16} /> Download sample CSV</a></div>
         </section>}
+        </>}
+
+        {demoArea === 'art' && <ArtDemo />}
+        {demoArea === 'elementary' && <ElementaryPrintableDemo />}
+        {demoArea === 'support' && <SupportDemo />}
 
         <div className="mt-7 rounded-2xl border border-violet-200 bg-violet-50 p-5 text-center"><p className="font-bold text-violet-950">Ready to use your own classes, lessons, preferences, and progress?</p><p className="mt-1 text-sm text-violet-800">Try every PlansK12 tool free for 7 days, then $9.99/month. Cancel anytime.</p><a href={CHECKOUT_URL} onClick={() => track('demo_trial_clicked', { placement: 'footer' })} className="btn-primary mt-3 inline-flex">Start my 7-day free trial <ArrowRight size={16} /></a><p className="mt-3 text-xs text-violet-700">Already have an account? <Link to="/login" className="font-semibold underline">Log in</Link></p></div>
       </main>
       {featurePreview && <FeaturePreview type={featurePreview} onClose={() => setFeaturePreview(null)} />}
     </div>
   )
+}
+
+function ArtDemo() {
+  const [tab, setTab] = useState('plan')
+  const tabs = [['plan', BookOpen, 'Teacher plan'], ['materials', Palette, 'Student display'], ['assess', ClipboardCheck, 'Assessment']]
+  return <section>
+    <div className="mb-6"><p className="text-sm font-bold text-rose-600">Interactive Art demo</p><h1 className="mt-1 text-3xl font-bold">From blank page to studio-ready lesson</h1><p className="mt-2 text-slate-600">Grade 4 · Warm and cool color landscapes · Fictional demonstration</p></div>
+    <div className="grid gap-5 lg:grid-cols-[260px_1fr]">
+      <aside className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Explore the lesson kit</p><div className="mt-3 space-y-2">{tabs.map(([key, Icon, label]) => <button key={key} onClick={() => setTab(key)} className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left font-semibold ${tab === key ? 'bg-rose-600 text-white' : 'text-slate-700 hover:bg-rose-50'}`}><Icon size={18} />{label}<ArrowRight size={15} className="ml-auto" /></button>)}</div><div className="mt-5 rounded-xl bg-amber-50 p-3 text-xs text-amber-900"><strong>Teacher prep:</strong> 8 watercolor sets, heavy paper, water cups, brushes, drying rack, and two landscape references.</div></aside>
+      <div className="min-h-[480px] rounded-2xl border border-slate-200 bg-white p-5 shadow-xl sm:p-7">
+        {tab === 'plan' && <div><p className="text-xs font-bold uppercase tracking-wide text-rose-600">Teacher at-a-glance</p><h2 className="mt-1 text-2xl font-bold">Warm and Cool Color Landscapes</h2><div className="mt-5 grid gap-3 sm:grid-cols-3">{[['Gather', 'Watercolors · paper · brushes'], ['Set up', 'Demo table + drying area'], ['Safety', 'Carry water with two hands']].map(([label, text]) => <div key={label} className="rounded-xl bg-slate-50 p-3"><p className="text-xs font-bold uppercase text-slate-500">{label}</p><p className="mt-1 text-sm">{text}</p></div>)}</div><div className="mt-6 space-y-4">{[['1', 'Notice', 'Compare the feeling created by warm and cool colors.'], ['2', 'Watch', 'See wet-on-wet blending without muddying colors.'], ['3', 'Create', 'Paint foreground, middle ground, and background.'], ['4', 'Reflect', 'Name one color choice that supports the mood.']].map(([number, title, text]) => <div key={number} className="flex gap-3"><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-rose-100 font-bold text-rose-700">{number}</span><div><p className="font-bold">{title}</p><p className="text-sm text-slate-600">{text}</p></div></div>)}</div></div>}
+        {tab === 'materials' && <div><p className="text-xs font-bold uppercase tracking-wide text-violet-600">Student-facing visual</p><h2 className="mt-1 text-2xl font-bold">Color Creates Mood</h2><div className="mt-6 grid grid-cols-2 gap-4"><div className="rounded-2xl bg-gradient-to-br from-red-500 via-orange-400 to-yellow-300 p-6 text-white shadow"><p className="text-2xl font-black">WARM</p><p className="mt-2 font-semibold">energy · sunlight · excitement</p></div><div className="rounded-2xl bg-gradient-to-br from-blue-600 via-cyan-500 to-violet-500 p-6 text-white shadow"><p className="text-2xl font-black">COOL</p><p className="mt-2 font-semibold">calm · shade · distance</p></div></div><div className="mt-6 rounded-xl border-2 border-dashed border-violet-300 bg-violet-50 p-5"><p className="font-bold text-violet-900">Your challenge</p><p className="mt-1 text-violet-800">Choose mostly warm or mostly cool colors. Make your landscape communicate one clear mood.</p></div><p className="mt-5 text-sm text-slate-500">This display is concise for students; the detailed teaching language stays in speaker notes.</p></div>}
+        {tab === 'assess' && <div><p className="text-xs font-bold uppercase tracking-wide text-emerald-600">Quick assessment</p><h2 className="mt-1 text-2xl font-bold">Three-point studio check</h2><div className="mt-6 overflow-hidden rounded-xl border border-slate-200">{[['Color choice', 'Warm/cool palette supports an intentional mood'], ['Space', 'Foreground, middle ground, and background are visible'], ['Reflection', 'Student explains one artistic choice']].map(([skill, evidence], index) => <div key={skill} className={`grid gap-2 p-4 sm:grid-cols-[150px_1fr_auto] ${index ? 'border-t border-slate-200' : ''}`}><strong>{skill}</strong><span className="text-sm text-slate-600">{evidence}</span><span className="w-fit rounded-full bg-emerald-100 px-2 py-1 text-xs font-bold text-emerald-800">Ready to observe</span></div>)}</div><div className="mt-5 rounded-xl bg-slate-50 p-4"><p className="text-sm font-bold">Exit reflection</p><p className="mt-1 text-slate-600">“My color choices make the landscape feel ___ because ___.”</p></div></div>}
+      </div>
+    </div>
+  </section>
+}
+
+function ElementaryPrintableDemo() {
+  const [resource, setResource] = useState('sort')
+  const [completed, setCompleted] = useState(false)
+  const options = [['sort', 'Picture sort', 'Living or nonliving'], ['cut', 'Cut & paste', 'Sequence a plant life cycle'], ['centers', 'Center cards', 'Four independent stations']]
+  return <section>
+    <div className="mb-6"><p className="text-sm font-bold text-amber-600">Interactive elementary demo</p><h1 className="mt-1 text-3xl font-bold">Useful without adding screen time</h1><p className="mt-2 text-slate-600">Choose a printable and preview what students would actually receive.</p></div>
+    <div className="grid gap-5 lg:grid-cols-[300px_1fr]">
+      <aside className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Choose a resource</p><div className="mt-3 space-y-2">{options.map(([key, label, detail]) => <button key={key} onClick={() => { setResource(key); setCompleted(false) }} className={`w-full rounded-xl border p-3 text-left ${resource === key ? 'border-amber-500 bg-amber-50' : 'border-slate-200 hover:bg-slate-50'}`}><strong className="block">{label}</strong><span className="text-xs text-slate-500">{detail}</span></button>)}</div><button onClick={() => { window.print(); track('demo_print_clicked', { module: 'elementary' }) }} className="btn-secondary mt-5 w-full"><Printer size={16} /> Print sample</button></aside>
+      <div className="rounded-2xl bg-slate-200 p-3 shadow-inner sm:p-6"><div className="mx-auto min-h-[560px] max-w-2xl bg-white p-6 shadow-xl sm:p-9"><div className="border-b-2 border-slate-900 pb-3"><p className="text-xs font-bold uppercase tracking-widest text-amber-600">PlansK12 student printable · Grade 1</p><h2 className="mt-1 text-2xl font-black">{resource === 'sort' ? 'Living or Nonliving?' : resource === 'cut' ? 'How a Plant Grows' : 'Science Discovery Centers'}</h2><p className="mt-1 text-sm">Name: ____________________  Date: ____________</p></div>{resource === 'sort' && <div className="mt-6"><p className="font-bold">Draw a line from each item to the correct group.</p><div className="mt-5 grid grid-cols-2 gap-4">{[['🌻', 'sunflower'], ['🪨', 'rock'], ['🐞', 'ladybug'], ['🧸', 'toy bear']].map(([icon, label]) => <button key={label} onClick={() => setCompleted(true)} className={`rounded-xl border-2 p-4 text-center ${completed ? 'border-emerald-400 bg-emerald-50' : 'border-slate-300'}`}><span className="text-4xl">{icon}</span><span className="mt-2 block font-bold capitalize">{label}</span></button>)}</div><div className="mt-6 grid grid-cols-2 gap-4"><div className="rounded-xl border-2 border-emerald-500 p-4 text-center font-black text-emerald-800">LIVING</div><div className="rounded-xl border-2 border-blue-500 p-4 text-center font-black text-blue-800">NONLIVING</div></div></div>}{resource === 'cut' && <div className="mt-6"><p className="font-bold">Cut out the cards. Glue them in order from 1 to 4.</p><div className="mt-6 grid grid-cols-2 gap-4">{[['🌱', 'A sprout appears'], ['🌻', 'The plant flowers'], ['🫘', 'A seed is planted'], ['🪴', 'Leaves grow']].map(([icon, label]) => <div key={label} className="rounded-xl border-2 border-dashed border-slate-400 p-4 text-center"><span className="text-4xl">{icon}</span><p className="mt-2 font-bold">{label}</p></div>)}</div></div>}{resource === 'centers' && <div className="mt-6 grid gap-4 sm:grid-cols-2">{[['1', 'SORT', 'Sort picture cards into living and nonliving.'], ['2', 'BUILD', 'Use blocks to design a habitat.'], ['3', 'DRAW', 'Draw what a living thing needs.'], ['4', 'EXPLAIN', 'Tell a partner how you know it is living.']].map(([number, title, text]) => <div key={number} className="rounded-xl border-2 border-slate-900 p-5"><span className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-400 font-black">{number}</span><h3 className="mt-3 text-xl font-black">{title}</h3><p className="mt-2 text-sm">{text}</p></div>)}</div>}{completed && <p className="mt-5 rounded-lg bg-emerald-100 p-3 text-center font-bold text-emerald-800"><Check size={17} className="mr-1 inline" />Interactive sample selected—printed copies remain pencil-and-paper.</p>}</div></div>
+    </div>
+  </section>
+}
+
+function SupportDemo() {
+  const [service, setService] = useState('slp')
+  const [checked, setChecked] = useState([])
+  const [noteSaved, setNoteSaved] = useState(false)
+  const activities = service === 'slp'
+    ? ['Minimal-pair picture warm-up', 'Barrier-game direction practice', 'Student self-rating and carryover cue']
+    : ['Phoneme-grapheme review', 'Word-building with letter tiles', 'Decodable reading and one-minute check']
+  function toggleActivity(index) { setChecked((current) => current.includes(index) ? current.filter((item) => item !== index) : [...current, index]) }
+  return <section>
+    <div className="mb-6"><p className="text-sm font-bold text-indigo-600">Interactive specialist demo</p><h1 className="mt-1 text-3xl font-bold">Plan the session and capture usable evidence</h1><p className="mt-2 text-slate-600">Fictional group data only · No names or protected student information</p></div>
+    <div className="mb-5 inline-flex rounded-xl border border-slate-200 bg-white p-1 shadow-sm"><button onClick={() => { setService('slp'); setChecked([]); setNoteSaved(false) }} className={`rounded-lg px-4 py-2 text-sm font-bold ${service === 'slp' ? 'bg-indigo-600 text-white' : 'text-slate-600'}`}><Speech size={16} className="mr-1.5 inline" />SLP session</button><button onClick={() => { setService('intervention'); setChecked([]); setNoteSaved(false) }} className={`rounded-lg px-4 py-2 text-sm font-bold ${service === 'intervention' ? 'bg-indigo-600 text-white' : 'text-slate-600'}`}><BookOpen size={16} className="mr-1.5 inline" />Reading intervention</button></div>
+    <div className="grid gap-5 lg:grid-cols-[1.25fr_0.75fr]">
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl"><div className="flex items-start justify-between gap-3"><div><p className="text-xs font-bold uppercase tracking-wide text-indigo-600">{service === 'slp' ? 'Grade 3 language group' : 'Grade 2 decoding group'}</p><h2 className="mt-1 text-2xl font-bold">{service === 'slp' ? 'Following two-step directions' : 'Short-vowel word building'}</h2></div><span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold">30 min</span></div><div className="mt-6 space-y-3">{activities.map((activity, index) => <button key={activity} onClick={() => toggleActivity(index)} className={`flex w-full items-center gap-3 rounded-xl border p-4 text-left ${checked.includes(index) ? 'border-emerald-400 bg-emerald-50' : 'border-slate-200 hover:border-indigo-300'}`}><span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 ${checked.includes(index) ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-slate-300'}`}>{checked.includes(index) ? <Check size={16} /> : index + 1}</span><span><strong className="block">{activity}</strong><span className="text-xs text-slate-500">Tap when completed in this demo</span></span></button>)}</div><div className="mt-6 rounded-xl bg-indigo-50 p-4"><p className="text-sm font-bold text-indigo-900">Built-in support</p><p className="mt-1 text-sm text-indigo-800">{service === 'slp' ? 'Visual first/then card, one repetition, and optional gesture cue.' : 'Continuous blending prompt, reduced word set, and immediate corrective feedback.'}</p></div></div>
+      <aside className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><Target size={24} className="text-indigo-600" /><h3 className="mt-3 text-lg font-bold">Progress evidence</h3><p className="mt-1 text-sm text-slate-600">{checked.length} of {activities.length} activities completed</p><div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100"><div className="h-full bg-indigo-600 transition-all" style={{ width: `${checked.length / activities.length * 100}%` }} /></div><div className="mt-5 rounded-xl border border-slate-200 p-3"><p className="text-xs font-bold uppercase text-slate-500">Observation note</p><p className="mt-2 text-sm text-slate-700">{service === 'slp' ? 'Group followed two-step directions with visual support in 4 of 5 opportunities.' : 'Group accurately blended 8 of 10 short-vowel words with one verbal prompt.'}</p></div><button onClick={() => setNoteSaved(true)} className="btn-primary mt-4 w-full"><FileText size={16} /> Save demo note</button>{noteSaved && <p className="mt-3 rounded-lg bg-emerald-50 p-3 text-sm font-bold text-emerald-800"><CheckCircle2 size={16} className="mr-1 inline" />Saved to fictional progress history</p>}<p className="mt-5 text-xs leading-relaxed text-slate-500">PlansK12 supports professional planning and documentation. Specialists still apply their own judgment and required district practices.</p></aside>
+    </div>
+  </section>
 }
 
 function DemoQuick({ icon: Icon, color, title, text, onClick }) {

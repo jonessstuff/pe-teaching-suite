@@ -19,6 +19,7 @@ import SlpGenerator from '../pages/SlpGenerator'
 import InterventionGenerator from '../pages/InterventionGenerator'
 import SchoolCounselorGenerator from '../pages/SchoolCounselorGenerator'
 import EarlyChildhoodGenerator from '../pages/EarlyChildhoodGenerator'
+import DemoMode from '../pages/DemoMode'
 
 /**
  * Standalone preview app.
@@ -31,6 +32,7 @@ export default function PreviewApp() {
   return (
     <HashRouter>
       <Routes>
+        <Route path="/demo" element={<DemoMode />} />
         <Route path="/" element={<AppShell />}>
           <Route index element={<ModulePicker />} />
           <Route path="pe-health" element={<Dashboard />} />

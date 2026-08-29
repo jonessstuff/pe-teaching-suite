@@ -111,7 +111,7 @@ export default function Landing() {
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
           <PlansK12Logo />
           <div className="flex items-center gap-5">
-            <Link to="/demo" className="hidden text-sm font-semibold text-brand-600 hover:text-brand-500 sm:inline">View live demo</Link>
+            <Link to="/demo" className="hidden text-sm font-semibold text-brand-600 hover:text-brand-500 sm:inline">Explore live demos</Link>
             <a href="#schools" className="hidden text-sm font-medium text-ink-500 transition-colors hover:text-brand-600 sm:inline">
               For schools &amp; districts
             </a>
@@ -206,7 +206,7 @@ export default function Landing() {
 
           <div className="mt-9 flex flex-col items-center gap-3">
             <Link to="/demo" className="btn-primary !bg-brand-500 hover:!bg-brand-600 px-8 py-4 text-lg shadow-lg shadow-brand-500/25">
-              Explore the interactive demo <ArrowRight size={17} />
+              Explore interactive demos <ArrowRight size={17} />
             </Link>
             <a href={CHECKOUT_URL} className="btn-secondary px-6 py-3">Start my 7-day free trial</a>
             <Link to="/try" className="text-sm font-medium text-ink-500 underline decoration-ink-700 underline-offset-4 hover:text-brand-600">Or generate one free lesson—no signup</Link>
