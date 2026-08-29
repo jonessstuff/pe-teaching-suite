@@ -726,12 +726,12 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
             separate preview/print area (keeps the core lesson document clean). */}
         {hasVisualResources && (
           <div className="no-print flex flex-wrap items-center gap-2 border-t border-ink-900/50 pt-3">
-            <span className="text-xs font-medium text-ink-400">Visual resources generated:</span>
+            <span className="text-xs font-semibold text-ink-700 dark:text-ink-200">Visual resources generated:</span>
             {visualResources.map((r, i) => (
               <button
                 key={i}
                 onClick={() => setToolView('visualresources')}
-                className="inline-flex items-center gap-1 rounded-full border border-accent-500/40 bg-accent-500/10 px-2.5 py-0.5 text-xs text-accent-300 transition-colors hover:bg-accent-500/20"
+                className="inline-flex items-center gap-1 rounded-full border border-emerald-300 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-900 transition-colors hover:bg-emerald-100 dark:border-emerald-700 dark:bg-emerald-950 dark:text-emerald-100 dark:hover:bg-emerald-900"
                 title={r.supports ? `Supports: ${r.supports}` : undefined}
               >
                 <Files size={12} />
