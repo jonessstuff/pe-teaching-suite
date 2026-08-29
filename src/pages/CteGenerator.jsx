@@ -418,6 +418,7 @@ export default function CteGenerator() {
 
   // Pathway
   const [pathway, setPathway] = useState('hospitality')
+  const [showPathwayBrowser, setShowPathwayBrowser] = useState(false)
   // Which category accordion sections are expanded — open the group holding the
   // current pathway by default so the selection is always visible on load.
   const [openGroups, setOpenGroups] = useState(() => new Set([GROUP_FOR_PATHWAY.hospitality]))
@@ -619,28 +620,33 @@ export default function CteGenerator() {
             </p>
           </div>
         </div>
-        <p className="text-sm text-ink-400 mt-3">
-          Generate a complete Career &amp; Technical Education lesson across twenty-two pathways —
-          all 16 national CTE clusters: Hospitality &amp; Tourism, Finance, Marketing, Human
-          Services / FCS, Health Science, Education &amp; Training, Career Readiness (MS
-          foundations), Information Technology, Transportation, Distribution &amp; Logistics,
-          Manufacturing, STEM / Engineering &amp; Technology, Business Management &amp;
-          Administration, Agriculture, Food &amp; Natural Resources, Architecture &amp; Construction,
-          Arts, A/V Technology &amp; Communications, Government &amp; Public Administration, Law,
-          Public Safety, Corrections &amp; Security, Cosmetology / Personal Care Services,
-          Business Law, Sports &amp; Entertainment Marketing, Exercise Science / Sports
-          Medicine, or Early Childhood Education &amp; Services — with work-based learning and
-          career pathway context built in.
-        </p>
+        <p className="text-sm text-ink-400 mt-3">Start with your pathway, student level, lesson topic, and time. PlansK12 adds the standards, career connections, safety, and hands-on structure.</p>
       </div>
 
       <form onSubmit={handleGenerate} className="space-y-6">
         {profileReady && !onboarded && <FirstRunFields value={firstRun} onChange={setFirstRun} />}
 
-        {/* Pathway selector — 22 pathways grouped into 6 collapsible categories */}
+        <div className="rounded-xl border border-pink-400/25 bg-pink-500/5 p-4">
+          <p className="text-sm font-semibold text-ink-100">Four quick choices</p>
+          <p className="mt-1 text-xs text-ink-500">1. Pathway &nbsp; 2. Student level &nbsp; 3. Class setup &nbsp; 4. Topic or project</p>
+        </div>
+
+        {/* A simple pathway dropdown is the default. The full visual pathway
+            browser remains available for teachers who want to explore. */}
         <div className="space-y-3">
-          <h2 className="text-sm font-semibold text-ink-200">Pathway</h2>
-          <div className="space-y-2">
+          <h2 className="text-sm font-semibold text-ink-200">1. What pathway do you teach?</h2>
+          <select value={pathway} onChange={(e) => handlePathwayChange(e.target.value)} className="input-field" aria-label="CTE pathway">
+            {PATHWAY_GROUPS.map((group) => (
+              <optgroup key={group.label} label={group.label}>
+                {group.values.map((value) => <option key={value} value={value}>{PATHWAY_BY_VALUE[value].label}</option>)}
+              </optgroup>
+            ))}
+          </select>
+          <button type="button" onClick={() => setShowPathwayBrowser((value) => !value)} className="flex items-center gap-1.5 text-xs font-semibold text-pink-400 hover:text-pink-300">
+            <ChevronDown size={14} className={`transition-transform ${showPathwayBrowser ? 'rotate-180' : ''}`} />
+            {showPathwayBrowser ? 'Hide pathway browser' : 'Browse pathways with icons and descriptions'}
+          </button>
+          {showPathwayBrowser && <div className="space-y-2">
             {PATHWAY_GROUPS.map((group) => {
               const isOpen = openGroups.has(group.label)
               const groupHasSelected = group.values.includes(pathway)
@@ -699,7 +705,7 @@ export default function CteGenerator() {
                 </div>
               )
             })}
-          </div>
+          </div>}
 
           {/* Full description of the currently selected pathway (shown once, here,
               instead of on all 17 cards) */}
@@ -719,10 +725,10 @@ export default function CteGenerator() {
 
         {/* Tier / level (replaces the K–5 grade toggle) */}
         <div className="card p-6 space-y-5">
-          <h2 className="text-sm font-semibold text-ink-200">Course tier &amp; level</h2>
+          <h2 className="text-sm font-semibold text-ink-200">2. Who are you teaching?</h2>
 
           <div>
-            <label className="mb-2 block text-sm text-ink-300">Tier</label>
+            <label className="mb-2 block text-sm text-ink-300">Student level</label>
             <div className="grid gap-3 sm:grid-cols-2">
               <button
                 type="button"
@@ -784,7 +790,7 @@ export default function CteGenerator() {
 
         {/* Class setup */}
         <div className="card p-6 space-y-5">
-          <h2 className="text-sm font-semibold text-ink-200">Class setup</h2>
+          <h2 className="text-sm font-semibold text-ink-200">3. Class setup</h2>
 
           <div>
             <label className="mb-1 block text-sm text-ink-300" htmlFor="cte-state">
@@ -821,7 +827,7 @@ export default function CteGenerator() {
             </div>
             <div>
               <label className="mb-1 block text-sm text-ink-300" htmlFor="cte-duration">
-                Duration (minutes)
+                Class time (minutes)
               </label>
               <input
                 id="cte-duration"
@@ -839,11 +845,11 @@ export default function CteGenerator() {
 
         {/* Lesson details */}
         <div className="card p-6 space-y-5">
-          <h2 className="text-sm font-semibold text-ink-200">Lesson details</h2>
+          <h2 className="text-sm font-semibold text-ink-200">4. What should students learn, make, or do?</h2>
 
           <div>
             <label className="mb-1 block text-sm text-ink-300" htmlFor="cte-topic">
-              Lesson topic / project name
+              Topic or project
             </label>
             <input
               id="cte-topic"
@@ -895,8 +901,8 @@ export default function CteGenerator() {
         </div>
 
         {/* Multi-session project */}
-        <div className="card p-6 space-y-4">
-          <h2 className="text-sm font-semibold text-ink-200">Multi-session project</h2>
+        <details className="card p-6 space-y-4">
+          <summary className="cursor-pointer text-sm font-semibold text-ink-200">Optional: Multi-session project</summary>
 
           <label className="flex items-center gap-3 cursor-pointer">
             <input
@@ -951,14 +957,14 @@ export default function CteGenerator() {
               </p>
             </div>
           )}
-        </div>
+        </details>
 
         {/* Materials */}
-        <div className="card p-6 space-y-4">
-          <h2 className="text-sm font-semibold text-ink-200">
+        <details className="card p-6 space-y-4">
+          <summary className="cursor-pointer text-sm font-semibold text-ink-200">
             Equipment &amp; materials available{' '}
             <span className="font-normal text-ink-500">(optional)</span>
-          </h2>
+          </summary>
           <p className="text-xs text-ink-500 -mt-2">
             List specific equipment, industry props, and technology — the AI will build the lesson around what you have.
           </p>
@@ -997,7 +1003,7 @@ export default function CteGenerator() {
               Add item
             </button>
           )}
-        </div>
+        </details>
 
         <CoreActivityToggle value={coreActivityOnly} onChange={setCoreActivityOnly} />
 
