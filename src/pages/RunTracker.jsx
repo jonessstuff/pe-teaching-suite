@@ -186,8 +186,11 @@ export default function RunTracker() {
     const safeClass = (selectedPeriod?.label ?? 'class').replace(/[^a-z0-9]+/gi, '-').toLowerCase()
     link.href = url
     link.download = `${safeClass}-${session.distance_label.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}-${session.run_date}.csv`
+    link.style.display = 'none'
+    document.body.appendChild(link)
     link.click()
-    URL.revokeObjectURL(url)
+    link.remove()
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000)
   }
 
   async function saveGoal() {
