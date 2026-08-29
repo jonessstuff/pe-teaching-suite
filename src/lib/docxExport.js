@@ -128,6 +128,26 @@ export function domToBlocks(el) {
 // POST the blocks to the paid-gated function and download the returned .docx.
 // Throws { status: 403 } when the caller isn't a paid subscriber.
 export async function requestDocx({ filename, title, blocks }) {
+  // The standalone review build has no Supabase Edge Functions. Produce a
+  // Word-compatible sample locally so every review workflow remains clickable.
+  if (import.meta.env.VITE_STANDALONE_PREVIEW === 'true') {
+    const escape = (value) => String(value ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+    const body = (blocks ?? []).map((block) => {
+      const text = escape(block.text)
+      if (block.type === 'h1' || block.type === 'h2' || block.type === 'h3') return `<${block.type}>${text}</${block.type}>`
+      if (block.type === 'bullet') return `<p>• ${text}</p>`
+      if (block.type === 'pagebreak') return '<div style="page-break-before:always"></div>'
+      return `<p>${text}</p>`
+    }).join('')
+    const blob = new Blob([`<!doctype html><html><head><meta charset="utf-8"><title>${escape(title)}</title></head><body>${body}</body></html>`], { type: 'application/msword' })
+    const href = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = href
+    a.download = `${String(filename || 'lesson').replace(/[^a-z0-9._-]+/gi, '-')}-preview.doc`
+    document.body.appendChild(a); a.click(); a.remove()
+    setTimeout(() => URL.revokeObjectURL(href), 1000)
+    return
+  }
   const { data: { session } } = await supabase.auth.getSession()
   const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-docx`
   const res = await fetch(url, {

@@ -48,9 +48,33 @@ export async function generateYearPlan() {
   return { title: 'A Ready-to-Teach Year', overview: 'A balanced year of skill development, fitness, teamwork, and reflection.', units: [] }
 }
 
-export async function generateVisualResources() { await delay(400); return { teacher_materials: ['Setup card', 'Teaching cues'], student_materials: ['Large-print station card', 'Reflection slip'] } }
-export async function generateDifferentiatedLesson() { await delay(400); return sampleKickballLesson }
+export async function generateVisualResources() {
+  await delay(400)
+  return { visual_resources: [
+    { type: 'teacher_card', title: 'Kickball Setup & Teaching Cues', supports: 'Teacher use', instructions: 'Print or keep courtside for quick reference.', items: ['Set four bases with clear running lanes.', 'Cue: plant beside the ball, swing through, follow through.', 'Freeze signal: two whistle blasts.'] },
+    { type: 'student_card', title: 'Safe Base Running', supports: 'Student use · large print', instructions: 'Post beside home plate.', items: ['Look before running.', 'Run through first base.', 'No sliding.', 'Encourage your teammates.'] },
+  ] }
+}
+export async function generateDifferentiatedLesson(_lessonId, type = 'advanced') {
+  await delay(400)
+  const variants = {
+    advanced: { label: 'Advanced', warm_up: 'Add reaction-start sprints.', main_activity: 'Students choose and explain an offensive placement strategy.', materials: 'Strategy cards and cones', assessment: 'Explain one adjustment made during play.', notes: 'Increase decision-making, not just speed.' },
+    below_grade: { label: 'Modified', warm_up: 'Walk the base path and rehearse the order.', main_activity: 'Kick from a stationary ball and use shorter base paths.', materials: 'Larger ball, spot marker, closer bases', assessment: 'Demonstrate one safe kick and one ready fielding position.', notes: 'Use peer modeling and extra practice attempts.' },
+  }
+  return { differentiation: { [type]: variants[type] || variants.below_grade } }
+}
 export async function generateQuiz() { await delay(400); return { questions: [] } }
 export async function generateRubric() { await delay(400); return { criteria: [] } }
 export async function generateWorksheet() { await delay(400); return { title: 'Student Practice Page', sections: [] } }
 export async function generateAnswerKey() { await delay(400); return { answers: [] } }
+export async function generateWeatherAlt() { return { weather_alt_notes: 'Move stations indoors and preserve the same learning targets.' } }
+export async function generateParentNote() { return { parent_note_intro: 'Today we practiced safe movement, teamwork, and striking skills.', parent_note_skills: ['Safe participation', 'Teamwork'] } }
+export async function generateObservationSummary() { return { obs_overview: 'Students practice a standards-aligned skill progression with clear checks for understanding.' } }
+export async function generatePoster() { return { poster_content: { title: 'Kickball Cues', steps: ['Plant', 'Swing', 'Follow through'] } } }
+export async function generateFamilyNewsletter() { return { family_newsletter: { title: 'This Week in Class', body: 'Students are building safe movement and teamwork skills.' } } }
+export async function generateProgressNote() { return { progress_note: { summary: 'Sample progress note for preview.' } } }
+export async function generateExitTicket() { return { exit_tickets: [{ prompt: 'Name one safe base-running choice.' }] } }
+export async function generateCrossCurricular() { return { connections: [{ subject: 'Math', idea: 'Compare elapsed run times.' }] } }
+export async function generateWarmup() { return { warmup_options: [{ title: 'Dynamic base-path warm-up', duration: 8 }] } }
+export async function generateBehaviorNote() { return { behavior_note: { summary: 'Sample private behavior documentation.' } } }
+export async function generateConferencePrep() { return { conference_prep: { strengths: ['Teamwork'], next_steps: ['Continue skill practice'] } } }
