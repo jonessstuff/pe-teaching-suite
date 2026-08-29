@@ -24,8 +24,29 @@ function flattenCriteria(sc) {
   return []
 }
 
+function flattenContent(value, depth = 0) {
+  if (depth > 3 || value == null || value === false) return []
+  if (typeof value === 'string' || typeof value === 'number') return [clean(value)].filter(Boolean)
+  if (Array.isArray(value)) return value.flatMap((item) => flattenContent(item, depth + 1))
+  if (typeof value === 'object') return Object.values(value).flatMap((item) => flattenContent(item, depth + 1))
+  return []
+}
+
+function firstContent(lo, fields) {
+  for (const field of fields) {
+    const lines = flattenContent(lo?.[field])
+    if (lines.length) return { value: lo[field], lines }
+  }
+  return { value: '', lines: [] }
+}
+
+function notesText(value) {
+  return flattenContent(value).join('\n')
+}
+
 function sentences(value, max = 5) {
-  return String(value ?? '').split(/\n+|(?<=[.!?])\s+/).map((line) => clean(line.replace(/^(\d+[.)]|[-•*])\s*/, ''))).filter(Boolean).slice(0, max)
+  return flattenContent(value).flatMap((item) => item.split(/\n+|(?<=[.!?])\s+/))
+    .map((line) => clean(line.replace(/^(\d+[.)]|[-•*])\s*/, ''))).filter(Boolean).slice(0, max)
 }
 
 function studentSteps(value, max = 5) {
@@ -50,21 +71,21 @@ export function lessonToSlides(lo) {
   const slides = []
 
   // Student-facing deck: concise screen content; full teacher wording stays in notes.
-  const target = clean(lo.learning_target) ||
-    (lo.learning_targets ? Object.values(lo.learning_targets).map(clean).find(Boolean) : '')
+  const targetInfo = firstContent(lo, ['learning_target', 'learning_targets', 'objectives', 'learning_objectives', 'student_objectives', 'session_goals', 'goals'])
+  const target = targetInfo.lines[0] || ''
   const criteria = flattenCriteria(lo.success_criteria)
   if (target || criteria.length) {
     slides.push({
       heading: 'Today We Will…', layout: 'focus', callout: truncate(target || criteria[0], 180),
       bullets: criteria.slice(0, 3).map((c) => ({ text: truncate(c.replace(/^Grade \w+:\s*/i, ''), 125), level: 0 })),
-      notes: [target && `Learning target: ${target}`, criteria.length && `Success criteria:\n- ${criteria.join('\n- ')}`]
+      notes: [targetInfo.lines.length && `Learning targets:\n- ${targetInfo.lines.join('\n- ')}`, criteria.length && `Success criteria:\n- ${criteria.join('\n- ')}`]
         .filter(Boolean).join('\n\n'),
     })
   }
 
   // Vocabulary
-  const newV = asList(lo.new_vocabulary).map(clean).filter(Boolean)
-  const knownV = asList(lo.known_vocabulary).map(clean).filter(Boolean)
+  const newV = firstContent(lo, ['new_vocabulary', 'vocabulary', 'key_vocabulary', 'key_terms']).lines
+  const knownV = firstContent(lo, ['known_vocabulary', 'review_vocabulary']).lines
   if (newV.length || knownV.length) {
     slides.push({
       heading: 'Words to Know', layout: 'cards', callout: 'Listen for these words during the lesson.',
@@ -74,17 +95,17 @@ export function lessonToSlides(lo) {
     })
   }
 
-  const teachText = lo.whole_group_instruction || lo.direct_instruction || lo.mini_lesson
-  if (teachText) slides.push({ heading: 'Watch & Notice', layout: 'focus', callout: 'What does success look like?', bullets: sentences(teachText, 4).map((text) => ({ text: truncate(text, 125), level: 0 })), notes: String(teachText) })
+  const teachText = firstContent(lo, ['whole_group_instruction', 'direct_instruction', 'mini_lesson', 'explicit_instruction', 'modeling', 'teacher_modeling', 'lesson_content', 'introduction']).value
+  if (teachText) slides.push({ heading: 'Watch & Notice', layout: 'focus', callout: 'What does success look like?', bullets: sentences(teachText, 4).map((text) => ({ text: truncate(text, 125), level: 0 })), notes: notesText(teachText) })
 
-  const warmup = lo.warm_up || lo.opening
-  if (warmup) slides.push({ heading: 'Get Ready', layout: 'steps', callout: 'Start here', bullets: studentSteps(warmup, 4), notes: String(warmup) })
+  const warmup = firstContent(lo, ['warm_up', 'opening', 'hook', 'anticipatory_set', 'circle_time']).value
+  if (warmup) slides.push({ heading: 'Get Ready', layout: 'steps', callout: 'Start here', bullets: studentSteps(warmup, 4), notes: notesText(warmup) })
 
-  const activity = lo.independent_practice || lo.fitness_activities || lo.main_activity || lo.guided_practice
-  if (activity) slides.push({ heading: 'Your Activity', layout: 'steps', callout: 'Do these in order', bullets: studentSteps(activity), notes: String(activity) })
+  const activity = firstContent(lo, ['independent_practice', 'fitness_activities', 'main_activity', 'guided_practice', 'activity_sequence', 'session_activities', 'activities', 'learning_centers', 'centers', 'group_activity']).value
+  if (activity) slides.push({ heading: 'Your Activity', layout: 'steps', callout: 'Do these in order', bullets: studentSteps(activity), notes: notesText(activity) })
 
   // Safety notes
-  const safety = asList(lo.safety_notes).map(clean).filter(Boolean)
+  const safety = firstContent(lo, ['safety_notes', 'safety', 'precautions', 'considerations']).lines
   if (safety.length) {
     slides.push({
       heading: 'Be Safe & Ready', layout: 'safety', callout: 'STOP · LOOK · LISTEN',
@@ -95,8 +116,9 @@ export function lessonToSlides(lo) {
 
   if (criteria.length) slides.push({ heading: 'Check Yourself', layout: 'cards', callout: 'Can you show or explain these?', bullets: criteria.slice(0, 4).map((c) => ({ text: truncate(c.replace(/^Grade \w+:\s*/i, ''), 110), level: 0 })), notes: criteria.join('\n') })
 
-  const closure = sentences(lo.closure, 3)
-  slides.push({ heading: 'Reflect & Share', layout: 'reflection', callout: closure[0] || 'What did you learn, improve, or notice today?', bullets: closure.slice(1).map((text) => ({ text: truncate(text, 120), level: 0 })), notes: String(lo.closure || '') })
+  const closureValue = firstContent(lo, ['closure', 'cool_down', 'reflection', 'debrief', 'exit_prompt', 'wrap_up']).value
+  const closure = sentences(closureValue, 3)
+  slides.push({ heading: 'Reflect & Share', layout: 'reflection', callout: closure[0] || 'What did you learn, improve, or notice today?', bullets: closure.slice(1).map((text) => ({ text: truncate(text, 120), level: 0 })), notes: notesText(closureValue) })
 
   return { title, subtitle, meta, slides }
 }

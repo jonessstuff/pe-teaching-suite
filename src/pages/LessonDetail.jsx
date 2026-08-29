@@ -11,6 +11,7 @@ import LessonPrintFix from '../components/LessonPrintFix'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 import { useTrial } from '../context/TrialContext'
 import TeachMode from '../components/lesson/TeachMode'
+import TeachingView from '../components/lesson/TeachingView'
 
 export default function LessonDetail() {
   const { id } = useParams()
@@ -33,6 +34,7 @@ export default function LessonDetail() {
   const [tagInput, setTagInput] = useState('')
   const [tags, setTags] = useState([])
   const [showTeachMode, setShowTeachMode] = useState(searchParams.get('teach') === '1')
+  const [lessonView, setLessonView] = useState('quick')
 
   function closeTeachMode() {
     setShowTeachMode(false)
@@ -407,8 +409,6 @@ export default function LessonDetail() {
           One insertion point for all ~30 modules — see LessonPrintFix. */}
       <LessonPrintFix lesson={lesson} />
 
-      <SecondaryToolsPanel savedId={id} lessonObject={lo} subject={lesson.subject} />
-
       {isAPE ? (
         // Adaptive PE renders outside LessonBody, so apply the same display-time
         // hedge/verification-note cleanup here for parity with every other module.
@@ -422,15 +422,35 @@ export default function LessonDetail() {
           saving={savingContent}
         />
       ) : (
-        <LessonBody
-          subject={lo?.subject}
-          lesson={{
-            ...lo,
-            scheduled_date: lesson.scheduled_date,
-            period_label: lesson.period_label,
-          }}
-        />
+        <div className="space-y-4">
+          <div className="no-print flex flex-col gap-3 rounded-xl border border-ink-800 bg-ink-900/30 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-ink-100">Choose how much detail you need</p>
+              <p className="mt-0.5 text-xs text-ink-500">Start with the quick teaching guide. The complete plan is always one click away.</p>
+            </div>
+            <div className="inline-flex w-fit rounded-lg border border-ink-800 bg-white/60 p-1 dark:bg-ink-950/50">
+              <button type="button" onClick={() => setLessonView('quick')} className={`rounded-md px-3 py-1.5 text-sm font-semibold transition ${lessonView === 'quick' ? 'bg-accent-500 text-white shadow-sm' : 'text-ink-400 hover:text-ink-100'}`}>Teacher at-a-glance</button>
+              <button type="button" onClick={() => setLessonView('full')} className={`rounded-md px-3 py-1.5 text-sm font-semibold transition ${lessonView === 'full' ? 'bg-accent-500 text-white shadow-sm' : 'text-ink-400 hover:text-ink-100'}`}>Complete plan</button>
+            </div>
+          </div>
+
+          <div className={`${lessonView === 'quick' ? 'block' : 'hidden'} card p-5 sm:p-7 print:hidden`}>
+            <TeachingView lesson={cleanLessonForDisplay(lo)} />
+          </div>
+          <div className={`${lessonView === 'full' ? 'block' : 'hidden'} print:block`}>
+            <LessonBody
+              subject={lo?.subject}
+              lesson={{
+                ...lo,
+                scheduled_date: lesson.scheduled_date,
+                period_label: lesson.period_label,
+              }}
+            />
+          </div>
+        </div>
       )}
+
+      <SecondaryToolsPanel key={id} savedId={id} lessonObject={lo} subject={lesson.subject} />
     </div>
   )
 }

@@ -106,6 +106,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
   const [worksheetSaved, setWorksheetSaved] = useState({}) // { cut_paste: true }
 
   const [expanded, setExpanded] = useState(false)
+  const [activeKitSection, setActiveKitSection] = useState('teach')
 
   const hasSubPlan = Boolean(lo?.sub_script)
   const hasQuiz = Boolean(lo?.quiz_questions && Object.keys(lo.quiz_questions).length > 0)
@@ -118,7 +119,8 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
   const hasParentNote = Boolean(lo?.parent_note_intro || lo?.parent_note_skills?.length)
   const hasObsSummary = Boolean(lo?.obs_overview)
   const hasPoster = Boolean(lo?.poster_content?.steps?.length)
-  const isPE = PE_SUBJECTS.has(subject)
+  const resolvedSubject = subject || lo?.subject
+  const isPE = PE_SUBJECTS.has(resolvedSubject)
 
   // Standing rule: activity-idea / clinical / non-evaluative modules NEVER get
   // Quiz or Rubric (no gradable delivered "content"; grading conflicts with
@@ -130,8 +132,8 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
     'School Counselors', 'Intervention Planning', 'Student Support Team Activities',
     'Adaptive PE',
   ])
-  const allowQuizRubric = !NON_EVALUATIVE.has(subject)
-  const isWorldLanguages = subject === 'World Languages'
+  const allowQuizRubric = !NON_EVALUATIVE.has(resolvedSubject)
+  const isWorldLanguages = resolvedSubject === 'World Languages'
 
   // Worksheet format options. Cut & paste is a younger-grades (K-5) activity, so
   // it's only OFFERED when the lesson targets a grade band ≤ 5. Content-based
@@ -176,23 +178,20 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
   }
 
   function openKitShortcut(section) {
+    setActiveKitSection(section)
     if (section === 'teach') {
-      setToolView('teachingview')
-      jumpTo('lesson-kit-output')
+      jumpTo('lesson-kit-teacher')
       return
     }
     if (section === 'materials') {
-      setExpanded(true)
-      if (allowQuizRubric) setShowWorksheetForm(true)
-      jumpTo(allowQuizRubric ? 'lesson-kit-worksheet' : 'lesson-kit-more')
+      jumpTo('lesson-kit-materials')
       return
     }
     if (section === 'assess') {
-      setExpanded(true)
-      jumpTo('lesson-kit-assess')
+      jumpTo('lesson-kit-assessment')
       return
     }
-    jumpTo('lesson-kit-export')
+    jumpTo('lesson-kit-exports')
   }
 
   // Word (.docx) export of the main lesson — PAID ONLY. Trial users get the
@@ -358,7 +357,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
   async function handleGenerateBehavior(e) {
     e.preventDefault()
     await run(setGeneratingBehavior, async () => {
-      const result = await generateBehaviorNote({ ...behaviorForm, subject })
+      const result = await generateBehaviorNote({ ...behaviorForm, subject: resolvedSubject })
       setBehaviorNote(result.behavior_note)
       setToolView('behavior')
       setShowBehaviorForm(false)
@@ -368,7 +367,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
   async function handleGenerateConference(e) {
     e.preventDefault()
     await run(setGeneratingConference, async () => {
-      const result = await generateConferencePrep({ ...conferenceForm, subject })
+      const result = await generateConferencePrep({ ...conferenceForm, subject: resolvedSubject })
       setConferencePrep(result.conference_prep)
       setToolView('conference')
       setShowConferenceForm(false)
@@ -377,7 +376,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
 
   async function handleGenerateWarmup() {
     await run(setGeneratingWarmup, async () => {
-      const result = await generateWarmup({ subject, gradeBand: lo?.grade_bands?.[0] ?? 5, duration: 10, equipment: lo?.equipment_needed ?? [] })
+      const result = await generateWarmup({ subject: resolvedSubject, gradeBand: lo?.grade_bands?.[0] ?? 5, duration: 10, equipment: lo?.equipment_needed ?? [] })
       setWarmupOptions(result.warmup_options)
       setToolView('warmup')
     })
@@ -482,7 +481,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
               ['assess', 'Assess', allowQuizRubric ? 'Quiz, rubric & exit ticket' : 'Progress & observation tools'],
               ['export', 'Share & export', 'Print, Word & slides'],
             ].map(([key, label, detail]) => (
-              <button key={key} type="button" onClick={() => openKitShortcut(key)} className="group rounded-lg border border-transparent bg-white/60 px-3 py-2 text-left transition hover:border-accent-500/30 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-500 dark:bg-ink-950/40 dark:hover:bg-ink-950/70">
+              <button key={key} type="button" onClick={() => openKitShortcut(key)} className={`group rounded-lg border px-3 py-2 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-500 ${activeKitSection === key ? 'border-accent-500/40 bg-white shadow-sm dark:bg-ink-950/80' : 'border-transparent bg-white/60 hover:border-accent-500/30 hover:bg-white dark:bg-ink-950/40 dark:hover:bg-ink-950/70'}`}>
                 <span className="flex items-center justify-between gap-1"><strong className="text-ink-200">{label}</strong><ChevronRight size={13} className="text-accent-500 transition-transform group-hover:translate-x-0.5" /></span>
                 <span className="mt-0.5 block text-ink-500">{detail}</span>
               </button>
@@ -490,99 +489,79 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
           </div>
         </div>
 
-        <p className="label-eyebrow text-ink-400">Lesson kit tools</p>
+        <div className="grid gap-3 lg:grid-cols-2">
+          <section id="lesson-kit-teacher" className="scroll-mt-24 rounded-xl border border-ink-800 bg-white/50 p-4 dark:bg-ink-950/30">
+            <p className="label-eyebrow text-accent-500">Teacher resources</p>
+            <p className="mt-1 text-xs text-ink-500">Run the lesson, prepare a substitute, or communicate with families.</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {!hasSubPlan ? (
+                <button onClick={handleGenerateSubPlan} disabled={generatingSubPlan} className="btn-primary">
+                  {generatingSubPlan ? <Loader2 size={16} className="animate-spin" /> : <FileText size={16} />} Generate sub plan
+                </button>
+              ) : (
+                <button onClick={() => toggle('subplan')} className={toolView === 'subplan' ? 'btn-primary' : 'btn-secondary'}><FileText size={16} /> Sub plan</button>
+              )}
+              <button onClick={() => toggle('teachingview')} className={toolView === 'teachingview' ? 'btn-primary' : 'btn-secondary'}><Eye size={16} /> Teaching view</button>
+              {!hasObsSummary ? (
+                <button onClick={handleGenerateObsSummary} disabled={generatingObsSummary} className="btn-secondary">{generatingObsSummary ? <Loader2 size={16} className="animate-spin" /> : <ClipboardCheck size={16} />} Observation prep</button>
+              ) : (
+                <button onClick={() => toggle('observation')} className={toolView === 'observation' ? 'btn-primary' : 'btn-secondary'}><ClipboardCheck size={16} /> Obs. prep</button>
+              )}
+              {!hasParentNote ? (
+                <button onClick={handleGenerateParentNote} disabled={generatingParentNote} className="btn-secondary">{generatingParentNote ? <Loader2 size={16} className="animate-spin" /> : <Mail size={16} />} Parent note</button>
+              ) : (
+                <button onClick={() => toggle('parentnote')} className={toolView === 'parentnote' ? 'btn-primary' : 'btn-secondary'}><Mail size={16} /> Parent note</button>
+              )}
+            </div>
+          </section>
 
-        {/* Primary tools — always visible */}
-        <div id="lesson-kit-primary" className="flex flex-wrap gap-2">
-          {/* Sub plan */}
-          {!hasSubPlan ? (
-            <button onClick={handleGenerateSubPlan} disabled={generatingSubPlan} className="btn-primary">
-              {generatingSubPlan ? <Loader2 size={16} className="animate-spin" /> : <FileText size={16} />}
-              Generate sub plan
-            </button>
-          ) : (
-            <button onClick={() => toggle('subplan')} className={toolView === 'subplan' ? 'btn-primary' : 'btn-secondary'}>
-              <FileText size={16} />
-              Sub plan
-            </button>
-          )}
+          <section id="lesson-kit-materials" className="scroll-mt-24 rounded-xl border border-ink-800 bg-white/50 p-4 dark:bg-ink-950/30">
+            <p className="label-eyebrow text-violet-500">Student materials</p>
+            <p className="mt-1 text-xs text-ink-500">Create only what students will see, hold, complete, or discuss.</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {allowQuizRubric && <button id="lesson-kit-worksheet" onClick={() => setShowWorksheetForm(f => !f)} className={showWorksheetForm || toolView === 'worksheet' ? 'btn-primary' : 'btn-secondary'}><PencilRuler size={16} /> Worksheet</button>}
+              {!visualResourcesRun ? (
+                <button onClick={handleGenerateVisualResources} disabled={generatingVisualResources} className="btn-secondary">{generatingVisualResources ? <Loader2 size={16} className="animate-spin" /> : <Files size={16} />} Visual resources</button>
+              ) : hasVisualResources ? (
+                <button onClick={() => toggle('visualresources')} className={toolView === 'visualresources' ? 'btn-primary' : 'btn-secondary'}><Files size={16} /> Visual resources ({visualResources.length})</button>
+              ) : (
+                <button onClick={handleGenerateVisualResources} disabled={generatingVisualResources} className="btn-secondary opacity-60" title="This lesson didn't call for buildable materials. Click to scan again.">{generatingVisualResources ? <Loader2 size={16} className="animate-spin" /> : <Files size={16} />} No visual resources needed</button>
+              )}
+              {!hasPoster ? (
+                <button onClick={handleGeneratePoster} disabled={generatingPoster} className="btn-secondary">{generatingPoster ? <Loader2 size={16} className="animate-spin" /> : <LayoutTemplate size={16} />} Generate poster</button>
+              ) : (
+                <button onClick={() => setShowPoster(true)} className="btn-secondary"><LayoutTemplate size={16} /> View poster</button>
+              )}
+              <button onClick={handleDownloadLessonPptx} className="btn-secondary" title={isPaid ? 'Download concise student-facing slides with teacher notes' : 'Upgrade to download student-facing slides'}>
+                {isPaid ? <Presentation size={16} /> : <Lock size={16} />} Student slides (.pptx)
+              </button>
+            </div>
+          </section>
 
-          {/* Quiz — hidden for non-evaluative modules */}
-          {allowQuizRubric && (!hasQuiz ? (
-            <button onClick={handleGenerateQuiz} disabled={generatingQuiz} className="btn-primary">
-              {generatingQuiz ? <Loader2 size={16} className="animate-spin" /> : <ClipboardList size={16} />}
-              Generate quiz
-            </button>
-          ) : (
-            <button onClick={() => toggle('quiz')} className={toolView === 'quiz' ? 'btn-primary' : 'btn-secondary'}>
-              <ClipboardList size={16} />
-              Quiz
-            </button>
-          ))}
+          <section id="lesson-kit-assessment" className="scroll-mt-24 rounded-xl border border-ink-800 bg-white/50 p-4 dark:bg-ink-950/30">
+            <p className="label-eyebrow text-amber-500">Assessment & progress</p>
+            <p className="mt-1 text-xs text-ink-500">Check learning or document progress with tools appropriate to this module.</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {allowQuizRubric && (!hasQuiz ? (
+                <button onClick={handleGenerateQuiz} disabled={generatingQuiz} className="btn-primary">{generatingQuiz ? <Loader2 size={16} className="animate-spin" /> : <ClipboardList size={16} />} Generate quiz</button>
+              ) : (
+                <button onClick={() => toggle('quiz')} className={toolView === 'quiz' ? 'btn-primary' : 'btn-secondary'}><ClipboardList size={16} /> Quiz</button>
+              ))}
+              {allowQuizRubric && <button id="lesson-kit-assess" onClick={rubric ? () => toggle('rubric') : handleGenerateRubric} disabled={generatingRubric} className={rubric && toolView === 'rubric' ? 'btn-primary' : 'btn-secondary'}>{generatingRubric ? <Loader2 size={16} className="animate-spin" /> : <Star size={16} />} {rubric ? 'Rubric' : 'Generate rubric'}</button>}
+              <button onClick={exitTickets ? () => toggle('exitticket') : handleGenerateExitTicket} disabled={generatingExitTicket} className={exitTickets && toolView === 'exitticket' ? 'btn-primary' : 'btn-secondary'}>{generatingExitTicket ? <Loader2 size={16} className="animate-spin" /> : <CheckSquare size={16} />} Exit ticket</button>
+              <button onClick={() => setShowProgressForm(f => !f)} className={showProgressForm || toolView === 'progress' ? 'btn-primary' : 'btn-secondary'}><BookOpen size={16} /> Progress note</button>
+            </div>
+          </section>
 
-          {/* Worksheet — independent practice; hidden for non-evaluative modules.
-              Always opens the format picker so a teacher can generate MULTIPLE
-              different formats from the same lesson (each generation replaces the
-              shown sheet; the picker is the way back to make another). */}
-          {allowQuizRubric && (
-            <button id="lesson-kit-worksheet" onClick={() => setShowWorksheetForm(f => !f)} className={showWorksheetForm || toolView === 'worksheet' ? 'btn-primary' : 'btn-secondary'}>
-              <PencilRuler size={16} />
-              Worksheet
-            </button>
-          )}
-
-          {/* Observation prep */}
-          {!hasObsSummary ? (
-            <button onClick={handleGenerateObsSummary} disabled={generatingObsSummary} className="btn-secondary">
-              {generatingObsSummary ? <Loader2 size={16} className="animate-spin" /> : <ClipboardCheck size={16} />}
-              Observation prep
-            </button>
-          ) : (
-            <button onClick={() => toggle('observation')} className={toolView === 'observation' ? 'btn-primary' : 'btn-secondary'}>
-              <ClipboardCheck size={16} />
-              Obs. prep
-            </button>
-          )}
-
-          {/* Parent note */}
-          {!hasParentNote ? (
-            <button onClick={handleGenerateParentNote} disabled={generatingParentNote} className="btn-secondary">
-              {generatingParentNote ? <Loader2 size={16} className="animate-spin" /> : <Mail size={16} />}
-              Parent note
-            </button>
-          ) : (
-            <button onClick={() => toggle('parentnote')} className={toolView === 'parentnote' ? 'btn-primary' : 'btn-secondary'}>
-              <Mail size={16} />
-              Parent note
-            </button>
-          )}
-
-          {/* Complete Resource Bundle — one-click Teacher Packet for lesson-based modules. */}
-          {allowQuizRubric && <MakeTomorrowReady savedId={savedId} lessonObject={lo} />}
-
-          {/* Teaching view — condensed at-a-glance (PE & Health) */}
-          <button onClick={() => toggle('teachingview')} className={toolView === 'teachingview' ? 'btn-primary' : 'btn-secondary'}>
-            <Eye size={16} />
-            Teaching view
-          </button>
-
-          {/* Print */}
-          <button id="lesson-kit-export" onClick={async () => { if (await requestExport()) window.print() }} className="btn-secondary">
-            <Printer size={16} />
-            Print lesson
-          </button>
-
-          {/* Word (.docx) — paid only; trial users see the upgrade prompt */}
-          <button onClick={handleDownloadLessonDocx} className="btn-secondary" title={isPaid ? 'Download as an editable Word document' : 'Upgrade to download as an editable Word document'}>
-            {isPaid ? <FileDown size={16} /> : <Lock size={16} />}
-            Word (.docx)
-          </button>
-
-          {/* PowerPoint (.pptx) — paid only; trial users see the upgrade prompt */}
-          <button onClick={handleDownloadLessonPptx} className="btn-secondary" title={isPaid ? 'Download as presentation-ready PowerPoint slides' : 'Upgrade to download as PowerPoint slides'}>
-            {isPaid ? <Presentation size={16} /> : <Lock size={16} />}
-            Student PowerPoint
-          </button>
+          <section id="lesson-kit-exports" className="scroll-mt-24 rounded-xl border border-ink-800 bg-white/50 p-4 dark:bg-ink-950/30">
+            <p className="label-eyebrow text-emerald-600">Print, download & share</p>
+            <p className="mt-1 text-xs text-ink-500">Take the lesson offline or download one complete teacher packet.</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {allowQuizRubric && <MakeTomorrowReady savedId={savedId} lessonObject={lo} />}
+              <button onClick={async () => { if (await requestExport()) window.print() }} className="btn-secondary"><Printer size={16} /> Print lesson</button>
+              <button onClick={handleDownloadLessonDocx} className="btn-secondary" title={isPaid ? 'Download as an editable Word document' : 'Upgrade to download as an editable Word document'}>{isPaid ? <FileDown size={16} /> : <Lock size={16} />} Editable Word (.docx)</button>
+            </div>
+          </section>
         </div>
 
         {exportNotice && (
@@ -617,54 +596,6 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
                 </button>
               )
             )}
-
-            {/* Visual teaching resources — buildable, text-based materials the
-                lesson calls for (checklists, vocab/scenario/cue cards, organizers).
-                Available for every subject; "found none" is a valid outcome. */}
-            {!visualResourcesRun ? (
-              <button onClick={handleGenerateVisualResources} disabled={generatingVisualResources} className="btn-secondary">
-                {generatingVisualResources ? <Loader2 size={16} className="animate-spin" /> : <Files size={16} />}
-                Visual resources
-              </button>
-            ) : hasVisualResources ? (
-              <button onClick={() => toggle('visualresources')} className={toolView === 'visualresources' ? 'btn-primary' : 'btn-secondary'}>
-                <Files size={16} />
-                Visual resources ({visualResources.length})
-              </button>
-            ) : (
-              <button onClick={handleGenerateVisualResources} disabled={generatingVisualResources} className="btn-secondary opacity-60"
-                title="This lesson didn't call for any buildable materials. Click to re-scan.">
-                {generatingVisualResources ? <Loader2 size={16} className="animate-spin" /> : <Files size={16} />}
-                No visual resources needed
-              </button>
-            )}
-
-            {/* Poster */}
-            {!hasPoster ? (
-              <button onClick={handleGeneratePoster} disabled={generatingPoster} className="btn-secondary">
-                {generatingPoster ? <Loader2 size={16} className="animate-spin" /> : <LayoutTemplate size={16} />}
-                Generate poster
-              </button>
-            ) : (
-              <button onClick={() => setShowPoster(true)} className="btn-secondary">
-                <LayoutTemplate size={16} />
-                View poster
-              </button>
-            )}
-
-            {/* Rubric — hidden for non-evaluative modules */}
-            {allowQuizRubric && (
-            <button id="lesson-kit-assess" onClick={rubric ? () => toggle('rubric') : handleGenerateRubric} disabled={generatingRubric} className={rubric && toolView === 'rubric' ? 'btn-primary' : 'btn-secondary'}>
-              {generatingRubric ? <Loader2 size={16} className="animate-spin" /> : <Star size={16} />}
-              {rubric ? 'Rubric' : 'Generate rubric'}
-            </button>
-            )}
-
-            {/* Exit ticket */}
-            <button onClick={exitTickets ? () => toggle('exitticket') : handleGenerateExitTicket} disabled={generatingExitTicket} className={exitTickets && toolView === 'exitticket' ? 'btn-primary' : 'btn-secondary'}>
-              {generatingExitTicket ? <Loader2 size={16} className="animate-spin" /> : <CheckSquare size={16} />}
-              Exit ticket
-            </button>
 
             {/* Family newsletter */}
             <button onClick={newsletter ? () => toggle('newsletter') : handleGenerateNewsletter} disabled={generatingNewsletter} className={newsletter && toolView === 'newsletter' ? 'btn-primary' : 'btn-secondary'}>
@@ -703,12 +634,6 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
             <button onClick={warmupOptions ? () => toggle('warmup') : handleGenerateWarmup} disabled={generatingWarmup} className={warmupOptions && toolView === 'warmup' ? 'btn-primary' : 'btn-secondary'}>
               {generatingWarmup ? <Loader2 size={16} className="animate-spin" /> : <Flame size={16} />}
               Warm-up options
-            </button>
-
-            {/* Progress note */}
-            <button onClick={() => setShowProgressForm(f => !f)} className={showProgressForm || toolView === 'progress' ? 'btn-primary' : 'btn-secondary'}>
-              <BookOpen size={16} />
-              Progress note
             </button>
 
             {/* Behavior note */}
