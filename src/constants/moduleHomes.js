@@ -86,7 +86,7 @@ export const MODULE_HOMES = {
     workspaceFeatures: [
       { title: 'Studio-ready preparation', desc: 'Materials, setup, cleanup, timing, and safety built into the plan.' },
       { title: 'Student visual supports', desc: 'Vocabulary cards, display slides, directions, and printable resources.' },
-      { title: 'Critique and assessment', desc: 'Age-appropriate reflection prompts, rubrics, and evidence of learning.' },
+      { title: 'Critique and assessment', desc: 'Age-appropriate reflection prompts, rubrics, and evidence of learning.', to: '/assessments' },
     ],
   },
   music: {
@@ -113,7 +113,7 @@ export const MODULE_HOMES = {
     }],
     workspaceFeatures: [
       { title: 'Library lesson cycles', desc: 'Plan connected visits for research, genre study, media literacy, and digital citizenship.' },
-      { title: 'Makerspace planning', desc: 'Build safe, realistic projects around the tools and materials you actually have.' },
+      { title: 'Makerspace planning', desc: 'Build safe, realistic projects around the tools and materials you actually have.', to: '/library/makerspace' },
       { title: 'Low-screen materials', desc: 'Printable organizers, vocabulary, discussion prompts, and student practice.' },
     ],
   },
@@ -176,7 +176,7 @@ export const MODULE_HOMES = {
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: LITE,
     workspaceFeatures: [
       { title: 'Whole-class guidance', desc: 'ASCA-aligned lessons for academic, career, and social-emotional development.' },
-      { title: 'Behavior and reflection supports', desc: 'Check-ins, scenarios, coping tools, reflection prompts, and classroom-ready visuals.' },
+      { title: 'Behavior and reflection supports', desc: 'Check-ins, scenarios, coping tools, reflection prompts, and classroom-ready visuals.', to: '/classroom-management' },
       { title: 'Class and grade-level goals', desc: 'Plan measurable group SMART Goals while keeping optional personal goals within the larger goal.' },
     ],
   },

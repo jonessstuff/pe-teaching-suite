@@ -126,11 +126,20 @@ export default function ModuleHome({ config }) {
         <section className={`rounded-2xl border border-ink-800 bg-gradient-to-r ${accent.well} p-5`}>
           <p className={`text-xs font-semibold uppercase tracking-wide ${accent.text}`}>Your {title} workspace</p>
           <div className="mt-3 grid gap-3 sm:grid-cols-3">
-            {workspaceFeatures.map(({ title: featureTitle, desc }) => (
-              <div key={featureTitle} className="rounded-xl bg-white/60 p-3 dark:bg-ink-950/40">
-                <p className="text-sm font-semibold text-ink-100">{featureTitle}</p>
-                <p className="mt-1 text-xs leading-relaxed text-ink-500">{desc}</p>
-              </div>
+            {workspaceFeatures.map(({ title: featureTitle, desc, to }) => (
+              <Link
+                key={featureTitle}
+                to={to || generatePath}
+                className="group rounded-xl border border-transparent bg-white/60 p-3 transition hover:-translate-y-0.5 hover:border-ink-700 hover:bg-white hover:shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-500 dark:bg-ink-950/40 dark:hover:bg-ink-950/70"
+                aria-label={`Open ${featureTitle}`}
+              >
+                <span className="flex items-start justify-between gap-2">
+                  <span className="text-sm font-semibold text-ink-100">{featureTitle}</span>
+                  <ArrowRight size={15} className={`mt-0.5 shrink-0 ${accent.text} transition-transform group-hover:translate-x-0.5`} />
+                </span>
+                <span className="mt-1 block text-xs leading-relaxed text-ink-500">{desc}</span>
+                <span className={`mt-2 block text-[11px] font-semibold ${accent.text}`}>Open tool</span>
+              </Link>
             ))}
           </div>
         </section>
