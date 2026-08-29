@@ -36,7 +36,10 @@ Deno.serve(async (req) => {
     const current = subscriptions.filter((s) => ["active", "trialing", "past_due"].includes(s.status));
     const active = current.filter((s) => s.status === "active" || s.status === "past_due");
     const trialing = current.filter((s) => s.status === "trialing");
-    const canceling = current.filter((s) => s.cancel_at_period_end);
+    const scheduledCancel = current.filter((s) => s.cancel_at_period_end);
+    const canceled = subscriptions.filter((s) => s.status === "canceled");
+    const thirtyDaysAgoSeconds = Math.floor((Date.now() - 30 * 86400000) / 1000);
+    const canceled30d = canceled.filter((s) => (s.canceled_at ?? 0) >= thirtyDaysAgoSeconds);
     const mrrCents = active.reduce((sum, sub) => sum + monthlyAmount(sub), 0);
 
     const since = new Date(Date.now() - 30 * 86400000).toISOString();
@@ -55,7 +58,15 @@ Deno.serve(async (req) => {
 
     return jsonResponse({
       generatedAt: new Date().toISOString(),
-      subscriptions: { active: active.length, trialing: trialing.length, canceling: canceling.length, current: current.length, mrrCents: Math.round(mrrCents) },
+      subscriptions: {
+        active: active.length,
+        trialing: trialing.length,
+        scheduledCancel: scheduledCancel.length,
+        canceled30d: canceled30d.length,
+        canceledTotal: canceled.length,
+        current: current.length,
+        mrrCents: Math.round(mrrCents),
+      },
       funnel30d: { demoViews: eventCount("demo_viewed"), trialClicks: eventCount("demo_trial_clicked"), csvDownloads: eventCount("demo_csv_downloaded"), sections, newSignups },
       product: { totalLessons: lessonCount ?? 0, lessons30d: recentLessons ?? 0, totalAccounts: (profiles ?? []).filter((p) => !p.is_owner).length },
       cancellation: { reasons, recent: feedback ?? [] },
