@@ -4,6 +4,7 @@ import {
   LayoutTemplate, Loader2, Printer, Download, X, Star, BookOpen,
   CheckSquare, Shuffle, Flame, BookMarked, Send, Globe, Users, FileWarning, ChevronDown,
   Copy, Check, PencilRuler, FileDown, Lock, Presentation, Files, Eye,
+  ChevronRight,
 } from 'lucide-react'
 import {
   generateSubPlan, generateQuiz, generateWeatherAlt,
@@ -163,6 +164,30 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
 
   function toggle(view) {
     setToolView((prev) => (prev === view ? null : view))
+  }
+
+  function jumpTo(id) {
+    setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 0)
+  }
+
+  function openKitShortcut(section) {
+    if (section === 'teach') {
+      setToolView('teachingview')
+      jumpTo('lesson-kit-output')
+      return
+    }
+    if (section === 'materials') {
+      setExpanded(true)
+      if (allowQuizRubric) setShowWorksheetForm(true)
+      jumpTo(allowQuizRubric ? 'lesson-kit-worksheet' : 'lesson-kit-more')
+      return
+    }
+    if (section === 'assess') {
+      setExpanded(true)
+      jumpTo('lesson-kit-assess')
+      return
+    }
+    jumpTo('lesson-kit-export')
   }
 
   // Word (.docx) export of the main lesson — PAID ONLY. Trial users get the
@@ -446,17 +471,24 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
           <h2 className="mt-1 text-lg font-semibold text-ink-100">Plan, teach, display, and assess—all from this lesson</h2>
           <p className="mt-1 text-sm text-ink-500">Choose only what you need. Student materials and assessments are generated separately so the main lesson stays easy to scan.</p>
           <div className="mt-3 grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
-            <div className="rounded-lg bg-white/60 px-3 py-2 dark:bg-ink-950/40"><strong className="block text-ink-200">Teach</strong><span className="text-ink-500">At-a-glance plan</span></div>
-            <div className="rounded-lg bg-white/60 px-3 py-2 dark:bg-ink-950/40"><strong className="block text-ink-200">Student materials</strong><span className="text-ink-500">Cards &amp; worksheets</span></div>
-            <div className="rounded-lg bg-white/60 px-3 py-2 dark:bg-ink-950/40"><strong className="block text-ink-200">Assess</strong><span className="text-ink-500">Quiz, rubric &amp; exit ticket</span></div>
-            <div className="rounded-lg bg-white/60 px-3 py-2 dark:bg-ink-950/40"><strong className="block text-ink-200">Share &amp; export</strong><span className="text-ink-500">Print, Word &amp; slides</span></div>
+            {[
+              ['teach', 'Teach', 'At-a-glance plan'],
+              ['materials', 'Student materials', 'Cards & worksheets'],
+              ['assess', 'Assess', allowQuizRubric ? 'Quiz, rubric & exit ticket' : 'Progress & observation tools'],
+              ['export', 'Share & export', 'Print, Word & slides'],
+            ].map(([key, label, detail]) => (
+              <button key={key} type="button" onClick={() => openKitShortcut(key)} className="group rounded-lg border border-transparent bg-white/60 px-3 py-2 text-left transition hover:border-accent-500/30 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-500 dark:bg-ink-950/40 dark:hover:bg-ink-950/70">
+                <span className="flex items-center justify-between gap-1"><strong className="text-ink-200">{label}</strong><ChevronRight size={13} className="text-accent-500 transition-transform group-hover:translate-x-0.5" /></span>
+                <span className="mt-0.5 block text-ink-500">{detail}</span>
+              </button>
+            ))}
           </div>
         </div>
 
         <p className="label-eyebrow text-ink-400">Lesson kit tools</p>
 
         {/* Primary tools — always visible */}
-        <div className="flex flex-wrap gap-2">
+        <div id="lesson-kit-primary" className="flex flex-wrap gap-2">
           {/* Sub plan */}
           {!hasSubPlan ? (
             <button onClick={handleGenerateSubPlan} disabled={generatingSubPlan} className="btn-primary">
@@ -488,7 +520,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
               different formats from the same lesson (each generation replaces the
               shown sheet; the picker is the way back to make another). */}
           {allowQuizRubric && (
-            <button onClick={() => setShowWorksheetForm(f => !f)} className={showWorksheetForm || toolView === 'worksheet' ? 'btn-primary' : 'btn-secondary'}>
+            <button id="lesson-kit-worksheet" onClick={() => setShowWorksheetForm(f => !f)} className={showWorksheetForm || toolView === 'worksheet' ? 'btn-primary' : 'btn-secondary'}>
               <PencilRuler size={16} />
               Worksheet
             </button>
@@ -524,15 +556,13 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
           {allowQuizRubric && <MakeTomorrowReady savedId={savedId} lessonObject={lo} />}
 
           {/* Teaching view — condensed at-a-glance (PE & Health) */}
-          {isPE && (
-            <button onClick={() => toggle('teachingview')} className={toolView === 'teachingview' ? 'btn-primary' : 'btn-secondary'}>
-              <Eye size={16} />
-              Teaching view
-            </button>
-          )}
+          <button onClick={() => toggle('teachingview')} className={toolView === 'teachingview' ? 'btn-primary' : 'btn-secondary'}>
+            <Eye size={16} />
+            Teaching view
+          </button>
 
           {/* Print */}
-          <button onClick={async () => { if (await requestExport()) window.print() }} className="btn-secondary">
+          <button id="lesson-kit-export" onClick={async () => { if (await requestExport()) window.print() }} className="btn-secondary">
             <Printer size={16} />
             Print lesson
           </button>
@@ -567,7 +597,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
 
         {/* Secondary tools — expanded on demand */}
         {expanded && (
-          <div className="flex flex-wrap gap-2">
+          <div id="lesson-kit-more" className="flex flex-wrap gap-2">
             {/* Weather alt — PE subjects only */}
             {isPE && (
               !hasWeatherAlt ? (
@@ -619,7 +649,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
 
             {/* Rubric — hidden for non-evaluative modules */}
             {allowQuizRubric && (
-            <button onClick={rubric ? () => toggle('rubric') : handleGenerateRubric} disabled={generatingRubric} className={rubric && toolView === 'rubric' ? 'btn-primary' : 'btn-secondary'}>
+            <button id="lesson-kit-assess" onClick={rubric ? () => toggle('rubric') : handleGenerateRubric} disabled={generatingRubric} className={rubric && toolView === 'rubric' ? 'btn-primary' : 'btn-secondary'}>
               {generatingRubric ? <Loader2 size={16} className="animate-spin" /> : <Star size={16} />}
               {rubric ? 'Rubric' : 'Generate rubric'}
             </button>
@@ -714,7 +744,7 @@ export default function SecondaryToolsPanel({ savedId, lessonObject, subject }) 
 
       {/* Active tool output */}
       {toolView === 'teachingview' && (
-        <div ref={toolPrintRef} className="space-y-3">
+        <div id="lesson-kit-output" ref={toolPrintRef} className="scroll-mt-24 space-y-3">
           <TeachingView lesson={lo} />
           <ToolActions printRef={toolPrintRef} printWatermark={isPaid ? null : WATERMARK_TEXT} onClose={() => setToolView(null)} />
         </div>
