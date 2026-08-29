@@ -81,6 +81,14 @@ function CustomerWorkspace({ customers, filter, setFilter, onRefresh }) {
   const [copied, setCopied] = useState('')
   const [outcome, setOutcome] = useState('contacted')
   const [followUpAt, setFollowUpAt] = useState('')
+  useEffect(() => {
+    if (!selected) return undefined
+    const frame = requestAnimationFrame(() => {
+      const heading = [...document.querySelectorAll('h3')].find((el) => el.textContent?.startsWith('Personal outreach for'))
+      heading?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [selected])
   const visible = useMemo(() => customers.filter((c) => {
     const matchesFilter = filter === 'all' || c.segment === filter || c.status === filter || (filter === 'canceled_30' && c.status === 'canceled' && c.canceledRecently) || (filter === 'inactive_7' && c.inactiveDays >= 7) || (filter === 'inactive_30' && c.inactiveDays >= 30)
     const haystack = `${c.name} ${c.email} ${(c.teachingAreas ?? []).join(' ')}`.toLowerCase()
@@ -105,10 +113,6 @@ function CustomerWorkspace({ customers, filter, setFilter, onRefresh }) {
     setNote(customer.contact?.note ?? '')
     setOutcome(customer.contact?.outcome ?? 'contacted')
     setFollowUpAt(customer.contact?.follow_up_at?.slice(0, 10) ?? '')
-    setTimeout(() => {
-      const heading = [...document.querySelectorAll('h3')].find((el) => el.textContent?.startsWith('Personal outreach for'))
-      heading?.closest('.rounded-xl')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }, 0)
   }
 
   async function saveFollowUp() {
