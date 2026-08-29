@@ -6,7 +6,7 @@ async function teacherId() {
   return data.user.id
 }
 
-export async function createRunSession({ classPeriodId, distanceLabel, distanceMiles, lapsRequired }) {
+export async function createRunSession({ classPeriodId, distanceLabel, distanceMiles, lapsRequired, notes }) {
   const teacher_id = await teacherId()
   const { data, error } = await supabase.from('run_sessions').insert({
     teacher_id,
@@ -14,6 +14,7 @@ export async function createRunSession({ classPeriodId, distanceLabel, distanceM
     distance_label: distanceLabel,
     distance_miles: distanceMiles || null,
     laps_required: Number(lapsRequired),
+    notes: notes?.trim() || null,
   }).select().single()
   if (error) throw error
   return data
@@ -71,6 +72,16 @@ export async function createRunGoal({ studentId, distanceLabel, baselineMs, targ
   return data
 }
 
+export async function updateRunGoalProgress(goalId, progressStatus) {
+  const { data, error } = await supabase.from('run_goals').update({
+    progress_status: progressStatus,
+    status: progressStatus === 'achieved' ? 'achieved' : 'active',
+    updated_at: new Date().toISOString(),
+  }).eq('id', goalId).select().single()
+  if (error) throw error
+  return data
+}
+
 export async function saveRunResult({ sessionId, studentId, lapsCompleted, lapTimesMs, finishMs, status }) {
   const teacher_id = await teacherId()
   const { data, error } = await supabase.from('run_results').upsert({
@@ -94,7 +105,7 @@ export async function completeRunSession(sessionId) {
   return data
 }
 
-export async function createPastRun({ classPeriodId, runDate, distanceLabel, distanceMiles, lapsRequired, entries }) {
+export async function createPastRun({ classPeriodId, runDate, distanceLabel, distanceMiles, lapsRequired, notes, entries }) {
   const teacher_id = await teacherId()
   const startedAt = new Date(`${runDate}T12:00:00`).toISOString()
   const { data: session, error: sessionError } = await supabase.from('run_sessions').insert({
@@ -106,6 +117,7 @@ export async function createPastRun({ classPeriodId, runDate, distanceLabel, dis
     laps_required: Number(lapsRequired),
     started_at: startedAt,
     completed_at: startedAt,
+    notes: notes?.trim() || null,
   }).select().single()
   if (sessionError) throw sessionError
 

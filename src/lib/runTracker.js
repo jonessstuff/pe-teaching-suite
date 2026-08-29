@@ -101,3 +101,67 @@ export function progressStats(records) {
     improvementFromPreviousMs: previous ? previous.finish_ms - latest.finish_ms : null,
   }
 }
+
+export function classRunStats(results, rosterSize = 0) {
+  const finished = (results ?? []).filter((result) => result.status === 'finished' && result.finish_ms != null)
+  const totalMs = finished.reduce((sum, result) => sum + result.finish_ms, 0)
+  return {
+    finished: finished.length,
+    averageMs: finished.length ? Math.round(totalMs / finished.length) : null,
+    fastestMs: finished.length ? Math.min(...finished.map((result) => result.finish_ms)) : null,
+    completionRate: rosterSize ? Math.round((finished.length / rosterSize) * 100) : 0,
+  }
+}
+
+export function seasonLabel(dateValue) {
+  const date = new Date(dateValue)
+  const month = date.getMonth() + 1
+  const year = month === 12 ? date.getFullYear() + 1 : date.getFullYear()
+  if (month >= 8 && month <= 11) return `Fall ${date.getFullYear()}`
+  if (month === 12 || month <= 2) return `Winter ${year}`
+  if (month >= 3 && month <= 5) return `Spring ${date.getFullYear()}`
+  return `Summer ${date.getFullYear()}`
+}
+
+export function seasonalProgress(records) {
+  const groups = new Map()
+  for (const record of records ?? []) {
+    const label = seasonLabel(record.session.started_at)
+    const group = groups.get(label) ?? { label, records: [] }
+    group.records.push(record); groups.set(label, group)
+  }
+  return [...groups.values()].map((group) => ({
+    label: group.label,
+    count: group.records.length,
+    averageMs: Math.round(group.records.reduce((sum, record) => sum + record.finish_ms, 0) / group.records.length),
+    bestMs: Math.min(...group.records.map((record) => record.finish_ms)),
+  }))
+}
+
+export function parseBulkRunTimes(text, students) {
+  const lines = String(text ?? '').split(/\r?\n/).map((line) => line.trim()).filter(Boolean)
+  const entries = {}
+  const errors = []
+  let sequentialIndex = 0
+  const normalizedStudents = (students ?? []).map((student) => ({
+    student,
+    normalized: student.name_or_initials.toLowerCase().replace(/[^a-z0-9]/g, ''),
+  }))
+  lines.forEach((line, index) => {
+    const timeMatch = line.match(/(\d+:[0-5]?\d(?:\.\d)?)\s*$/)
+    if (!timeMatch || !parseRunTime(timeMatch[1])) { errors.push(`Line ${index + 1}: add a time like 10:42`); return }
+    const namePart = line.slice(0, timeMatch.index).replace(/[\t,;:-]+$/g, '').trim()
+    let student
+    if (namePart) {
+      const normalizedName = namePart.toLowerCase().replace(/[^a-z0-9]/g, '')
+      student = normalizedStudents.find((item) => item.normalized === normalizedName)?.student
+      if (!student) { errors.push(`Line ${index + 1}: student name not found`); return }
+    } else {
+      student = students?.[sequentialIndex]
+      sequentialIndex += 1
+      if (!student) { errors.push(`Line ${index + 1}: more times than students`); return }
+    }
+    entries[student.id] = { time: timeMatch[1], status: '' }
+  })
+  return { entries, errors }
+}

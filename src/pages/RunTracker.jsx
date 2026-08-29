@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { CalendarPlus, Check, CircleDot, Download, Flag, History, Loader2, Play, RotateCcw, Target, TrendingUp, Undo2, Users2 } from 'lucide-react'
+import { CalendarPlus, Check, CircleDot, ClipboardPaste, Download, Flag, History, Loader2, Pencil, Play, Printer, RotateCcw, Target, TrendingUp, Undo2, Users2 } from 'lucide-react'
 import { listPeriods } from '../services/classPeriodsService'
 import { listStudentsByPeriod } from '../services/studentsService'
 import {
@@ -14,8 +14,9 @@ import {
   listRunGoals,
   listRunSessions,
   saveRunResult,
+  updateRunGoalProgress,
 } from '../services/runTrackerService'
-import { elapsedMs, formatRunTime, nextLapResult, parseRunTime, progressStats, runResultsCsv, sessionSummary, studentRunProgress, undoLapResult } from '../lib/runTracker'
+import { classRunStats, elapsedMs, formatRunTime, nextLapResult, parseBulkRunTimes, parseRunTime, progressStats, runResultsCsv, seasonalProgress, sessionSummary, studentRunProgress, undoLapResult } from '../lib/runTracker'
 
 const PRESETS = {
   half: { distanceLabel: '½ Mile', distanceMiles: 0.5, lapsRequired: 2 },
@@ -49,6 +50,8 @@ export default function RunTracker() {
   const [pastLaps, setPastLaps] = useState(PRESETS.mile.lapsRequired)
   const [pastEntries, setPastEntries] = useState({})
   const [savingPast, setSavingPast] = useState(false)
+  const [pastNotes, setPastNotes] = useState('')
+  const [bulkTimes, setBulkTimes] = useState('')
   const [mode, setMode] = useState('setup')
   const [preset, setPreset] = useState('half')
   const [customLabel, setCustomLabel] = useState('')
@@ -58,6 +61,10 @@ export default function RunTracker() {
   const [savingIds, setSavingIds] = useState(() => new Set())
   const [starting, setStarting] = useState(false)
   const [notice, setNotice] = useState(null)
+  const [runNotes, setRunNotes] = useState('')
+  const [editingResultId, setEditingResultId] = useState('')
+  const [editingTime, setEditingTime] = useState('')
+  const [updatingGoalId, setUpdatingGoalId] = useState('')
 
   useEffect(() => {
     listPeriods().then((data) => {
@@ -95,6 +102,8 @@ export default function RunTracker() {
     return label ? progressRecords.filter((record) => record.session.distance_label === label) : []
   }, [progressRecords])
   const stats = useMemo(() => progressStats(comparableRecords), [comparableRecords])
+  const seasons = useMemo(() => seasonalProgress(comparableRecords), [comparableRecords])
+  const classStats = useMemo(() => classRunStats(results, students?.length ?? 0), [results, students])
 
   useEffect(() => {
     if (!progressStudentId) return
@@ -125,8 +134,9 @@ export default function RunTracker() {
         distanceLabel: preset === 'custom' ? (customLabel.trim() || 'Custom Run') : config.distanceLabel,
         distanceMiles: preset === 'custom' ? Number(customMiles) || null : config.distanceMiles,
         lapsRequired,
+        notes: runNotes,
       })
-      setSession(created); setSessions((items) => [created, ...items]); setResults([]); setNow(Date.now()); setMode('run')
+      setSession(created); setSessions((items) => [created, ...items]); setResults([]); setNow(Date.now()); setMode('run'); setRunNotes('')
     } catch (error) {
       setNotice({ type: 'error', message: error.message ?? 'Could not start the run.' })
     } finally { setStarting(false) }
@@ -199,19 +209,26 @@ export default function RunTracker() {
     setSession(selected); setResults(await listRunResults(selected.id)); setMode(selected.completed_at ? 'history-detail' : 'run')
   }
 
-  function downloadSessionCsv() {
-    const csv = runResultsCsv({ session, students, results, classLabel: selectedPeriod?.label ?? '' })
+  function triggerSessionCsv(selectedSession, selectedResults) {
+    const csv = runResultsCsv({ session: selectedSession, students, results: selectedResults, classLabel: selectedPeriod?.label ?? '' })
     const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     const safeClass = (selectedPeriod?.label ?? 'class').replace(/[^a-z0-9]+/gi, '-').toLowerCase()
     link.href = url
-    link.download = `${safeClass}-${session.distance_label.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}-${session.run_date}.csv`
+    link.download = `${safeClass}-${selectedSession.distance_label.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}-${selectedSession.run_date}.csv`
     link.style.display = 'none'
     document.body.appendChild(link)
     link.click()
     link.remove()
     window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+  }
+
+  function downloadSessionCsv() { triggerSessionCsv(session, results) }
+
+  async function downloadHistoryCsv(item) {
+    try { triggerSessionCsv(item, await listRunResults(item.id)) }
+    catch (error) { setNotice({ type: 'error', message: error.message ?? 'Could not prepare the CSV.' }) }
   }
 
   async function saveGoal() {
@@ -264,15 +281,46 @@ export default function RunTracker() {
         distanceLabel: pastPreset === 'custom' ? (pastLabel.trim() || 'Custom Run') : config.distanceLabel,
         distanceMiles: pastPreset === 'custom' ? Number(pastMiles) || null : config.distanceMiles,
         lapsRequired: pastLaps,
+        notes: pastNotes,
         entries,
       })
       const savedResults = await listRunResults(created.id)
       setSessions((items) => [created, ...items]); setAllResults((items) => [...items, ...savedResults])
-      setSession(created); setResults(savedResults); setPastEntries({}); setMode('history-detail')
+      setSession(created); setResults(savedResults); setPastEntries({}); setPastNotes(''); setBulkTimes(''); setMode('history-detail')
       setNotice({ type: 'success', message: 'Past run saved to History and Student Progress.' })
     } catch (error) {
       setNotice({ type: 'error', message: error.message ?? 'Could not save the past run.' })
     } finally { setSavingPast(false) }
+  }
+
+  function applyBulkTimes() {
+    const parsed = parseBulkRunTimes(bulkTimes, students)
+    setPastEntries((entries) => ({ ...entries, ...parsed.entries }))
+    setNotice(parsed.errors.length
+      ? { type: 'error', message: `${Object.keys(parsed.entries).length} times added. ${parsed.errors.slice(0, 2).join(' ')}` }
+      : { type: 'success', message: `${Object.keys(parsed.entries).length} times added to the roster.` })
+  }
+
+  async function saveHistoricalCorrection(student) {
+    const finishMs = parseRunTime(editingTime)
+    if (!finishMs) { setNotice({ type: 'error', message: 'Enter the corrected time as minutes:seconds.' }); return }
+    setSavingIds((ids) => new Set(ids).add(student.id))
+    try {
+      const saved = await saveRunResult({ sessionId: session.id, studentId: student.id, lapsCompleted: session.laps_required, lapTimesMs: [finishMs], finishMs, status: 'finished' })
+      setResults((items) => [...items.filter((item) => item.student_id !== student.id), saved])
+      setAllResults((items) => [...items.filter((item) => !(item.session_id === session.id && item.student_id === student.id)), saved])
+      setEditingResultId(''); setEditingTime(''); setNotice({ type: 'success', message: 'Finish time corrected.' })
+    } catch (error) { setNotice({ type: 'error', message: error.message ?? 'Could not correct that time.' }) }
+    finally { setSavingIds((ids) => { const next = new Set(ids); next.delete(student.id); return next }) }
+  }
+
+  async function changeGoalProgress(goal, progressStatus) {
+    setUpdatingGoalId(goal.id)
+    try {
+      const saved = await updateRunGoalProgress(goal.id, progressStatus)
+      setGoals((items) => items.map((item) => item.id === saved.id ? saved : item))
+    } catch (error) { setNotice({ type: 'error', message: error.message ?? 'Could not update the goal.' }) }
+    finally { setUpdatingGoalId('') }
   }
 
   const selectedPeriod = (periods ?? []).find((period) => period.id === periodId)
@@ -306,6 +354,7 @@ export default function RunTracker() {
       </div>
       {preset === 'custom' && <div className="grid gap-3 sm:grid-cols-2"><label className="text-sm font-medium text-ink-300">Run name<input value={customLabel} onChange={(event) => setCustomLabel(event.target.value)} placeholder="e.g. 800 meters" className="input-field mt-1" /></label><label className="text-sm font-medium text-ink-300">Miles (optional)<input type="number" min="0.1" step="0.1" value={customMiles} onChange={(event) => setCustomMiles(event.target.value)} className="input-field mt-1" /></label></div>}
       <label className="block text-sm font-medium text-ink-300">Number of laps<input type="number" min="1" max="50" value={lapsRequired} onChange={(event) => setLapsRequired(Math.max(1, Math.min(50, Number(event.target.value) || 1)))} className="input-field mt-1 max-w-32 text-lg font-bold" /></label>
+      <label className="block text-sm font-medium text-ink-300">Run notes or conditions <span className="font-normal text-ink-500">(optional)</span><textarea value={runNotes} onChange={(event) => setRunNotes(event.target.value)} placeholder="Hot weather, indoor course, modified distance…" rows="2" className="input-field mt-1 resize-y" /></label>
       <div className="rounded-xl bg-ink-900/40 p-4 text-sm text-ink-300"><strong>{selectedPeriod.label}</strong> · {students.length} students · {lapsRequired} lap{lapsRequired === 1 ? '' : 's'} each</div>
       <div className="rounded-xl border border-ink-800 bg-white/50 p-4 dark:bg-ink-950/30">
         <div className="mb-3 flex items-center justify-between gap-3">
@@ -329,6 +378,8 @@ export default function RunTracker() {
         <div className="grid grid-cols-3 gap-2">{[['half', '½ Mile'], ['mile', '1 Mile'], ['custom', 'Custom']].map(([key, label]) => <button key={key} onClick={() => choosePastPreset(key)} aria-pressed={pastPreset === key} className={`min-h-[50px] rounded-xl border text-sm font-bold ${pastPreset === key ? 'border-accent-500 bg-accent-500/15 text-accent-700' : 'border-ink-800 text-ink-300'}`}>{label}</button>)}</div>
         {pastPreset === 'custom' && <div className="grid gap-3 sm:grid-cols-2"><label className="text-sm font-medium text-ink-300">Run name<input value={pastLabel} onChange={(event) => setPastLabel(event.target.value)} placeholder="e.g. 800 meters" className="input-field mt-1" /></label><label className="text-sm font-medium text-ink-300">Miles (optional)<input type="number" min="0.1" step="0.1" value={pastMiles} onChange={(event) => setPastMiles(event.target.value)} className="input-field mt-1" /></label></div>}
         <label className="block text-sm font-medium text-ink-300">Number of laps<input type="number" min="1" max="50" value={pastLaps} onChange={(event) => setPastLaps(Math.max(1, Math.min(50, Number(event.target.value) || 1)))} className="input-field mt-1 max-w-32" /></label>
+        <label className="block text-sm font-medium text-ink-300">Run notes or conditions <span className="font-normal text-ink-500">(optional)</span><textarea value={pastNotes} onChange={(event) => setPastNotes(event.target.value)} placeholder="Weather, course, injury modifications…" rows="2" className="input-field mt-1 resize-y" /></label>
+        <div className="rounded-xl border border-ink-800 p-4"><div className="flex items-center gap-2"><ClipboardPaste size={17} className="text-accent-600" /><h3 className="font-semibold">Paste times in bulk</h3></div><p className="mt-1 text-xs text-ink-500">Paste one time per line in roster order, or use “Student name 10:42”.</p><textarea value={bulkTimes} onChange={(event) => setBulkTimes(event.target.value)} placeholder={'10:42\n11:08\n12:15'} rows="5" className="input-field mt-3 font-mono" /><button onClick={applyBulkTimes} disabled={!bulkTimes.trim()} className="btn-secondary mt-3 min-h-11"><ClipboardPaste size={16} /> Add pasted times</button></div>
       </div>
       <div className="card overflow-hidden"><div className="border-b border-ink-800 p-4"><h3 className="font-semibold">Enter results for {selectedPeriod.label}</h3><p className="text-xs text-ink-500">Leave blank if no result was recorded.</p></div><div className="divide-y divide-ink-800">{students.map((student) => { const entry = pastEntries[student.id] ?? {}; return <div key={student.id} className="grid gap-2 p-3 sm:grid-cols-[minmax(0,1fr)_9rem_9rem] sm:items-center"><span className="font-medium text-ink-100">{student.name_or_initials}</span><label className="text-xs text-ink-500">Finish time<input value={entry.time ?? ''} onChange={(event) => updatePastEntry(student.id, 'time', event.target.value)} disabled={!!entry.status} inputMode="decimal" placeholder="10:42" className="input-field mt-1 font-mono disabled:opacity-40" /></label><label className="text-xs text-ink-500">Exception<select value={entry.status ?? ''} onChange={(event) => updatePastEntry(student.id, 'status', event.target.value)} className="input-field mt-1"><option value="">None</option><option value="absent">Absent</option><option value="medical">Medical</option><option value="dnf">Did not finish</option></select></label></div>})}</div></div>
       <div className="sticky bottom-20 z-10 rounded-xl border border-ink-800 bg-white/95 p-3 shadow-lg backdrop-blur dark:bg-ink-950/95 md:bottom-4"><button onClick={savePastRun} disabled={savingPast} className="btn-primary min-h-[52px] w-full text-base">{savingPast ? <Loader2 size={18} className="animate-spin" /> : <CalendarPlus size={18} />} Save past run</button></div>
@@ -363,17 +414,18 @@ export default function RunTracker() {
     {mode === 'history' && <section className="space-y-3">
       <div><h2 className="text-lg font-semibold">Run history</h2><p className="text-sm text-ink-500">Saved runs for {selectedPeriod?.label}.</p></div>
       {!sessions.length && <div className="card p-6 text-center text-sm text-ink-500">No saved runs yet.</div>}
-      {sessions.map((item) => <button key={item.id} onClick={() => showSession(item)} className="card flex w-full items-center justify-between gap-3 p-4 text-left"><div><p className="font-semibold text-ink-100">{item.distance_label}</p><p className="text-xs text-ink-500">{new Date(item.started_at).toLocaleDateString()} · {item.laps_required} laps</p></div><span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${item.completed_at ? 'bg-green-500/15 text-green-700' : 'bg-amber-500/15 text-amber-700'}`}>{item.completed_at ? 'Completed' : 'Resume'}</span></button>)}
+      {sessions.map((item) => <div key={item.id} className="card flex items-center gap-2 p-2"><button onClick={() => showSession(item)} className="flex min-h-14 min-w-0 flex-1 items-center justify-between gap-3 rounded-lg px-2 text-left"><div className="min-w-0"><p className="truncate font-semibold text-ink-100">{item.distance_label}</p><p className="text-xs text-ink-500">{new Date(item.started_at).toLocaleDateString()} · {item.laps_required} laps</p></div><span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${item.completed_at ? 'bg-green-500/15 text-green-700' : 'bg-amber-500/15 text-amber-700'}`}>{item.completed_at ? 'Completed' : 'Resume'}</span></button>{item.completed_at && <button onClick={() => downloadHistoryCsv(item)} aria-label={`Download ${item.distance_label} CSV`} title="Download CSV" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-ink-800 text-accent-600"><Download size={17} /></button>}</div>)}
     </section>}
 
     {mode === 'history-detail' && session && <section className="space-y-3">
       <button onClick={() => setMode('history')} className="text-sm font-semibold text-accent-600">← Run history</button>
-      <div className="card p-5"><div className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="text-lg font-semibold">{session.distance_label}</h2><p className="text-sm text-ink-500">{new Date(session.started_at).toLocaleDateString()} · {session.laps_required} laps</p></div><button onClick={downloadSessionCsv} className="btn-secondary min-h-11"><Download size={16} /> Download CSV</button></div><p className="mt-3 text-sm text-ink-300">{summary.finished} finished · {summary.dnf} did not finish · {summary.absent + summary.medical} exempt</p><p className="mt-2 text-xs text-ink-500">Opens in Google Sheets, Excel, or most gradebook tools.</p></div>
-      {students.map((student) => { const result = resultFor(student.id); return <div key={student.id} className="flex items-center justify-between rounded-xl border border-ink-800 px-4 py-3"><span className="font-medium text-ink-100">{student.name_or_initials}</span><span className="font-mono font-bold text-ink-200">{result?.status === 'finished' ? formatRunTime(result.finish_ms) : result ? (STATUS_LABELS[result.status] ?? `${result.laps_completed} laps`) : '—'}</span></div> })}
+      <div className="card p-5"><div className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="text-lg font-semibold">{session.distance_label}</h2><p className="text-sm text-ink-500">{new Date(session.started_at).toLocaleDateString()} · {session.laps_required} laps</p></div><button onClick={downloadSessionCsv} className="btn-secondary min-h-11"><Download size={16} /> Download CSV</button></div>{session.notes && <p className="mt-3 rounded-lg bg-ink-900/40 p-3 text-sm text-ink-300"><strong>Conditions:</strong> {session.notes}</p>}<p className="mt-3 text-sm text-ink-300">{summary.finished} finished · {summary.dnf} did not finish · {summary.absent + summary.medical} exempt</p><p className="mt-2 text-xs text-ink-500">Opens in Google Sheets, Excel, or most gradebook tools.</p></div>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4"><div className="card p-4"><p className="text-xs uppercase text-ink-500">Class average</p><p className="mt-1 font-mono text-xl font-bold">{formatRunTime(classStats.averageMs)}</p></div><div className="card p-4"><p className="text-xs uppercase text-ink-500">Fastest</p><p className="mt-1 font-mono text-xl font-bold text-green-600">{formatRunTime(classStats.fastestMs)}</p></div><div className="card p-4"><p className="text-xs uppercase text-ink-500">Completed</p><p className="mt-1 text-xl font-bold">{classStats.finished}</p></div><div className="card p-4"><p className="text-xs uppercase text-ink-500">Completion</p><p className="mt-1 text-xl font-bold">{classStats.completionRate}%</p></div></div>
+      {students.map((student) => { const result = resultFor(student.id); const editing = editingResultId === student.id; return <div key={student.id} className="rounded-xl border border-ink-800 px-4 py-3">{editing ? <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_8rem_auto]"><span className="self-center font-medium text-ink-100">{student.name_or_initials}</span><input value={editingTime} onChange={(event) => setEditingTime(event.target.value)} inputMode="decimal" placeholder="10:42" aria-label={`Corrected time for ${student.name_or_initials}`} className="input-field font-mono" /><div className="flex gap-2"><button onClick={() => saveHistoricalCorrection(student)} disabled={savingIds.has(student.id)} className="btn-primary min-h-10 px-3">Save</button><button onClick={() => { setEditingResultId(''); setEditingTime('') }} className="btn-secondary min-h-10 px-3">Cancel</button></div></div> : <div className="flex items-center justify-between gap-3"><span className="font-medium text-ink-100">{student.name_or_initials}</span><div className="flex items-center gap-2"><span className="font-mono font-bold text-ink-200">{result?.status === 'finished' ? formatRunTime(result.finish_ms) : result ? (STATUS_LABELS[result.status] ?? `${result.laps_completed} laps`) : '—'}</span><button onClick={() => { setEditingResultId(student.id); setEditingTime(result?.finish_ms ? formatRunTime(result.finish_ms, { tenths: false }) : '') }} aria-label={`Edit ${student.name_or_initials} result`} className="flex h-9 w-9 items-center justify-center rounded-lg border border-ink-800 text-ink-400"><Pencil size={14} /></button></div></div>}</div> })}
     </section>}
 
     {mode === 'progress' && <section className="space-y-4">
-      <div><h2 className="text-lg font-semibold">Student progress</h2><p className="text-sm text-ink-500">Personal growth is compared only across runs of the same distance.</p></div>
+      <div className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="text-lg font-semibold">Student progress</h2><p className="text-sm text-ink-500">Personal growth is compared only across runs of the same distance.</p></div><button onClick={() => window.print()} className="btn-secondary min-h-11 print:hidden"><Printer size={16} /> Print progress report</button></div>
       <label className="block text-sm font-medium text-ink-300">Student<select value={progressStudentId} onChange={(event) => setProgressStudentId(event.target.value)} className="input-field mt-1">{students?.map((student) => <option key={student.id} value={student.id}>{student.name_or_initials}</option>)}</select></label>
       {!stats && <div className="card p-6 text-center"><TrendingUp size={28} className="mx-auto mb-2 text-ink-500" /><p className="font-semibold text-ink-200">No completed run times yet</p><p className="mt-1 text-sm text-ink-500">Finish at least one run for this student to establish a cardiovascular baseline.</p></div>}
       {stats && <>
@@ -386,11 +438,12 @@ export default function RunTracker() {
         <div className="card p-5"><div className="flex items-center justify-between gap-3"><div><h3 className="font-semibold">Cardiovascular progress</h3><p className="text-xs text-ink-500">{stats.latest.session.distance_label} finish times</p></div><span className={`rounded-full px-2.5 py-1 text-xs font-bold ${stats.improvementFromFirstMs > 0 ? 'bg-green-500/15 text-green-700' : stats.improvementFromFirstMs < 0 ? 'bg-amber-500/15 text-amber-700' : 'bg-ink-800 text-ink-400'}`}>{stats.improvementFromFirstMs > 0 ? 'Improving' : stats.improvementFromFirstMs < 0 ? 'Needs support' : 'Baseline'}</span></div>
           <div className="mt-4 space-y-2">{comparableRecords.map((record) => { const width = Math.max(18, Math.round((stats.best.finish_ms / record.finish_ms) * 100)); return <div key={record.id}><div className="mb-1 flex justify-between text-xs"><span>{new Date(record.session.started_at).toLocaleDateString()}</span><strong className="font-mono">{formatRunTime(record.finish_ms)}</strong></div><div className="h-3 overflow-hidden rounded-full bg-ink-800"><div className="h-full rounded-full bg-accent-500" style={{ width: `${width}%` }} /></div></div>})}</div>
         </div>
+        <div className="card p-5"><h3 className="font-semibold">Seasonal comparison</h3><p className="text-xs text-ink-500">Fall, winter, and spring averages for this distance.</p><div className="mt-4 grid gap-3 sm:grid-cols-3">{seasons.map((season) => <div key={season.label} className="rounded-xl border border-ink-800 p-3"><p className="text-sm font-semibold">{season.label}</p><p className="mt-2 font-mono text-lg font-bold">{formatRunTime(season.averageMs)}</p><p className="text-xs text-ink-500">Average · Best {formatRunTime(season.bestMs)} · {season.count} run{season.count === 1 ? '' : 's'}</p></div>)}</div></div>
         <div className="card space-y-4 p-5"><div className="flex items-center gap-2"><Target size={20} className="text-accent-600" /><div><h3 className="font-semibold">Cardiovascular SMART goal</h3><p className="text-xs text-ink-500">Create a measurable goal from the student’s latest baseline.</p></div></div>
           <div className="grid gap-3 sm:grid-cols-2"><label className="text-sm font-medium text-ink-300">Target time<input value={goalTime} onChange={(event) => setGoalTime(event.target.value)} placeholder="e.g. 10:30" className="input-field mt-1" /></label><label className="text-sm font-medium text-ink-300">Target date<input type="date" value={goalDate} onChange={(event) => setGoalDate(event.target.value)} className="input-field mt-1" /></label></div>
           {goalTime && goalDate && parseRunTime(goalTime) && <p className="rounded-xl bg-accent-500/10 p-3 text-sm text-ink-200">By <strong>{new Date(`${goalDate}T12:00:00`).toLocaleDateString()}</strong>, the student will improve cardiovascular endurance by completing the <strong>{stats.latest.session.distance_label}</strong> in <strong>{goalTime}</strong> or faster, from a baseline of <strong>{formatRunTime(stats.latest.finish_ms)}</strong>, as measured by the PlansK12 Run Tracker.</p>}
           <button onClick={saveGoal} disabled={savingGoal} className="btn-primary min-h-11">{savingGoal ? <Loader2 size={16} className="animate-spin" /> : <Target size={16} />} Save SMART goal</button>
-          {!!goals.length && <div className="border-t border-ink-800 pt-4"><p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-500">Saved goals</p>{goals.map((goal) => <div key={goal.id} className="mb-2 rounded-lg border border-ink-800 p-3 text-sm"><p><strong>{goal.distance_label}</strong> · {formatRunTime(goal.baseline_ms)} → {formatRunTime(goal.target_ms)}</p><p className="mt-1 text-xs text-ink-500">Target {new Date(`${goal.target_date}T12:00:00`).toLocaleDateString()} · {goal.status}</p></div>)}</div>}
+          {!!goals.length && <div className="border-t border-ink-800 pt-4"><p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-500">Saved goals</p>{goals.map((goal) => <div key={goal.id} className="mb-2 rounded-lg border border-ink-800 p-3 text-sm"><div className="flex flex-wrap items-start justify-between gap-3"><div><p><strong>{goal.distance_label}</strong> · {formatRunTime(goal.baseline_ms)} → {formatRunTime(goal.target_ms)}</p><p className="mt-1 text-xs text-ink-500">Target {new Date(`${goal.target_date}T12:00:00`).toLocaleDateString()}</p></div><select value={goal.progress_status ?? (goal.status === 'achieved' ? 'achieved' : 'on_track')} onChange={(event) => changeGoalProgress(goal, event.target.value)} disabled={updatingGoalId === goal.id} aria-label={`Progress status for ${goal.distance_label} goal`} className="input-field max-w-40 py-2 text-xs"><option value="on_track">On track</option><option value="achieved">Achieved</option><option value="needs_support">Needs support</option><option value="paused">Paused</option></select></div></div>)}</div>}
         </div>
       </>}
     </section>}
