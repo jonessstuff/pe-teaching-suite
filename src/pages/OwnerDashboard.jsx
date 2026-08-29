@@ -105,6 +105,10 @@ function CustomerWorkspace({ customers, filter, setFilter, onRefresh }) {
     setNote(customer.contact?.note ?? '')
     setOutcome(customer.contact?.outcome ?? 'contacted')
     setFollowUpAt(customer.contact?.follow_up_at?.slice(0, 10) ?? '')
+    setTimeout(() => {
+      const heading = [...document.querySelectorAll('h3')].find((el) => el.textContent?.startsWith('Personal outreach for'))
+      heading?.closest('.rounded-xl')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 0)
   }
 
   async function saveFollowUp() {
