@@ -10,6 +10,12 @@ export async function getOwnerAnalytics() {
   return data
 }
 
+export async function saveOwnerContact(payload) {
+  const { data, error } = await supabase.functions.invoke('owner-dashboard', { body: { action: 'save_contact', ...payload } })
+  if (error) throw new Error(error.message || 'Could not save customer follow-up.')
+  return data
+}
+
 export async function saveCancellationFeedback(reason, detail) {
   const { data: userData, error: userError } = await supabase.auth.getUser()
   if (userError) throw userError

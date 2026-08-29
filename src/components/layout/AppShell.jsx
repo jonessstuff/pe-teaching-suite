@@ -234,7 +234,7 @@ function BottomTabBar() {
   const isPERoute = usePERoute()
   const tabItems = isPERoute
     ? [NAV_ITEMS[0], NAV_ITEMS[3], NAV_ITEMS[4], NAV_ITEMS[5]]
-    : NAV_ITEMS.filter(({ mobileHidden }) => !mobileHidden)
+    : [NAV_ITEMS[0], NAV_ITEMS[1], NAV_ITEMS[2], NAV_ITEMS[3]]
   return (
     <nav aria-label={isPERoute ? 'PE tools' : 'Main navigation'} data-no-print className="bottom-nav md:hidden fixed bottom-0 inset-x-0 z-50 flex border-t border-ink-900 bg-white dark:bg-ink-950">
       {tabItems.map(({ to, label, mobileLabel, icon: Icon, end }) => (

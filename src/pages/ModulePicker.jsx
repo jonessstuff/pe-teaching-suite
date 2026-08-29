@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Library, Palette, Music, Drama, Wind, FlaskConical, Monitor, Award, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, Handshake, PersonStanding, ScanEye, Ear, PartyPopper, Target, Globe, Users, Blocks, Baby, Layers, Presentation, Star, Plus, Clock, ChevronDown, LayoutGrid } from 'lucide-react'
+import { Library, Palette, Music, Drama, Wind, FlaskConical, Monitor, Award, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, Handshake, PersonStanding, ScanEye, Ear, PartyPopper, Target, Globe, Users, Blocks, Baby, Layers, Presentation, Star, Plus, Clock, ChevronDown, LayoutGrid, ArrowRight } from 'lucide-react'
 import { useDisplayName, getTimeGreeting } from '../hooks/useDisplayName'
 import { useFavorites } from '../hooks/useFavorites'
 import ModuleCard from '../components/module/ModuleCard'
+import { listLessons } from '../services/lessonsService'
 
 // ─── Module catalog ─────────────────────────────────────────────────────────
 // Single source of truth for the picker cards. `key` is the module's stable
@@ -120,6 +121,14 @@ export default function ModulePicker() {
   const firstName = useDisplayName()
   const { favorites, toggle, loaded } = useFavorites()
   const [filter, setFilter] = useState('all')
+  const [showAllMobile, setShowAllMobile] = useState(false)
+  const [recentLesson, setRecentLesson] = useState(null)
+
+  useEffect(() => {
+    let active = true
+    listLessons().then((lessons) => { if (active) setRecentLesson(lessons?.[0] ?? null) }).catch(() => {})
+    return () => { active = false }
+  }, [])
 
   const favoriteModules = ALL_MODULES.filter((m) => favorites.has(m.key))
   const showFavorites = loaded && favoriteModules.length > 0
@@ -150,6 +159,11 @@ export default function ModulePicker() {
           </Link>
         </div>
       </div>
+
+      {recentLesson && <Link to={`/lessons/${recentLesson.id}`} className="group flex items-center gap-3 rounded-2xl border border-blue-500/20 bg-gradient-to-r from-blue-500/10 to-violet-500/5 p-4 transition-colors hover:border-blue-500/40">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-500/15 text-blue-500"><Clock size={19} /></span>
+        <span className="min-w-0 flex-1"><span className="text-xs font-bold uppercase tracking-wide text-blue-500">Continue where you left off</span><span className="mt-0.5 block truncate font-semibold text-ink-100">{recentLesson.title}</span><span className="block text-xs text-ink-500">Open your most recent lesson</span></span><ArrowRight size={18} className="text-ink-600 transition-transform group-hover:translate-x-1" />
+      </Link>}
 
       {/* Specialty picker: heading + filter chips */}
       <div id="choose-specialty" className="scroll-mt-24 space-y-4">
@@ -198,12 +212,15 @@ export default function ModulePicker() {
                 <ModuleGrid modules={favoriteModules} favorites={favorites} toggle={toggle} />
               </Section>
             )}
-            {GROUPS.map((group) => (
+            {GROUPS.map((group, index) => (
               /* Section heading uses the short chip name (matches the filter chip) */
-              <Section key={group.label} label={<>{group.chip} <span className="font-normal text-ink-600">· {group.modules.length}</span></>}>
-                <ModuleGrid modules={group.modules} favorites={favorites} toggle={toggle} />
-              </Section>
+              <div key={group.label} className={index > 0 && !showAllMobile ? 'hidden sm:block' : ''}>
+                <Section label={<>{group.chip} <span className="font-normal text-ink-600">· {group.modules.length}</span></>}>
+                  <ModuleGrid modules={group.modules} favorites={favorites} toggle={toggle} compactMobile={!showAllMobile && index === 0} />
+                </Section>
+              </div>
             ))}
+            {!showAllMobile && <button type="button" onClick={() => setShowAllMobile(true)} className="btn-secondary w-full justify-center sm:hidden"><LayoutGrid size={16} /> Show all 31 specialty tools</button>}
           </>
         )}
 
@@ -275,11 +292,13 @@ function CreateLessonMenu({ favorites }) {
   )
 }
 
-function ModuleGrid({ modules, favorites, toggle }) {
+function ModuleGrid({ modules, favorites, toggle, compactMobile = false }) {
   return (
     <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-      {modules.map((m) => (
-        <ModuleCard key={m.key} module={m} isFavorite={favorites.has(m.key)} toggle={toggle} />
+      {modules.map((m, index) => (
+        <div key={m.key} className={compactMobile && index >= 4 ? 'hidden sm:block' : ''}>
+          <ModuleCard module={m} isFavorite={favorites.has(m.key)} toggle={toggle} />
+        </div>
       ))}
     </div>
   )
