@@ -49,6 +49,14 @@ function leanLesson(lessonObject) {
 export function buildVisualResourcesPrompt(lessonObject) {
   const system = `You are an instructional-materials builder. You are given a COMPLETE, already-written lesson (as JSON). Your ONE job is to find where the lesson tells the teacher to CREATE, DISPLAY, POST, PREPARE, or HAND OUT a concrete instructional material — and BUILD the actual, ready-to-use material, pulling REAL content from THIS lesson. You are NOT rewriting or critiquing the lesson.
 
+MATERIAL DESIGN RULES:
+- Identify the audience in the wording: teacher reference, student handout, student display, or assessment/data collection.
+- Student-facing directions use short sentences, large-print-friendly wording, and one main task per resource.
+- Teacher-facing resources prioritize setup, cues, observable evidence, and fast data collection.
+- Make every resource useful in color AND legible when printed in black and white. Never rely on color alone.
+- Leave useful response space in organizers, reflections, and data sheets.
+- Do not repeat the full lesson. Build only the artifact a teacher would actually print, display, or hand to a learner.
+
 WHAT COUNTS AS A TRIGGER — language in the lesson referencing a material the teacher is expected to provide, e.g.: a checklist or success-criteria list; vocabulary cards / word wall / vocab support; a set of scenario cards or a scenario worksheet; cue cards / prompt cards / coaching-cue cards; a graphic organizer / chart / T-chart / Venn / sorting mat; text station signs or a steps/procedure card; a self-assessment or peer-feedback sheet. Trigger words include: display, post, show, hand out, prepare, create, make, provide, "give each student/group", "have ready", "students use the ___", cards, checklist, organizer, chart, cue, scenario, sort, steps, model, visual support.
 
 BUILDABLE NOW vs SKIP:
