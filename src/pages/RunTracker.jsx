@@ -24,6 +24,10 @@ const PRESETS = {
 }
 
 const STATUS_LABELS = { absent: 'Absent', medical: 'Medical', dnf: 'Did not finish' }
+const localDateValue = () => {
+  const now = new Date()
+  return new Date(now.getTime() - now.getTimezoneOffset() * 60_000).toISOString().slice(0, 10)
+}
 
 export default function RunTracker() {
   const [periods, setPeriods] = useState(null)
@@ -39,7 +43,7 @@ export default function RunTracker() {
   const [goalDate, setGoalDate] = useState('')
   const [savingGoal, setSavingGoal] = useState(false)
   const [pastPreset, setPastPreset] = useState('mile')
-  const [pastDate, setPastDate] = useState(() => new Date().toISOString().slice(0, 10))
+  const [pastDate, setPastDate] = useState(localDateValue)
   const [pastLabel, setPastLabel] = useState('')
   const [pastMiles, setPastMiles] = useState('')
   const [pastLaps, setPastLaps] = useState(PRESETS.mile.lapsRequired)
@@ -321,7 +325,7 @@ export default function RunTracker() {
     {mode === 'past' && students?.length > 0 && <section className="space-y-4">
       <div className="card space-y-5 p-5 sm:p-6">
         <div className="flex items-start justify-between gap-3"><div><h2 className="text-lg font-semibold">Add a past run</h2><p className="text-sm text-ink-500">Enter final times only. Lap tapping is not required.</p></div><button onClick={() => setMode('setup')} className="text-sm font-semibold text-accent-600">Cancel</button></div>
-        <label className="block text-sm font-medium text-ink-300">Run date<input type="date" max={new Date().toISOString().slice(0, 10)} value={pastDate} onChange={(event) => setPastDate(event.target.value)} className="input-field mt-1" /></label>
+        <label className="block text-sm font-medium text-ink-300">Run date<input type="date" max={localDateValue()} value={pastDate} onChange={(event) => setPastDate(event.target.value)} className="input-field mt-1" /></label>
         <div className="grid grid-cols-3 gap-2">{[['half', '½ Mile'], ['mile', '1 Mile'], ['custom', 'Custom']].map(([key, label]) => <button key={key} onClick={() => choosePastPreset(key)} aria-pressed={pastPreset === key} className={`min-h-[50px] rounded-xl border text-sm font-bold ${pastPreset === key ? 'border-accent-500 bg-accent-500/15 text-accent-700' : 'border-ink-800 text-ink-300'}`}>{label}</button>)}</div>
         {pastPreset === 'custom' && <div className="grid gap-3 sm:grid-cols-2"><label className="text-sm font-medium text-ink-300">Run name<input value={pastLabel} onChange={(event) => setPastLabel(event.target.value)} placeholder="e.g. 800 meters" className="input-field mt-1" /></label><label className="text-sm font-medium text-ink-300">Miles (optional)<input type="number" min="0.1" step="0.1" value={pastMiles} onChange={(event) => setPastMiles(event.target.value)} className="input-field mt-1" /></label></div>}
         <label className="block text-sm font-medium text-ink-300">Number of laps<input type="number" min="1" max="50" value={pastLaps} onChange={(event) => setPastLaps(Math.max(1, Math.min(50, Number(event.target.value) || 1)))} className="input-field mt-1 max-w-32" /></label>
