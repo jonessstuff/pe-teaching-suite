@@ -7,7 +7,8 @@ import {
   generateStemLesson, generateLibraryLesson,
 } from '../services/generationService'
 import FreeLessonRenderer from '../components/FreeLessonRenderer'
-import { CHECKOUT_URL } from '../services/trialService'
+import { attributedCheckoutUrl, CHECKOUT_URL } from '../services/trialService'
+import { track } from '../lib/analytics'
 
 const SUBJECTS = [
   { value: 'PE', label: 'PE' },
@@ -40,7 +41,7 @@ function Topbar() {
     <div className="border-b border-ink-200 bg-white px-6 py-3 print:hidden">
       <div className="mx-auto flex max-w-4xl items-center justify-between">
         <Link to="/" className="font-display font-bold text-lg text-ink-950">PlansK12</Link>
-        <a href={CHECKOUT_URL} className="rounded-lg bg-accent-500 px-4 py-1.5 text-sm font-semibold text-white hover:bg-accent-600 transition-colors">
+        <a href={attributedCheckoutUrl(CHECKOUT_URL)} onClick={() => track('trial_clicked', { placement: 'try_header' })} className="rounded-lg bg-accent-500 px-4 py-1.5 text-sm font-semibold text-white hover:bg-accent-600 transition-colors">
           Start free trial →
         </a>
       </div>
@@ -228,7 +229,7 @@ export default function TryFreeLesson() {
                 We emailed a link to <b>{email}</b> so you can always find it. This is the complete lesson — the same
                 thing PlansK12 builds across every module.
               </p>
-              <a href={CHECKOUT_URL} className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-accent-600 px-4 py-2 text-sm font-semibold text-white hover:bg-accent-700">
+              <a href={attributedCheckoutUrl(CHECKOUT_URL)} onClick={() => track('trial_clicked', { placement: 'try_result' })} className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-accent-600 px-4 py-2 text-sm font-semibold text-white hover:bg-accent-700">
                 <Sparkles size={15} /> Start your 7-day free trial
               </a>
             </div>
@@ -253,7 +254,7 @@ export default function TryFreeLesson() {
                   View my free lesson
                 </Link>
               )}
-              <a href={CHECKOUT_URL} className="rounded-lg bg-accent-600 px-4 py-2 text-sm font-semibold text-white hover:bg-accent-700">
+              <a href={attributedCheckoutUrl(CHECKOUT_URL)} onClick={() => track('trial_clicked', { placement: 'try_footer' })} className="rounded-lg bg-accent-600 px-4 py-2 text-sm font-semibold text-white hover:bg-accent-700">
                 Start free trial
               </a>
             </div>

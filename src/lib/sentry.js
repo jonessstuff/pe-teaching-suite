@@ -42,6 +42,7 @@ export function initSentry() {
       'Java exception was raised',
       'window.webkit',
       'webkit.messageHandlers',
+      /Invalid call to runtime\.sendMessage\(\)\. Tab not found\.?/i,
     ],
   })
   ready = true

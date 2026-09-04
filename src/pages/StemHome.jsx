@@ -133,6 +133,22 @@ export default function StemHome() {
         </Link>
 
         <Link
+          to="/stem/stem-night"
+          className="card group flex flex-col gap-4 p-6 transition-colors hover:border-cyan-500/40"
+        >
+          <div className="flex items-start justify-between">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-500/15">
+              <PartyPopper size={22} className="text-cyan-400" />
+            </div>
+            <ArrowRight size={18} className="mt-0.5 text-ink-700 transition-transform group-hover:translate-x-1 group-hover:text-cyan-400" />
+          </div>
+          <div>
+            <p className="font-semibold text-ink-50">STEM Night Studio</p>
+            <p className="mt-0.5 text-sm text-ink-500">Stations, volunteers, safety, family directions, schedule, and complete print kit</p>
+          </div>
+        </Link>
+
+        <Link
           to="/schedule"
           className="card group flex flex-col gap-4 p-6 transition-colors hover:border-teal-500/40"
         >
@@ -247,7 +263,7 @@ export default function StemHome() {
       </div>
 
       {/* My lessons — compact preview below the tools */}
-      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/stem/lessons" accentText="text-cyan-400" moduleContext="STEM" />
+      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/stem/lessons" generateTo="/stem/generate" accentText="text-cyan-400" moduleContext="STEM" />
 
     </div>
   )

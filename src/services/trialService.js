@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabaseClient'
+import { checkoutUrl } from './campaignAttributionService'
 
 // ---------------------------------------------------------------------
 // Trial constants. Keep EXPORT_CAP in sync with the cap hardcoded in
@@ -24,6 +25,10 @@ export const YEARLY_CHECKOUT_URL = 'https://buy.stripe.com/dRmeV56ol6Oc7pTbke0kE
 // who already has one). If you want immediate-charge upgrades, create a $9.99
 // NO-trial link and point this constant there instead.
 export const UPGRADE_URL = 'https://buy.stripe.com/14AeV5dQN5K8cKd1JE0kE07'
+
+export function attributedCheckoutUrl(baseUrl = CHECKOUT_URL) {
+  return checkoutUrl(baseUrl)
+}
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000
 

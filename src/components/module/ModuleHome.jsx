@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Sparkles, BookOpen, CalendarDays, BookCheck, BarChart3, CalendarRange, PartyPopper, Flame, ScrollText, FolderOpen, BookMarked, FileInput, Layers, Target, ArrowRight, ArrowLeft } from 'lucide-react'
+import { Sparkles, BookOpen, CalendarDays, BookCheck, BarChart3, CalendarRange, PartyPopper, Flame, ScrollText, FolderOpen, BookMarked, FileInput, Layers, Target, Trophy, BadgeDollarSign, ArrowRight, ArrowLeft } from 'lucide-react'
 import { listLessons } from '../../services/lessonsService'
 import RecentLessonsPanel from '../lesson/RecentLessonsPanel'
 
@@ -16,6 +16,10 @@ const UTILITY_CARDS = {
   goals: {
     Icon: Target, title: 'SMART Goals', desc: 'Class, grade-level, and optional personal progress goals',
     to: '/smart-goals', well: 'bg-emerald-500/15', text: 'text-emerald-400', hover: 'hover:border-emerald-500/40', arrow: 'group-hover:text-emerald-400',
+  },
+  programs: {
+    Icon: Trophy, title: 'Challenges & Programs', desc: 'Fun student experiences with rosters, progress, printables, and celebrations',
+    to: '/programs', well: 'bg-teal-500/15', text: 'text-teal-400', hover: 'hover:border-teal-500/40', arrow: 'group-hover:text-teal-400',
   },
   schedule: {
     Icon: CalendarDays, title: 'Set up my schedule', desc: 'Auto-fill your periods every time',
@@ -184,6 +188,10 @@ export default function ModuleHome({ config }) {
           Icon={BookOpen} title={browseTitle} desc="Everything you've created, organized" to={browseTo}
           well="bg-emerald-500/15" text="text-emerald-400" hover="hover:border-emerald-500/40" arrow="group-hover:text-emerald-400"
         />
+        <ActionCard
+          Icon={BadgeDollarSign} title="Find funding & write grants" desc="Search verified opportunities, track deadlines, and build applications" to={moduleAwarePath('/funding')}
+          well="bg-emerald-500/15" text="text-emerald-400" hover="hover:border-emerald-500/40" arrow="group-hover:text-emerald-400"
+        />
         {specialtyCards.map((card) => <ActionCard key={card.to} {...card} />)}
       </div>
       </section>
@@ -205,7 +213,7 @@ export default function ModuleHome({ config }) {
       </details>}
 
       {/* My lessons — compact preview below the tools */}
-      <RecentLessonsPanel lessons={lessons} error={error} browseNoun={browseNoun} browseTo={browseTo} accentText={accent.text} moduleContext={moduleLabel} />
+      <RecentLessonsPanel lessons={lessons} error={error} browseNoun={browseNoun} browseTo={browseTo} generateTo={generatePath} accentText={accent.text} moduleContext={moduleLabel} />
 
     </div>
   )

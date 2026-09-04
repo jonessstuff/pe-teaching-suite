@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ClipboardList, ChevronLeft, ChevronRight, SlidersHorizontal, Loader2, Users2, X, Check } from 'lucide-react'
+import { CalendarDays, ClipboardList, ChevronLeft, ChevronRight, SlidersHorizontal, Loader2, Users2, X, Check } from 'lucide-react'
 import { listPeriods } from '../services/classPeriodsService'
 import { listStudentsByPeriod } from '../services/studentsService'
 import { getConfig, saveConfig, listRecords, upsertRecord, upsertRecords } from '../services/participationService'
+import { trackToolUsageOnce } from '../services/productUsageService'
 import { summarize, dailyPoints, todayStr, addDays, weekRange } from '../lib/participationGrades'
 
 const DEDUCTION_STYLES = {
@@ -20,13 +21,19 @@ function blankDeductions(config) {
   return Object.fromEntries((config?.deductions ?? []).map((d) => [d.key, false]))
 }
 
+function mostRecentWeekday(dateStr = todayStr()) {
+  let value = dateStr
+  while ([0, 6].includes(new Date(`${value}T00:00:00`).getDay())) value = addDays(value, -1)
+  return value
+}
+
 export default function ParticipationTracker() {
   const [periods, setPeriods] = useState(null)
   const [periodId, setPeriodId] = useState(() => localStorage.getItem('pt.period') || '')
   const [students, setStudents] = useState(null)
   const [config, setConfig] = useState(null)
   const [records, setRecords] = useState([])
-  const [date, setDate] = useState(todayStr())
+  const [date, setDate] = useState(() => mostRecentWeekday())
   const [view, setView] = useState('record')
   const [configOpen, setConfigOpen] = useState(false)
   const [notice, setNotice] = useState(null)
@@ -71,6 +78,7 @@ export default function ParticipationTracker() {
     try {
       await upsertRecord({ classPeriodId: periodId, studentId, date, deductions: nextDeductions, points, exemptReason })
       flashSaved(studentId)
+      trackToolUsageOnce('participation', 'updated', { moduleLabel: 'PE & Health', metadata: { source: 'daily-grades' } })
     } catch (err) {
       setRecords(prev)
       setNotice({ type: 'error', msg: err?.message ? `Couldn't save: ${err.message}` : `Couldn't save — tap again.` })
@@ -102,6 +110,7 @@ export default function ParticipationTracker() {
     const prev = records; setRecords((rs) => [...rs, ...optimistic]); setMarkingAll(true)
     try {
       await upsertRecords(rows); setJustSaved(new Set(missing.map((s) => s.id)))
+      trackToolUsageOnce('participation', 'completed', { moduleLabel: 'PE & Health', metadata: { source: 'mark-all' } })
       setTimeout(() => setJustSaved(new Set()), 1600)
     } catch (err) {
       setRecords(prev)
@@ -109,8 +118,10 @@ export default function ParticipationTracker() {
     } finally { setMarkingAll(false) }
   }
 
-  async function handleSaveConfig(next) { setConfig(await saveConfig(next)) }
+  async function handleSaveConfig(next) { setConfig(await saveConfig(next)); trackToolUsageOnce('participation', 'updated', { moduleLabel: 'PE & Health', metadata: { source: 'scoring-config' } }) }
   const selectedPeriod = (periods ?? []).find((p) => p.id === periodId)
+  const selectedDay = new Date(`${date}T00:00:00`).getDay()
+  const isWeekendDate = selectedDay === 0 || selectedDay === 6
 
   if (periods == null || config == null) return <div className="flex items-center gap-2 text-ink-400"><Loader2 size={18} className="animate-spin" /> Loading…</div>
 
@@ -145,6 +156,11 @@ export default function ParticipationTracker() {
             </div>
           </div>
         </div>
+
+        {isWeekendDate && view === 'record' && <div className="flex flex-col gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-3"><CalendarDays size={20} className="mt-0.5 shrink-0 text-amber-600" /><div><p className="font-semibold text-ink-100">Weekend selected</p><p className="text-sm text-ink-500">Choose the most recent class day, or continue only if this was a weekend or make-up class.</p></div></div>
+          <button type="button" onClick={() => setDate(mostRecentWeekday(date))} className="btn-secondary shrink-0">Use previous weekday</button>
+        </div>}
 
         {students && !students.length && <div className="card p-6 text-sm text-ink-300">No students in <span className="font-medium text-ink-100">{selectedPeriod.label}</span> yet. <Link to="/students" className="text-accent-600 underline"><Users2 size={14} className="inline" /> Add students</Link> to start recording.</div>}
 

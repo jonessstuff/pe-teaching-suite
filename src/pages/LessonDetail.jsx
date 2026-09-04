@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { ArrowLeft, Loader2, Printer, ChevronLeft, ChevronRight, Copy, Pencil, Check, X, Share2, Tag, Plus, Play } from 'lucide-react'
+import { ArrowLeft, Loader2, Printer, ChevronLeft, ChevronRight, Copy, Pencil, Check, X, Share2, Tag, Plus, Play, FileSliders, Save } from 'lucide-react'
 import { getLesson, listLessons, updateLesson, deleteLesson, deleteUnit, duplicateLesson, updateTags } from '../services/lessonsService'
 import { createShare, getShare, deleteShare } from '../services/sharingService'
 import { track } from '../lib/analytics'
@@ -13,6 +13,9 @@ import { useTrial } from '../context/TrialContext'
 import TeachMode from '../components/lesson/TeachMode'
 import TeachingView from '../components/lesson/TeachingView'
 import { SPECIALTY_CONTEXTS } from '../constants/moduleHomes'
+import PersonalPlanRenderer, { RequirementCheck } from '../components/lesson/PersonalPlanRenderer'
+import { recommendInstructionalPractices, recommendMtssGoals } from '../lib/personalPlanContent'
+import { getDefaultLessonPlanFormat, getLessonPlanFormatValues, saveLessonPlanFormatValues } from '../services/lessonPlanFormatService'
 
 export default function LessonDetail() {
   const { id } = useParams()
@@ -36,6 +39,12 @@ export default function LessonDetail() {
   const [tags, setTags] = useState([])
   const [showTeachMode, setShowTeachMode] = useState(searchParams.get('teach') === '1')
   const [lessonView, setLessonView] = useState('quick')
+  const [personalFormat, setPersonalFormat] = useState(null)
+  const [formatValues, setFormatValues] = useState({ mtss_goal_numbers: [], mtss_notes: '', instructional_practice_ids: [] })
+  const [savingFormatValues, setSavingFormatValues] = useState(false)
+  const [formatNotice, setFormatNotice] = useState('')
+  const [showAllMtssGoals, setShowAllMtssGoals] = useState(false)
+  const [showAllInstructionalPractices, setShowAllInstructionalPractices] = useState(false)
   const moduleContext = searchParams.get('module')
   const moduleConfig = Object.values(SPECIALTY_CONTEXTS).find((config) =>
     config.moduleLabel === moduleContext || config.title === moduleContext
@@ -71,6 +80,78 @@ export default function LessonDetail() {
       })
       .catch((err) => setError(err.message))
   }, [id])
+
+  useEffect(() => {
+    if (!lesson) return undefined
+    let active = true
+    getDefaultLessonPlanFormat().then(async (format) => {
+      if (!active || !format) return
+      setPersonalFormat(format)
+      setLessonView('personal')
+      const values = await getLessonPlanFormatValues(id, format.id)
+      if (!active) return
+      if (values) {
+        setFormatValues({
+          mtss_goal_numbers: values.mtss_goal_numbers ?? [],
+          mtss_notes: values.mtss_notes ?? '',
+          instructional_practice_ids: values.instructional_practice_ids ?? [],
+        })
+        return
+      }
+      const recommended = recommendMtssGoals(lesson.lesson_object, format.mtss_goal_bank ?? [])
+      const recommendedPractices = recommendInstructionalPractices(lesson.lesson_object, format.instructional_practice_bank ?? [])
+      if (!recommended.length && !recommendedPractices.length) return
+      const automaticValues = { mtss_goal_numbers: recommended, mtss_notes: '', instructional_practice_ids: recommendedPractices }
+      const saved = await saveLessonPlanFormatValues(id, format.id, automaticValues)
+      if (!active) return
+      setFormatValues({
+        mtss_goal_numbers: saved.mtss_goal_numbers ?? recommended,
+        mtss_notes: saved.mtss_notes ?? '',
+        instructional_practice_ids: saved.instructional_practice_ids ?? recommendedPractices,
+      })
+      const matches = [
+        recommended.length ? `${recommended.length} numbered MTSS goals` : '',
+        recommendedPractices.length ? `${recommendedPractices.length} instructional practices` : '',
+      ].filter(Boolean).join(' and ')
+      setFormatNotice(`PlansK12 automatically matched ${matches} to this lesson. You can change them anytime.`)
+    }).catch(() => {
+      // A personal format is optional; standard lesson views still work.
+    })
+    return () => { active = false }
+  }, [id, lesson])
+
+  function toggleMtssGoal(number) {
+    setFormatValues((current) => ({ ...current, mtss_goal_numbers: current.mtss_goal_numbers.includes(number) ? current.mtss_goal_numbers.filter((value) => value !== number) : [...current.mtss_goal_numbers, number] }))
+    setFormatNotice('')
+  }
+
+  function toggleInstructionalPractice(practiceId) {
+    setFormatValues((current) => ({
+      ...current,
+      instructional_practice_ids: current.instructional_practice_ids.includes(practiceId)
+        ? current.instructional_practice_ids.filter((value) => value !== practiceId)
+        : [...current.instructional_practice_ids, practiceId],
+    }))
+    setFormatNotice('')
+  }
+
+  async function saveFormatSelections() {
+    if (!personalFormat) return
+    setSavingFormatValues(true)
+    try {
+      const saved = await saveLessonPlanFormatValues(id, personalFormat.id, formatValues)
+      setFormatValues({
+        mtss_goal_numbers: saved.mtss_goal_numbers ?? [],
+        mtss_notes: saved.mtss_notes ?? '',
+        instructional_practice_ids: saved.instructional_practice_ids ?? [],
+      })
+      setFormatNotice('Instructional practices and MTSS choices saved to this lesson.')
+    } catch (err) {
+      setError(err.message || 'The school-format selections could not be saved.')
+    } finally {
+      setSavingFormatValues(false)
+    }
+  }
 
   function openContentEdit() {
     const lo = lesson.lesson_object
@@ -233,6 +314,12 @@ export default function LessonDetail() {
 
   const lo = lesson.lesson_object
   const isAPE = lo?.subject === 'Adaptive PE'
+  const selectedMtssGoals = (personalFormat?.mtss_goal_bank ?? []).filter((goal) => formatValues.mtss_goal_numbers.includes(goal.number))
+  const visibleMtssGoals = showAllMtssGoals || selectedMtssGoals.length === 0 ? (personalFormat?.mtss_goal_bank ?? []) : selectedMtssGoals
+  const selectedInstructionalPractices = (personalFormat?.instructional_practice_bank ?? []).filter((practice) => formatValues.instructional_practice_ids.includes(practice.id))
+  const visibleInstructionalPractices = showAllInstructionalPractices || selectedInstructionalPractices.length === 0
+    ? (personalFormat?.instructional_practice_bank ?? [])
+    : selectedInstructionalPractices
 
   const currentIndex = unitLessons.findIndex((l) => l.id === id)
   const prevLesson = currentIndex > 0 ? unitLessons[currentIndex - 1] : null
@@ -435,18 +522,22 @@ export default function LessonDetail() {
           <div className="no-print flex flex-col gap-3 rounded-xl border border-ink-800 bg-ink-900/30 p-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm font-semibold text-ink-100">Choose how much detail you need</p>
-              <p className="mt-0.5 text-xs text-ink-500">Start with the quick teaching guide. The complete plan is always one click away.</p>
+              <p className="mt-0.5 text-xs text-ink-500">Your school format is personal to you. The original PlansK12 views always remain available.</p>
             </div>
-            <div className="inline-flex w-fit rounded-lg border border-ink-800 bg-white/60 p-1 dark:bg-ink-950/50">
+            <div className="flex flex-wrap items-center justify-end gap-2">
+            <div className="inline-flex w-fit flex-wrap rounded-lg border border-ink-800 bg-white/60 p-1 dark:bg-ink-950/50">
               <button type="button" onClick={() => setLessonView('quick')} className={`rounded-md px-3 py-1.5 text-sm font-semibold transition ${lessonView === 'quick' ? 'bg-accent-500 text-white shadow-sm' : 'text-ink-400 hover:text-ink-100'}`}>Teacher at-a-glance</button>
               <button type="button" onClick={() => setLessonView('full')} className={`rounded-md px-3 py-1.5 text-sm font-semibold transition ${lessonView === 'full' ? 'bg-accent-500 text-white shadow-sm' : 'text-ink-400 hover:text-ink-100'}`}>Complete plan</button>
+              {personalFormat && <button type="button" onClick={() => setLessonView('personal')} className={`rounded-md px-3 py-1.5 text-sm font-semibold transition ${lessonView === 'personal' ? 'bg-teal-500 text-white shadow-sm' : 'text-ink-400 hover:text-ink-100'}`}>My school format</button>}
+            </div>
+            <Link to="/lesson-format" className="inline-flex items-center gap-1 text-xs font-bold text-teal-400 hover:text-teal-300"><FileSliders size={14} />{personalFormat ? 'Edit format' : 'Set up my format'}</Link>
             </div>
           </div>
 
-          <div className={`${lessonView === 'quick' ? 'block' : 'hidden'} card p-5 sm:p-7 print:hidden`}>
+          <div className={`${lessonView === 'quick' ? 'block print:block' : 'hidden print:hidden'} card p-5 sm:p-7`}>
             <TeachingView lesson={cleanLessonForDisplay(lo)} />
           </div>
-          <div className={`${lessonView === 'full' ? 'block' : 'hidden'} print:block`}>
+          <div className={`${lessonView === 'full' ? 'block print:block' : 'hidden print:hidden'}`}>
             <LessonBody
               subject={lo?.subject}
               lesson={{
@@ -456,6 +547,32 @@ export default function LessonDetail() {
               }}
             />
           </div>
+          {personalFormat && <div className={`${lessonView === 'personal' ? 'block print:block' : 'hidden print:hidden'} space-y-4`}>
+            {(personalFormat.instructional_practice_bank ?? []).length > 0 && <section className="no-print card p-5">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="label-eyebrow text-violet-400">This lesson</p>
+                  <h3 className="mt-1 text-lg font-black text-ink-50">Instructional practices selected automatically</h3>
+                  <p className="mt-1 text-xs text-ink-500">PlansK12 compares the lesson to your separate school-approved practice bank and recommends only the strongest matches.</p>
+                </div>
+                <button type="button" onClick={saveFormatSelections} disabled={savingFormatValues} className="btn-primary">{savingFormatValues ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}{savingFormatValues ? 'Saving…' : 'Save changes'}</button>
+              </div>
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                <p className="text-xs font-bold text-violet-300">{formatValues.instructional_practice_ids.length} recommended practices</p>
+                <button type="button" onClick={() => setShowAllInstructionalPractices((value) => !value)} className="btn-ghost text-xs">{showAllInstructionalPractices ? 'Show recommendations only' : 'Change recommendations'}</button>
+              </div>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">{visibleInstructionalPractices.map((practice) => <label key={practice.id} className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3 ${formatValues.instructional_practice_ids.includes(practice.id) ? 'border-violet-500/50 bg-violet-500/10' : 'border-ink-800 bg-ink-950/30'}`}><input type="checkbox" className="mt-1" checked={formatValues.instructional_practice_ids.includes(practice.id)} onChange={() => toggleInstructionalPractice(practice.id)} /><span><span className="block text-xs font-black text-violet-400">{practice.category}</span><span className="mt-0.5 block text-sm text-ink-300">{practice.label}</span></span></label>)}</div>
+            </section>}
+            {(personalFormat.mtss_goal_bank ?? []).length > 0 && <section className="no-print card p-5">
+              <div className="flex flex-wrap items-start justify-between gap-3"><div><p className="label-eyebrow text-blue-400">This lesson</p><h3 className="mt-1 text-lg font-black text-ink-50">MTSS goals selected automatically</h3><p className="mt-1 text-xs text-ink-500">PlansK12 matches the lesson's actual Tier 1 supports, Tier 2 intervention, and progress checks to your numbered bank.</p></div><button type="button" onClick={saveFormatSelections} disabled={savingFormatValues} className="btn-primary">{savingFormatValues ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}{savingFormatValues ? 'Saving…' : 'Save changes'}</button></div>
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2"><p className="text-xs font-bold text-blue-300">{formatValues.mtss_goal_numbers.length} recommended goals</p><button type="button" onClick={() => setShowAllMtssGoals((value) => !value)} className="btn-ghost text-xs">{showAllMtssGoals ? 'Show recommendations only' : 'Change recommendations'}</button></div>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">{visibleMtssGoals.map((goal) => <label key={goal.number} className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3 ${formatValues.mtss_goal_numbers.includes(goal.number) ? 'border-blue-500/50 bg-blue-500/10' : 'border-ink-800 bg-ink-950/30'}`}><input type="checkbox" className="mt-1" checked={formatValues.mtss_goal_numbers.includes(goal.number)} onChange={() => toggleMtssGoal(goal.number)} /><span><span className="block text-xs font-black text-blue-400">{goal.tier === 'tier_2' ? 'Tier 2' : 'Tier 1'} · {goal.number}</span><span className="mt-0.5 block text-sm text-ink-300">{goal.label}</span></span></label>)}</div>
+              <label className="mt-4 block"><span className="mb-1.5 block text-xs font-bold text-ink-300">Tier 2 evidence or progress-check note (optional)</span><textarea className="input min-h-20 w-full" value={formatValues.mtss_notes} onChange={(event) => { setFormatValues({ ...formatValues, mtss_notes: event.target.value }); setFormatNotice('') }} placeholder="Example: Students identified by the prior skill check meet in a targeted group; recheck after four practice items." /></label>
+              {formatNotice && <p className="mt-3 flex items-center gap-1.5 text-xs font-bold text-emerald-400"><Check size={14} />{formatNotice}</p>}
+            </section>}
+            <div className="print:hidden"><RequirementCheck lesson={cleanLessonForDisplay(lo)} format={personalFormat} formatValues={formatValues} /></div>
+            <PersonalPlanRenderer lesson={cleanLessonForDisplay(lo)} format={personalFormat} formatValues={formatValues} />
+          </div>}
         </div>
       )}
 

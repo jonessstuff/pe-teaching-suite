@@ -25,13 +25,14 @@ export default function GenerationProgress({ loading, label = 'lesson', classNam
   const [elapsed, setElapsed] = useState(0)
 
   useEffect(() => {
-    if (!loading) {
-      setElapsed(0)
-      return
-    }
+    if (!loading) return
     const start = Date.now()
+    const resetId = setTimeout(() => setElapsed(0), 0)
     const id = setInterval(() => setElapsed(Math.floor((Date.now() - start) / 1000)), 1000)
-    return () => clearInterval(id)
+    return () => {
+      clearTimeout(resetId)
+      clearInterval(id)
+    }
   }, [loading])
 
   if (!loading) return null

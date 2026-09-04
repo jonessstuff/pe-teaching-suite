@@ -3,7 +3,8 @@ import { useParams, Link } from 'react-router-dom'
 import { Loader2, AlertCircle, Sparkles } from 'lucide-react'
 import { leadView } from '../services/leadMagnetService'
 import FreeLessonRenderer from '../components/FreeLessonRenderer'
-import { CHECKOUT_URL } from '../services/trialService'
+import { attributedCheckoutUrl, CHECKOUT_URL } from '../services/trialService'
+import { track } from '../lib/analytics'
 
 export default function FreeLessonView() {
   const { token } = useParams()
@@ -23,7 +24,7 @@ export default function FreeLessonView() {
       <div className="border-b border-ink-200 bg-white px-6 py-3 print:hidden">
         <div className="mx-auto flex max-w-4xl items-center justify-between">
           <Link to="/" className="font-display font-bold text-lg text-ink-950">PlansK12</Link>
-          <a href={CHECKOUT_URL} className="rounded-lg bg-accent-500 px-4 py-1.5 text-sm font-semibold text-white hover:bg-accent-600 transition-colors">
+          <a href={attributedCheckoutUrl(CHECKOUT_URL)} onClick={() => track('trial_clicked', { placement: 'free_lesson_header' })} className="rounded-lg bg-accent-500 px-4 py-1.5 text-sm font-semibold text-white hover:bg-accent-600 transition-colors">
             Start free trial →
           </a>
         </div>
@@ -62,7 +63,7 @@ export default function FreeLessonView() {
                 PE, Art, Music, Library, STEM, intervention, special education, counseling, early childhood, and more —
                 plus sub plans, pacing guides, quizzes, and parent newsletters.
               </p>
-              <a href={CHECKOUT_URL} className="mt-4 inline-flex items-center gap-2 rounded-lg bg-accent-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-accent-700">
+              <a href={attributedCheckoutUrl(CHECKOUT_URL)} onClick={() => track('trial_clicked', { placement: 'free_lesson_body' })} className="mt-4 inline-flex items-center gap-2 rounded-lg bg-accent-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-accent-700">
                 <Sparkles size={15} /> Start your 7-day free trial
               </a>
             </div>

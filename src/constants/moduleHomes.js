@@ -2,7 +2,7 @@ import {
   Drama, Hand, Wind, Globe, Award, Monitor, Compass, Languages, Sparkles,
   BookOpen, Calculator, HeartHandshake, Blocks, PartyPopper, Target, Layers,
   Users, Presentation, Handshake, PersonStanding, Speech, ScanEye, Ear,
-  Briefcase, Baby, Palette, Music2, Library, Wrench,
+  Briefcase, Baby, Palette, Music2, Library, Wrench, Trophy, Newspaper, BookHeart, Ticket, Telescope,
   Atom,
 } from 'lucide-react'
 
@@ -62,9 +62,9 @@ const ACCENTS = {
 const accent = (c) => ACCENTS[c]
 
 // Phase 3 card sets — expanded now that the shared tools support all subjects.
-const FULL = ['schedule', 'goals', 'assessments', 'standards', 'pacing', 'activity', 'warmup', 'eoy', 'portfolio']
-const LITE = ['schedule', 'goals', 'pacing', 'activity', 'warmup', 'eoy', 'portfolio']
-const TESTPREP = ['goals', 'assessments', 'standards', 'pacing', 'activity', 'warmup', 'eoy', 'portfolio']
+const FULL = ['schedule', 'goals', 'programs', 'assessments', 'standards', 'pacing', 'activity', 'warmup', 'eoy', 'portfolio']
+const LITE = ['schedule', 'goals', 'programs', 'pacing', 'activity', 'warmup', 'eoy', 'portfolio']
+const TESTPREP = ['goals', 'programs', 'assessments', 'standards', 'pacing', 'activity', 'warmup', 'eoy', 'portfolio']
 const PRO = ['goals', 'eoy', 'portfolio']
 // FULL + Long-Term Sub Binder + Import & Enhance, for the content-lesson modules
 // that both tools now support via per-module paths (Theater, Dance, World
@@ -84,7 +84,14 @@ export const MODULE_HOMES = {
     generatePath: '/art/generate', generateTitle: 'Create an art lesson',
     generateDesc: 'Studio-ready directions, materials, visual concepts, critique, and assessment',
     browseTitle: 'Browse my art lessons', browseNoun: 'lesson', browsePath: '/art/lessons', cards: FULL_SB,
+    specialtyCards: [
+      {
+        Icon: PartyPopper, title: 'Art Show Studio', desc: 'Plan the event and print labels, artist statements, invitations, signs, and checklists', to: '/art/art-show',
+        well: 'bg-coral-500/15', text: 'text-coral-400', hover: 'hover:border-coral-500/40', arrow: 'group-hover:text-coral-400',
+      },
+    ],
     workspaceFeatures: [
+      { title: 'Art show planning', desc: 'Turn a theme and artwork list into a complete school-gallery event kit.', to: '/art/art-show' },
       { title: 'Studio-ready preparation', desc: 'Materials, setup, cleanup, timing, and safety built into the plan.' },
       { title: 'Student visual supports', desc: 'Vocabulary cards, display slides, directions, and printable resources.' },
       { title: 'Critique and assessment', desc: 'Age-appropriate reflection prompts, rubrics, and evidence of learning.', to: '/assessments' },
@@ -96,7 +103,14 @@ export const MODULE_HOMES = {
     generatePath: '/music/generate', generateTitle: 'Create a music lesson',
     generateDesc: 'Listening, performing, creating, movement, and active music-making',
     browseTitle: 'Browse my music lessons', browseNoun: 'lesson', browsePath: '/music/lessons', cards: FULL_SB,
+    specialtyCards: [
+      {
+        Icon: Presentation, title: 'Concert Builder', desc: 'Rehearsal plan, program order, stage setup, family messages, roles, and performance-day kit', to: '/music/concert-builder',
+        well: 'bg-violet-500/15', text: 'text-violet-400', hover: 'hover:border-violet-500/40', arrow: 'group-hover:text-violet-400',
+      },
+    ],
     workspaceFeatures: [
+      { title: 'Concert planning', desc: 'Build the rehearsal calendar, run of show, family communication, and complete performance kit.', to: '/music/concert-builder' },
       { title: 'Active music-making', desc: 'Singing, instruments, movement, listening, and creation—not worksheet-only lessons.' },
       { title: 'Rehearsal-friendly plans', desc: 'Clear cues, transitions, equipment, and pacing teachers can scan while teaching.' },
       { title: 'Student-facing resources', desc: 'Rhythm supports, listening prompts, display slides, and reflection tools.' },
@@ -108,14 +122,44 @@ export const MODULE_HOMES = {
     generatePath: '/library/generate', generateTitle: 'Create a library lesson',
     generateDesc: 'Read-aloud, direct instruction, research, media literacy, and hands-on practice',
     browseTitle: 'Browse my library lessons', browseNoun: 'lesson', browsePath: '/library/lessons', cards: FULL_SB,
-    specialtyCards: [{
-      Icon: Wrench, title: 'Build a makerspace project', desc: 'Safety, station logistics, materials, and cross-curricular making', to: '/library/makerspace',
-      well: 'bg-slate-500/15', text: 'text-slate-400', hover: 'hover:border-slate-500/40', arrow: 'group-hover:text-slate-400',
-    }],
+    specialtyCards: [
+      {
+        Icon: BookHeart, title: 'Book Matchmaker', desc: 'Privacy-safe recommendations using books your library actually owns', to: '/library/book-matchmaker',
+        well: 'bg-fuchsia-500/15', text: 'text-fuchsia-400', hover: 'hover:border-fuchsia-500/40', arrow: 'group-hover:text-fuchsia-400',
+      },
+      {
+        Icon: Ticket, title: 'Book Tasting Studio', desc: 'Station cards, tasting passports, setup, and next-read choices', to: '/library/book-tasting',
+        well: 'bg-amber-500/15', text: 'text-amber-400', hover: 'hover:border-amber-500/40', arrow: 'group-hover:text-amber-400',
+      },
+      {
+        Icon: Handshake, title: 'Teacher Collaboration Hub', desc: 'Curated book bundles, mini-lessons, and ready-to-send teacher messages', to: '/library/collaboration',
+        well: 'bg-cobalt-500/15', text: 'text-cobalt-400', hover: 'hover:border-cobalt-500/40', arrow: 'group-hover:text-cobalt-400',
+      },
+      {
+        Icon: PartyPopper, title: 'Family Literacy Night', desc: 'Stations, schedules, volunteers, supplies, promotion, and family handouts', to: '/library/family-literacy-night',
+        well: 'bg-rose-500/15', text: 'text-rose-400', hover: 'hover:border-rose-500/40', arrow: 'group-hover:text-rose-400',
+      },
+      {
+        Icon: Telescope, title: 'Research Quest Builder', desc: 'Inquiry missions, source checks, notes, citations, and success criteria', to: '/library/research-quest',
+        well: 'bg-emerald-500/15', text: 'text-emerald-400', hover: 'hover:border-emerald-500/40', arrow: 'group-hover:text-emerald-400',
+      },
+      {
+        Icon: Trophy, title: 'Reading Challenge Hub', desc: 'Launch challenges, log progress, celebrate growth, and export reports', to: '/library/reading-challenges',
+        well: 'bg-cobalt-500/15', text: 'text-cobalt-400', hover: 'hover:border-cobalt-500/40', arrow: 'group-hover:text-cobalt-400',
+      },
+      {
+        Icon: Newspaper, title: 'Newsletter Studio', desc: 'Cute, ready-to-share library updates for families and staff', to: '/library/newsletters',
+        well: 'bg-rose-500/15', text: 'text-rose-400', hover: 'hover:border-rose-500/40', arrow: 'group-hover:text-rose-400',
+      },
+      {
+        Icon: Wrench, title: 'Build a makerspace project', desc: 'Safety, station logistics, materials, and cross-curricular making', to: '/library/makerspace',
+        well: 'bg-slate-500/15', text: 'text-slate-400', hover: 'hover:border-slate-500/40', arrow: 'group-hover:text-slate-400',
+      },
+    ],
     workspaceFeatures: [
-      { title: 'Library lesson cycles', desc: 'Plan connected visits for research, genre study, media literacy, and digital citizenship.' },
+      { title: 'Reading challenges', desc: 'Run class, grade-level, or schoolwide challenges with private personal progress.', to: '/library/reading-challenges' },
+      { title: 'Family & staff newsletters', desc: 'Turn library news, events, and reading progress into a polished update.', to: '/library/newsletters' },
       { title: 'Makerspace planning', desc: 'Build safe, realistic projects around the tools and materials you actually have.', to: '/library/makerspace' },
-      { title: 'Low-screen materials', desc: 'Printable organizers, vocabulary, discussion prompts, and student practice.' },
     ],
   },
   // CTE keeps its bespoke lesson library (/cte/lessons), so Browse points there
@@ -127,10 +171,29 @@ export const MODULE_HOMES = {
     generatePath: '/cte/generate', generateTitle: 'Generate a CTE lesson',
     generateDesc: 'A standards-based lesson for your pathway, from exploratory MS to HS concentrator',
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', browsePath: '/cte/lessons', cards: FULL_SUB,
+    specialtyCards: [
+      {
+        Icon: Compass, title: 'Career Experiences Hub', desc: 'Plan field trips, job shadows, internships, partners, safety, and student preparation', to: '/cte/experiences',
+        well: 'bg-pink-500/15', text: 'text-pink-400', hover: 'hover:border-pink-500/40', arrow: 'group-hover:text-pink-400',
+      },
+      {
+        Icon: Target, title: 'Pathway Fit & Recruiting', desc: 'Interest reflections, local pathway conversations, and recruiting profiles that show what programs really offer', to: '/cte/pathway-fit',
+        well: 'bg-pink-500/15', text: 'text-pink-400', hover: 'hover:border-pink-500/40', arrow: 'group-hover:text-pink-400',
+      },
+      {
+        Icon: BookOpen, title: 'Middle School Career Foundations', desc: 'Build a complete grade 6–8 career exploration road map with activities, artifacts, and pacing', to: '/cte/career-foundations',
+        well: 'bg-amber-500/15', text: 'text-amber-400', hover: 'hover:border-amber-500/40', arrow: 'group-hover:text-amber-400',
+      },
+      {
+        Icon: Handshake, title: 'Employability Skills Lab', desc: 'Practice and measure communication, teamwork, problem solving, reliability, and professionalism', to: '/cte/employability-skills',
+        well: 'bg-cyan-500/15', text: 'text-cyan-400', hover: 'hover:border-cyan-500/40', arrow: 'group-hover:text-cyan-400',
+      },
+    ],
     workspaceFeatures: [
-      { title: 'Pathway-specific planning', desc: 'Twenty-two pathways with appropriate competencies, terminology, and career context.' },
-      { title: 'Hands-on and safety ready', desc: 'Equipment, demonstrations, supervised practice, and jobsite or lab safety.' },
-      { title: 'Career-connected outputs', desc: 'Projects, credentials, employability skills, and work-based learning connections.' },
+      { title: 'Career experiences', desc: 'Turn field trips, job shadows, and internships into safe, curriculum-aligned learning.', to: '/cte/experiences' },
+      { title: 'Pathway fit & recruiting', desc: 'Help students and families understand local programs before scheduling decisions are made.', to: '/cte/pathway-fit' },
+      { title: 'Middle school foundations', desc: 'A complete, hands-on career exploration sequence for grades 6–8.', to: '/cte/career-foundations' },
+      { title: 'Employability skills', desc: 'Practice and document the workplace skills industry partners keep requesting.', to: '/cte/employability-skills' },
     ],
   },
   // ── Content specials (scheduled classes) → ['schedule'] ──────────────────
@@ -140,7 +203,14 @@ export const MODULE_HOMES = {
     generatePath: '/theater/generate', generateTitle: 'Generate a theatre lesson',
     generateDesc: 'A standards-based lesson across Creating, Performing, Responding & Connecting',
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SB,
+    specialtyCards: [
+      {
+        Icon: Drama, title: 'Production Planner', desc: 'Auditions, casting, rehearsals, tech, front of house, performance week, and reflection', to: '/theater/production-planner',
+        well: 'bg-maroon-500/15', text: 'text-maroon-400', hover: 'hover:border-maroon-500/40', arrow: 'group-hover:text-maroon-400',
+      },
+    ],
     workspaceFeatures: [
+      { title: 'Production planning', desc: 'Organize auditions, rehearsal, technical theatre, performance day, and strike.', to: '/theater/production-planner' },
       { title: 'Rehearsal-ready plans', desc: 'Warm-ups, ensemble routines, timing, transitions, and teacher cues that work in the room.' },
       { title: 'Original performance material', desc: 'Scene starters, improv structures, character work, and devising prompts without copied scripts.' },
       { title: 'Performance reflection', desc: 'Student reflection, critique prompts, rubrics, and evidence across the Artistic Processes.', to: '/assessments' },
@@ -152,7 +222,14 @@ export const MODULE_HOMES = {
     generatePath: '/dance/generate', generateTitle: 'Generate a dance lesson',
     generateDesc: 'A standards-based lesson with the elements of dance & body-safety guidance',
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SB,
+    specialtyCards: [
+      {
+        Icon: Wind, title: 'Dance Team & Recital Studio', desc: 'Showcases, studio recitals, team seasons, rehearsals, costumes, safety, and family logistics', to: '/dance/recital-planner',
+        well: 'bg-olive-500/15', text: 'text-olive-400', hover: 'hover:border-olive-500/40', arrow: 'group-hover:text-olive-400',
+      },
+    ],
     workspaceFeatures: [
+      { title: 'Team & recital planning', desc: 'Plan a school showcase, private-studio recital, or complete dance-team season.', to: '/dance/recital-planner' },
       { title: 'Movement-ready instruction', desc: 'Warm-ups, spatial organization, skill cues, transitions, and cool-downs teachers can scan quickly.' },
       { title: 'Creative choreography', desc: 'Age-appropriate composition tasks using body, space, time, energy, and relationship.' },
       { title: 'Safe assessment', desc: 'Body-safety guidance, observation criteria, reflection prompts, and performance rubrics.', to: '/assessments' },
@@ -164,10 +241,13 @@ export const MODULE_HOMES = {
     generatePath: '/world-languages/generate', generateTitle: 'Generate a language lesson',
     generateDesc: 'The 5 Cs across Interpersonal, Interpretive & Presentational modes',
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SB,
+    specialtyCards: [
+      { Icon: PartyPopper, title: 'Cultural Experiences Studio', desc: 'Plan restaurant, museum, community, or extended language-learning trips', to: '/world-languages/experiences', well: 'bg-jade-500/15', text: 'text-jade-400', hover: 'hover:border-jade-400/40', arrow: 'group-hover:text-jade-400' },
+    ],
     workspaceFeatures: [
+      { title: 'Cultural experiences & trips', desc: 'Connect authentic language use to safe, respectful community and travel experiences.', to: '/world-languages/experiences' },
       { title: 'Proficiency-first planning', desc: 'ACTFL-aligned communication tasks matched to Novice through Advanced learners.' },
       { title: 'Three modes of communication', desc: 'Interpersonal, Interpretive, and Presentational practice inside a connected lesson.' },
-      { title: 'Scaffolds students can use', desc: 'Sentence frames, vocabulary supports, comprehensible input, and performance checks.' },
     ],
   },
   jrotc: {
@@ -212,10 +292,13 @@ export const MODULE_HOMES = {
     generatePath: '/esl-specialist/generate', generateTitle: 'Generate an ELD lesson',
     generateDesc: 'WIDA proficiency levels, SIOP objectives, all four language domains',
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SB,
+    specialtyCards: [
+      { Icon: PartyPopper, title: 'Multilingual Family Night', desc: 'Plan interpretation, family literacy, school navigation, resources, and follow-up', to: '/esl-specialist/family-night', well: 'bg-fuchsia-500/15', text: 'text-fuchsia-400', hover: 'hover:border-fuchsia-400/40', arrow: 'group-hover:text-fuchsia-400' },
+    ],
     workspaceFeatures: [
+      { title: 'Multilingual family engagement', desc: 'Run a welcoming event with language access, family voice, practical resources, and private support.', to: '/esl-specialist/family-night' },
       { title: 'Language-objective planning', desc: 'Content and language objectives matched to WIDA proficiency and all four domains.' },
       { title: 'Ready-to-use scaffolds', desc: 'Sentence frames, visuals, modeled language, partner structures, and home-language connections.' },
-      { title: 'Language-growth goals', desc: 'Track measurable class or grade-level language progress with optional personal targets.', to: '/smart-goals' },
     ],
   },
   'gifted-talented': {
@@ -224,10 +307,15 @@ export const MODULE_HOMES = {
     generatePath: '/gifted-talented/generate', generateTitle: 'Generate a gifted lesson',
     generateDesc: 'Differentiate, enrich, or support 2e & underachieving gifted learners',
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SB,
+    specialtyCards: [
+      { Icon: Telescope, title: 'Advanced Thinkers Studio', desc: 'Build a complete K–5 thinking-skills curriculum with ready lessons, printables, differentiation, and growth evidence', to: '/gifted-talented/advanced-thinkers', well: 'bg-amber-500/15', text: 'text-amber-400', hover: 'hover:border-amber-500/40', arrow: 'group-hover:text-amber-400' },
+      { Icon: PartyPopper, title: 'Student Showcase Studio', desc: 'Turn passion projects, inquiry, inventions, and performances into an authentic showcase', to: '/gifted-talented/showcase', well: 'bg-amber-500/15', text: 'text-amber-400', hover: 'hover:border-amber-500/40', arrow: 'group-hover:text-amber-400' },
+    ],
     workspaceFeatures: [
+      { title: 'Complete K–5 thinking curriculum', desc: 'Choose a 9-, 18-, or 36-week sequence with developmental pathways, student materials, and evidence of growth.', to: '/gifted-talented/advanced-thinkers' },
+      { title: 'Authentic student showcase', desc: 'Plan displays, performances, feedback, family communication, and reflection.', to: '/gifted-talented/showcase' },
       { title: 'Depth, not extra work', desc: 'Complexity, inquiry, authentic problems, and intellectual challenge beyond more worksheets.' },
       { title: 'Flexible learner support', desc: 'Enrichment, acceleration, compacting, and thoughtful scaffolds for 2e learners.' },
-      { title: 'Authentic student products', desc: 'Choice-driven projects, expert audiences, reflection, and clear success criteria.' },
     ],
   },
   'reading-specialists': {
@@ -236,8 +324,14 @@ export const MODULE_HOMES = {
     generatePath: '/reading-specialists/generate', generateTitle: 'Generate a reading intervention',
     generateDesc: 'Phonics, fluency, comprehension & more, with dyslexia-indicator flagging',
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SUB,
+    specialtyCards: [
+      {
+        Icon: PartyPopper, title: 'Reading Night Hub', desc: 'Plan family stations and print passports, take-home guides, invitations, and the complete event kit', to: '/reading-specialists/family-night',
+        well: 'bg-sky-500/15', text: 'text-sky-400', hover: 'hover:border-sky-500/40', arrow: 'group-hover:text-sky-400',
+      },
+    ],
     workspaceFeatures: [
-      { title: 'Diagnostic skill focus', desc: 'Target phonological awareness, phonics, fluency, vocabulary, or comprehension needs.' },
+      { title: 'Family reading night', desc: 'Run a welcoming, strategy-rich event with six hands-on stations and a complete printable kit.', to: '/reading-specialists/family-night' },
       { title: 'Explicit lesson routines', desc: 'Systematic modeling, guided practice, cumulative review, and controlled application.' },
       { title: 'Intervention progress', desc: 'Connect baselines, aimlines, evidence checks, and decision points in one SMART Goal.', to: '/smart-goals' },
     ],
@@ -248,8 +342,14 @@ export const MODULE_HOMES = {
     generatePath: '/math-specialists/generate', generateTitle: 'Generate a math intervention',
     generateDesc: 'CRA sequencing, Number Talks & NCTM process standards',
     browseTitle: 'Browse my lessons', browseNoun: 'lesson', cards: FULL_SUB,
+    specialtyCards: [
+      {
+        Icon: PartyPopper, title: 'Math Night Hub', desc: 'Plan hands-on family stations and print passports, game guides, invitations, and the complete event kit', to: '/math-specialists/family-night',
+        well: 'bg-lime-500/15', text: 'text-lime-400', hover: 'hover:border-lime-500/40', arrow: 'group-hover:text-lime-400',
+      },
+    ],
     workspaceFeatures: [
-      { title: 'Concept-first intervention', desc: 'Concrete–Representational–Abstract sequences that build understanding before shortcuts.' },
+      { title: 'Family math night', desc: 'Turn number sense and problem solving into an inclusive, hands-on family event.', to: '/math-specialists/family-night' },
       { title: 'Misconception-responsive support', desc: 'Number talks, models, targeted questions, and multiple strategies matched to learner thinking.' },
       { title: 'Measurable math growth', desc: 'Track class, grade-level, or optional personal progress toward a clear math target.', to: '/smart-goals' },
     ],
@@ -272,10 +372,13 @@ export const MODULE_HOMES = {
     generatePath: '/early-childhood/generate', generateTitle: 'Generate a play-based plan',
     generateDesc: 'Learning centers, circle time & whole-child domains (toddlers–TK)',
     browseTitle: 'Browse my plans', browseNoun: 'plan', cards: LITE_SUB,
+    specialtyCards: [
+      { Icon: PartyPopper, title: 'Family Engagement Events', desc: 'Create play nights, inclusive caregiver breakfasts, and make-and-play workshops', to: '/early-childhood/family-events', well: 'bg-grass-500/15', text: 'text-grass-400', hover: 'hover:border-grass-500/40', arrow: 'group-hover:text-grass-400' },
+    ],
     workspaceFeatures: [
+      { title: 'Family engagement events', desc: 'Plan welcoming, play-based events with communication, stations, safety, and take-home resources.', to: '/early-childhood/family-events' },
       { title: 'Centers and guided play', desc: 'Developmentally appropriate invitations, routines, transitions, and teacher prompts.' },
       { title: 'Low-screen resources', desc: 'Printable picture cards, center signs, family connections, and hands-on materials.' },
-      { title: 'Observation and growth', desc: 'Whole-child observation ideas, class patterns, and optional individual notes without clinical claims.' },
     ],
   },
   ecse: {
@@ -420,10 +523,13 @@ export const MODULE_HOMES = {
     generatePath: '/test-prep/generate', generateTitle: 'Generate a test-prep session',
     generateDesc: 'Original practice questions, strategies, content review & test-day prep',
     browseTitle: 'Browse my sessions', browseNoun: 'session', cards: TESTPREP,
+    specialtyCards: [
+      { Icon: PartyPopper, title: 'Test Readiness & Family Support', desc: 'Plan family nights, strategy labs, and a healthy testing-week confidence campaign', to: '/test-prep/family-support', well: 'bg-steel-500/15', text: 'text-steel-400', hover: 'hover:border-steel-500/40', arrow: 'group-hover:text-steel-400' },
+    ],
     workspaceFeatures: [
+      { title: 'Family readiness & confidence', desc: 'Share accurate information, useful strategies, logistics, and wellbeing support without increasing anxiety.', to: '/test-prep/family-support' },
       { title: 'Original targeted practice', desc: 'Fresh questions and explanations aligned to the selected assessment and skill area.' },
       { title: 'Tutoring-ready sessions', desc: 'Timing, strategy instruction, guided practice, independent application, and review.' },
-      { title: 'Score-growth goals', desc: 'Track baseline, target, practice evidence, improvement, and regression over time.', to: '/smart-goals' },
     ],
   },
 }
@@ -437,5 +543,8 @@ export const SPECIALTY_CONTEXTS = {
   stem: {
     subject: 'STEM', moduleLabel: 'STEM', title: 'STEM', Icon: Atom, accent: accent('cobalt'),
     generatePath: '/stem/generate', browsePath: '/stem/lessons', cards: FULL_SB,
+    specialtyCards: [
+      { Icon: PartyPopper, title: 'STEM Night Studio', to: '/stem/stem-night' },
+    ],
   },
 }

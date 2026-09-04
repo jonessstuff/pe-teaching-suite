@@ -1,4 +1,5 @@
 import { sampleKickballLesson } from '../types/sampleLesson'
+import { classifiedVirginiaStandards } from '../../supabase/functions/_shared/vaSolStandards.js'
 
 /**
  * Mock generationService for the standalone preview build.
@@ -85,29 +86,83 @@ function artPreview(input = {}) {
 }
 
 function ctePreview(input = {}) {
-  const topic = input.topic?.trim() || 'Build a Monthly Budget from a First Paycheck'
-  const pathway = input.pathway || 'finance'
-  return {
-    ...classroomPreview({ ...input, topic, gradeBands: [] }, 'CTE', {
-      title: topic, unit: 'Career-Ready Financial Skills', target: '', criteria: [], modification: '', standardCode: '', standard: '',
-      skills: ['Budgeting', 'Spreadsheet formulas', 'Financial decision-making'], materials: ['Budget scenario cards', 'Laptop or calculator per pair', 'Monthly budget template'],
-      location: 'Classroom computer stations', setup: 'Post the sample paycheck and expense categories; pair students intentionally.',
+  const pathway = input.pathway || 'hospitality'
+  const pathwayLabels = {
+    hospitality: 'Hospitality & Tourism', finance: 'Finance', marketing: 'Marketing', human_services: 'Human Services / FCS',
+    health_science: 'Health Science', education: 'Education & Training', career_readiness: 'Career Readiness',
+    information_technology: 'Information Technology', transportation: 'Transportation, Distribution & Logistics',
+    manufacturing: 'Manufacturing', engineering_tech: 'STEM / Engineering & Technology', business_mgmt: 'Business Management & Administration',
+    agriculture: 'Agriculture, Food & Natural Resources', construction: 'Architecture & Construction', arts_av: 'Arts, A/V Technology & Communications',
+    government: 'Government & Public Administration', law_safety: 'Law, Public Safety, Corrections & Security', cosmetology: 'Cosmetology / Personal Care Services',
+    business_law: 'Business Law', sports_entertainment: 'Sports & Entertainment Marketing', exercise_science: 'Exercise Science / Sports Medicine',
+    early_childhood: 'Early Childhood Education & Services',
+  }
+  const pathwayLabel = pathwayLabels[pathway] || pathway.split('_').map((word) => word[0]?.toUpperCase() + word.slice(1)).join(' ')
+  const profiles = {
+    hospitality: {
+      topic: 'Plan a Safe Pop-Up Café Service for a School Event', unit: 'Hospitality Operations & Guest Service',
+      target: 'I can plan and carry out a safe, welcoming café service using hospitality roles, sanitation routines, and guest-service standards.',
+      criteria: ['The service plan assigns clear workplace roles.', 'Food-safety and sanitation steps are visible.', 'The team explains how its choices improve the guest experience.'],
+      skills: ['Guest service', 'Food safety and sanitation', 'Team roles and workflow'],
+      materials: ['Pop-up café planning sheet', 'Sample menu and order tickets', 'Sanitation checklist', 'Table-setting or service supplies'],
+      warmUp: 'Students identify three details that make a café feel safe, efficient, and welcoming.',
+      guided: 'Model a guest journey from arrival through ordering, service, payment simulation, and cleanup. Mark every handoff between team roles.',
+      instruction: 'Teach front-of-house and back-of-house responsibilities, safe food-handling expectations, professional communication, and service recovery.',
+      practice: 'Teams design and rehearse a pop-up café for a school event, assign roles, complete a safety check, and respond to one realistic guest-service scenario.',
+      closure: 'Each team names one workflow decision that improved safety and one that improved the guest experience.',
+      vocabulary: ['front of house', 'back of house', 'mise en place', 'sanitation', 'service recovery'],
+      credential: 'hospitality and food-service workplace readiness',
+    },
+    finance: {
+      topic: 'Build a Monthly Budget from a First Paycheck', unit: 'Career-Ready Financial Skills',
+      target: 'I can use a realistic paycheck to build a balanced monthly budget and explain one financial tradeoff.',
+      criteria: ['Budget totals equal the available net pay.', 'The plan includes savings and essential expenses.', 'The student explains one tradeoff using evidence.'],
+      skills: ['Budgeting', 'Spreadsheet formulas', 'Financial decision-making'],
+      materials: ['Budget scenario cards', 'Laptop or calculator per pair', 'Monthly budget template'],
       warmUp: 'Students rank five expenses from “must pay first” to “can wait” and justify one choice.',
       guided: 'Complete the first three budget categories together and model a SUM formula.',
       instruction: 'Explain take-home pay, fixed expenses, variable expenses, savings, and the difference between a want and a need using one realistic paycheck.',
       practice: 'Pairs build a balanced monthly budget for a fictional entry-level employee, make one unexpected-expense adjustment, and explain their tradeoff.',
       closure: 'Students submit one budget decision they would keep and one they would change after seeing the ending balance.',
-      vocabulary: ['net pay', 'fixed expense', 'variable expense', 'savings rate', 'balance'], routines: ['Use fictional financial information only.'], safety: ['Do not enter personal or family financial information.'],
+      vocabulary: ['net pay', 'fixed expense', 'variable expense', 'savings rate', 'balance'],
+      credential: 'finance and business workplace readiness',
+    },
+  }
+  const profile = profiles[pathway] || {
+    topic: `Complete a Realistic ${pathwayLabel} Workplace Challenge`, unit: `${pathwayLabel} Career Skills`,
+    target: `I can apply ${pathwayLabel} skills to complete a realistic workplace task safely and professionally.`,
+    criteria: ['The work meets the stated client or workplace need.', 'The student follows the relevant safety and quality checks.', 'The student explains and defends one technical decision.'],
+    skills: ['Technical decision-making', 'Workplace communication', 'Quality and safety checks'],
+    materials: ['Teacher-selected pathway tools and materials', 'Workplace scenario brief', 'Quality-control checklist'],
+    warmUp: 'Students review the workplace scenario and identify the client need, constraints, and safety expectations.',
+    guided: 'Model the first technical decision and demonstrate how a professional documents a quality or safety check.',
+    instruction: `Teach the pathway-specific process, vocabulary, safety expectations, and professional habits needed for the ${pathwayLabel} task.`,
+    practice: 'Teams complete the workplace challenge, document key decisions, conduct a quality check, and revise from feedback.',
+    closure: 'Students explain one technical choice and one employability skill they used during the challenge.',
+    vocabulary: ['client need', 'constraint', 'quality control', 'professional standard', 'revision'],
+    credential: `${pathwayLabel} workplace readiness`,
+  }
+  const topic = input.topic?.trim() || profile.topic
+  const courseName = input.courseName?.trim() || profile.unit
+  const gradeBands = input.tier === 'hs' ? [9, 10, 11, 12] : [6, 7, 8]
+  return {
+    ...classroomPreview({ ...input, topic, gradeBands }, 'CTE', {
+      title: topic, unit: courseName, target: profile.target, criteria: profile.criteria, modification: 'Provide a visual task sequence, role choices, vocabulary supports, and an extension that adds a new client constraint.', standardCode: 'CTE-WR-1', standard: `Apply technical knowledge, safety practices, and employability skills in a realistic ${pathwayLabel} task.`,
+      skills: profile.skills, materials: input.materials?.length ? input.materials : profile.materials,
+      location: 'CTE lab, classroom, or simulated workplace', setup: 'Post the scenario, role assignments, workflow, safety expectations, and quality checklist before students begin.',
+      warmUp: profile.warmUp, guided: profile.guided, instruction: profile.instruction, practice: profile.practice, closure: profile.closure,
+      vocabulary: profile.vocabulary, routines: ['Use fictional customer, employee, and financial information only.', 'Complete the safety and quality check before presenting work.'], safety: ['Use only teacher-approved tools, materials, and simulated workplace procedures.'],
     }),
     pathway,
-    pathway_label: pathway === 'finance' ? 'Finance' : 'Career & Technical Education',
-    tier: input.tier || 'hs', level: input.level || 'introductory', tier_label: input.tier === 'ms' ? 'Middle School (Exploratory)' : 'High School (Pathway) — Introductory',
-    success_criteria: ['Budget totals equal the available net pay.', 'The plan includes savings and essential expenses.', 'The student explains one tradeoff using evidence.'],
-    modifications: 'Provide a partially completed spreadsheet, a printed calculation option, vocabulary cards, and an extension scenario with irregular income.',
-    competencies: [{ code: 'FN-1', framework: 'Career Ready Practice', text: 'Apply financial reasoning and digital tools to a realistic workplace or life task.' }],
-    tools_and_platforms: ['Spreadsheet software or printed budget table', 'Calculator'],
-    career_pathway_context: { sequence: [{ level: 'introductory', course: 'Foundations of Finance', description: 'Personal finance and workplace applications', is_current: true }, { level: 'concentrator', course: 'Accounting & Financial Services', description: 'Deeper analysis and industry skills' }], note: 'Connects personal financial literacy to finance, accounting, banking, and business careers.' },
-    work_based_learning: { internships: ['Local bank or credit-union career exploration'], guest_speakers: ['Payroll, banking, or financial-services professional'], job_shadows: ['Bookkeeping or business-office observation'] },
+    pathway_label: pathwayLabel,
+    course_name: courseName,
+    tier: input.tier || 'ms', level: input.level || 'introductory', tier_label: input.tier === 'hs' ? `High School (Pathway) — ${input.level === 'concentrator' ? 'Concentrator' : input.level === 'completer' ? 'Completer' : 'Introductory'}` : 'Middle School (Exploratory)',
+    success_criteria: profile.criteria,
+    modifications: 'Provide a visual task sequence, role choices, vocabulary supports, a model of the finished work, and an extension with an additional client constraint.',
+    competencies: [{ code: 'CTE-WR-1', framework: 'Career Ready Practice', text: `Apply technical knowledge, safety practices, and employability skills in a realistic ${pathwayLabel} task.` }],
+    tools_and_platforms: input.materials?.length ? input.materials : profile.materials,
+    career_pathway_context: { sequence: [{ level: 'introductory', course: `Foundations of ${pathwayLabel}`, description: 'Career awareness, safety, and foundational technical skills', is_current: true }, { level: 'concentrator', course: `${pathwayLabel} Applications`, description: 'Deeper technical practice, client work, and credential preparation' }], note: `Builds toward ${profile.credential}, advanced coursework, work-based learning, and related careers.` },
+    work_based_learning: { internships: [`Local ${pathwayLabel.toLowerCase()} employer or community partner`], guest_speakers: [`${pathwayLabel} professional`], job_shadows: [`Observe a ${pathwayLabel.toLowerCase()} workplace role and workflow`] },
   }
 }
 
@@ -180,7 +235,7 @@ function interventionPreview(input = {}) {
 
 export async function generateLesson(input) {
   await delay(800)
-  return {
+  const lesson = {
     ...sampleKickballLesson,
     title: input.topic || sampleKickballLesson.title,
     unit: input.unit || sampleKickballLesson.unit,
@@ -189,6 +244,24 @@ export async function generateLesson(input) {
     duration_minutes: input.durationMinutes,
     class_size: input.classSize,
   }
+  if (
+    (input.subject === 'PE' || input.subject === 'Health') &&
+    (input.state === 'VA' || input.state === 'Virginia') &&
+    input.gradeBands?.some((grade) => grade >= 6 && grade <= 8)
+  ) {
+    lesson.standards = classifiedVirginiaStandards(lesson, input.subject, input.targetStandard)
+  }
+  if (input.includeMtss) {
+    lesson.tier1_supports = [
+      'Model the task, post visual directions, and use frequent checks for understanding during guided practice.',
+      'Use flexible partner grouping and brief teacher feedback before independent application.',
+    ]
+    lesson.tier2_supports = [
+      'Provide targeted small-group reteaching with a reduced number of practice steps and immediate corrective feedback.',
+    ]
+    lesson.progress_monitoring = 'Recheck the targeted skill after four supported practice attempts and record independent accuracy.'
+  }
+  return lesson
 }
 
 // The review build only needs these module forms to be navigable. Reuse the

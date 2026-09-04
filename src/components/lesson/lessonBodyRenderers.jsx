@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- renderer helpers are intentionally exported for shared lesson views */
 // Central subject → renderer dispatch for a saved lesson's body.
 //
 // Every module's generator renders its result with a bespoke renderer, but the

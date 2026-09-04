@@ -13,11 +13,14 @@ import { US_STATES } from '../constants/usStates'
 import LessonPrintFix from '../components/LessonPrintFix'
 import GenerationProgress from '../components/GenerationProgress'
 import PlanBookRenderer from '../components/renderers/PlanBookRenderer'
+import PersonalPlanRenderer from '../components/lesson/PersonalPlanRenderer'
 import SecondaryToolsPanel from '../components/lesson/SecondaryToolsPanel'
 import { useProfileDefaults, useGradeStateDefaults } from '../hooks/useProfileDefaults'
 import { persistFirstRun } from '../services/onboardingService'
 import FirstRunFields from '../components/FirstRunFields'
 import { track, setPersonProps } from '../lib/analytics'
+import { getDefaultLessonPlanFormat } from '../services/lessonPlanFormatService'
+import { recommendInstructionalPractices, recommendMtssGoals } from '../lib/personalPlanContent'
 
 const GRADE_OPTIONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
@@ -43,6 +46,8 @@ export default function LessonGenerator() {
   const [handsOn, setHandsOn] = useState(false)
   const [includeUdlEf, setIncludeUdlEf] = useState(false)
   const [includeMtss, setIncludeMtss] = useState(false)
+  const [mtssGoalBankReady, setMtssGoalBankReady] = useState(false)
+  const [defaultLessonFormat, setDefaultLessonFormat] = useState(null)
   const [coreActivityOnly, setCoreActivityOnly] = useState(false)
   // Hands-on/kinesthetic toggle: lesson mode + elementary (K–5) grades only.
   const showHandsOn = mode === 'lesson' && gradeBands.some((g) => g <= 5)
@@ -79,6 +84,13 @@ export default function LessonGenerator() {
       setProfilePreferences({ location: p?.default_location ?? '', accommodations: p?.default_accommodations ?? '' })
     }).catch(() => {})
     listPresets().then(setPresets).catch(() => {})
+    getDefaultLessonPlanFormat().then((format) => {
+      setDefaultLessonFormat(format ?? null)
+      const bankReady = (format?.mtss_goal_bank ?? []).length > 0
+      const usesMtss = (format?.sections ?? []).some((section) => section.enabled && (section.key === 'mtss_tier_1' || section.key === 'mtss_tier_2'))
+      setMtssGoalBankReady(bankReady)
+      if (bankReady && usesMtss) setIncludeMtss(true)
+    }).catch(() => {})
   }, [])
 
   function handlePeriodSelect(periodId) {
@@ -269,6 +281,11 @@ export default function LessonGenerator() {
   }
 
   if (status === 'result' && generatedLesson) {
+    const automaticFormatValues = defaultLessonFormat ? {
+      mtss_goal_numbers: recommendMtssGoals(generatedLesson, defaultLessonFormat.mtss_goal_bank ?? []),
+      mtss_notes: '',
+      instructional_practice_ids: recommendInstructionalPractices(generatedLesson, defaultLessonFormat.instructional_practice_bank ?? []),
+    } : null
     return (
       <div>
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3 print:hidden">
@@ -292,14 +309,14 @@ export default function LessonGenerator() {
                 to={`/lessons/${savedId}`}
                 className="flex items-center gap-1.5 text-sm text-ink-400 hover:text-ink-200 transition-colors"
               >
-                View lesson detail
+                Open saved lesson &amp; recommendations
                 <ExternalLink size={14} />
               </Link>
             )}
           </div>
         </div>
 
-        <p className="mb-4 text-xs text-ink-500 print:hidden">Saved to your lesson archive.</p>
+        <p className="mb-4 text-xs text-ink-500 print:hidden">Saved to your lesson archive.{defaultLessonFormat ? ` Shown below in your default “${defaultLessonFormat.name}” format.` : ''}</p>
 
         <SecondaryToolsPanel
           savedId={savedId}
@@ -309,7 +326,9 @@ export default function LessonGenerator() {
 
         <div className="mt-10">
           <LessonPrintFix lesson={generatedLesson} />
-          <PlanBookRenderer lesson={generatedLesson} />
+          {defaultLessonFormat
+            ? <PersonalPlanRenderer lesson={generatedLesson} format={defaultLessonFormat} formatValues={automaticFormatValues} />
+            : <PlanBookRenderer lesson={generatedLesson} />}
         </div>
       </div>
     )
@@ -785,7 +804,7 @@ export default function LessonGenerator() {
               <div>
                 <span className="text-sm font-medium text-ink-200">Add MTSS Tier 1 &amp; Tier 2 supports</span>
                 <p className="mt-0.5 text-xs text-ink-400">
-                  Adds an MTSS section — Tier 1 universal supports with whole-class look-fors (monitoring), plus a Tier 2 targeted layer with progress monitoring. For schools that require MTSS in the planbook; off by default.
+                  Adds an MTSS section — Tier 1 universal supports with whole-class look-fors (monitoring), plus a Tier 2 targeted layer with progress monitoring. {mtssGoalBankReady ? 'Your saved school format will automatically match the best numbered goals.' : 'For schools that require MTSS in the planbook.'}
                 </p>
               </div>
             </label>

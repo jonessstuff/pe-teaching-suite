@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Search, Loader2, Star } from 'lucide-react'
+import { Search, Loader2, Star, Sparkles, ArrowRight } from 'lucide-react'
 import LessonCard from './LessonCard'
 
 // Shared "My lessons" panel — search + sort + starred filter over a module's
@@ -19,7 +19,7 @@ const titleOf = (l) => (l.title ?? '').toLowerCase()
 const topicOf = (l) => (l.lesson_object?.unit ?? l.lesson_object?.topic ?? '').toLowerCase()
 const dateOf = (l) => new Date(l.updated_at ?? l.created_at ?? 0).getTime()
 
-export default function RecentLessonsPanel({ lessons, error, browseNoun = 'lesson', browseTo, accentText = 'text-accent-400', previewLimit = 6, moduleContext = null }) {
+export default function RecentLessonsPanel({ lessons, error, browseNoun = 'lesson', browseTo, generateTo, accentText = 'text-accent-400', previewLimit = 6, moduleContext = null }) {
   const [favoriteOverrides, setFavoriteOverrides] = useState({})
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState('recent')
@@ -110,7 +110,16 @@ export default function RecentLessonsPanel({ lessons, error, browseNoun = 'lesso
       )}
       {error && <div className="card p-4 text-sm text-red-400 border-red-500/30">Couldn&rsquo;t load: {error}</div>}
       {items !== null && total === 0 && !error && (
-        <p className="text-sm text-ink-600">Your saved {browseNoun}s will appear here once you generate your first one.</p>
+        <div className="card flex flex-col gap-4 border-dashed p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent-500/15 text-accent-600 dark:text-accent-400"><Sparkles size={19} /></span>
+            <div>
+              <p className="font-semibold text-ink-100">Your first {browseNoun} starts here</p>
+              <p className="mt-1 text-sm text-ink-500">Create one now and it will be saved here automatically for easy reuse.</p>
+            </div>
+          </div>
+          {generateTo && <Link to={generateTo} className="btn-primary shrink-0 self-start sm:self-center">Create {browseNoun} <ArrowRight size={15} /></Link>}
+        </div>
       )}
       {total > 0 && results.length === 0 && (
         <p className="text-sm text-ink-600">No {browseNoun}s match {starredOnly ? 'the starred filter' : `“${search.trim()}”`}.</p>

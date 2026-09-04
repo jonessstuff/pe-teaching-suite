@@ -136,3 +136,60 @@ export async function createPastRun({ classPeriodId, runDate, distanceLabel, dis
   }
   return session
 }
+
+export async function listPersonalRuns() {
+  const teacher_id = await teacherId()
+  const { data, error } = await supabase.from('teacher_run_entries').select('*')
+    .eq('teacher_id', teacher_id).order('run_date', { ascending: false }).order('created_at', { ascending: false })
+  if (error) throw error
+  return data ?? []
+}
+
+export async function createPersonalRun({ runDate, totalDistanceMiles, intervalsUsed, totalRunningMs, longestContinuousMiles, effortRating, followedSuggestedPlan, weightLbs, waistInches, painReported, painNotes }) {
+  const teacher_id = await teacherId()
+  const { data, error } = await supabase.from('teacher_run_entries').insert({
+    teacher_id,
+    run_date: runDate,
+    total_distance_miles: Number(totalDistanceMiles),
+    intervals_used: intervalsUsed?.trim() || null,
+    total_running_ms: Number(totalRunningMs),
+    longest_continuous_miles: Number(longestContinuousMiles),
+    effort_rating: effortRating,
+    followed_suggested_plan: !!followedSuggestedPlan,
+    weight_lbs: weightLbs,
+    waist_inches: waistInches,
+    pain_reported: !!painReported,
+    pain_notes: painNotes?.trim() || null,
+  }).select().single()
+  if (error) throw error
+  return data
+}
+
+export async function deletePersonalRun(id) {
+  const teacher_id = await teacherId()
+  const { error } = await supabase.from('teacher_run_entries').delete().eq('id', id).eq('teacher_id', teacher_id)
+  if (error) throw error
+}
+
+export async function getPersonalRunPlan() {
+  const teacher_id = await teacherId()
+  const { data, error } = await supabase.from('teacher_run_plans').select('*').eq('teacher_id', teacher_id).maybeSingle()
+  if (error) throw error
+  return data
+}
+
+export async function savePersonalRunPlan({ goalDistanceMiles, goalLabel, movementStyle, currentContinuousMiles, targetDate, activityDaysPerWeek }) {
+  const teacher_id = await teacherId()
+  const { data, error } = await supabase.from('teacher_run_plans').upsert({
+    teacher_id,
+    goal_distance_miles: Number(goalDistanceMiles),
+    goal_label: goalLabel,
+    movement_style: movementStyle,
+    current_continuous_miles: Number(currentContinuousMiles),
+    target_date: targetDate,
+    activity_days_per_week: Number(activityDaysPerWeek),
+    updated_at: new Date().toISOString(),
+  }, { onConflict: 'teacher_id' }).select().single()
+  if (error) throw error
+  return data
+}

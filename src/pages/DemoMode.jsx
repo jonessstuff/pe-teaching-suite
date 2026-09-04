@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, BarChart3, BookOpen, CalendarDays, Check, CheckCircle2, ChevronLeft, ChevronRight, ClipboardCheck, Download, FileText, Footprints, Gauge, Palette, Pause, Play, Printer, RotateCcw, Scissors, Sparkles, Speech, Target, UsersRound, X } from 'lucide-react'
-import { CHECKOUT_URL } from '../services/trialService'
+import { ArrowRight, BarChart3, BookOpen, CalendarDays, Check, CheckCircle2, ChevronLeft, ChevronRight, ClipboardCheck, Download, FileText, Footprints, Gauge, Palette, Pause, Play, Printer, RotateCcw, Scissors, Sparkles, Speech, Target, Trophy, UsersRound, X } from 'lucide-react'
+import { attributedCheckoutUrl, CHECKOUT_URL } from '../services/trialService'
 import { track } from '../lib/analytics'
 
 const STUDENTS = [
@@ -28,7 +28,10 @@ export default function DemoMode() {
   const [seconds, setSeconds] = useState(0)
   const [timerRunning, setTimerRunning] = useState(false)
   const [featurePreview, setFeaturePreview] = useState(null)
-  const todayLabel = new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).format(new Date())
+  const today = new Date()
+  const todayLabel = new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).format(today)
+  const isWeekend = today.getDay() === 0 || today.getDay() === 6
+  const checkoutHref = attributedCheckoutUrl(CHECKOUT_URL)
 
   useEffect(() => {
     track('demo_viewed')
@@ -54,7 +57,7 @@ export default function DemoMode() {
       <nav className="border-b border-slate-200 bg-white px-4 py-3">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
           <DemoLogo />
-          <div className="flex items-center gap-2 sm:gap-3"><span className="hidden rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800 sm:inline">FICTIONAL DEMO DATA</span><a href={CHECKOUT_URL} onClick={() => track('demo_trial_clicked', { placement: 'header' })} className="btn-primary px-3 text-sm sm:px-4">Start free trial <ArrowRight size={15} /></a></div>
+          <div className="flex items-center gap-2 sm:gap-3"><span className="hidden rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800 sm:inline">FICTIONAL DEMO DATA</span><a href={checkoutHref} onClick={() => track('demo_trial_clicked', { placement: 'header' })} className="btn-primary px-3 text-sm sm:px-4">Start free trial <ArrowRight size={15} /></a></div>
         </div>
       </nav>
 
@@ -86,14 +89,15 @@ export default function DemoMode() {
 
         {view === 'today' && <section className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
           <div className="rounded-2xl bg-gradient-to-br from-teal-700 to-cyan-600 p-6 text-white shadow-xl">
-            <p className="text-xs font-bold uppercase tracking-wider text-teal-100">Today · {todayLabel}</p><h2 className="mt-2 text-2xl font-bold">Good morning, Coach Taylor!</h2><p className="mt-1 text-teal-50">Everything you need for today’s classes.</p>
-            <div className="mt-6 space-y-3">
+            <p className="text-xs font-bold uppercase tracking-wider text-teal-100">Today · {todayLabel}</p><h2 className="mt-2 text-2xl font-bold">Good morning, Coach Taylor!</h2><p className="mt-1 text-teal-50">{isWeekend ? 'No classes are scheduled today. Plan ahead or preview a sample class.' : 'Everything you need for today’s classes.'}</p>
+            {isWeekend ? <div className="mt-6 rounded-xl bg-white/95 p-5 text-slate-900"><p className="font-bold">Your next class is ready when you are.</p><p className="mt-1 text-sm text-slate-600">PlansK12 keeps non-class days quiet while your saved lessons and trackers stay available.</p><button onClick={() => { setView('teach'); setPhase(0) }} className="btn-primary mt-4"><Play size={15} /> Preview Monday’s class</button></div> : <div className="mt-6 space-y-3">
               {[['Period 2 · Grade 6', 'Pacing for the Half-Mile', true], ['Period 4 · Grade 7', 'Cooperative Challenges', false], ['Period 6 · Grade 8', 'Cardiovascular Fitness Stations', false]].map(([period, title, active]) => <div key={period} className="flex flex-col gap-3 rounded-xl bg-white/95 p-4 text-slate-900 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-xs font-bold uppercase text-slate-500">{period}</p><p className="font-bold">{title}</p></div><button onClick={() => { setView('teach'); setPhase(0) }} className={active ? 'btn-primary' : 'btn-secondary'}><Play size={15} /> Teach now</button></div>)}
-            </div>
+            </div>}
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
             <DemoQuick onClick={() => setFeaturePreview('participation')} icon={UsersRound} color="text-emerald-600" title="Participation" text="Take daily grades in seconds" />
             <DemoQuick onClick={() => setFeaturePreview('run')} icon={Footprints} color="text-blue-600" title="Run Tracker" text="Track laps, times, and goals" />
+            <DemoQuick onClick={() => setFeaturePreview('tryouts')} icon={Trophy} color="text-amber-600" title="Coaching & Tryouts" text="Score live with your own rubric" />
             <DemoQuick onClick={() => setFeaturePreview('lesson')} icon={Sparkles} color="text-violet-600" title="Create a lesson" text="Standards-aligned and ready to teach" />
           </div>
         </section>}
@@ -116,7 +120,7 @@ export default function DemoMode() {
         {demoArea === 'elementary' && <ElementaryPrintableDemo />}
         {demoArea === 'support' && <SupportDemo />}
 
-        <div className="mt-7 rounded-2xl border border-violet-200 bg-violet-50 p-5 text-center"><p className="font-bold text-violet-950">Ready to use your own classes, lessons, preferences, and progress?</p><p className="mt-1 text-sm text-violet-800">Try every PlansK12 tool free for 7 days, then $9.99/month. Cancel anytime.</p><a href={CHECKOUT_URL} onClick={() => track('demo_trial_clicked', { placement: 'footer' })} className="btn-primary mt-3 inline-flex">Start my 7-day free trial <ArrowRight size={16} /></a><p className="mt-3 text-xs text-violet-700">Already have an account? <Link to="/login" className="font-semibold underline">Log in</Link></p></div>
+        <div className="mt-7 rounded-2xl border border-violet-200 bg-violet-50 p-5 text-center"><p className="font-bold text-violet-950">Ready to use your own classes, lessons, preferences, and progress?</p><p className="mt-1 text-sm text-violet-800">Try every PlansK12 tool free for 7 days, then $9.99/month. Cancel anytime.</p><a href={checkoutHref} onClick={() => track('demo_trial_clicked', { placement: 'footer' })} className="btn-primary mt-3 inline-flex">Start my 7-day free trial <ArrowRight size={16} /></a><p className="mt-3 text-xs text-violet-700">Already have an account? <Link to="/login" className="font-semibold underline">Log in</Link></p></div>
       </main>
       {featurePreview && <FeaturePreview type={featurePreview} onClose={() => setFeaturePreview(null)} />}
     </div>
@@ -178,6 +182,7 @@ function FeaturePreview({ type, onClose }) {
   const content = {
     participation: { title: 'Participation grading', body: <div className="space-y-2">{[['Avery M.', '100'], ['Jordan R.', '95 · shoes'], ['Casey L.', '50 · did not participate']].map(([name, grade]) => <div key={name} className="flex justify-between rounded-lg bg-slate-50 p-3"><strong>{name}</strong><span>{grade}</span></div>)}<p className="pt-2 text-sm text-slate-600">Daily deductions automatically roll into the weekly average.</p></div> },
     run: { title: 'Live lap tracking', body: <div><p className="text-sm text-slate-600">Tap a dot each time a student completes a lap.</p><div className="mt-4 flex gap-3">{[1, 2, 3, 4].map((lap) => <span key={lap} className={`flex h-12 w-12 items-center justify-center rounded-full font-bold ${lap < 4 ? 'bg-blue-600 text-white' : 'border-2 border-blue-200 text-blue-600'}`}>{lap}</span>)}</div><p className="mt-4 font-semibold">3 of 4 laps · 06:41 elapsed</p></div> },
+    tryouts: { title: 'Editable multi-day tryout scoring', body: <div><p className="text-sm text-slate-600">Every sport and coach can rename categories, change weights, and keep separate scores, tags, and notes for each tryout day.</p><div className="mt-4 space-y-2">{[['Day 1', '90%', '“Adjusted quickly after feedback.”'], ['Day 2', '98%', '“Strong communication and court vision.”']].map(([day, score, note]) => <div key={day} className="grid grid-cols-[70px_60px_1fr] items-center gap-2 rounded-lg bg-slate-50 p-3"><strong>{day}</strong><span className="rounded-lg bg-amber-500 px-2 py-1 text-center font-bold text-white">{score}</span><span className="text-xs text-slate-600">{note}</span></div>)}</div><div className="mt-4 flex items-center justify-between rounded-xl bg-emerald-50 p-4"><span><strong className="block text-emerald-900">Avery M. · Setter</strong><span className="text-xs text-emerald-700">188 points ÷ 2 completed days</span></span><strong className="text-2xl text-emerald-700">94% avg</strong></div><p className="mt-3 text-xs text-slate-500">Fictional demo data. Incomplete daily rubrics are saved but excluded from rankings until finished. The coach makes the final decision.</p></div> },
     lesson: { title: 'Ready-to-teach lesson', body: <div className="space-y-3"><p className="rounded-lg bg-violet-50 p-3 font-semibold text-violet-900">Grade 6 · 45 minutes · Cardiovascular endurance</p><p className="text-sm text-slate-600">Standards, warm-up, equipment, safety, instruction, modifications, assessment, and closure are created together.</p><p className="text-sm font-bold text-emerald-700">✓ Saved to your lesson library</p></div> },
   }[type]
   return <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4" role="dialog" aria-modal="true"><div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"><div className="flex items-start justify-between gap-3"><div><p className="text-xs font-bold uppercase tracking-wider text-teal-600">Interactive preview</p><h2 className="mt-1 text-xl font-bold">{content.title}</h2></div><button aria-label="Close preview" onClick={onClose} className="rounded-lg p-2 hover:bg-slate-100"><X size={19} /></button></div><div className="mt-5">{content.body}</div><button onClick={onClose} className="btn-primary mt-6 w-full">Continue exploring</button></div></div>

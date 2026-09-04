@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Sparkles, BookOpen, BookMarked, ArrowRight, ArrowLeft, CalendarDays, ClipboardList, Layers, Accessibility, BarChart3, CalendarRange, Trophy, Briefcase, ScrollText, PartyPopper, Flame, FileInput, BookCheck, Play, Footprints, UsersRound } from 'lucide-react'
+import { Sparkles, BookOpen, BookMarked, ArrowRight, ArrowLeft, CalendarDays, ClipboardList, Layers, Accessibility, BarChart3, CalendarRange, Trophy, Briefcase, ScrollText, PartyPopper, Flame, FileInput, BookCheck, Play, Footprints, UsersRound, Award, HeartPulse, BadgeDollarSign } from 'lucide-react'
 import { listLessons } from '../services/lessonsService'
 import { listPeriods } from '../services/classPeriodsService'
 import { PE_HEALTH_SUBJECTS } from '../constants/modules'
@@ -53,16 +53,18 @@ export default function Dashboard() {
       .catch(() => setPeriods([]))
   }, [])
 
-  // PE & Health scope: only this module's own subjects appear in counts and recent activity.
-  // Missing subject defaults to 'PE' (matching LessonCard), keeping legacy lessons visible here.
-  const lessons = (allLessons ?? []).filter(
-    (l) => PE_HEALTH_SUBJECTS.includes(l.lesson_object?.subject ?? l.subject ?? 'PE')
-  )
+  // Require an explicit PE-family subject so untagged legacy lessons cannot
+  // leak into this workspace. Driver's Ed intentionally belongs to this family.
+  const lessons = (allLessons ?? []).filter((lesson) => {
+    const subject = lesson.lesson_object?.subject ?? lesson.subject
+    return Boolean(subject) && PE_HEALTH_SUBJECTS.includes(subject)
+  })
 
   const recent = lessons.slice(0, 3)
   const now = new Date()
   const todayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
   const todayLabel = now.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })
+  const isWeekend = now.getDay() === 0 || now.getDay() === 6
   const todaysLessons = lessons.filter((lesson) => lesson.scheduled_date === todayKey)
   const showOnboarding =
     allLessons !== null && periods !== null && lessons.length === 0 && periods.length === 0
@@ -179,12 +181,20 @@ export default function Dashboard() {
       subtitle: 'Quick warm-ups students start on their own',
     },
     {
-      to: '/field-day',
+      to: '/programs?module=PE%20%26%20Health',
+      icon: Award,
+      iconClass: 'bg-teal-500/15 text-teal-400',
+      hoverClass: 'hover:border-teal-500/40',
+      title: 'Student Challenges',
+      subtitle: 'Run fun programs with rosters, progress, and celebrations',
+    },
+    {
+      to: '/pe-health/events',
       icon: Trophy,
       iconClass: 'bg-green-500/15 text-green-400',
       hoverClass: 'hover:border-green-500/40',
-      title: 'Field Day Planner',
-      subtitle: 'Generate complete field day plans',
+      title: 'Field Day & Family Fitness',
+      subtitle: 'Events, games, safety, communication, schedules, and printables',
     },
     {
       to: '/portfolio',
@@ -193,6 +203,14 @@ export default function Dashboard() {
       hoverClass: 'hover:border-fuchsia-500/40',
       title: 'Portfolio Builder',
       subtitle: 'Teaching portfolio with AI philosophy draft',
+    },
+    {
+      to: '/funding?module=PE%20%26%20Health',
+      icon: BadgeDollarSign,
+      iconClass: 'bg-emerald-500/15 text-emerald-400',
+      hoverClass: 'hover:border-emerald-500/40',
+      title: 'Funding Finder & Grant Studio',
+      subtitle: 'Find verified grants, track deadlines, and build applications',
     },
   ]
 
@@ -224,7 +242,7 @@ export default function Dashboard() {
             <h2 className="mt-1 text-xl font-semibold text-ink-50">{todayLabel}</h2>
             <p className="mt-1 text-sm text-ink-400">Your classes, lessons, and daily trackers in one place.</p>
           </div>
-          <Link to="/generate" className="btn-primary"><Sparkles size={16} /> Create for today</Link>
+          <Link to="/generate" className="btn-primary"><Sparkles size={16} /> {isWeekend ? 'Plan next class' : 'Create for today'}</Link>
         </div>
 
         <div className="grid gap-5 p-5 sm:p-6 lg:grid-cols-[1.5fr_1fr]">
@@ -239,16 +257,23 @@ export default function Dashboard() {
               </div>
             )) : (
               <div className="rounded-xl border border-dashed border-ink-700 bg-ink-950/30 p-5">
-                <p className="font-medium text-ink-200">No lessons are scheduled for today yet.</p>
-                <p className="mt-1 text-sm text-ink-500">Create one now, or open a recent lesson and set its date to today.</p>
+                <p className="font-medium text-ink-200">{isWeekend ? 'No classes today.' : 'Nothing is scheduled for today.'}</p>
+                <p className="mt-1 text-sm text-ink-500">
+                  {isWeekend
+                    ? 'Enjoy the break—or plan ahead for your next class whenever you are ready.'
+                    : "If today isn't a class day, you're all set. Otherwise, create a lesson or schedule one for today."}
+                </p>
                 {recent[0] && <Link to={`/lessons/${recent[0].id}`} className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-accent-400">Open most recent lesson <ArrowRight size={14} /></Link>}
               </div>
             )}
             {periods?.length > 0 && <p className="text-xs text-ink-500">{periods.length} class period{periods.length === 1 ? '' : 's'} saved in My Classes</p>}
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <Link to="/participation" className="rounded-xl border border-ink-800 bg-ink-950/50 p-4 transition-colors hover:border-emerald-500/40"><UsersRound size={21} className="text-emerald-400" /><p className="mt-3 font-semibold text-ink-100">Participation</p><p className="mt-1 text-xs text-ink-500">Grade today’s classes</p></Link>
+            <Link to="/participation" className="rounded-xl border border-ink-800 bg-ink-950/50 p-4 transition-colors hover:border-emerald-500/40"><UsersRound size={21} className="text-emerald-400" /><p className="mt-3 font-semibold text-ink-100">Participation</p><p className="mt-1 text-xs text-ink-500">{isWeekend ? 'Review or enter past grades' : 'Grade today’s classes'}</p></Link>
             <Link to="/run-tracker" className="rounded-xl border border-ink-800 bg-ink-950/50 p-4 transition-colors hover:border-sky-500/40"><Footprints size={21} className="text-sky-400" /><p className="mt-3 font-semibold text-ink-100">Run Tracker</p><p className="mt-1 text-xs text-ink-500">Start or enter a run</p></Link>
+            <Link to="/coaching" className="col-span-2 rounded-xl border border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-orange-500/10 p-4 transition-colors hover:border-amber-500/60"><Award size={21} className="text-amber-500" /><p className="mt-2 font-semibold text-ink-100">Coaching & Tryouts <span className="ml-1 rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-bold uppercase text-amber-700">New</span></p><p className="mt-1 text-xs text-ink-500">Editable live scoring, rankings, roster, practices, plays, and schedule</p></Link>
+            <Link to="/teacher-wellness" className="col-span-2 rounded-xl border border-teal-400/30 bg-gradient-to-r from-sky-500/10 via-teal-500/10 to-violet-500/10 p-4 transition-colors hover:border-teal-400/60"><HeartPulse size={21} className="text-teal-400" /><p className="mt-2 font-semibold text-ink-100">Teacher Health &amp; Wellness <span className="ml-1 rounded-full bg-teal-500/15 px-2 py-0.5 text-[10px] font-bold uppercase text-teal-400">New</span></p><p className="mt-1 text-xs text-ink-500">Your private movement goals, stress resets, packed lunches, and desk snacks</p></Link>
+            <Link to="/staff-wellness" className="col-span-2 rounded-xl border border-emerald-500/30 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 p-4 transition-colors hover:border-emerald-500/60"><HeartPulse size={21} className="text-emerald-400" /><p className="mt-2 font-semibold text-ink-100">Staff Wellness Challenges <span className="ml-1 rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold uppercase text-emerald-400">New</span></p><p className="mt-1 text-xs text-ink-500">Inclusive challenge ideas, bingo, phone check-ins, teams, and progress</p></Link>
             <Link to="/schedule" className="col-span-2 rounded-xl border border-ink-800 bg-ink-950/50 p-4 transition-colors hover:border-violet-500/40"><CalendarDays size={21} className="text-violet-400" /><p className="mt-2 font-semibold text-ink-100">My Classes</p><p className="mt-1 text-xs text-ink-500">Manage periods and shared rosters</p></Link>
           </div>
         </div>
@@ -283,7 +308,7 @@ export default function Dashboard() {
       </div>
 
       {/* My lessons — compact preview below the tools */}
-      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/lessons?module=PE%20%26%20Health" accentText="text-accent-400" moduleContext="PE & Health" />
+      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/lessons?module=PE%20%26%20Health" generateTo="/generate" accentText="text-accent-400" moduleContext="PE & Health" />
 
     </div>
   )

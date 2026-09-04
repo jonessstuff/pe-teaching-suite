@@ -42,7 +42,7 @@ export async function callClaudeForJson(system, user, maxTokens = 4096, model = 
     throw new Error("ANTHROPIC_API_KEY is not configured");
   }
 
-  const response = await fetch(ANTHROPIC_API_URL, {
+  const request = {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -58,7 +58,20 @@ export async function callClaudeForJson(system, user, maxTokens = 4096, model = 
       // valid JSON matching the schema.
       ...(schema ? { output_config: { format: { type: "json_schema", schema } } } : {}),
     }),
-  });
+  };
+
+  // Anthropic 5xx responses, including 529 overloads, are temporary. Retry
+  // briefly so teachers do not have to restart an otherwise valid request.
+  const retryableStatuses = new Set([500, 502, 503, 529]);
+  let response;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    response = await fetch(ANTHROPIC_API_URL, request);
+    if (response.ok || !retryableStatuses.has(response.status) || attempt === 2) break;
+
+    // Drain the failed response before retrying so its connection can be reused.
+    await response.text();
+    await new Promise((resolve) => setTimeout(resolve, attempt === 0 ? 1000 : 2500));
+  }
 
   if (!response.ok) {
     const errText = await response.text();

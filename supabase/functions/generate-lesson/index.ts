@@ -20,7 +20,7 @@ import { createEmptyLessonObject } from "../_shared/lessonObjectDefaults.js";
 import { captureLessonGenerated } from "../_shared/analytics.js";
 import { reportError } from "../_shared/sentry.js";
 import { resolveStateName } from "../_shared/stateNames.js";
-import { classifiedPeStandards } from "../_shared/peSolStrand.js";
+import { classifiedVirginiaStandards } from "../_shared/peSolStrand.js";
 import { anonymizeStudentSupports, restorePrivateLabels } from "../_shared/studentPrivacy.js";
 
 Deno.serve(async (req) => {
@@ -120,19 +120,21 @@ Deno.serve(async (req) => {
       ].filter((q) => q.trim().length > 3);
     }
 
-    // Virginia PE standards: the model cannot reliably name the 2022 VA PE SOL
-    // strands (it confabulates), so for VA physical-education lessons we assign
-    // the strand DETERMINISTICALLY from the lesson's content — the same logic
-    // used to backfill legacy lessons — guaranteeing one of the five official
-    // strand names. Numeric codes stay hedged (verify note). Non-VA and non-PE
-    // lessons keep the model's standards.
+    // Virginia PE and Health standards: the model is never trusted to invent
+    // SOL numbers. Grades 6-8 are matched to the verified VDOE bank and receive
+    // exact dotted codes plus official wording. Other subjects/states retain
+    // the model's standards output.
     if (
-      (subject === "PE" || subject === "PE & Health") &&
+      (subject === "PE" || subject === "Health") &&
       resolveStateName(state) === "Virginia" &&
       Array.isArray(lessonObject.grade_bands) &&
       lessonObject.grade_bands.length > 0
     ) {
-      lessonObject.standards = classifiedPeStandards(lessonObject);
+      lessonObject.standards = classifiedVirginiaStandards(
+        lessonObject,
+        subject,
+        targetStandard,
+      );
     }
 
     // Analytics: successful generation (metadata only — never lesson text).

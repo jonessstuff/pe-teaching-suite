@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Sparkles, X } from 'lucide-react'
+import { ArrowRight, Sparkles, X } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { getProfile, dismissWhatsNew } from '../services/profilesService'
 import { WHATS_NEW } from '../constants/whatsNew'
 
@@ -38,30 +39,35 @@ export default function WhatsNewBanner() {
   if (!show) return null
 
   return (
-    <div data-no-print className="relative mb-6 rounded-xl border border-accent-500/30 bg-accent-500/10 p-4 pr-10">
-      <div className="flex items-start gap-3">
-        <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent-500/20">
-          <Sparkles size={16} className="text-accent-400" />
+    <section data-no-print className="relative mb-6 overflow-hidden rounded-2xl border border-accent-500/30 bg-gradient-to-br from-accent-500/15 via-white to-violet-500/10 p-5 pr-11 shadow-sm dark:via-ink-900 dark:to-violet-500/10 sm:p-6 sm:pr-12">
+      <div aria-hidden="true" className="absolute -right-16 -top-20 h-48 w-48 rounded-full bg-accent-500/15 blur-3xl" />
+      <div className="relative flex items-start gap-3">
+        <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent-500 text-white shadow-sm">
+          <Sparkles size={19} />
         </div>
-        <div className="space-y-1.5">
-          <p className="text-sm font-semibold text-ink-50">{WHATS_NEW.title}</p>
-          <ul className="space-y-1 text-sm text-ink-300">
-            {WHATS_NEW.items.map((item, i) => (
-              <li key={i} className="leading-relaxed">
-                • {item}
-              </li>
-            ))}
-          </ul>
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[.14em] text-accent-600">{WHATS_NEW.eyebrow}</p>
+          <h2 className="mt-1 text-xl font-bold text-ink-50">{WHATS_NEW.title}</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-ink-400">{WHATS_NEW.description}</p>
         </div>
+      </div>
+      <div className="relative mt-5 grid gap-3 sm:grid-cols-2">
+        {WHATS_NEW.items.map((item) => (
+          <Link key={item.title} to={item.to} className={`group rounded-xl border p-4 transition hover:-translate-y-0.5 hover:shadow-sm ${item.accent}`}>
+            <span className="block font-semibold text-ink-100">{item.title}</span>
+            <span className="mt-1 block text-xs leading-5 text-ink-500">{item.description}</span>
+            <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold">{item.cta}<ArrowRight size={13} className="transition-transform group-hover:translate-x-0.5" /></span>
+          </Link>
+        ))}
       </div>
       <button
         type="button"
         onClick={handleDismiss}
         aria-label="Dismiss what's new"
-        className="absolute right-3 top-3 rounded-lg p-1 text-ink-500 transition-colors hover:bg-ink-800 hover:text-ink-200"
+        className="absolute right-3 top-3 rounded-lg p-1.5 text-ink-500 transition-colors hover:bg-ink-800 hover:text-ink-200"
       >
         <X size={16} />
       </button>
-    </div>
+    </section>
   )
 }

@@ -14,7 +14,7 @@ export async function generateClassroomCard({
     try {
       const bodyErr = await error.context?.json?.()
       if (bodyErr?.error) message = bodyErr.error
-    } catch {}
+    } catch { /* Keep the original service message when the response has no JSON body. */ }
     throw new Error(message)
   }
   return data

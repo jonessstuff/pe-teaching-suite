@@ -56,6 +56,25 @@ async function sendMagicLink(email: string) {
   if (!res.ok) throw new Error(`resend ${res.status}: ${await res.text()}`);
 }
 
+async function applyCampaignAttribution(userId: string, visitorId: string | null | undefined) {
+  if (!visitorId || !/^[a-zA-Z0-9_-]{8,64}$/.test(visitorId)) return;
+  const { data } = await admin.from("conversion_events")
+    .select("campaign_source, campaign_medium, campaign_name, campaign_module, campaign_content, created_at")
+    .eq("visitor_id", visitorId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  await admin.from("profiles").update({
+    acquisition_visitor_id: visitorId,
+    acquisition_source: data?.campaign_source || "direct",
+    acquisition_medium: data?.campaign_medium || null,
+    acquisition_campaign: data?.campaign_name || "Direct / untagged",
+    acquisition_module: data?.campaign_module || null,
+    acquisition_content: data?.campaign_content || null,
+    acquired_at: new Date().toISOString(),
+  }).eq("id", userId).is("acquisition_visitor_id", null);
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   try {
@@ -110,6 +129,7 @@ Deno.serve(async (req) => {
         // Transient Stripe error — keep the customer-id write, skip status.
       }
       await admin.from("profiles").update(patch).eq("id", uid);
+      await applyCampaignAttribution(uid, session.client_reference_id);
     }
 
     // Capture the Stripe customer's name into full_name at provisioning — only

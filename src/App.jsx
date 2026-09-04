@@ -6,7 +6,7 @@ import { claimSession, heartbeat, releaseSession, getStoredToken, clearStoredTok
 import { isInactive, recordActivity, clearActivity } from './services/inactivityService'
 import { useTheme } from './hooks/useTheme'
 import { identifyUser, resetAnalytics } from './lib/analytics'
-import { setSentryUser } from './lib/sentry'
+import { Sentry, setSentryUser } from './lib/sentry'
 import { TrialProvider } from './context/TrialContext'
 import AppShell from './components/layout/AppShell'
 import ModuleHome from './components/module/ModuleHome'
@@ -20,8 +20,13 @@ import LessonDetail from './pages/LessonDetail'
 import CurriculumMap from './pages/CurriculumMap'
 import LibraryGenerator from './pages/LibraryGenerator'
 import LibraryLessonLibrary from './pages/LibraryLessonLibrary'
+import ReadingChallengeHub from './pages/ReadingChallengeHub'
+import LibraryNewsletterStudio from './pages/LibraryNewsletterStudio'
+import BookMatchmaker from './pages/BookMatchmaker'
+import LibraryProjectStudio from './pages/LibraryProjectStudio'
 import ArtGenerator from './pages/ArtGenerator'
 import ArtLessonLibrary from './pages/ArtLessonLibrary'
+import ArtShowStudio from './pages/ArtShowStudio'
 import MusicGenerator from './pages/MusicGenerator'
 import MusicLessonLibrary from './pages/MusicLessonLibrary'
 import AdaptivePEGenerator from './pages/AdaptivePEGenerator'
@@ -37,6 +42,12 @@ import Students from './pages/Students'
 import ParticipationTracker from './pages/ParticipationTracker'
 import RunTracker from './pages/RunTracker'
 import SmartGoals from './pages/SmartGoals'
+import CoachingTryouts from './pages/CoachingTryouts'
+import StaffWellnessChallenge from './pages/StaffWellnessChallenge'
+import StaffWellnessCheckIn from './pages/StaffWellnessCheckIn'
+import SpecialtyProgramHub from './pages/SpecialtyProgramHub'
+import SpecialtyExperienceStudio from './pages/SpecialtyExperienceStudio'
+import CteReadinessStudio from './pages/CteReadinessStudio'
 import Settings from './pages/Settings'
 import Login from './pages/Login'
 import Landing from './pages/Landing'
@@ -54,7 +65,6 @@ import ActivityBank from './pages/ActivityBank'
 import WarmupGenerator from './pages/WarmupGenerator'
 import PacingGuideGenerator from './pages/PacingGuideGenerator'
 import MyPacingGuides from './pages/MyPacingGuides'
-import FieldDayPlanner from './pages/FieldDayPlanner'
 import PortfolioBuilder from './pages/PortfolioBuilder'
 import DistrictReport from './pages/DistrictReport'
 import ClassroomManagementGenerator from './pages/ClassroomManagementGenerator'
@@ -62,6 +72,7 @@ import MyClassroomCards from './pages/MyClassroomCards'
 import GiftedTalentedGenerator from './pages/GiftedTalentedGenerator'
 import ReadingSpecialistGenerator from './pages/ReadingSpecialistGenerator'
 import MathSpecialistGenerator from './pages/MathSpecialistGenerator'
+import InterventionFamilyNightHub from './pages/InterventionFamilyNightHub'
 import MakerProjectGenerator from './pages/MakerProjectGenerator'
 import SpecialEducationGenerator from './pages/SpecialEducationGenerator'
 import EslSpecialistGenerator from './pages/EslSpecialistGenerator'
@@ -87,6 +98,11 @@ import DanceGenerator from './pages/DanceGenerator'
 import DemoMode from './pages/DemoMode'
 import OwnerDashboard from './pages/OwnerDashboard'
 import StudentDataPrivacy from './pages/StudentDataPrivacy'
+import FundingStudio from './pages/FundingStudio'
+import AdvancedThinkersStudio from './pages/AdvancedThinkersStudio'
+import MySchoolYear from './pages/MySchoolYear'
+import LessonPlanFormat from './pages/LessonPlanFormat'
+import TeacherHealthWellness from './pages/TeacherHealthWellness'
 
 // Module-level promise reference. When a genuine new login triggers claimSession(),
 // this holds the in-flight Promise so that any concurrent SIGNED_IN events (e.g.
@@ -119,7 +135,8 @@ function App() {
     // getSession() handles the initial load (page refresh with an existing session).
     // It does NOT fire onAuthStateChange, so it bypasses the SIGNED_IN gate below —
     // which is correct: we only enforce single-session at login time, not on refresh.
-    supabase.auth.getSession().then(({ data }) => {
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (error) throw error
       const existing = data.session
 
       // Inactivity gate: if this device hasn't been active within the window,
@@ -128,13 +145,26 @@ function App() {
       if (existing && isInactive()) {
         clearActivity()
         releaseSession()
-        supabase.auth.signOut({ scope: 'local' })
+        void supabase.auth.signOut({ scope: 'local' }).catch((signOutError) => {
+          Sentry.captureException(signOutError, {
+            tags: { area: 'authentication', action: 'inactive_session_cleanup', handled: 'true' },
+            fingerprint: ['auth-network-failure', 'inactive_session_cleanup'],
+          })
+        })
         setSession(null)
         return
       }
 
       if (existing) recordActivity()
       setSession(existing)
+    }).catch((error) => {
+      Sentry.captureException(error, {
+        tags: { area: 'authentication', action: 'initial_session', handled: 'true' },
+        fingerprint: ['auth-network-failure', 'initial_session'],
+        extra: { browser_online: typeof navigator === 'undefined' ? null : navigator.onLine },
+      })
+      setAuthError('We couldn’t reach the sign-in service. Check your connection and try again in a moment.')
+      setSession(null)
     })
 
     const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -211,7 +241,15 @@ function App() {
           // re-authenticates, re-inserts an active_sessions row, and trips this
           // same limit again — a login → logout → token-refresh loop firing every
           // 30–90s (Supabase's refresh backoff). Only sign out THIS browser.
-          await supabase.auth.signOut({ scope: 'local' })
+          try {
+            await supabase.auth.signOut({ scope: 'local' })
+          } catch (signOutError) {
+            Sentry.captureException(signOutError, {
+              tags: { area: 'authentication', action: 'failed_claim_cleanup', handled: 'true' },
+              fingerprint: ['auth-network-failure', 'failed_claim_cleanup'],
+            })
+            setSession(null)
+          }
         } finally {
           activeClaimPromise = null
         }
@@ -278,7 +316,13 @@ function App() {
         setDisplaced(true)
         // scope: 'local' so we don't revoke the other devices' tokens and
         // trigger the account-wide re-login cascade (see the login handler above).
-        supabase.auth.signOut({ scope: 'local' })
+        void supabase.auth.signOut({ scope: 'local' }).catch((signOutError) => {
+          Sentry.captureException(signOutError, {
+            tags: { area: 'authentication', action: 'displaced_session_cleanup', handled: 'true' },
+            fingerprint: ['auth-network-failure', 'displaced_session_cleanup'],
+          })
+          setSession(null)
+        })
       }
     }
 
@@ -310,6 +354,7 @@ function App() {
           <Route path="/demo" element={<DemoMode />} />
           <Route path="/privacy" element={<div className="min-h-screen bg-ink-950 px-6 py-10"><StudentDataPrivacy /></div>} />
           <Route path="/free-lesson/:token" element={<FreeLessonView />} />
+          <Route path="/wellness-check-in/:token" element={<StaffWellnessCheckIn />} />
           <Route path="/update-card" element={
             <CardUpdateGate>
               <Login authError={authError} onClearAuthError={() => { setAuthError(null); setDisplaced(false) }} />
@@ -329,6 +374,7 @@ function App() {
         <Route path="/welcome" element={<Welcome />} />
         <Route path="/update-card" element={<UpdateCard />} />
         <Route path="/demo" element={<DemoMode />} />
+        <Route path="/wellness-check-in/:token" element={<StaffWellnessCheckIn />} />
         <Route path="/" element={<AppShell />}>
           <Route index element={<ModulePicker />} />
           <Route path="pe-health" element={<Dashboard />} />
@@ -336,42 +382,72 @@ function App() {
           <Route path="lessons" element={<LessonLibrary />} />
           <Route path="lessons/:id" element={<LessonDetail />} />
           <Route path="schedule" element={<Schedule />} />
+          <Route path="my-year" element={<MySchoolYear />} />
+          <Route path="lesson-format" element={<LessonPlanFormat />} />
           <Route path="students" element={<Students />} />
           <Route path="participation" element={<ParticipationTracker />} />
           <Route path="run-tracker" element={<RunTracker />} />
+          <Route path="teacher-wellness" element={<TeacherHealthWellness />} />
           <Route path="smart-goals" element={<SmartGoals />} />
+          <Route path="coaching" element={<CoachingTryouts />} />
+          <Route path="staff-wellness" element={<StaffWellnessChallenge />} />
+          <Route path="programs" element={<SpecialtyProgramHub />} />
+          <Route path="funding" element={<FundingStudio />} />
+          <Route path="open-house" element={<SpecialtyExperienceStudio key="open-house" experienceKey="open-house" />} />
+          <Route path="pe-health/events" element={<SpecialtyExperienceStudio key="pe-events" experienceKey="pe-events" />} />
           <Route path="curriculum-map" element={<CurriculumMap />} />
           <Route path="library" element={<ModuleHome config={MODULE_HOMES.library} />} />
           <Route path="library/generate" element={<LibraryGenerator />} />
           <Route path="library/lessons" element={<LibraryLessonLibrary />} />
           <Route path="library/makerspace" element={<MakerProjectGenerator origin="library" />} />
+          <Route path="library/reading-challenges" element={<ReadingChallengeHub />} />
+          <Route path="library/newsletters" element={<LibraryNewsletterStudio />} />
+          <Route path="library/book-matchmaker" element={<BookMatchmaker />} />
+          <Route path="library/book-tasting" element={<LibraryProjectStudio type="book_tasting" />} />
+          <Route path="library/collaboration" element={<LibraryProjectStudio type="teacher_collaboration" />} />
+          <Route path="library/family-literacy-night" element={<LibraryProjectStudio type="family_literacy_night" />} />
+          <Route path="library/research-quest" element={<LibraryProjectStudio type="research_quest" />} />
           <Route path="art" element={<ModuleHome config={MODULE_HOMES.art} />} />
           <Route path="art/generate" element={<ArtGenerator />} />
           <Route path="art/lessons" element={<ArtLessonLibrary />} />
+          <Route path="art/art-show" element={<ArtShowStudio />} />
           <Route path="music" element={<ModuleHome config={MODULE_HOMES.music} />} />
           <Route path="music/generate" element={<MusicGenerator />} />
           <Route path="music/lessons" element={<MusicLessonLibrary />} />
+          <Route path="music/concert-builder" element={<SpecialtyExperienceStudio key="music-concert" experienceKey="music-concert" />} />
           <Route path="adaptive-pe" element={<AdaptivePEGenerator />} />
           <Route path="stem" element={<StemHome />} />
           <Route path="stem/generate" element={<StemGenerator />} />
           <Route path="stem/lessons" element={<StemLessonLibrary />} />
           <Route path="stem/makerspace" element={<MakerProjectGenerator origin="stem" />} />
+          <Route path="stem/stem-night" element={<SpecialtyExperienceStudio key="stem-night" experienceKey="stem-night" />} />
           <Route path="cte" element={<ModuleHome config={MODULE_HOMES.cte} />} />
           <Route path="cte/generate" element={<CteGenerator />} />
           <Route path="cte/lessons" element={<CteLessonLibrary />} />
+          <Route path="cte/experiences" element={<SpecialtyExperienceStudio key="cte-experiences" experienceKey="cte-experiences" />} />
+          <Route path="cte/readiness" element={<CteReadinessStudio />} />
+          <Route path="cte/pathway-fit" element={<CteReadinessStudio />} />
+          <Route path="cte/career-foundations" element={<CteReadinessStudio />} />
+          <Route path="cte/employability-skills" element={<CteReadinessStudio />} />
           <Route path="classroom-management" element={<ClassroomManagementGenerator />} />
           <Route path="gifted-talented" element={<ModuleHome config={MODULE_HOMES['gifted-talented']} />} />
           <Route path="gifted-talented/generate" element={<GiftedTalentedGenerator />} />
+          <Route path="gifted-talented/showcase" element={<SpecialtyExperienceStudio key="gifted-showcase" experienceKey="gifted-showcase" />} />
+          <Route path="gifted-talented/advanced-thinkers" element={<AdvancedThinkersStudio />} />
           <Route path="reading-specialists" element={<ModuleHome config={MODULE_HOMES['reading-specialists']} />} />
           <Route path="reading-specialists/generate" element={<ReadingSpecialistGenerator />} />
+          <Route path="reading-specialists/family-night" element={<InterventionFamilyNightHub key="reading-family-night" type="reading" />} />
           <Route path="math-specialists" element={<ModuleHome config={MODULE_HOMES['math-specialists']} />} />
           <Route path="math-specialists/generate" element={<MathSpecialistGenerator />} />
+          <Route path="math-specialists/family-night" element={<InterventionFamilyNightHub key="math-family-night" type="math" />} />
           <Route path="special-education" element={<ModuleHome config={MODULE_HOMES['special-education']} />} />
           <Route path="special-education/generate" element={<SpecialEducationGenerator />} />
           <Route path="esl-specialist" element={<ModuleHome config={MODULE_HOMES['esl-specialist']} />} />
           <Route path="esl-specialist/generate" element={<EslSpecialistGenerator />} />
+          <Route path="esl-specialist/family-night" element={<SpecialtyExperienceStudio key="esl-family-night" experienceKey="esl-family-night" />} />
           <Route path="early-childhood" element={<ModuleHome config={MODULE_HOMES['early-childhood']} />} />
           <Route path="early-childhood/generate" element={<EarlyChildhoodGenerator />} />
+          <Route path="early-childhood/family-events" element={<SpecialtyExperienceStudio key="early-family-events" experienceKey="early-family-events" />} />
           <Route path="ecse" element={<ModuleHome config={MODULE_HOMES['ecse']} />} />
           <Route path="ecse/generate" element={<EcseGenerator />} />
           <Route path="intervention" element={<ModuleHome config={MODULE_HOMES['intervention']} />} />
@@ -396,16 +472,20 @@ function App() {
           <Route path="dhh/generate" element={<DhhGenerator />} />
           <Route path="world-languages" element={<ModuleHome config={MODULE_HOMES['world-languages']} />} />
           <Route path="world-languages/generate" element={<WorldLanguagesGenerator />} />
+          <Route path="world-languages/experiences" element={<SpecialtyExperienceStudio key="world-language-experiences" experienceKey="world-language-experiences" />} />
           <Route path="theater" element={<ModuleHome config={MODULE_HOMES.theater} />} />
           <Route path="theater/generate" element={<TheaterGenerator />} />
+          <Route path="theater/production-planner" element={<SpecialtyExperienceStudio key="theater-production" experienceKey="theater-production" />} />
           <Route path="dance" element={<ModuleHome config={MODULE_HOMES['dance']} />} />
           <Route path="dance/generate" element={<DanceGenerator />} />
+          <Route path="dance/recital-planner" element={<SpecialtyExperienceStudio key="dance-recital" experienceKey="dance-recital" />} />
           <Route path="after-school-clubs" element={<ModuleHome config={MODULE_HOMES['after-school-clubs']} />} />
           <Route path="after-school-clubs/generate" element={<AfterSchoolClubsGenerator />} />
           <Route path="jrotc" element={<ModuleHome config={MODULE_HOMES['jrotc']} />} />
           <Route path="jrotc/generate" element={<JrotcGenerator />} />
           <Route path="test-prep" element={<ModuleHome config={MODULE_HOMES['test-prep']} />} />
           <Route path="test-prep/generate" element={<TestPrepGenerator />} />
+          <Route path="test-prep/family-support" element={<SpecialtyExperienceStudio key="test-prep-family-support" experienceKey="test-prep-family-support" />} />
           <Route path="student-support-activities" element={<ModuleHome config={MODULE_HOMES['student-support-activities']} />} />
           <Route path="student-support-activities/generate" element={<SstActivityGenerator />} />
           <Route path="my-classroom-cards" element={<MyClassroomCards />} />
@@ -422,7 +502,7 @@ function App() {
           <Route path="warm-up-generator" element={<WarmupGenerator />} />
           <Route path="pacing-guide" element={<PacingGuideGenerator />} />
           <Route path="my-pacing-guides" element={<MyPacingGuides />} />
-          <Route path="field-day" element={<FieldDayPlanner />} />
+          <Route path="field-day" element={<Navigate to="/pe-health/events?view=stations" replace />} />
           <Route path="portfolio" element={<PortfolioBuilder />} />
           <Route path="district-report" element={<DistrictReport />} />
           <Route path="owner" element={<OwnerDashboard />} />

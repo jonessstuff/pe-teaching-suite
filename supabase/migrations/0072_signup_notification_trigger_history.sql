@@ -1,6 +1,9 @@
 -- =====================================================================
--- 0034_signup_notification_trigger.sql
+-- 0072_signup_notification_trigger_history.sql
 -- =====================================================================
+-- Historical reconciliation for the signup notification migration, which
+-- previously shared migration number 0034 with billing_unmatched. The SQL is
+-- intentionally idempotent so existing production behavior is preserved.
 -- Fires the "new signup" owner notification SERVER-SIDE so it's bulletproof
 -- across all signup paths and browser-cache states (the earlier client-side
 -- invoke could be missed by a stale/cached bundle). AFTER INSERT on auth.users,

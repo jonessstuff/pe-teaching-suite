@@ -167,36 +167,38 @@ export async function callCoreDayGenerator(subject, stemFocusArea, payload) {
 // `focus` is the day's instructional topic + sequence position; `notes` carries
 // any extra framing (substitute context, or unit progression). `band` is unused
 // for the 'none'-grade modules (JROTC/CTE/Early Childhood).
-export async function callNewerDayGenerator(subject, { band, focus, notes, duration, classSize, state, extra }) {
+export async function callNewerDayGenerator(subject, { band, focus, notes, duration, classSize, state, extra, clientHandlesRetry = false }) {
+  const retryMarker = clientHandlesRetry ? { __clientHandlesRetry: true } : {}
   switch (subject) {
     case 'Theater':
-      return generateTheater({ gradeBand: band, artisticProcess: 'creating', hsTier: 'proficient', focus, durationMinutes: duration, teacherNotes: notes })
+      return generateTheater({ ...retryMarker, gradeBand: band, artisticProcess: 'creating', hsTier: 'proficient', focus, durationMinutes: duration, teacherNotes: notes })
     case 'Dance':
-      return generateDance({ gradeBand: band, artisticProcess: 'creating', hsTier: 'proficient', focus, durationMinutes: duration, teacherNotes: notes })
+      return generateDance({ ...retryMarker, gradeBand: band, artisticProcess: 'creating', hsTier: 'proficient', focus, durationMinutes: duration, teacherNotes: notes })
     case 'World Languages':
-      return generateWorldLanguages({ targetLanguage: extra.targetLanguage, gradeBand: band, proficiencyLevel: extra.wlLevel, theme: focus, sessionLengthMinutes: duration, teacherNotes: notes })
+      return generateWorldLanguages({ ...retryMarker, targetLanguage: extra.targetLanguage, gradeBand: band, proficiencyLevel: extra.wlLevel, theme: focus, sessionLengthMinutes: duration, teacherNotes: notes })
     case 'JROTC':
-      return generateJrotc({ topic: focus, letLevel: extra.letLevel, contentArea: 'leadership_fundamentals', durationMinutes: duration, notes })
+      return generateJrotc({ ...retryMarker, topic: focus, letLevel: extra.letLevel, contentArea: 'leadership_fundamentals', durationMinutes: duration, notes })
     case 'Elementary Technology':
-      return generateElementaryTech({ topic: focus, gradeBand: band, contentArea: '', durationMinutes: duration, teacherNotes: notes })
+      return generateElementaryTech({ ...retryMarker, topic: focus, gradeBand: band, contentArea: '', durationMinutes: duration, teacherNotes: notes })
     case 'ESL/ELL Specialist':
-      return generateEslSpecialist({ topic: focus, gradeBand: band, proficiencyLevel: 'developing', contentArea: '', durationMinutes: duration, homeLanguages: '', teacherNotes: notes })
+      return generateEslSpecialist({ ...retryMarker, topic: focus, gradeBand: band, proficiencyLevel: 'developing', contentArea: '', durationMinutes: duration, homeLanguages: '', teacherNotes: notes })
     case 'Gifted & Talented':
-      return generateGiftedTalented({ mode: 'differentiate', gradeBand: band, topic: focus, contentArea: '', teacherNotes: notes })
+      return generateGiftedTalented({ ...retryMarker, mode: 'differentiate', gradeBand: band, topic: focus, contentArea: '', teacherNotes: notes })
     case 'Special Education':
-      return generateSpecialEducation({ mode: 'multitier', gradeBand: band, topic: focus, contentArea: '', teacherNotes: notes })
+      return generateSpecialEducation({ ...retryMarker, mode: 'multitier', gradeBand: band, topic: focus, contentArea: '', teacherNotes: notes })
     case 'CTE':
       return generateCteLesson({
+        ...retryMarker,
         pathway: extra.ctePathway, tier: extra.cteTier, level: extra.cteTier === 'hs' ? extra.cteLevel : '',
         topic: focus, materials: [], classSize, durationMinutes: duration, targetCompetency: '', state,
         sessionNumber: 0, totalSessions: 0, includeELL: false,
       })
     case 'Reading Specialists':
-      return generateReadingSpecialist({ skillArea: extra.readingSkill, gradeBand: band, focus, durationMinutes: duration, groupSize: 'Whole class', studentPattern: '', teacherNotes: notes, handsOn: false })
+      return generateReadingSpecialist({ ...retryMarker, skillArea: extra.readingSkill, gradeBand: band, focus, durationMinutes: duration, groupSize: 'Whole class', studentPattern: '', teacherNotes: notes, handsOn: false })
     case 'Math Specialists':
-      return generateMathSpecialist({ topic: focus, gradeBand: band, domain: '', setting: 'differentiation', focus: '', durationMinutes: duration, studentContext: '', teacherNotes: notes, handsOn: false })
+      return generateMathSpecialist({ ...retryMarker, topic: focus, gradeBand: band, domain: '', setting: 'differentiation', focus: '', durationMinutes: duration, studentContext: '', teacherNotes: notes, handsOn: false })
     case 'Early Childhood':
-      return generateEarlyChildhood({ studyTheme: focus, ageGroup: extra.ecAgeGroup, programType: 'general', teacherNotes: notes })
+      return generateEarlyChildhood({ ...retryMarker, studyTheme: focus, ageGroup: extra.ecAgeGroup, programType: 'general', teacherNotes: notes })
     default:
       throw new Error(`No day-generator for module: ${subject}`)
   }

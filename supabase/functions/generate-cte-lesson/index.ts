@@ -62,13 +62,18 @@ Deno.serve(async (req: Request) => {
   const stream = new ReadableStream({
     async start(controller) {
       let finished = false
+      let clientClosed = false
+      const write = (text: string) => {
+        if (clientClosed) return
+        try {
+          controller.enqueue(encoder.encode(text))
+        } catch {
+          clientClosed = true
+        }
+      }
       const keepalive = setInterval(() => {
         if (finished) return
-        try {
-          controller.enqueue(encoder.encode("\n"))
-        } catch {
-          // controller already closed (e.g. client disconnected)
-        }
+        write("\n")
       }, 10000)
 
       try {
@@ -84,15 +89,13 @@ Deno.serve(async (req: Request) => {
         clearInterval(keepalive)
         await captureLessonGenerated(req, { subject: "CTE", grades: tier ? [tier] : [], type: "cte", durationMs: Date.now() - _t0 })
         if (body?.coreActivityOnly === true) stripNonCoreSections(result)
-        controller.enqueue(encoder.encode(JSON.stringify(result)))
+        write(JSON.stringify(result))
       } catch (err) {
         finished = true
         clearInterval(keepalive)
         await reportError(err, { fn: "generate-cte-lesson" })
         console.error("[generate-cte-lesson] error:", err)
-        controller.enqueue(
-          encoder.encode(JSON.stringify({ error: (err as Error).message ?? String(err) })),
-        )
+        write(JSON.stringify({ error: (err as Error).message ?? String(err) }))
       } finally {
         try {
           controller.close()

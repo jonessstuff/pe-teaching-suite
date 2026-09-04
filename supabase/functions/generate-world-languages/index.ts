@@ -42,13 +42,18 @@ Deno.serve(async (req: Request) => {
   const stream = new ReadableStream({
     async start(controller) {
       let finished = false
+      let clientClosed = false
+      const write = (text: string) => {
+        if (clientClosed) return
+        try {
+          controller.enqueue(encoder.encode(text))
+        } catch {
+          clientClosed = true
+        }
+      }
       const keepalive = setInterval(() => {
         if (finished) return
-        try {
-          controller.enqueue(encoder.encode("\n"))
-        } catch {
-          // controller already closed
-        }
+        write("\n")
       }, 10000)
 
       try {
@@ -57,15 +62,13 @@ Deno.serve(async (req: Request) => {
         finished = true
         clearInterval(keepalive)
         await captureLessonGenerated(req, { subject: "World Languages", grades: gradeBand ? [gradeBand] : [], type: "world-languages", durationMs: Date.now() - _t0 })
-        controller.enqueue(encoder.encode(JSON.stringify(result)))
+        write(JSON.stringify(result))
       } catch (err) {
         finished = true
         clearInterval(keepalive)
         await reportError(err, { fn: "generate-world-languages" })
         console.error("[generate-world-languages] error:", err)
-        controller.enqueue(
-          encoder.encode(JSON.stringify({ error: (err as Error).message ?? String(err) })),
-        )
+        write(JSON.stringify({ error: (err as Error).message ?? String(err) }))
       } finally {
         try {
           controller.close()

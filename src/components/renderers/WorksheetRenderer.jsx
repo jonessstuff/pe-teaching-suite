@@ -131,7 +131,7 @@ function WordSearch({ f }) {
 }
 
 function Matching({ f }) {
-  const pairs = f.pairs ?? []
+  const pairs = useMemo(() => f.pairs ?? [], [f.pairs])
   const shuffledDefs = useMemo(() => shuffle(pairs.map((p, i) => ({ ...p, _orig: i }))), [pairs])
   return (
     <div className="grid grid-cols-2 gap-6">
@@ -254,7 +254,6 @@ function answerLines(f) {
     case 'fill_blank':
       return (f.items ?? []).map((it, i) => `${i + 1}. ${it.answer}`)
     case 'matching': {
-      const defs = f.pairs ?? []
       return (f.pairs ?? []).map((p, i) => `${i + 1}. ${p.term} → ${p.definition}`)
     }
     case 'multiple_choice':

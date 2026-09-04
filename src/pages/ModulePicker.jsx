@@ -1,10 +1,13 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Library, Palette, Music, Drama, Wind, FlaskConical, Monitor, Award, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, Languages, Compass, Speech, Hand, Handshake, PersonStanding, ScanEye, Ear, PartyPopper, Target, Globe, Users, Blocks, Baby, Layers, Presentation, Star, Plus, Clock, ChevronDown, LayoutGrid, ArrowRight } from 'lucide-react'
+import { Library, Palette, Music, Drama, Wind, FlaskConical, Monitor, Award, Briefcase, ClipboardCheck, Sparkles, BookOpen, Calculator, HeartHandshake, HeartPulse, Languages, Compass, Speech, Hand, Handshake, PersonStanding, ScanEye, Ear, PartyPopper, Target, Globe, Users, Blocks, Baby, Layers, Presentation, Star, Plus, Clock, ChevronDown, LayoutGrid, ArrowRight, CalendarCheck2 } from 'lucide-react'
 import { useDisplayName, getTimeGreeting } from '../hooks/useDisplayName'
 import { useFavorites } from '../hooks/useFavorites'
 import ModuleCard from '../components/module/ModuleCard'
 import { listLessons } from '../services/lessonsService'
+import { useTrial } from '../context/TrialContext'
+import { MODULE_HOMES } from '../constants/moduleHomes'
+import { moduleAccent } from '../constants/moduleAccents'
 
 // ─── Module catalog ─────────────────────────────────────────────────────────
 // Single source of truth for the picker cards. `key` is the module's stable
@@ -119,6 +122,7 @@ const ALL_MODULES = GROUPS.flatMap((g) => g.modules)
 
 export default function ModulePicker() {
   const firstName = useDisplayName()
+  const { profile } = useTrial()
   const { favorites, toggle, loaded } = useFavorites()
   const [filter, setFilter] = useState('all')
   const [showAllMobile, setShowAllMobile] = useState(false)
@@ -132,6 +136,18 @@ export default function ModulePicker() {
 
   const favoriteModules = ALL_MODULES.filter((m) => favorites.has(m.key))
   const showFavorites = loaded && favoriteModules.length > 0
+
+  const teachingAreas = Array.isArray(profile?.teaching_areas) ? profile.teaching_areas : []
+  const normalizedAreas = teachingAreas.map(normalizeSpecialty)
+  const profileMatches = ALL_MODULES.filter((module) => {
+    const moduleTerms = [module.key, module.label, module.label.replaceAll('&', 'and')].map(normalizeSpecialty)
+    return normalizedAreas.some((area) => moduleTerms.some((term) => area === term || area.includes(term) || term.includes(area)))
+  })
+  const combinedRecommendations = [...favoriteModules, ...profileMatches]
+  const uniqueRecommendations = combinedRecommendations.filter((module, index) => combinedRecommendations.findIndex((candidate) => candidate.key === module.key) === index)
+  // A new account may not have selected or starred a specialty yet. Showing
+  // three varied starting points is more useful than leaving another blank area.
+  const recommendedModules = (uniqueRecommendations.length > 0 ? uniqueRecommendations : ALL_MODULES.filter((module) => ['pe-health', 'art', 'library'].includes(module.key))).slice(0, 3)
 
   // Filter row: All · Favorites (if any) · one chip per group.
   const chips = [
@@ -160,10 +176,24 @@ export default function ModulePicker() {
         </div>
       </div>
 
+      <Link to="/my-year" className="group grid gap-4 overflow-hidden rounded-3xl border border-teal-500/30 bg-gradient-to-r from-teal-500/15 via-blue-500/10 to-violet-500/10 p-5 transition-colors hover:border-teal-400 sm:grid-cols-[auto_1fr_auto] sm:items-center sm:p-6">
+        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-500/15 text-teal-400"><CalendarCheck2 size={24} /></span>
+        <span><span className="text-xs font-black uppercase tracking-[.16em] text-teal-400">New · Your command center</span><span className="mt-1 block text-xl font-black text-ink-50">My School Year</span><span className="mt-1 block text-sm leading-6 text-ink-400">See upcoming lessons, active goals, saved classes, and everything that needs your attention across PlansK12.</span></span>
+        <span className="inline-flex items-center gap-1 text-sm font-black text-teal-400">Open my year <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" /></span>
+      </Link>
+
+      <Link to="/teacher-wellness" className="group flex items-center gap-4 rounded-2xl border border-teal-400/30 bg-gradient-to-r from-sky-500/10 via-teal-500/10 to-violet-500/5 p-4 transition-colors hover:border-teal-400/60 sm:p-5">
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-teal-500/15 text-teal-400"><HeartPulse size={22} /></span>
+        <span className="min-w-0 flex-1"><span className="text-xs font-bold uppercase tracking-wide text-teal-400">New · For the whole teacher</span><span className="mt-0.5 block font-semibold text-ink-100">Teacher Health &amp; Wellness</span><span className="block text-sm text-ink-500">Private walking and running goals, daily stress resets, packed lunch ideas, and desk snacks.</span></span>
+        <ArrowRight size={18} className="shrink-0 text-teal-400 transition-transform group-hover:translate-x-1" />
+      </Link>
+
       {recentLesson && <Link to={`/lessons/${recentLesson.id}`} className="group flex items-center gap-3 rounded-2xl border border-blue-500/20 bg-gradient-to-r from-blue-500/10 to-violet-500/5 p-4 transition-colors hover:border-blue-500/40">
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-500/15 text-blue-500"><Clock size={19} /></span>
         <span className="min-w-0 flex-1"><span className="text-xs font-bold uppercase tracking-wide text-blue-500">Continue where you left off</span><span className="mt-0.5 block truncate font-semibold text-ink-100">{recentLesson.title}</span><span className="block text-xs text-ink-500">Open your most recent lesson</span></span><ArrowRight size={18} className="text-ink-600 transition-transform group-hover:translate-x-1" />
       </Link>}
+
+      <RecommendedSpecialties modules={recommendedModules} personalized={favoriteModules.length > 0 || (profile?.teaching_areas?.length ?? 0) > 0} />
 
       {/* Specialty picker: heading + filter chips */}
       <div id="choose-specialty" className="scroll-mt-24 space-y-4">
@@ -234,6 +264,78 @@ export default function ModulePicker() {
         )}
       </div>
     </div>
+  )
+}
+
+function normalizeSpecialty(value) {
+  return String(value ?? '')
+    .toLowerCase()
+    .replaceAll('&', 'and')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+}
+
+function lessonPath(module) {
+  return module.key === 'pe-health' ? '/generate' : `${module.to}/generate`
+}
+
+function standoutTool(module) {
+  if (module.key === 'pe-health') {
+    return { title: 'Open Run Tracker', desc: 'Count laps, save times, and show student progress', to: '/run-tracker' }
+  }
+  const config = MODULE_HOMES[module.key]
+  const specialty = config?.specialtyCards?.[0]
+  if (specialty) return { title: specialty.title, desc: specialty.desc, to: specialty.to }
+  if (config?.cards?.includes('programs')) {
+    return { title: 'Challenges & Programs', desc: 'Run a rewarding student experience from start to finish', to: `/programs?module=${encodeURIComponent(module.label)}` }
+  }
+  return null
+}
+
+function RecommendedSpecialties({ modules, personalized }) {
+  return (
+    <section aria-labelledby="recommended-heading" className="space-y-4">
+      <div className="flex flex-wrap items-end justify-between gap-2">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.14em] text-accent-600 dark:text-accent-400">Your quickest way in</p>
+          <h2 id="recommended-heading" className="mt-1 text-xl font-semibold text-ink-100">{personalized ? 'Recommended for you' : 'Popular places to start'}</h2>
+          <p className="mt-1 text-sm text-ink-500">{personalized ? 'Based on your teaching profile and starred specialties.' : 'Star a specialty below and this area will become yours.'}</p>
+        </div>
+        <a href="#choose-specialty" className="text-sm font-semibold text-ink-500 hover:text-ink-200">See every specialty ↓</a>
+      </div>
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {modules.map((module) => {
+          const treatment = moduleAccent(module.accent)
+          const StandoutIcon = module.Icon ?? Sparkles
+          const tool = standoutTool(module)
+          return (
+            <article key={module.key} className={`card overflow-hidden border-t-2 p-0 ${treatment.topBorder}`}>
+              <div className="flex items-start gap-3 p-5 pb-4">
+                <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${treatment.wrap}`}><StandoutIcon size={21} className={treatment.icon} /></span>
+                <span className="min-w-0">
+                  <span className="block text-xs font-bold uppercase tracking-wide text-ink-500">{module.label} workspace</span>
+                  <span className="mt-1 block font-semibold text-ink-100">What would help right now?</span>
+                </span>
+              </div>
+              <div className="grid border-t border-ink-900 sm:grid-cols-2">
+                <Link to={module.to} className="group flex items-center justify-between gap-2 px-5 py-3.5 text-sm font-semibold text-ink-200 hover:bg-ink-950">
+                  Open workspace <ArrowRight size={15} className="shrink-0 transition-transform group-hover:translate-x-0.5" />
+                </Link>
+                <Link to={lessonPath(module)} className="group flex items-center justify-between gap-2 border-t border-ink-900 px-5 py-3.5 text-sm font-semibold text-ink-200 hover:bg-ink-950 sm:border-l sm:border-t-0">
+                  Create lesson <Plus size={15} className="shrink-0" />
+                </Link>
+              </div>
+              {tool && (
+                <Link to={tool.to} className={`group flex items-center justify-between gap-3 border-t border-ink-900 px-5 py-4 ${treatment.buttonBg}`}>
+                  <span><span className={`block text-sm font-bold ${treatment.buttonText}`}>{tool.title}</span><span className="mt-0.5 block text-xs text-ink-500">{tool.desc}</span></span>
+                  <ArrowRight size={16} className={`shrink-0 ${treatment.buttonText} transition-transform group-hover:translate-x-1`} />
+                </Link>
+              )}
+            </article>
+          )
+        })}
+      </div>
+    </section>
   )
 }
 

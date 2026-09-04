@@ -13,6 +13,7 @@
  */
 import posthog from 'posthog-js'
 import { supabase } from './supabaseClient'
+import { getCampaignAttribution, getCampaignVisitorId } from '../services/campaignAttributionService'
 
 const KEY = import.meta.env.VITE_POSTHOG_KEY
 const HOST = import.meta.env.VITE_POSTHOG_HOST || 'https://us.i.posthog.com'
@@ -71,11 +72,19 @@ export function resetAnalytics() {
  * No-ops inside the student-data area. Pass metadata only.
  */
 export function track(event, properties = {}) {
-  if (['demo_viewed', 'demo_section_viewed', 'demo_trial_clicked', 'demo_csv_downloaded'].includes(event)) {
+  if (['site_viewed', 'trial_clicked', 'demo_viewed', 'demo_section_viewed', 'demo_trial_clicked', 'demo_csv_downloaded', 'landing_feature_video_clicked'].includes(event)) {
+    const attribution = getCampaignAttribution()
     supabase.from('conversion_events').insert({
       event_name: event,
       section: typeof properties.section === 'string' ? properties.section.slice(0, 30) : null,
       placement: typeof properties.placement === 'string' ? properties.placement.slice(0, 30) : null,
+      visitor_id: getCampaignVisitorId(),
+      campaign_source: attribution.source ?? null,
+      campaign_medium: attribution.medium ?? null,
+      campaign_name: attribution.campaign ?? null,
+      campaign_module: attribution.module ?? null,
+      campaign_content: attribution.content ?? null,
+      path: typeof window === 'undefined' ? null : window.location.pathname.slice(0, 200),
     }).then(() => {}).catch(() => {})
   }
   if (!ready) return

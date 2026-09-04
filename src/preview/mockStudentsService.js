@@ -1,6 +1,8 @@
 export const previewStudents = [
   ['student-1', 'Avery M.', 4, 'period-4x'], ['student-2', 'Jordan R.', 4, 'period-4x'], ['student-3', 'Casey L.', 4, 'period-4x'],
   ['student-4', 'Morgan T.', 4, 'period-4x'], ['student-5', 'Riley K.', 4, 'period-4x'], ['student-6', 'Taylor S.', 4, 'period-4x'],
+  ['student-7', 'Maya C.', 4, 'period-library'], ['student-8', 'Noah B.', 4, 'period-library'], ['student-9', 'Sofia G.', 4, 'period-library'],
+  ['student-10', 'Elijah P.', 4, 'period-library'], ['student-11', 'Harper D.', 4, 'period-library'],
 ].map(([id, name_or_initials, grade, class_period_id]) => ({ id, name_or_initials, grade, class_period_id, accommodation_type: 'None' }))
 
 export async function listStudents() { return previewStudents }

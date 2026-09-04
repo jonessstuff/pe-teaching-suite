@@ -1,10 +1,11 @@
 import LessonBody from '../lesson/lessonBodyRenderers'
+import PersonalPlanRenderer from '../lesson/PersonalPlanRenderer'
 
 // Renders a generated unit as a day-by-day stack. Each day is a full lesson in
 // its own module's shape, so we dispatch on the LESSON's own subject (which
 // matches LESSON_RENDERERS — e.g. a Library day saves as "Library/Media") and
 // only fall back to the builder's module label if a lesson somehow lacks one.
-export default function UnitRenderer({ subject, unitName, days }) {
+export default function UnitRenderer({ subject, unitName, days, format = null }) {
   return (
     <div className="lesson-doc space-y-8">
       {unitName && (
@@ -24,7 +25,9 @@ export default function UnitRenderer({ subject, unitName, days }) {
           <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-ink-500 print:text-gray-500">
             Day {i + 1} of {days.length}
           </p>
-          <LessonBody subject={lesson?.subject ?? subject} lesson={lesson} />
+          {format
+            ? <PersonalPlanRenderer lesson={lesson} format={format} formatValues={lesson.__formatValues} />
+            : <LessonBody subject={lesson?.subject ?? subject} lesson={lesson} />}
         </div>
       ))}
     </div>

@@ -30,12 +30,12 @@ function PlansK12Logo() {
 export default function Welcome() {
   const [params] = useSearchParams()
   const sessionId = params.get('session_id')
-  const [status, setStatus] = useState('loading') // loading | ready | fallback
+  const [status, setStatus] = useState(sessionId ? 'loading' : 'fallback') // loading | ready | fallback
   const [email, setEmail] = useState(null)
   const [resend, setResend] = useState('idle') // idle | sending | sent | error
 
   useEffect(() => {
-    if (!sessionId) { setStatus('fallback'); return }
+    if (!sessionId) return
     let active = true
     supabase.functions
       .invoke('activate-checkout', { body: { session_id: sessionId } })

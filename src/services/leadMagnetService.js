@@ -9,7 +9,7 @@ async function invoke(payload) {
     try {
       const body = await error.context?.json?.()
       if (body?.error) message = body.error
-    } catch {}
+    } catch { /* Keep the original service message when the response has no JSON body. */ }
     throw new Error(message)
   }
   return data

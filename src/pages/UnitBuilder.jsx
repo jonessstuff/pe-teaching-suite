@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
-import { Layers, Sparkles, Loader2, Printer, ArrowLeft, CheckCircle2, FolderOpen } from 'lucide-react'
+import { Layers, Sparkles, Loader2, Printer, ArrowLeft, CheckCircle2, FolderOpen, RefreshCw } from 'lucide-react'
 import {
   CORE_SUBJECTS, NEWER_SUBJECTS,
   gradeModel, numToBand,
@@ -9,12 +9,43 @@ import {
   callCoreDayGenerator, callNewerDayGenerator,
 } from '../services/moduleDayGenerators'
 import { createUnit, createLesson } from '../services/lessonsService'
+import { getDefaultLessonPlanFormat, saveLessonPlanFormatValues } from '../services/lessonPlanFormatService'
+import { trackToolUsage } from '../services/productUsageService'
+import { recommendInstructionalPractices, recommendMtssGoals } from '../lib/personalPlanContent'
 import { US_STATES } from '../constants/usStates'
 import UnitRenderer from '../components/renderers/UnitRenderer'
 import useModuleToolContext from '../hooks/useModuleToolContext'
 import ModuleToolContext from '../components/ModuleToolContext'
 
 const DAY_OPTIONS = [1, 2, 3, 4, 5]
+const MAX_GENERATION_ATTEMPTS = 3
+const RETRY_DELAYS_MS = [1200, 3000]
+
+function isTransientGenerationError(error) {
+  const message = String(error?.message ?? error ?? '').toLowerCase()
+  return /\b(429|502|503|529)\b|overload|rate.?limit|temporarily unavailable|service is unusually busy/.test(message)
+}
+
+function wait(ms) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms))
+}
+
+async function generateWithRetry(operation, onRetry, onRecovered) {
+  let lastError
+  for (let attempt = 1; attempt <= MAX_GENERATION_ATTEMPTS; attempt++) {
+    try {
+      const result = await operation()
+      if (attempt > 1) onRecovered(attempt)
+      return result
+    } catch (error) {
+      lastError = error
+      if (!isTransientGenerationError(error) || attempt === MAX_GENERATION_ATTEMPTS) throw error
+      onRetry(attempt + 1)
+      await wait(RETRY_DELAYS_MS[attempt - 1])
+    }
+  }
+  throw lastError
+}
 
 // URL slug → subject (home cards deep-link with ?subject=)
 const SUBJECT_FROM_SLUG = {
@@ -107,6 +138,14 @@ export default function UnitBuilder() {
   const [savedUnitId, setSavedUnitId] = useState(null)
   const [error, setError] = useState(null)
   const [resultMeta, setResultMeta] = useState(null)
+  const [defaultLessonFormat, setDefaultLessonFormat] = useState(null)
+  const [generationConfig, setGenerationConfig] = useState(null)
+  const [failedDay, setFailedDay] = useState(null)
+  const [retryAttempt, setRetryAttempt] = useState(0)
+
+  useEffect(() => {
+    getDefaultLessonPlanFormat().then((format) => setDefaultLessonFormat(format ?? null)).catch(() => {})
+  }, [])
 
   const isCore = CORE_SUBJECTS.includes(subject)
   const model = gradeModel(subject)
@@ -122,6 +161,107 @@ export default function UnitBuilder() {
     setCoreGrades((prev) => prev.includes(v) ? prev.filter((g) => g !== v) : [...prev, v].sort((a, b) => a - b))
   }
 
+  async function generateRemainingDays(config, unitId, completedDays = []) {
+    setLoading(true)
+    setError(null)
+    setFailedDay(null)
+    const generated = [...completedDays]
+
+    try {
+      for (let d = generated.length + 1; d <= config.dayCount; d++) {
+        setProgressDay(d)
+        setRetryAttempt(1)
+
+        const priorText = generated.map((l, i) => summarizeDay(l, i + 1)).join('\n')
+        const focusLines = [
+          config.topic,
+          '',
+          `This is Day ${d} of a ${config.dayCount}-day UNIT titled "${config.name}" — a coherent skill/knowledge progression across days.`,
+          d === 1
+            ? 'Day 1 introduces the foundational skills/concepts for this unit.'
+            : 'Build DIRECTLY on the earlier days below: reference and extend what was already taught, do NOT reintroduce earlier skills from scratch, and use fresh opening/warm-up and instruction content that moves the progression forward (toward application, then assessment).',
+        ]
+        if (priorText) focusLines.push('', 'Already taught in earlier days (build on this, do not repeat):', priorText)
+        const focus = focusLines.join('\n')
+        const notes = [
+          config.teacherNotes,
+          config.formatRequiresMtss ? 'Include explicit MTSS Tier 1 universal supports plus an appropriate Tier 2 targeted support and progress check for this day.' : '',
+        ].filter(Boolean).join('\n')
+
+        const lesson = await generateWithRetry(() => {
+          if (config.isCore) {
+            return callCoreDayGenerator(config.subject, config.stemFocusArea, {
+              __clientHandlesRetry: true,
+              gradeBands: config.coreGrades,
+              topic: focus,
+              classSize: config.classSize,
+              durationMinutes: config.duration,
+              state: config.state,
+              includeMtss: config.formatRequiresMtss,
+            })
+          }
+          return callNewerDayGenerator(config.subject, {
+            clientHandlesRetry: true,
+            band: config.band,
+            focus,
+            notes,
+            duration: config.duration,
+            classSize: config.classSize,
+            state: config.state,
+            extra: config.extra,
+          })
+        }, (attempt) => {
+          setRetryAttempt(attempt)
+          void trackToolUsage('ai-unit-builder', 'generation_retry', {
+            moduleLabel: config.subject,
+            metadata: { attempts: attempt, issue: 'temporary_service_error' },
+          })
+        }, (attempt) => {
+          void trackToolUsage('ai-unit-builder', 'generation_recovered', {
+            moduleLabel: config.subject,
+            metadata: { attempts: attempt, issue: 'temporary_service_error' },
+          })
+        })
+
+        // Tag with the unit name + persist, then reveal.
+        const dayLesson = { ...lesson, unit: config.name }
+        const savedDay = await createLesson(dayLesson, { aiModel: 'claude-sonnet-4-6', unitId })
+        const automaticFormatValues = config.defaultLessonFormat ? {
+          mtss_goal_numbers: recommendMtssGoals(dayLesson, config.defaultLessonFormat.mtss_goal_bank ?? []),
+          mtss_notes: '',
+          instructional_practice_ids: recommendInstructionalPractices(dayLesson, config.defaultLessonFormat.instructional_practice_bank ?? []),
+        } : null
+        if (config.defaultLessonFormat && automaticFormatValues) {
+          try {
+            await saveLessonPlanFormatValues(savedDay.id, config.defaultLessonFormat.id, automaticFormatValues)
+          } catch {
+            // The unit itself remains usable if saving optional personal-format
+            // selections is temporarily unavailable.
+          }
+        }
+        generated.push({ ...dayLesson, __formatValues: automaticFormatValues })
+        setDays([...generated])
+      }
+    } catch (err) {
+      const nextDay = generated.length + 1
+      setFailedDay(nextDay)
+      const savedMessage = generated.length > 0
+        ? `${generated.length} completed day${generated.length === 1 ? ' is' : 's are'} safely saved.`
+        : 'No unit days were created, and nothing was lost.'
+      setError(isTransientGenerationError(err)
+        ? `The lesson service is still busy after ${MAX_GENERATION_ATTEMPTS} automatic attempts. ${savedMessage}`
+        : `Day ${nextDay} could not be generated. ${savedMessage}`)
+      void trackToolUsage('ai-unit-builder', 'generation_failed', {
+        moduleLabel: config.subject,
+        metadata: { attempts: isTransientGenerationError(err) ? MAX_GENERATION_ATTEMPTS : 1, issue: isTransientGenerationError(err) ? 'service_busy' : 'generation_error' },
+      })
+    } finally {
+      setLoading(false)
+      setProgressDay(0)
+      setRetryAttempt(0)
+    }
+  }
+
   async function handleGenerate(e) {
     e.preventDefault()
     if (!topic.trim()) { setError('Enter a unit topic.'); return }
@@ -134,17 +274,36 @@ export default function UnitBuilder() {
     }
 
     const name = unitName.trim() || topic.trim()
-    const band = numToBand(grade)
-    const extra = {
-      targetLanguage: targetLanguage.trim(), wlLevel, letLevel,
-      ctePathway, cteTier, cteLevel, readingSkill, ecAgeGroup,
+    const unitGradeBands = isCore ? [...coreGrades] : (grade !== null ? [grade] : [])
+    const config = {
+      subject,
+      name,
+      dayCount,
+      topic: topic.trim(),
+      teacherNotes: teacherNotes.trim(),
+      isCore,
+      coreGrades: [...coreGrades],
+      band: numToBand(grade),
+      classSize,
+      duration,
+      state,
+      stemFocusArea,
+      extra: {
+        targetLanguage: targetLanguage.trim(), wlLevel, letLevel,
+        ctePathway, cteTier, cteLevel, readingSkill, ecAgeGroup,
+      },
+      defaultLessonFormat,
+      formatRequiresMtss: (defaultLessonFormat?.sections ?? []).some((section) =>
+        section.enabled && (section.key === 'mtss_tier_1' || section.key === 'mtss_tier_2')
+      ),
     }
-    const unitGradeBands = isCore ? coreGrades : (grade !== null ? [grade] : [])
 
     setLoading(true)
     setError(null)
     setDays([])
     setSavedUnitId(null)
+    setFailedDay(null)
+    setGenerationConfig(config)
     setResultMeta({ subject, unitName: name, dayCount })
     setView('result')
 
@@ -153,53 +312,23 @@ export default function UnitBuilder() {
       // failure still keeps the completed days, linked to the unit).
       const createdUnit = await createUnit({ name, subject, gradeBands: unitGradeBands })
       setSavedUnitId(createdUnit.id)
-
-      const generated = []
-      for (let d = 1; d <= dayCount; d++) {
-        setProgressDay(d)
-
-        const priorText = generated.map((l, i) => summarizeDay(l, i + 1)).join('\n')
-        const focusLines = [
-          topic.trim(),
-          '',
-          `This is Day ${d} of a ${dayCount}-day UNIT titled "${name}" — a coherent skill/knowledge progression across days.`,
-          d === 1
-            ? 'Day 1 introduces the foundational skills/concepts for this unit.'
-            : 'Build DIRECTLY on the earlier days below: reference and extend what was already taught, do NOT reintroduce earlier skills from scratch, and use fresh opening/warm-up and instruction content that moves the progression forward (toward application, then assessment).',
-        ]
-        if (priorText) focusLines.push('', 'Already taught in earlier days (build on this, do not repeat):', priorText)
-        const focus = focusLines.join('\n')
-        const notes = teacherNotes.trim()
-
-        let lesson
-        if (isCore) {
-          lesson = await callCoreDayGenerator(subject, stemFocusArea, {
-            gradeBands: coreGrades,
-            topic: focus,
-            classSize,
-            durationMinutes: duration,
-            state,
-          })
-        } else {
-          lesson = await callNewerDayGenerator(subject, { band, focus, notes, duration, classSize, state, extra })
-        }
-
-        // Tag with the unit name + persist, then reveal.
-        const dayLesson = { ...lesson, unit: name }
-        await createLesson(dayLesson, { aiModel: 'claude-sonnet-4-6', unitId: createdUnit.id })
-        generated.push(dayLesson)
-        setDays([...generated])
-      }
-    } catch (err) {
-      setError(err?.message ?? 'Unit generation failed. Please try again.')
-    } finally {
+      await generateRemainingDays(config, createdUnit.id, [])
+    } catch {
       setLoading(false)
       setProgressDay(0)
+      setRetryAttempt(0)
+      setError('The unit could not be started. Please try again in a moment.')
     }
+  }
+
+  function retryFailedGeneration() {
+    if (!generationConfig || !savedUnitId) return
+    generateRemainingDays(generationConfig, savedUnitId, days)
   }
 
   function resetForm() {
     setView('form'); setDays([]); setError(null); setSavedUnitId(null); setResultMeta(null)
+    setGenerationConfig(null); setFailedDay(null); setRetryAttempt(0)
   }
 
   // ── Result view ────────────────────────────────────────────────────────────
@@ -216,34 +345,47 @@ export default function UnitBuilder() {
             </button>
           </div>
           <div className="flex items-center gap-2">
-            {savedUnitId && !loading && (
+            {savedUnitId && !loading && days.length > 0 && (
               <Link to={`/lessons?module=${encodeURIComponent(subject)}`} className="btn-secondary gap-1.5">
                 <FolderOpen size={16} /> View in archive
               </Link>
             )}
-            <button type="button" onClick={() => window.print()} disabled={loading} className="btn-secondary gap-1.5 disabled:opacity-50">
+            <button type="button" onClick={() => window.print()} disabled={loading || days.length === 0} className="btn-secondary gap-1.5 disabled:opacity-50">
               <Printer size={16} /> Print unit
             </button>
           </div>
         </div>
 
         {error && (
-          <div className="mb-6 rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-ink-100 print:hidden">{error}</div>
+          <div className="mb-6 rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-ink-100 print:hidden">
+            <p>{error}</p>
+            {failedDay && savedUnitId && generationConfig && (
+              <button type="button" onClick={retryFailedGeneration} className="btn-secondary mt-3 gap-1.5">
+                <RefreshCw size={15} /> Retry Day {failedDay}
+              </button>
+            )}
+          </div>
         )}
 
         {loading && (
           <div className="mb-6 flex items-center gap-2 text-sm text-ink-300 print:hidden">
             <Loader2 size={16} className="animate-spin" />
-            Generating Day {progressDay} of {resultMeta.dayCount}… (each day builds on the last)
+            {retryAttempt > 1
+              ? `The lesson service is busy — retrying Day ${progressDay} automatically (attempt ${retryAttempt} of ${MAX_GENERATION_ATTEMPTS})…`
+              : `Generating Day ${progressDay} of ${resultMeta.dayCount}… (each day builds on the last)`}
           </div>
         )}
-        {!loading && days.length > 0 && (
+        {!loading && !error && days.length === resultMeta.dayCount && (
           <div className="mb-6 flex items-center gap-2 text-sm text-emerald-400 print:hidden">
             <CheckCircle2 size={16} /> Unit complete — {days.length} day{days.length !== 1 ? 's' : ''} generated and saved.
           </div>
         )}
 
-        <UnitRenderer subject={resultMeta.subject} unitName={resultMeta.unitName} days={days} />
+        {!loading && error && days.length > 0 && (
+          <p className="mb-4 text-xs text-amber-300 print:hidden">{days.length} of {resultMeta.dayCount} days are ready. Retry will continue with the next day instead of starting over.</p>
+        )}
+        {defaultLessonFormat && days.length > 0 && <p className="mb-4 text-xs text-ink-500 print:hidden">Each day is shown in your default “{defaultLessonFormat.name}” format with its own automatic instructional-practice and MTSS matches.</p>}
+        {days.length > 0 && <UnitRenderer subject={resultMeta.subject} unitName={resultMeta.unitName} days={days} format={defaultLessonFormat} />}
       </div>
     )
   }

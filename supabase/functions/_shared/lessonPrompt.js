@@ -43,20 +43,18 @@ FIELD USAGE FOR STRENGTH & CONDITIONING:
 - safety_notes: Include weight room safety rules (collars on all barbells, no horseplay, controlled descent, re-rack weights), and specific spotting protocols for any barbell movements in this lesson.
 - standards: Align to NSCA Youth Resistance Training Position Statement principles and, where applicable, ${stateName} physical education standards for fitness/strength content. Use NSCA citation format for NSCA standards (e.g. "NSCA YRT 2009 — Principle 3: Technique before load").`;
     default: { // PE
-      // Virginia adopted UPDATED PE Standards of Learning in 2022 (approved Jan 2022),
-      // which use different strand names than the 2015 version. We identify the correct
-      // 2022 strand by content but do NOT fabricate the numeric code — the exact 2022
-      // numbering/format must be verified against the official framework.
+      // Virginia adopted updated PE Standards of Learning in March 2022.
+      // The model identifies lesson content; a deterministic server post-step then
+      // supplies the verified numeric code and official wording for grades 6-8.
       const peStrandGuidance = `
 
-PE STANDARDS — VIRGINIA 2022 PE SOL, SELECT BY CONTENT (do NOT default to one strand): Virginia's CURRENT physical education standards are the 2022 SOL (approved January 2022). Use the 2022 STRAND NAMES. Read this lesson's skill_focus and its ACTUAL activities, then identify the 2022 strand that matches the lesson's PRIMARY focus:
-- Motor skills & techniques — serving, dribbling, striking, throwing, catching, locomotor / non-locomotor patterns, sport/game skill execution → SKILLED MOVEMENT.
-- Movement principles — biomechanics, anatomy/physiology of movement, tactics & strategy / game concepts, applying feedback to refine performance → MOVEMENT PRINCIPLES AND CONCEPTS.
-- Health-related fitness — fitness testing (PACER, curl-ups, push-ups, mile run, FitnessGram), fitness components, fitness planning, training principles, monitoring intensity → PERSONAL FITNESS.
-- Cooperation & behavior — teamwork, sportsmanship, respect, safety, communication, conflict resolution (e.g. cooperative games, team-building) → RESPONSIBLE BEHAVIORS.
-- Valuing lifelong activity — pursuing physical activity beyond class, enjoyment / motivation, and the role of nutrition and energy in an active lifestyle → PHYSICALLY ACTIVE LIFESTYLE.
-Different lessons MUST identify different strands when their content differs — a volleyball-skills lesson (Skilled Movement), a FitnessGram testing lesson (Personal Fitness), and a cooperative-games lesson (Responsible Behaviors) must NOT all get the same strand.
-CODES — HEDGE, do NOT guess numbers: do NOT invent a numeric 2022 SOL code; the exact 2022 numbering and format must be verified against the official Virginia framework. Set each standard's "code" to the 2022 STRAND NAME (e.g. "Skilled Movement"), and in "text" give the competency description for this grade followed by "(verify against official Virginia 2022 PE SOL)".`;
+PE STANDARDS — VIRGINIA 2022 PE SOL, SELECT BY CONTENT (do NOT default to one strand): Virginia's current physical education standards are the 2022 SOL (adopted March 2022). Use the official 2022 strand names. Read this lesson's skill_focus and its actual activities, then identify the strand that matches the lesson's primary focus:
+- Motor skills and techniques — serving, dribbling, striking, throwing, catching, movement patterns, and game-skill execution → MOTOR SKILL DEVELOPMENT.
+- Anatomy, physiology, biomechanics, movement principles, and concepts → ANATOMICAL BASIS OF MOVEMENT.
+- Fitness testing, fitness components, SMART goals, fitness planning, training principles, and intensity monitoring → FITNESS PLANNING.
+- Teamwork, sportsmanship, respect, safety, communication, conflict resolution, and inclusion → SOCIAL AND EMOTIONAL DEVELOPMENT.
+- Nutrition, caloric intake/expenditure, sleep, and energy concepts → ENERGY BALANCE.
+Different lessons must identify different strands when their content differs. Do not invent a Virginia number; the verified grade-level code and official wording are added after generation from the built-in Virginia SOL bank.`;
       // Virginia-only: the 2022 VA PE SOL strand guidance must NOT be appended for
       // other states (it would make e.g. a Texas lesson cite Virginia strands).
       return isVirginia

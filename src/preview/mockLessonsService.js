@@ -7,6 +7,11 @@ import { sampleKickballLesson } from '../types/sampleLesson'
  */
 
 const now = new Date().toISOString()
+const dateOffset = (days) => {
+  const value = new Date()
+  value.setDate(value.getDate() + days)
+  return `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, '0')}-${String(value.getDate()).padStart(2, '0')}`
+}
 
 const lessons = [
   {
@@ -16,7 +21,7 @@ const lessons = [
     subject: 'PE',
     grade_bands: [6, 7, 8],
     duration_minutes: 45,
-    scheduled_date: '2026-06-15',
+    scheduled_date: dateOffset(0),
     period_label: 'Period 1',
     lesson_object: sampleKickballLesson,
     created_at: now,
@@ -29,7 +34,7 @@ const lessons = [
     subject: 'PE',
     grade_bands: [6, 7, 8],
     duration_minutes: 45,
-    scheduled_date: '2026-06-16',
+    scheduled_date: dateOffset(1),
     period_label: 'Period 2',
     lesson_object: { ...sampleKickballLesson, title: 'Volleyball Bump & Set', unit: 'Net Games' },
     created_at: now,
@@ -42,7 +47,7 @@ const lessons = [
     subject: 'Health',
     grade_bands: [6, 7, 8],
     duration_minutes: 45,
-    scheduled_date: '2026-06-17',
+    scheduled_date: dateOffset(3),
     period_label: 'Period 3',
     lesson_object: { ...sampleKickballLesson, title: 'Nutrition Basics', unit: 'Nutrition', subject: 'Health' },
     created_at: now,
@@ -55,7 +60,7 @@ const lessons = [
     subject: "Driver's Ed",
     grade_bands: [9, 10, 11, 12],
     duration_minutes: 50,
-    scheduled_date: '2026-06-18',
+    scheduled_date: dateOffset(6),
     period_label: 'Period 4',
     lesson_object: { ...sampleKickballLesson, title: 'Defensive Driving Intro', unit: 'Road Safety', subject: "Driver's Ed", grade_bands: [9, 10, 11, 12] },
     created_at: now,

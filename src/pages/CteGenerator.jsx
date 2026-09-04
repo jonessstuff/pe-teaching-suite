@@ -171,6 +171,34 @@ const LEVELS = [
   { value: 'completer', label: 'Completer', description: 'Capstone, credential attainment & WBL' },
 ]
 
+// Pathways are broad; the exact course keeps the generated lesson inside the
+// teacher's real syllabus instead of making the model guess which program they
+// mean. Teachers can always type a course that is not in these suggestions.
+const COURSE_OPTIONS = {
+  hospitality: ['Culinary Arts', 'Food & Nutrition', 'Hospitality & Tourism', 'Restaurant Management'],
+  finance: ['Personal Finance', 'Money Matters', 'Financial Math', 'Banking & Finance', 'Accounting'],
+  marketing: ['Marketing', 'Social Media Marketing', 'Fashion Marketing', 'Retail Management', 'Sports & Entertainment Marketing'],
+  human_services: ['Principles of Human Services', 'Family & Consumer Sciences', 'Independent Living', 'Counseling & Mental Health Careers', 'Fashion Construction'],
+  health_science: ['Introduction to Health Science', 'Medical Assisting', 'Nursing Assistant', 'Dental Assisting', 'Behavioral Health'],
+  education: ['Principles of Education', 'Teachers for Tomorrow', 'Early Childhood Education', 'Education Practicum'],
+  career_readiness: ['Career Exploration', 'Workplace Readiness', 'Professional Communication', 'Employability Skills', 'Middle School Career Foundations'],
+  information_technology: ['Introduction to Computers', 'Desktop Publishing', 'Computer Applications', 'Web Design', 'Cybersecurity', 'Computer Programming', 'IT Fundamentals'],
+  transportation: ['Automotive Technology', 'Maintenance & Light Repair', 'Collision Repair', 'Transportation & Logistics'],
+  manufacturing: ['Manufacturing Technology', 'Machining', 'Welding', 'Robotics & Automation', 'Smart Manufacturing'],
+  engineering_tech: ['Engineering Essentials', 'Introduction to Engineering Design', 'Principles of Engineering', 'Electronics', 'Aerospace Technology'],
+  business_mgmt: ['Business Essentials', 'Business Management', 'Human Resources Management', 'Entrepreneurship', 'Project Management'],
+  agriculture: ['Introduction to Agriculture', 'Plant Systems', 'Animal Systems', 'Veterinary Science', 'Agribusiness'],
+  construction: ['Construction Technology', 'Carpentry', 'Electrical', 'HVAC-R', 'Plumbing', 'Welding'],
+  arts_av: ['Graphic Design', 'Digital Media', 'Audio/Video Production', 'Desktop Publishing', 'Animation', 'Yearbook'],
+  government: ['Public Administration', 'Government & Public Service', 'Public Policy'],
+  law_safety: ['Criminal Justice', 'Law Enforcement', 'Fire Science', 'Pre-Law', 'Emergency Services'],
+  cosmetology: ['Cosmetology', 'Barbering', 'Esthetics', 'Nail Technology'],
+  business_law: ['Business Law', 'Legal Studies', 'Pre-Law'],
+  sports_entertainment: ['Sports & Entertainment Marketing', 'Event Marketing', 'Entertainment Management'],
+  exercise_science: ['Exercise Science', 'Sports Medicine', 'Athletic Training Foundations'],
+  early_childhood: ['Early Childhood Education', 'Child Development', 'Childcare Practicum'],
+}
+
 const TOPIC_PLACEHOLDERS = {
   hospitality: 'e.g. Knife cuts & knife safety, Dry vs. moist heat cooking methods, Mise en place, The kitchen brigade system, Menu planning & food-cost %, Baking basics (leavening), Food safety & sanitation (ServSafe), Front desk check-in, Planning a destination tour',
   finance:     'e.g. Building a monthly budget, Comparing two credit-card offers, Simple vs. compound interest, Reading a pay stub, Insurance basics & policy types, Risk management & careers in insurance',
@@ -431,6 +459,7 @@ export default function CteGenerator() {
   const [state, setState] = useState('VA')
   const [classSize, setClassSize] = useState(25)
   const [duration, setDuration] = useState(90)
+  const [courseName, setCourseName] = useState('')
   const [topic, setTopic] = useState('')
   const [targetCompetency, setTargetCompetency] = useState('')
   const [materials, setMaterials] = useState(['', ''])
@@ -466,6 +495,7 @@ export default function CteGenerator() {
   function handlePathwayChange(value) {
     setPathway(value)
     setMaterials(['', ''])
+    setCourseName('')
     setTopic('')
   }
 
@@ -488,6 +518,7 @@ export default function CteGenerator() {
         pathway,
         tier,
         level: tier === 'hs' ? level : '',
+        courseName: courseName.trim(),
         topic: topic.trim(),
         materials: materials.filter(Boolean),
         classSize,
@@ -846,6 +877,25 @@ export default function CteGenerator() {
         {/* Lesson details */}
         <div className="card p-6 space-y-5">
           <h2 className="text-sm font-semibold text-ink-200">4. What should students learn, make, or do?</h2>
+
+          <div>
+            <label className="mb-1 block text-sm text-ink-300" htmlFor="cte-course-name">
+              Exact course or class name
+            </label>
+            <input
+              id="cte-course-name"
+              type="text"
+              list="cte-course-options"
+              placeholder={COURSE_OPTIONS[pathway]?.[0] || 'e.g. Your exact course title'}
+              value={courseName}
+              onChange={(e) => setCourseName(e.target.value)}
+              className="input-field"
+            />
+            <datalist id="cte-course-options">
+              {(COURSE_OPTIONS[pathway] ?? []).map((course) => <option key={course} value={course} />)}
+            </datalist>
+            <p className="mt-1 text-xs text-ink-500">Choose a suggestion or type the course exactly as your school names it. This keeps the lesson inside the right curriculum.</p>
+          </div>
 
           <div>
             <label className="mb-1 block text-sm text-ink-300" htmlFor="cte-topic">

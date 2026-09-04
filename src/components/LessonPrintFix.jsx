@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- print helpers are intentionally shared with lesson renderers */
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Trophy, Loader2, Trash2, Plus, ChevronDown, ChevronUp, Printer, Save } from 'lucide-react'
+import { ArrowLeft, Trophy, Loader2, Trash2, ChevronDown, ChevronUp, Printer, Save } from 'lucide-react'
 import { generateFieldDay } from '../services/generationService'
-import { createPlan, listPlans, getPlan, updatePlan, deletePlan } from '../services/fieldDayService'
+import { createPlan, listPlans, getPlan, deletePlan } from '../services/fieldDayService'
 import { useTrial } from '../context/TrialContext'
 
 const GRADES = [
@@ -131,7 +131,7 @@ function GameProposalDoc({ proposal: p }) {
   )
 }
 
-export default function FieldDayPlanner() {
+export default function FieldDayPlanner({ embedded = false }) {
   const { requestExport } = useTrial()
   const [view, setView] = useState('list')
   const [plans, setPlans] = useState(null)
@@ -303,7 +303,7 @@ export default function FieldDayPlanner() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      {!embedded && <div className="flex items-center justify-between">
         <div>
           <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-200 mb-3">
             <ArrowLeft size={14} /> Dashboard
@@ -315,7 +315,7 @@ export default function FieldDayPlanner() {
             <h1 className="text-2xl font-semibold text-ink-50">Field Day Planner</h1>
           </div>
         </div>
-      </div>
+      </div>}
 
       {/* Form */}
       <form onSubmit={handleGenerate} className="card p-6 space-y-5 max-w-2xl">

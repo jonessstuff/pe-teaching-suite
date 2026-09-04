@@ -285,7 +285,7 @@ export default function LibraryHome() {
       </div>
 
       {/* My lessons — compact preview below the tools */}
-      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/library/lessons" accentText="text-blue-400" moduleContext="Library & Media" />
+      <RecentLessonsPanel lessons={lessons} error={error} browseTo="/library/lessons" generateTo="/library/generate" accentText="text-blue-400" moduleContext="Library & Media" />
 
     </div>
   )

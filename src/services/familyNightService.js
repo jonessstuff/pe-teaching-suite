@@ -1,0 +1,5 @@
+import { supabase } from '../lib/supabaseClient'
+async function teacherId() { const { data, error } = await supabase.auth.getUser(); if (error) throw error; return data.user.id }
+export async function listFamilyNightProjects(type) { const teacher_id = await teacherId(); const { data, error } = await supabase.from('intervention_family_nights').select('*').eq('teacher_id', teacher_id).eq('night_type', type).order('updated_at', { ascending: false }); if (error) throw error; return data ?? [] }
+export async function createFamilyNightProject(values) { const teacher_id = await teacherId(); const { data, error } = await supabase.from('intervention_family_nights').insert({ teacher_id, night_type: values.type, title: values.title, inputs: values.inputs, plan: values.plan }).select().single(); if (error) throw error; return data }
+export async function updateFamilyNightProject(id, values) { const { data, error } = await supabase.from('intervention_family_nights').update({ title: values.title, inputs: values.inputs, plan: values.plan, updated_at: new Date().toISOString() }).eq('id', id).select().single(); if (error) throw error; return data }

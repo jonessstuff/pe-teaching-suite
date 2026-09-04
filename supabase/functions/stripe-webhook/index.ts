@@ -94,6 +94,25 @@ async function setNameIfNull(userId: string, name: string | null | undefined) {
   await admin.from("profiles").update({ full_name: name }).eq("id", userId).is("full_name", null);
 }
 
+async function applyCampaignAttribution(userId: string, visitorId: string | null | undefined) {
+  if (!visitorId || !/^[a-zA-Z0-9_-]{8,64}$/.test(visitorId)) return;
+  const { data } = await admin.from("conversion_events")
+    .select("campaign_source, campaign_medium, campaign_name, campaign_module, campaign_content, created_at")
+    .eq("visitor_id", visitorId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  await admin.from("profiles").update({
+    acquisition_visitor_id: visitorId,
+    acquisition_source: data?.campaign_source || "direct",
+    acquisition_medium: data?.campaign_medium || null,
+    acquisition_campaign: data?.campaign_name || "Direct / untagged",
+    acquisition_module: data?.campaign_module || null,
+    acquisition_content: data?.campaign_content || null,
+    acquired_at: new Date().toISOString(),
+  }).eq("id", userId).is("acquisition_visitor_id", null);
+}
+
 // Branded magic-link email (own Resend template, not Supabase's default), so it
 // matches the /welcome page copy and reads as legitimate, not a scam or a charge.
 async function sendSetupEmail(email: string) {
@@ -209,6 +228,7 @@ Deno.serve(async (req) => {
         const best = customerId ? await bestStatusForCustomer(customerId) : null;
         await cacheStatus(userId, customerId, best?.status ?? null, best?.trialEnd ?? null);
         await setNameIfNull(userId, s.customer_details?.name ?? null); // seed full_name from Stripe (if unset)
+        await applyCampaignAttribution(userId, s.client_reference_id);
         if (created) await sendSetupEmail(email); // magic link ONLY for brand-new accounts
         break;
       }

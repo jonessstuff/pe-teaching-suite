@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
-import { CHECKOUT_URL, YEARLY_CHECKOUT_URL } from '../services/trialService'
+import { attributedCheckoutUrl, CHECKOUT_URL, YEARLY_CHECKOUT_URL } from '../services/trialService'
+import { track } from '../lib/analytics'
 import { submitSchoolInterest } from '../services/schoolInterestService'
-import { BookOpen, Globe, Accessibility, UserCheck, ClipboardList, ClipboardCheck, Mail, CalendarRange, Check, X, Users, BookMarked, PartyPopper, Newspaper, MessageCircle, Share2, Briefcase, BarChart3, ScrollText, Trophy, Dumbbell, Smartphone, SquareCheck, Sparkles, MousePointerClick, PencilLine, BadgeCheck, LogIn, Building2, Loader2, ArrowRight } from 'lucide-react'
+import { BookOpen, Globe, Accessibility, UserCheck, ClipboardList, ClipboardCheck, Mail, CalendarRange, Check, X, Users, BookMarked, PartyPopper, Newspaper, MessageCircle, Share2, Briefcase, BarChart3, ScrollText, Trophy, Dumbbell, Smartphone, SquareCheck, Sparkles, MousePointerClick, PencilLine, BadgeCheck, LogIn, Building2, Loader2, ArrowRight, Download } from 'lucide-react'
 
 // ─── Shared sub-components ───────────────────────────────────────────────────
 
@@ -69,6 +70,11 @@ const COMPARE_ROWS = [
     generic: 'Copy-paste into another document and format it yourself.',
   },
   {
+    need: 'Run the program after planning',
+    plansk12: 'Rosters, trackers, SMART goals, events, challenges, coaching, grant support, and specialty-specific workflows stay together.',
+    generic: 'Produces text, but does not organize the ongoing work or preserve progress across the year.',
+  },
+  {
     need: 'No prompt-writing needed',
     plansk12: 'Pick a few options and generate — designed by a teacher of 27 years.',
     generic: 'Results depend on your own prompt-engineering skill.',
@@ -101,7 +107,17 @@ export default function Landing() {
   const [searchParams] = useSearchParams()
   const refCode = searchParams.get('ref')
   const [showAllFeatures, setShowAllFeatures] = useState(false)
+  const [showAllSpecialties, setShowAllSpecialties] = useState(false)
   const [billing, setBilling] = useState('monthly') // 'monthly' | 'yearly'
+  const trackedView = useRef(false)
+  const monthlyCheckoutUrl = attributedCheckoutUrl(CHECKOUT_URL)
+  const yearlyCheckoutUrl = attributedCheckoutUrl(YEARLY_CHECKOUT_URL)
+
+  useEffect(() => {
+    if (trackedView.current) return
+    trackedView.current = true
+    track('site_viewed')
+  }, [])
 
   return (
     <div className="force-light min-h-screen bg-white font-sans">
@@ -172,16 +188,16 @@ export default function Landing() {
         />
 
         <div className="relative mx-auto max-w-3xl text-center">
-          <p className="label-eyebrow mb-4 text-brand-500">AI-powered lesson planning</p>
+          <p className="label-eyebrow mb-4 text-brand-500">The specialty-teacher workspace</p>
 
           <h1 className="text-4xl font-display font-semibold tracking-tight text-ink-50 sm:text-5xl">
-            Built for the teachers everyone forgets about.
+            Plan the lesson. Run the program. Show the impact.
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-lg text-ink-400 leading-relaxed">
-            You teach every kid in the building — but the planning tools all get built for the
-            classroom teacher. PlansK12 is built for you: real, standards-aligned lessons in minutes,
-            shaped around how your class actually runs.
+            PlansK12 gives specialty teachers one organized place for standards-aligned lessons,
+            class tools, progress tracking, events, student programs, grant support, and the work
+            that happens long after the lesson plan is written.
           </p>
 
           {/* A representative sample of specialties — the full set lives in the
@@ -208,12 +224,120 @@ export default function Landing() {
             <Link to="/demo" className="btn-primary !bg-brand-500 hover:!bg-brand-600 px-8 py-4 text-lg shadow-lg shadow-brand-500/25">
               Explore interactive demos <ArrowRight size={17} />
             </Link>
-            <a href={CHECKOUT_URL} className="btn-secondary px-6 py-3">Start my 7-day free trial</a>
+            <a href={monthlyCheckoutUrl} onClick={() => track('trial_clicked', { placement: 'landing_hero' })} className="btn-secondary px-6 py-3">Start my 7-day free trial</a>
             <Link to="/try" className="text-sm font-medium text-ink-500 underline decoration-ink-700 underline-offset-4 hover:text-brand-600">Or generate one free lesson—no signup</Link>
           </div>
           <p className="mt-4 text-xs text-ink-600">
-            Your first lesson takes about 1–2 minutes · Then $9.99/month · Cancel anytime
+            Built by a 27-year educator · 30+ specialty modules · Then $9.99/month · Cancel anytime
           </p>
+        </div>
+      </section>
+
+      {/* ── 1b. THE PLATFORM HAS GROWN ──────────────────────────────────── */}
+      <section className="border-y border-ink-900 bg-ink-950 px-6 py-20">
+        <div className="mx-auto max-w-5xl">
+          <div className="flex flex-col gap-5 text-center lg:flex-row lg:items-end lg:justify-between lg:text-left">
+            <div>
+              <p className="label-eyebrow mb-3 text-brand-500">More than lesson plans</p>
+              <h2 className="max-w-2xl text-3xl font-display font-semibold tracking-tight text-ink-50">
+                New tools that help you run the work—not just write about it.
+              </h2>
+            </div>
+            <p className="mx-auto max-w-md text-sm leading-6 text-ink-400 lg:mx-0">
+              Every specialty has its own organized workspace, with practical tools shaped around what those teachers actually do.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
+            <article className="rounded-2xl border border-emerald-500/25 bg-gradient-to-br from-emerald-500/15 to-cyan-500/5 p-6">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/15"><BookOpen size={22} className="text-emerald-400" /></div>
+              <h3 className="mt-4 text-xl font-semibold text-ink-50">Plan and teach with confidence</h3>
+              <p className="mt-2 text-sm leading-6 text-ink-400">Create standards-aligned lessons, units, pacing guides, assessments, substitute resources, student materials, and visual presentations.</p>
+            </article>
+            <article className="rounded-2xl border border-cyan-500/25 bg-gradient-to-br from-cyan-500/15 to-blue-500/5 p-6">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-500/15"><BarChart3 size={22} className="text-cyan-400" /></div>
+              <h3 className="mt-4 text-xl font-semibold text-ink-50">Track the work as it happens</h3>
+              <p className="mt-2 text-sm leading-6 text-ink-400">Use shared rosters, participation grading, run progress, SMART goals, program tracking, and private evidence of student growth.</p>
+            </article>
+            <article className="rounded-2xl border border-violet-500/25 bg-gradient-to-br from-violet-500/15 to-pink-500/5 p-6">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-500/15"><Trophy size={22} className="text-violet-400" /></div>
+              <h3 className="mt-4 text-xl font-semibold text-ink-50">Bring big ideas to life</h3>
+              <p className="mt-2 text-sm leading-6 text-ink-400">Plan Field Day, STEM Night, art shows, concerts, recitals, family nights, reading challenges, book tastings, coaching, and tryouts.</p>
+            </article>
+            <article className="rounded-2xl border border-amber-500/25 bg-gradient-to-br from-amber-500/15 to-orange-500/5 p-6">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-500/15"><Briefcase size={22} className="text-amber-400" /></div>
+              <h3 className="mt-4 text-xl font-semibold text-ink-50">Grow and support your program</h3>
+              <p className="mt-2 text-sm leading-6 text-ink-400">Find relevant funding, build grant applications, create family communication, and use specialized workspaces such as CTE Career Readiness.</p>
+            </article>
+          </div>
+
+          <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <Link to="/demo" className="btn-primary !bg-brand-500 hover:!bg-brand-600 px-7 py-3.5">Explore the interactive demos <ArrowRight size={16} /></Link>
+            <a href="#specialties" className="btn-secondary px-7 py-3.5">Find my specialty</a>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 1c. MY SCHOOL YEAR VIDEO ───────────────────────────────────── */}
+      <section className="relative overflow-hidden border-b border-ink-900 bg-white px-6 py-20">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-32 top-0 h-96 w-96 rounded-full bg-cyan-400/10 blur-3xl"
+        />
+        <div className="relative mx-auto grid max-w-5xl items-center gap-12 lg:grid-cols-[0.85fr_1.15fr]">
+          <div>
+            <p className="label-eyebrow mb-3 text-brand-500">See the new workspace in action</p>
+            <h2 className="text-3xl font-display font-semibold tracking-tight text-ink-50 sm:text-4xl">
+              One command center for the entire school year.
+            </h2>
+            <p className="mt-5 text-base leading-7 text-ink-400">
+              My School Year brings classes, upcoming lessons, SMART goals, deadlines, and
+              specialty priorities into one organized view—without losing the tools that make
+              each teaching role different.
+            </p>
+
+            <ul className="mt-7 space-y-3">
+              <CheckItem>See what needs attention now and what is coming next.</CheckItem>
+              <CheckItem>Work across every specialty or focus on just one.</CheckItem>
+              <CheckItem>Keep the same clear view on a computer, tablet, or phone.</CheckItem>
+            </ul>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link to="/demo" className="btn-primary !bg-brand-500 hover:!bg-brand-600 px-6 py-3">
+                Explore PlansK12 <ArrowRight size={16} />
+              </Link>
+              <a
+                href={monthlyCheckoutUrl}
+                onClick={() => track('trial_clicked', { placement: 'landing_my_school_year' })}
+                className="btn-secondary px-6 py-3"
+              >
+                Start my free trial
+              </a>
+            </div>
+          </div>
+
+          <div className="mx-auto w-full max-w-[620px]">
+            <div className="rounded-[2rem] border border-brand-500/20 bg-gradient-to-br from-brand-500/10 via-white to-cyan-400/10 p-3 shadow-2xl shadow-brand-500/15 sm:p-5">
+              <video
+                className="aspect-square w-full rounded-[1.35rem] bg-[#0d2d5a] object-cover"
+                poster="/resources/PlansK12-My-School-Year-Cover.png"
+                autoPlay
+                muted
+                loop
+                playsInline
+                controls
+                preload="metadata"
+                aria-label="PlansK12 My School Year feature walkthrough"
+                onClick={() => track('landing_feature_video_clicked', { placement: 'my_school_year' })}
+              >
+                <source src="/resources/PlansK12-My-School-Year-Walkthrough.mp4" type="video/mp4" />
+                Your browser does not support embedded video.
+              </video>
+            </div>
+            <p className="mt-4 text-center text-xs font-medium text-ink-600">
+              My School Year · one organized view across every specialty
+            </p>
+          </div>
         </div>
       </section>
 
@@ -293,11 +417,21 @@ export default function Landing() {
           </div>
 
           <div className="space-y-10">
+            {!showAllSpecialties && <ModuleGroup label="Popular starting points">
+              <ModuleCard name="PE & Health" color="emerald" description="Lessons, participation, run tracking, SMART goals, coaching, tryouts, and events." />
+              <ModuleCard name="Art" color="orange" description="Studio-ready lessons, assessment, student visuals, and art-show planning." />
+              <ModuleCard name="Library & Media" color="blue" description="Lessons, reading challenges, book tastings, newsletters, research, and family events." />
+              <ModuleCard name="Music" color="purple" description="Standards-aligned lessons, warm-ups, listening, concert planning, and student programs." />
+              <ModuleCard name="STEM" color="cyan" description="Engineering, coding, maker projects, invention challenges, and STEM Night planning." />
+              <ModuleCard name="Speech-Language (SLP)" color="bronze" description="Session activities, visual supports, progress evidence, and carefully scoped SMART goals." />
+            </ModuleGroup>}
+
+            {showAllSpecialties && <div className="space-y-10">
             <ModuleGroup label="Core Specials & Encore Subjects">
               <ModuleCard
                 name="PE & Health"
                 color="emerald"
-                description="Station rotations, SHAPE-aligned lessons, sub plans, and accommodations built for the gym."
+                description="Lessons, run and participation tracking, editable multi-day tryout scoring, SMART goals, and coaching tools built for the gym and field."
               />
               <ModuleCard
                 name="Adaptive PE"
@@ -373,7 +507,7 @@ export default function Landing() {
               <ModuleCard
                 name="CTE"
                 color="pink"
-                description="Standards-aligned, industry-relevant lessons across 20+ Career & Technical Education pathways."
+                description="Industry-relevant lessons across 20+ pathways, plus career foundations, employability skills, pathway recruiting, internships, field trips, and grant support."
               />
             </ModuleGroup>
 
@@ -470,6 +604,13 @@ export default function Landing() {
                 description="Partnership-based coaching on the Impact Cycle — confidential support, never a performance review."
               />
             </ModuleGroup>
+            </div>}
+
+            <div className="text-center">
+              <button type="button" onClick={() => setShowAllSpecialties((value) => !value)} className="btn-secondary px-6 py-2.5">
+                {showAllSpecialties ? 'Show popular specialties' : 'Browse all 30+ specialties'}
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -480,11 +621,11 @@ export default function Landing() {
           <div className="mb-12 text-center">
             <p className="label-eyebrow mb-3">Everything in one place</p>
             <h2 className="text-3xl font-display font-semibold tracking-tight text-ink-50">
-              Plan the year. Build the lesson. Export everything.
+              Plan the year. Run the program. Keep the evidence.
             </h2>
             <p className="mx-auto mt-4 max-w-lg text-ink-400">
-              From full-year curriculum maps to substitute-ready plans — every format generates
-              from your lesson, with no rewriting required.
+              Start with a lesson, then keep going: organize classes, produce student resources,
+              track progress, run special programs, communicate, and document your impact.
             </p>
           </div>
 
@@ -771,7 +912,8 @@ export default function Landing() {
                   </ul>
 
                   <a
-                    href={CHECKOUT_URL}
+                    href={monthlyCheckoutUrl}
+                    onClick={() => track('trial_clicked', { placement: 'landing_pricing' })}
                     className="btn-primary !bg-brand-500 hover:!bg-brand-600 mt-8 w-full justify-center"
                   >
                     Start your 7-day trial
@@ -799,7 +941,8 @@ export default function Landing() {
                   </ul>
 
                   <a
-                    href={YEARLY_CHECKOUT_URL}
+                    href={yearlyCheckoutUrl}
+                    onClick={() => track('trial_clicked', { placement: 'landing_yearly' })}
                     className="btn-primary !bg-brand-500 hover:!bg-brand-600 mt-8 w-full justify-center"
                   >
                     Get the yearly plan
@@ -827,13 +970,21 @@ export default function Landing() {
           </div>
           <p className="label-eyebrow mb-3">For schools &amp; districts</p>
           <h2 className="text-3xl font-display font-semibold tracking-tight text-ink-50">
-            Interested in PlansK12 for your whole school or district?
+            Bring PlansK12 to your school or district
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-ink-400">
-            We don&rsquo;t have school- or district-wide licensing yet — we&rsquo;re gauging
-            interest before we build it. Tell us a little about your school and we&rsquo;ll be
-            in touch. No commitment, and no pricing to review (there isn&rsquo;t any yet).
+            Tell us what your educators need and what you would like to happen next. Stacey,
+            the educator who created PlansK12, will personally review your request and reply
+            within one business day.
           </p>
+          <a
+            href="/resources/PlansK12-Administrator-Information-Packet.pdf"
+            download
+            onClick={() => track('administrator_packet_downloaded', { placement: 'landing_schools' })}
+            className="btn-secondary mt-5 inline-flex"
+          >
+            <Download size={16} /> Download the administrator packet
+          </a>
           <SchoolInterestForm />
         </div>
       </section>
@@ -860,11 +1011,55 @@ export default function Landing() {
 
 // ─── School / District interest form ─────────────────────────────────────────
 
+const SCHOOL_ROLE_OPTIONS = [
+  ['teacher', 'Teacher'], ['department_lead', 'Department or program lead'],
+  ['school_admin', 'School administrator'], ['district_admin', 'District administrator'],
+  ['curriculum', 'Curriculum or instruction leader'], ['technology', 'Technology or purchasing'],
+  ['other', 'Other'],
+]
+const SCHOOL_SCOPE_OPTIONS = [
+  ['department', 'One department or program'], ['school', 'One school'],
+  ['multiple_schools', 'Multiple schools'], ['district', 'Entire district'],
+]
+const SCHOOL_INTEREST_OPTIONS = [
+  ['pricing', 'School pricing information'], ['demo', 'A personal demonstration'],
+  ['pilot', 'A founding-school pilot'], ['admin_packet', 'Information to share with administration'],
+  ['exploring', 'I am just exploring'],
+]
+const SCHOOL_TIMELINE_OPTIONS = [
+  ['immediately', 'As soon as possible'], ['this_semester', 'This semester'],
+  ['next_semester', 'Next semester'], ['next_school_year', 'Next school year'],
+  ['unsure', 'Not sure yet'],
+]
+const SCHOOL_NEXT_STEP_OPTIONS = [
+  ['email_information', 'Email me school information'], ['walkthrough', 'Schedule a brief walkthrough'],
+  ['pilot_conversation', 'Discuss a founding-school pilot'], ['admin_packet', 'Send information I can present to administration'],
+]
+const SCHOOL_SPECIALTIES = [
+  'PE & Health', 'CTE', 'Art', 'Music', 'Library & Media', 'STEM',
+  'Reading or Math Intervention', 'Special Education & Student Services',
+  'Early Childhood or ESL', 'Other specialty areas',
+]
+
+function SchoolFieldLabel({ children }) {
+  return <span className="text-xs font-semibold text-ink-400">{children}</span>
+}
+
 function SchoolInterestForm() {
-  const [form, setForm] = useState({ name: '', organization: '', email: '', teacherCount: '', note: '' })
+  const [form, setForm] = useState({
+    name: '', email: '', role: '', organization: '', location: '', organizationScope: '',
+    teacherCount: '', specialties: [], interestType: '', timeline: '', primaryGoal: '',
+    preferredNextStep: '', note: '',
+  })
   const [status, setStatus] = useState('idle') // 'idle' | 'sending' | 'sent' | 'error'
   const [error, setError] = useState('')
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
+  const toggleSpecialty = (specialty) => setForm((current) => ({
+    ...current,
+    specialties: current.specialties.includes(specialty)
+      ? current.specialties.filter((item) => item !== specialty)
+      : [...current.specialties, specialty],
+  }))
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -881,40 +1076,65 @@ function SchoolInterestForm() {
 
   if (status === 'sent') {
     return (
-      <div className="mx-auto mt-8 max-w-md rounded-xl border border-brand-500/30 bg-brand-500/[0.06] p-6 text-center">
+      <div className="mx-auto mt-8 max-w-xl rounded-2xl border border-brand-500/30 bg-brand-500/[0.06] p-6 text-center">
         <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-brand-500/15">
           <Check size={20} className="text-brand-500" />
         </div>
-        <p className="font-semibold text-ink-50">Thanks — we&rsquo;ve got it.</p>
+        <p className="font-semibold text-ink-50">Thank you — your school request is in.</p>
         <p className="mt-1 text-sm text-ink-400">
-          We&rsquo;ll reach out to {form.email} as school/district options take shape.
+          A confirmation is going to {form.email}. Stacey will personally review your answers
+          and follow up within one business day.
         </p>
+        <Link to="/demo" className="btn-primary !bg-brand-500 hover:!bg-brand-600 mt-5 inline-flex justify-center">
+          Explore the interactive demos <ArrowRight size={16} />
+        </Link>
       </div>
     )
   }
 
   const inputCls =
-    'w-full rounded-lg border border-ink-800 bg-ink-900/40 px-3 py-2.5 text-sm text-ink-100 placeholder:text-ink-600 outline-none focus:border-brand-500'
+    'mt-1 w-full rounded-lg border border-ink-800 bg-ink-900/40 px-3 py-2.5 text-sm text-ink-100 placeholder:text-ink-600 outline-none focus:border-brand-500'
 
   return (
-    <form onSubmit={handleSubmit} className="mx-auto mt-8 max-w-md space-y-3 text-left">
-      <div className="grid gap-3 sm:grid-cols-2">
-        <input className={inputCls} placeholder="Your name" value={form.name} onChange={set('name')} autoComplete="name" required />
-        <input className={inputCls} type="email" placeholder="Work email" value={form.email} onChange={set('email')} autoComplete="email" required />
+    <form onSubmit={handleSubmit} className="mx-auto mt-8 max-w-2xl space-y-5 rounded-2xl border border-ink-800 bg-white/[0.03] p-5 text-left sm:p-7">
+      <div>
+        <p className="font-semibold text-ink-100">Tell us about you and your school</p>
+        <p className="mt-1 text-xs text-ink-500">Work email is preferred, but a personal email is okay while you are exploring.</p>
       </div>
-      <input className={inputCls} placeholder="School or district" value={form.organization} onChange={set('organization')} autoComplete="organization" required />
-      <input className={inputCls} type="number" min="1" placeholder="Approx. number of teachers (optional)" value={form.teacherCount} onChange={set('teacherCount')} />
-      <textarea className={inputCls} rows={2} placeholder="Anything else? (optional)" value={form.note} onChange={set('note')} />
+      <div className="grid gap-4 sm:grid-cols-2">
+        <label><SchoolFieldLabel>Your name</SchoolFieldLabel><input className={inputCls} placeholder="First and last name" value={form.name} onChange={set('name')} autoComplete="name" required /></label>
+        <label><SchoolFieldLabel>Email</SchoolFieldLabel><input className={inputCls} type="email" placeholder="Work email preferred" value={form.email} onChange={set('email')} autoComplete="email" required /></label>
+        <label><SchoolFieldLabel>Your role</SchoolFieldLabel><select className={inputCls} value={form.role} onChange={set('role')} required><option value="">Choose your role</option>{SCHOOL_ROLE_OPTIONS.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+        <label><SchoolFieldLabel>School or district</SchoolFieldLabel><input className={inputCls} placeholder="Official organization name" value={form.organization} onChange={set('organization')} autoComplete="organization" required /></label>
+        <label><SchoolFieldLabel>City and state</SchoolFieldLabel><input className={inputCls} placeholder="Tulsa, Oklahoma" value={form.location} onChange={set('location')} autoComplete="address-level2" required /></label>
+        <label><SchoolFieldLabel>Who may use PlansK12?</SchoolFieldLabel><select className={inputCls} value={form.organizationScope} onChange={set('organizationScope')} required><option value="">Choose the group</option>{SCHOOL_SCOPE_OPTIONS.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+        <label className="sm:col-span-2"><SchoolFieldLabel>Approximate number of teachers</SchoolFieldLabel><input className={inputCls} type="number" min="1" max="100000" placeholder="14" value={form.teacherCount} onChange={set('teacherCount')} required /></label>
+      </div>
+
+      <fieldset>
+        <legend className="text-xs font-semibold text-ink-400">Specialty areas that need support <span className="text-red-400">*</span></legend>
+        <div className="mt-2 grid gap-2 sm:grid-cols-2">
+          {SCHOOL_SPECIALTIES.map((specialty) => <label key={specialty} className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2.5 text-sm transition ${form.specialties.includes(specialty) ? 'border-brand-500/60 bg-brand-500/10 text-ink-100' : 'border-ink-800 bg-ink-900/30 text-ink-400 hover:border-ink-700'}`}><input type="checkbox" className="accent-brand-500" checked={form.specialties.includes(specialty)} onChange={() => toggleSpecialty(specialty)} />{specialty}</label>)}
+        </div>
+      </fieldset>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <label><SchoolFieldLabel>What are you looking for?</SchoolFieldLabel><select className={inputCls} value={form.interestType} onChange={set('interestType')} required><option value="">Choose one</option>{SCHOOL_INTEREST_OPTIONS.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+        <label><SchoolFieldLabel>When might you need it?</SchoolFieldLabel><select className={inputCls} value={form.timeline} onChange={set('timeline')} required><option value="">Choose a timeline</option>{SCHOOL_TIMELINE_OPTIONS.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+      </div>
+      <label className="block"><SchoolFieldLabel>What would you most like PlansK12 to help your teachers accomplish?</SchoolFieldLabel><textarea className={inputCls} rows={3} placeholder="For example: give specialty teachers consistent planning tools, save time, or organize schoolwide programs…" value={form.primaryGoal} onChange={set('primaryGoal')} required /></label>
+      <label className="block"><SchoolFieldLabel>What should happen next?</SchoolFieldLabel><select className={inputCls} value={form.preferredNextStep} onChange={set('preferredNextStep')} required><option value="">Choose the most helpful next step</option>{SCHOOL_NEXT_STEP_OPTIONS.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+      <label className="block"><SchoolFieldLabel>Anything else Stacey should know? <span className="font-normal text-ink-600">(optional)</span></SchoolFieldLabel><textarea className={inputCls} rows={2} placeholder="Purchasing requirements, questions, or who else should be included…" value={form.note} onChange={set('note')} /></label>
       {status === 'error' && <p className="text-sm text-red-400">{error}</p>}
       <button
         type="submit"
         disabled={status === 'sending'}
         className="btn-primary !bg-brand-500 hover:!bg-brand-600 w-full justify-center disabled:opacity-60"
       >
-        {status === 'sending' ? <><Loader2 size={16} className="animate-spin" /> Sending…</> : 'Register interest'}
+        {status === 'sending' ? <><Loader2 size={16} className="animate-spin" /> Sending…</> : 'Request school information'}
       </button>
       <p className="text-center text-xs text-ink-600">
-        Just gauging interest — no commitment, and we won&rsquo;t share your details.
+        No commitment. Your information is used only to respond to this school or district request.
       </p>
     </form>
   )

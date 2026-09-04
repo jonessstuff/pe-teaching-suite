@@ -4,6 +4,7 @@ import {
   LayoutDashboard,
   BookOpen,
   CalendarDays,
+  CalendarCheck2,
   CalendarRange,
   Users2,
   Settings,
@@ -29,6 +30,11 @@ import {
   Trophy,
   Briefcase,
   Accessibility,
+  HeartPulse,
+  Award,
+  School,
+  BadgeDollarSign,
+  FileSliders,
 } from 'lucide-react'
 import { useTheme } from '../../hooks/useTheme'
 import { useTrial } from '../../context/TrialContext'
@@ -40,6 +46,7 @@ import SetPasswordBanner from '../SetPasswordBanner'
 import GettingStartedChecklist from '../GettingStartedChecklist'
 import CustomerMilestone from '../CustomerMilestone'
 import { SPECIALTY_CONTEXTS } from '../../constants/moduleHomes'
+import { trackToolUsage } from '../../services/productUsageService'
 
 // Only PE-owned routes receive the PE navigation. Shared areas such as the
 // lesson library, schedule, rosters, and SMART goals belong to every specialty.
@@ -48,6 +55,8 @@ const PE_ROUTE_PREFIXES = [
   '/generate',
   '/participation',
   '/run-tracker',
+  '/coaching',
+  '/staff-wellness',
   '/curriculum-map',
   '/adaptive-pe',
 ]
@@ -61,6 +70,34 @@ function findModuleByLabel(value) {
   return Object.entries(SPECIALTY_CONTEXTS).find(([slug, config]) =>
     value === slug || value === config.moduleLabel || value === config.title
   ) ?? null
+}
+
+const TRACKED_TOOL_ROUTES = [
+  ['/lesson-format', 'lesson-plan-format'],
+  ['/teacher-wellness', 'teacher-wellness'],
+  ['/my-year', 'my-school-year'],
+  ['/participation', 'participation'], ['/run-tracker', 'run-tracker'], ['/coaching', 'coaching-tryouts'],
+  ['/staff-wellness', 'staff-wellness'], ['/programs', 'student-programs'], ['/smart-goals', 'smart-goals'],
+  ['/assessments', 'assessment-bank'], ['/standards-tracker', 'standards-tracker'], ['/pacing-guide', 'pacing-guide'],
+  ['/activity-bank', 'activity-bank'], ['/warm-up-generator', 'warm-up-generator'], ['/eoy-narrative', 'eoy-narrative'],
+  ['/portfolio', 'portfolio-builder'], ['/sub-binder', 'sub-binder'], ['/import', 'import-enhance'], ['/build-unit', 'unit-builder'],
+  ['/art/art-show', 'art-show'], ['/library/reading-challenges', 'reading-challenges'], ['/library/newsletters', 'library-newsletters'],
+  ['/library/book-matchmaker', 'book-matchmaker'], ['/library/book-tasting', 'book-tasting'], ['/library/collaboration', 'teacher-collaboration'],
+  ['/library/family-literacy-night', 'family-literacy-night'], ['/library/research-quest', 'research-quest'], ['/library/makerspace', 'makerspace'],
+  ['/reading-specialist/family-night', 'reading-family-night'], ['/math-specialist/family-night', 'math-family-night'],
+  ['/pe-health/events', 'pe-events'], ['/stem/stem-night', 'stem-night'], ['/music/concert-builder', 'music-concert'],
+  ['/theater/production-planner', 'theater-production'], ['/dance/recital-planner', 'dance-recital'], ['/cte/experiences', 'cte-experiences'],
+  ['/world-languages/experiences', 'world-language-experiences'], ['/early-childhood/family-events', 'early-family-events'],
+  ['/esl-specialist/family-night', 'esl-family-night'], ['/gifted-talented/showcase', 'gifted-showcase'],
+  ['/test-prep/family-support', 'test-prep-family-support'], ['/open-house', 'open-house'],
+  ['/funding', 'funding-studio'],
+]
+
+function trackedToolFor(pathname) {
+  const match = TRACKED_TOOL_ROUTES.find(([route]) => pathname === route || pathname.startsWith(`${route}/`))
+  if (match) return match[1]
+  if (/^\/[a-z-]+\/generate$/.test(pathname) || pathname === '/generate') return 'lesson-generator'
+  return null
 }
 
 function useNavigationContext() {
@@ -91,6 +128,8 @@ function useNavigationContext() {
 
 const NAV_ITEMS = [
   { to: '/', label: 'Dashboard', mobileLabel: 'Home', icon: LayoutDashboard },
+  { to: '/my-year', label: 'My School Year', mobileLabel: 'My Year', icon: CalendarCheck2 },
+  { to: '/lesson-format', label: 'My Plan Format', mobileLabel: 'Plan Format', icon: FileSliders, mobileHidden: true },
   { to: '/lessons', label: 'Lesson Library', mobileLabel: 'Library', icon: BookOpen },
   { to: '/schedule', label: 'My Schedule', mobileLabel: 'Schedule', icon: CalendarDays },
   { to: '/students', label: 'Classes & Rosters', mobileLabel: 'Classes', icon: Users2 },
@@ -102,9 +141,18 @@ const NAV_ITEMS = [
 
 const PE_NAV_ITEMS = [
   { to: '/pe-health', label: 'PE Dashboard', mobileLabel: 'PE Home', icon: LayoutDashboard },
+  { to: '/my-year?module=PE%20%26%20Health', label: 'My School Year', mobileLabel: 'My Year', icon: CalendarCheck2 },
+  { to: '/lesson-format', label: 'My Plan Format', mobileLabel: 'Plan Format', icon: FileSliders, mobileHidden: true },
   { to: '/students?module=PE%20%26%20Health', label: 'Classes & Rosters', mobileLabel: 'Classes', icon: Users2 },
   { to: '/participation', label: 'Participation', mobileLabel: 'Participation', icon: ClipboardCheck },
   { to: '/run-tracker', label: 'Run Tracker', mobileLabel: 'Run', icon: Timer },
+  { to: '/coaching', label: 'Coaching & Tryouts', mobileLabel: 'Tryouts', icon: Trophy },
+  { to: '/teacher-wellness', label: 'Teacher Wellness', mobileLabel: 'My Wellness', icon: HeartPulse },
+  { to: '/staff-wellness', label: 'Staff Challenges', mobileLabel: 'Staff', icon: Users2 },
+  { to: '/programs?module=PE%20%26%20Health', label: 'Student Challenges', mobileLabel: 'Challenges', icon: Award, mobileHidden: true },
+  { to: '/pe-health/events', label: 'PE Events Studio', mobileLabel: 'Events', icon: Trophy, mobileHidden: true },
+  { to: '/open-house?module=PE%20%26%20Health', label: 'Open House Planner', mobileLabel: 'Open House', icon: School, mobileHidden: true },
+  { to: '/funding?module=PE%20%26%20Health', label: 'Funding & Grants', mobileLabel: 'Funding', icon: BadgeDollarSign, mobileHidden: true },
   { to: '/smart-goals?module=PE%20%26%20Health', label: 'SMART Goals', mobileLabel: 'Goals', icon: Target, mobileHidden: true },
   { to: '/curriculum-map', label: 'Year Plan', mobileLabel: 'Year', icon: CalendarRange, mobileHidden: true },
   { to: '/lessons?module=PE%20%26%20Health', label: 'PE Lesson Library', mobileLabel: 'Library', icon: BookOpen, mobileHidden: true },
@@ -112,8 +160,10 @@ const PE_NAV_ITEMS = [
 ]
 
 const PE_MOBILE_MORE_ITEMS = [
-  PE_NAV_ITEMS[1],
-  ...PE_NAV_ITEMS.slice(5),
+  PE_NAV_ITEMS[2],
+  PE_NAV_ITEMS[3],
+  PE_NAV_ITEMS[6],
+  ...PE_NAV_ITEMS.slice(7),
   { to: '/adaptive-pe', label: 'Adaptive PE & IEP', icon: Accessibility },
   { to: '/assessments?module=PE%20%26%20Health', label: 'Assessment Bank', icon: BookCheck },
   { to: '/standards-tracker?module=PE%20%26%20Health', label: 'Standards Tracker', icon: BarChart3 },
@@ -129,6 +179,7 @@ const PE_MOBILE_MORE_ITEMS = [
 ]
 
 const MODULE_TOOL_ITEMS = {
+  programs: { to: '/programs', label: 'Challenges & Programs', icon: Award },
   assessments: { to: '/assessments', label: 'Assessment Bank', icon: BookCheck },
   standards: { to: '/standards-tracker', label: 'Standards Tracker', icon: BarChart3 },
   pacing: { to: '/pacing-guide', label: 'Pacing Guide', icon: CalendarRange },
@@ -152,6 +203,8 @@ function getModuleNavItems(slug, config) {
   const browseTo = config.browsePath ?? `/lessons?module=${encodeURIComponent(config.moduleLabel)}`
   const coreItems = [
     { to: `/${slug}`, label: `${config.title} Home`, mobileLabel: 'Home', icon: LayoutDashboard, end: true },
+    { to: withModuleContext('/my-year', config, slug), label: 'My School Year', mobileLabel: 'My Year', icon: CalendarCheck2 },
+    { to: '/lesson-format', label: 'My Plan Format', mobileLabel: 'Plan Format', icon: FileSliders },
     { to: config.generatePath, label: 'Create New', mobileLabel: 'Create', icon: Sparkles },
     { to: browseTo, label: 'My Lessons & Resources', mobileLabel: 'Lessons', icon: BookOpen },
     { to: withModuleContext('/smart-goals', config, slug), label: 'SMART Goals', mobileLabel: 'SMART Goal', icon: Target },
@@ -174,14 +227,30 @@ function getModuleNavItems(slug, config) {
     icon: item.Icon,
   }))
 
-  return { coreItems, toolItems: [...specialtyItems, ...toolItems] }
+  const sharedItems = [
+    { to: '/teacher-wellness', label: 'Teacher Health & Wellness', icon: HeartPulse },
+    { to: withModuleContext('/open-house', config, slug), label: 'Open House Planner', icon: School },
+    { to: withModuleContext('/funding', config, slug), label: 'Funding & Grants', icon: BadgeDollarSign },
+  ]
+
+  return { coreItems, toolItems: [...specialtyItems, ...sharedItems, ...toolItems] }
 }
 
 export default function AppShell() {
   const navigation = useNavigationContext()
   const showSidebar = navigation.type !== 'general'
-  const { pathname } = useLocation()
+  const { pathname, search } = useLocation()
   const navigate = useNavigate()
+  const requestedUsageModule = new URLSearchParams(search).get('module')
+  const usageModuleLabel = navigation.type === 'pe' ? 'PE & Health' : navigation.type === 'module' ? navigation.config.moduleLabel : requestedUsageModule || 'Shared tools'
+
+  useEffect(() => {
+    const toolKey = trackedToolFor(pathname)
+    if (toolKey) void trackToolUsage(toolKey, 'opened', { moduleLabel: usageModuleLabel })
+    const isModuleHome = (navigation.type === 'pe' && pathname === '/pe-health')
+      || (navigation.type === 'module' && pathname === `/${navigation.slug}`)
+    if (isModuleHome) void trackToolUsage('module-home', 'opened', { moduleLabel: usageModuleLabel })
+  }, [navigation.type, navigation.slug, pathname, search, usageModuleLabel])
 
   // React Router intentionally preserves document scroll. For a multi-page
   // teaching app that made a newly opened module appear halfway down the page.
@@ -450,10 +519,7 @@ function BottomTabBar({ navigation }) {
   const moduleNavigation = navigation.type === 'module'
     ? getModuleNavItems(navigation.slug, navigation.config)
     : null
-  const peTabs = [PE_NAV_ITEMS[0], PE_NAV_ITEMS[2], PE_NAV_ITEMS[3], {
-    ...PE_NAV_ITEMS[4],
-    mobileLabel: 'SMART Goal',
-  }]
+  const peTabs = [PE_NAV_ITEMS[0], PE_NAV_ITEMS[1], PE_NAV_ITEMS[3], PE_NAV_ITEMS[4]]
   const moduleTabs = moduleNavigation
     ? moduleNavigation.coreItems.slice(0, 4)
     : null

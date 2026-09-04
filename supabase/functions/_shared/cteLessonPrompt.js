@@ -1159,6 +1159,7 @@ export function buildCteLessonSchema(includeELL = false) {
  * @param {string[]} input.materials
  * @param {number}  input.classSize
  * @param {number}  input.durationMinutes
+ * @param {string}  [input.courseName]
  * @param {string}  [input.targetCompetency]
  * @param {string}  [input.state]
  * @param {number}  [input.sessionNumber]
@@ -1175,6 +1176,7 @@ export function buildCteLessonPrompt({
   materials = [],
   classSize = 25,
   durationMinutes = 90,
+  courseName = "",
   targetCompetency = "",
   state = "",
   sessionNumber = 0,
@@ -1194,6 +1196,7 @@ export function buildCteLessonPrompt({
   const sequence = getPathwaySequence(pathway)
   const wblGuidance = getWblGuidance(pathway)
   const safetyGuidance = getSafetyGuidance(pathway)
+  const exactCourse = String(courseName).trim()
 
   const isMultiStage = sessionNumber > 0
   const stageLabel = isMultiStage ? `Stage ${sessionNumber} of ${totalSessions}` : ""
@@ -1212,6 +1215,8 @@ export function buildCteLessonPrompt({
           : "Completer"
 
   const system = `You are an experienced Career & Technical Education (CTE) instructor and industry professional writing a ${pathwayLabel} lesson plan for a CTE teacher in ${stateName}. You understand how real CTE classrooms work: industry-aligned skills, hands-on labs and simulations, career awareness, competency-based instruction, industry credentials, and work-based learning. You write like someone who has worked in the ${pathwayLabel} industry, not just taught it.
+
+${exactCourse ? `EXACT COURSE FIT — NON-NEGOTIABLE: The teacher selected the course "${exactCourse}". Build every part of this lesson for that exact course, not merely the broader ${pathwayLabel} pathway. Use course-appropriate vocabulary, tools/software/equipment, standards or task lists, rigor, project type, and career context. Do not drift into a neighboring course within the same pathway. For example, Desktop Publishing must focus on publication/layout work rather than generic coding; Web Design must focus on web design/development rather than general computer applications.` : `COURSE FIT: No exact course title was supplied. Infer the most appropriate course within the ${pathwayLabel} pathway from the lesson topic, and keep the entire lesson consistent with that course.`}
 
 Pathway: ${pathwayLabel}
 Course tier/level: ${tierLabel} (${gradeContext})
@@ -1340,6 +1345,7 @@ CRITICAL requirements for this stage:
   const user = `Generate a complete ${pathwayLabel} CTE lesson${isMultiStage ? ` project stage (${stageLabel})` : ""} with these parameters:
 
 - Pathway: ${pathwayLabel}
+- Exact course / class: ${exactCourse || "Not specified — infer carefully from the topic"}
 - Course tier/level: ${tierLabel} (${gradeContext})
 - ${isMultiStage ? `Project name: ${topic || `(choose an appropriate ${pathwayLabel} project for this tier/level)`}` : `Lesson topic / focus: ${topic || `(choose an appropriate ${pathwayLabel} lesson for this tier/level)`}`}
 - Materials / equipment available: ${materials.filter(Boolean).join(", ") || "standard CTE classroom/lab supplies for this pathway"}

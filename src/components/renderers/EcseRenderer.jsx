@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Copy, Check, Info, Sparkles, Puzzle, Repeat, Eye, Home, MessageSquare, Hand, ShieldCheck } from 'lucide-react'
+import { Copy, Check, Info, Puzzle, Repeat, Eye, Home, MessageSquare, Hand, ShieldCheck } from 'lucide-react'
 
 /**
  * Early Childhood Special Education (ECSE) renderer.

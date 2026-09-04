@@ -16,6 +16,7 @@ import {
   saveRunResult,
   updateRunGoalProgress,
 } from '../services/runTrackerService'
+import { trackToolUsage, trackToolUsageOnce } from '../services/productUsageService'
 import { classRunStats, elapsedMs, formatRunTime, nextLapResult, parseBulkRunTimes, parseRunTime, progressStats, runResultsCsv, seasonalProgress, sessionSummary, studentRunProgress, undoLapResult } from '../lib/runTracker'
 
 const PRESETS = {
@@ -65,6 +66,8 @@ export default function RunTracker() {
   const [editingResultId, setEditingResultId] = useState('')
   const [editingTime, setEditingTime] = useState('')
   const [updatingGoalId, setUpdatingGoalId] = useState('')
+  const [confirmingEnd, setConfirmingEnd] = useState(false)
+  const [ending, setEnding] = useState(false)
 
   useEffect(() => {
     listPeriods().then((data) => {
@@ -137,6 +140,7 @@ export default function RunTracker() {
         notes: runNotes,
       })
       setSession(created); setSessions((items) => [created, ...items]); setResults([]); setNow(Date.now()); setMode('run'); setRunNotes('')
+      void trackToolUsage('run-tracker', 'created', { moduleLabel: 'PE & Health', metadata: { source: 'live-run' } })
     } catch (error) {
       setNotice({ type: 'error', message: error.message ?? 'Could not start the run.' })
     } finally { setStarting(false) }
@@ -195,14 +199,18 @@ export default function RunTracker() {
   }
 
   async function endRun() {
-    if (!window.confirm('End this run and move it to history? Student results already entered will be kept.')) return
+    setEnding(true); setNotice(null)
     try {
       const completed = await completeRunSession(session.id)
       setSession(completed)
       setSessions((items) => items.map((item) => item.id === completed.id ? completed : item))
       setAllResults((items) => [...items.filter((item) => item.session_id !== completed.id), ...results])
-      setMode('history')
+      setConfirmingEnd(false)
+      setMode('history-detail')
+      setNotice({ type: 'success', message: 'Run saved to history. Review results or download the CSV below.' })
+      void trackToolUsage('run-tracker', 'completed', { moduleLabel: 'PE & Health', metadata: { source: 'live-run' } })
     } catch (error) { setNotice({ type: 'error', message: error.message ?? 'Could not end the run.' }) }
+    finally { setEnding(false) }
   }
 
   async function showSession(selected) {
@@ -216,7 +224,8 @@ export default function RunTracker() {
     const link = document.createElement('a')
     const safeClass = (selectedPeriod?.label ?? 'class').replace(/[^a-z0-9]+/gi, '-').toLowerCase()
     link.href = url
-    link.download = `${safeClass}-${selectedSession.distance_label.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}-${selectedSession.run_date}.csv`
+    const runDate = selectedSession.run_date || selectedSession.started_at?.slice(0, 10) || localDateValue()
+    link.download = `${safeClass}-${selectedSession.distance_label.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}-${runDate}.csv`
     link.style.display = 'none'
     document.body.appendChild(link)
     link.click()
@@ -224,10 +233,10 @@ export default function RunTracker() {
     window.setTimeout(() => URL.revokeObjectURL(url), 1000)
   }
 
-  function downloadSessionCsv() { triggerSessionCsv(session, results) }
+  function downloadSessionCsv() { triggerSessionCsv(session, results); void trackToolUsage('run-tracker', 'exported', { moduleLabel: 'PE & Health', metadata: { source: 'current-run' } }) }
 
   async function downloadHistoryCsv(item) {
-    try { triggerSessionCsv(item, await listRunResults(item.id)) }
+    try { triggerSessionCsv(item, await listRunResults(item.id)); void trackToolUsage('run-tracker', 'exported', { moduleLabel: 'PE & Health', metadata: { source: 'history' } }) }
     catch (error) { setNotice({ type: 'error', message: error.message ?? 'Could not prepare the CSV.' }) }
   }
 
@@ -248,6 +257,7 @@ export default function RunTracker() {
       })
       setGoals((items) => [saved, ...items]); setGoalTime(''); setGoalDate('')
       setNotice({ type: 'success', message: 'SMART goal saved.' })
+      void trackToolUsage('smart-goals', 'created', { moduleLabel: 'PE & Health', metadata: { source: 'run-tracker' } })
     } catch (error) {
       setNotice({ type: 'error', message: error.message ?? 'Could not save the SMART goal.' })
     } finally { setSavingGoal(false) }
@@ -288,6 +298,7 @@ export default function RunTracker() {
       setSessions((items) => [created, ...items]); setAllResults((items) => [...items, ...savedResults])
       setSession(created); setResults(savedResults); setPastEntries({}); setPastNotes(''); setBulkTimes(''); setMode('history-detail')
       setNotice({ type: 'success', message: 'Past run saved to History and Student Progress.' })
+      void trackToolUsage('run-tracker', 'created', { moduleLabel: 'PE & Health', metadata: { source: 'past-run' } })
     } catch (error) {
       setNotice({ type: 'error', message: error.message ?? 'Could not save the past run.' })
     } finally { setSavingPast(false) }
@@ -310,6 +321,7 @@ export default function RunTracker() {
       setResults((items) => [...items.filter((item) => item.student_id !== student.id), saved])
       setAllResults((items) => [...items.filter((item) => !(item.session_id === session.id && item.student_id === student.id)), saved])
       setEditingResultId(''); setEditingTime(''); setNotice({ type: 'success', message: 'Finish time corrected.' })
+      trackToolUsageOnce('run-tracker', 'updated', { moduleLabel: 'PE & Health', metadata: { source: 'history-correction' } })
     } catch (error) { setNotice({ type: 'error', message: error.message ?? 'Could not correct that time.' }) }
     finally { setSavingIds((ids) => { const next = new Set(ids); next.delete(student.id); return next }) }
   }
@@ -388,8 +400,13 @@ export default function RunTracker() {
     {mode === 'run' && session && <>
       <div className="sticky top-0 z-20 -mx-6 flex items-center justify-between gap-3 border-y border-ink-900 bg-white/95 px-6 py-3 backdrop-blur dark:bg-ink-950/95 md:-mx-10 md:px-10">
         <div><p className="text-xs font-semibold uppercase tracking-wide text-ink-500">{session.distance_label} · {session.laps_required} laps</p><p className="font-mono text-3xl font-bold tabular-nums text-ink-50">{formatRunTime(liveElapsed)}</p></div>
-        <button onClick={endRun} className="btn-secondary min-h-[44px]"><Flag size={16} /> End run</button>
+        <button onClick={() => setConfirmingEnd(true)} className="btn-secondary min-h-[44px]"><Flag size={16} /> End run</button>
       </div>
+      {confirmingEnd && <div role="alertdialog" aria-labelledby="end-run-title" className="rounded-xl border border-amber-500/35 bg-amber-500/10 p-4">
+        <p id="end-run-title" className="font-semibold text-ink-100">Save this run to history?</p>
+        <p className="mt-1 text-sm text-ink-500">Every lap, finish time, absence, and note already entered will be kept.</p>
+        <div className="mt-3 flex flex-wrap gap-2"><button onClick={endRun} disabled={ending} className="btn-primary">{ending ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />} Save run & view results</button><button onClick={() => setConfirmingEnd(false)} disabled={ending} className="btn-secondary">Keep tracking</button></div>
+      </div>}
       <p className="text-xs text-ink-500">Tap the next empty dot when a student completes a lap. The final dot records their finish time.</p>
       <div className="space-y-3">{students.map((student) => {
         const result = resultFor(student.id)
@@ -425,7 +442,7 @@ export default function RunTracker() {
     </section>}
 
     {mode === 'progress' && <section className="space-y-4">
-      <div className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="text-lg font-semibold">Student progress</h2><p className="text-sm text-ink-500">Personal growth is compared only across runs of the same distance.</p></div><button onClick={() => window.print()} className="btn-secondary min-h-11 print:hidden"><Printer size={16} /> Print progress report</button></div>
+      <div className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="text-lg font-semibold">Student progress</h2><p className="text-sm text-ink-500">Personal growth is compared only across runs of the same distance.</p></div><button onClick={() => { void trackToolUsage('run-tracker', 'printed', { moduleLabel: 'PE & Health', metadata: { source: 'progress-report' } }); window.print() }} className="btn-secondary min-h-11 print:hidden"><Printer size={16} /> Print progress report</button></div>
       <label className="block text-sm font-medium text-ink-300">Student<select value={progressStudentId} onChange={(event) => setProgressStudentId(event.target.value)} className="input-field mt-1">{students?.map((student) => <option key={student.id} value={student.id}>{student.name_or_initials}</option>)}</select></label>
       {!stats && <div className="card p-6 text-center"><TrendingUp size={28} className="mx-auto mb-2 text-ink-500" /><p className="font-semibold text-ink-200">No completed run times yet</p><p className="mt-1 text-sm text-ink-500">Finish at least one run for this student to establish a cardiovascular baseline.</p></div>}
       {stats && <>

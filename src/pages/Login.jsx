@@ -1,7 +1,19 @@
 import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
-import { CHECKOUT_URL } from '../services/trialService'
+import { Sentry } from '../lib/sentry'
+import { attributedCheckoutUrl, CHECKOUT_URL } from '../services/trialService'
+import { track } from '../lib/analytics'
+
+const AUTH_NETWORK_MESSAGE = 'We couldn’t reach the sign-in service. Check your connection and try again in a moment.'
+
+function reportAuthNetworkError(error, action) {
+  Sentry.captureException(error, {
+    tags: { area: 'authentication', action, handled: 'true' },
+    fingerprint: ['auth-network-failure', action],
+    extra: { browser_online: typeof navigator === 'undefined' ? null : navigator.onLine },
+  })
+}
 
 // New accounts are created ONLY through the card-required Stripe checkout (7-day
 // trial). The in-app cardless "Sign up" form was removed so every account becomes
@@ -56,12 +68,15 @@ export default function Login({ authError, onClearAuthError }) {
     setStatus('loading')
     setMessage(null)
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-
-    if (error) {
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      if (!error) return
       setStatus('idle')
       setMessage(error.message)
-      return
+    } catch (error) {
+      reportAuthNetworkError(error, 'password_sign_in')
+      setStatus('idle')
+      setMessage(AUTH_NETWORK_MESSAGE)
     }
     // Sign-in succeeded — session enforcement happens in App.jsx's
     // onAuthStateChange handler. If claimSession() blocks this login, authError
@@ -73,16 +88,21 @@ export default function Login({ authError, onClearAuthError }) {
     setStatus('loading')
     setMessage(null)
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: 'https://plansk12.com/reset-password',
-    })
-
-    setStatus('idle')
-    if (error) {
-      setMessage(error.message)
-      return
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: 'https://plansk12.com/reset-password',
+      })
+      setStatus('idle')
+      if (error) {
+        setMessage(error.message)
+        return
+      }
+      setForgotSent(true)
+    } catch (error) {
+      reportAuthNetworkError(error, 'password_reset')
+      setStatus('idle')
+      setMessage(AUTH_NETWORK_MESSAGE)
     }
-    setForgotSent(true)
   }
 
   // Passwordless sign-in: email a one-time magic link (Supabase built-in, now via
@@ -96,16 +116,22 @@ export default function Login({ authError, onClearAuthError }) {
     onClearAuthError?.()
     setStatus('loading')
     setMessage(null)
-    const { error } = await supabase.auth.signInWithOtp({
-      email: email.trim(),
-      options: { shouldCreateUser: false },
-    })
-    setStatus('idle')
-    if (error) {
-      setMessage(error.message)
-      return
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: email.trim(),
+        options: { shouldCreateUser: false },
+      })
+      setStatus('idle')
+      if (error) {
+        setMessage(error.message)
+        return
+      }
+      setLinkSent(true)
+    } catch (error) {
+      reportAuthNetworkError(error, 'magic_link')
+      setStatus('idle')
+      setMessage(AUTH_NETWORK_MESSAGE)
     }
-    setLinkSent(true)
   }
 
   return (
@@ -132,8 +158,9 @@ export default function Login({ authError, onClearAuthError }) {
               ) : (
                 <form onSubmit={handleForgotPassword} className="space-y-4">
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium text-ink-200">Email</label>
+                    <label htmlFor="reset-email" className="mb-1.5 block text-sm font-medium text-ink-200">Email</label>
                     <input
+                      id="reset-email"
                       type="email"
                       required
                       autoFocus
@@ -158,21 +185,22 @@ export default function Login({ authError, onClearAuthError }) {
               <h1 className="mb-1 text-lg font-semibold text-ink-50">Sign in</h1>
               <p className="mb-5 text-sm text-ink-400">Welcome back — let’s get the week planned.</p>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="mb-1.5 block text-sm font-medium text-ink-200">Email</label>
-                  <input
-                    type="email"
-                    required
-                    className="input-field"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@school.org"
-                  />
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label htmlFor="login-email" className="mb-1.5 block text-sm font-medium text-ink-200">Email</label>
+                    <input
+                      id="login-email"
+                      type="email"
+                      required
+                      className="input-field"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@school.org"
+                    />
                 </div>
                 <div>
                   <div className="mb-1.5 flex items-center justify-between">
-                    <label className="text-sm font-medium text-ink-200">Password</label>
+                    <label htmlFor="login-password" className="text-sm font-medium text-ink-200">Password</label>
                     <button
                       type="button"
                       onClick={() => switchMode('forgot')}
@@ -182,6 +210,7 @@ export default function Login({ authError, onClearAuthError }) {
                     </button>
                   </div>
                   <input
+                    id="login-password"
                     type="password"
                     required
                     minLength={6}
@@ -232,7 +261,8 @@ export default function Login({ authError, onClearAuthError }) {
           </button>
         ) : (
           <a
-            href={CHECKOUT_URL}
+            href={attributedCheckoutUrl(CHECKOUT_URL)}
+            onClick={() => track('trial_clicked', { placement: 'login' })}
             className="mt-4 block w-full text-center text-sm text-ink-400 hover:text-ink-200"
           >
             Don’t have an account? Start your free trial →
