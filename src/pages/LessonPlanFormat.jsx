@@ -17,7 +17,7 @@ const clone = (value) => structuredClone(value)
 function Preview({ format }) {
   const enabled = format.sections.filter((section) => section.enabled)
   return <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-xl shadow-black/10">
-    <header className="border-b border-slate-200 bg-gradient-to-r from-teal-50 to-blue-50 p-5"><p className="text-[10px] font-black uppercase tracking-[.18em] text-teal-700">{format.name || 'My school format'}</p><h3 className="mt-1 text-xl font-black">Sample lesson plan</h3><p className="mt-1 text-xs text-slate-500">PE & Health · Grade 6 · 45 min</p></header>
+    <header className="border-b border-slate-200 bg-gradient-to-r from-teal-50 to-blue-50 p-5"><p className="text-[10px] font-black uppercase tracking-[.18em] text-teal-700">{format.name || 'My school format'}</p><h3 className="mt-1 text-xl font-black">Sample lesson plan</h3><p className="mt-1 text-xs text-slate-500">Your specialty · Grade level · Class time</p></header>
     <div className="divide-y divide-slate-200">{enabled.map((section) => <div key={section.key} className="grid gap-1 p-3 sm:grid-cols-[120px_1fr]"><p className="text-xs font-black">{section.label}{section.required && <span className="ml-1 text-teal-700">*</span>}</p><div><div className="h-2 w-full rounded bg-slate-100" /><div className="mt-1.5 h-2 w-3/4 rounded bg-slate-100" /></div></div>)}</div>
   </article>
 }

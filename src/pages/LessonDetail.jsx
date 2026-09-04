@@ -1,8 +1,8 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { ArrowLeft, Loader2, Printer, ChevronLeft, ChevronRight, Copy, Pencil, Check, X, Share2, Tag, Plus, Play, FileSliders, Save } from 'lucide-react'
-import { getLesson, listLessons, updateLesson, deleteLesson, deleteUnit, duplicateLesson, updateTags } from '../services/lessonsService'
+import { ArrowLeft, Loader2, Printer, ChevronLeft, ChevronRight, ChevronDown, Copy, Pencil, Check, X, Share2, Tag, Plus, Play, FileSliders, Save, Star } from 'lucide-react'
+import { getLesson, listLessons, updateLesson, deleteLesson, deleteUnit, duplicateLesson, updateTags, toggleFavorite } from '../services/lessonsService'
 import { createShare, getShare, deleteShare } from '../services/sharingService'
 import { track } from '../lib/analytics'
 import AdaptivePERenderer from '../components/renderers/AdaptivePERenderer'
@@ -13,6 +13,7 @@ import { useTrial } from '../context/TrialContext'
 import TeachMode from '../components/lesson/TeachMode'
 import TeachingView from '../components/lesson/TeachingView'
 import { SPECIALTY_CONTEXTS } from '../constants/moduleHomes'
+import { MODULES } from '../constants/modules'
 import PersonalPlanRenderer, { RequirementCheck } from '../components/lesson/PersonalPlanRenderer'
 import { recommendInstructionalPractices, recommendMtssGoals } from '../lib/personalPlanContent'
 import { getDefaultLessonPlanFormat, getLessonPlanFormatValues, saveLessonPlanFormatValues } from '../services/lessonPlanFormatService'
@@ -45,7 +46,14 @@ export default function LessonDetail() {
   const [formatNotice, setFormatNotice] = useState('')
   const [showAllMtssGoals, setShowAllMtssGoals] = useState(false)
   const [showAllInstructionalPractices, setShowAllInstructionalPractices] = useState(false)
-  const moduleContext = searchParams.get('module')
+  const [showMoreActions, setShowMoreActions] = useState(false)
+  const [savingFavorite, setSavingFavorite] = useState(false)
+  const requestedModuleContext = searchParams.get('module')
+  const lessonSubject = lesson?.lesson_object?.subject ?? lesson?.subject
+  const inferredModuleContext = lessonSubject
+    ? MODULES.find((module) => module.label === lessonSubject || module.subjects.includes(lessonSubject))?.label
+    : null
+  const moduleContext = requestedModuleContext || inferredModuleContext
   const moduleConfig = Object.values(SPECIALTY_CONTEXTS).find((config) =>
     config.moduleLabel === moduleContext || config.title === moduleContext
   )
@@ -249,6 +257,22 @@ export default function LessonDetail() {
     try { await updateTags(id, next) } catch (err) { setError(err.message) }
   }
 
+  async function handleSaveForLater() {
+    setSavingFavorite(true)
+    try {
+      const updated = await toggleFavorite(id, !!lesson.is_favorite)
+      setLesson(updated)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setSavingFavorite(false)
+    }
+  }
+
+  function openExportTools() {
+    document.getElementById('lesson-kit-exports')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }
+
   function openMetaEdit() {
     setMetaForm({
       scheduled_date: lesson.scheduled_date ?? '',
@@ -334,8 +358,30 @@ export default function LessonDetail() {
           {moduleContext ? `Back to ${moduleContext} library` : 'Back to library'}
         </Link>
 
-        <div className="flex flex-wrap items-center gap-2">
-          {!isAPE && <button onClick={() => setShowTeachMode(true)} className="btn-primary"><Play size={16} /> Teach now</button>}
+        <button onClick={() => setShowMoreActions((current) => !current)} className="btn-secondary" aria-expanded={showMoreActions}>
+          More lesson actions
+          <ChevronDown size={16} className={`transition-transform ${showMoreActions ? 'rotate-180' : ''}`} />
+        </button>
+      </div>
+
+      <section className="no-print overflow-hidden rounded-2xl border border-accent-500/25 bg-gradient-to-br from-accent-500/10 via-white to-violet-500/5 p-5 dark:via-ink-900 dark:to-violet-500/10">
+        <p className="label-eyebrow text-accent-500">Lesson ready</p>
+        <h2 className="mt-1 text-lg font-semibold text-ink-100">What do you want to do next?</h2>
+        <p className="mt-1 text-sm text-ink-500">Your lesson is already saved. Choose the next step that fits your day.</p>
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          {!isAPE && <button onClick={() => setShowTeachMode(true)} className="btn-primary justify-center py-3"><Play size={17} /> Teach lesson</button>}
+          <button onClick={openExportTools} className="btn-secondary justify-center py-3"><Printer size={17} /> Print or export</button>
+          <button onClick={handleSaveForLater} disabled={savingFavorite} className={lesson.is_favorite ? 'btn-primary justify-center py-3' : 'btn-secondary justify-center py-3'}>
+            {savingFavorite ? <Loader2 size={17} className="animate-spin" /> : <Star size={17} fill={lesson.is_favorite ? 'currentColor' : 'none'} />}
+            {lesson.is_favorite ? 'Saved for later' : 'Save for later'}
+          </button>
+        </div>
+      </section>
+
+      {showMoreActions && (
+        <div className="no-print card px-5 py-4">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-ink-500">More lesson actions</p>
+          <div className="flex flex-wrap items-center gap-2">
           {!isAPE && (
             <button onClick={openContentEdit} className="btn-secondary">
               <Pencil size={16} />
@@ -381,7 +427,8 @@ export default function LessonDetail() {
             )}
           </div>
         </div>
-      </div>
+        </div>
+      )}
 
       {/* Inline meta editor */}
       {editingMeta && (

@@ -443,9 +443,12 @@ const MATERIAL_PLACEHOLDERS = {
 
 export default function CteGenerator() {
   const [view, setView] = useState('form')
+  const { onboarded, ready: profileReady, refresh: refreshProfile, ctePathways } = useProfileDefaults()
+  const savedProfilePathway = ctePathways.find((value) => PATHWAYS.some((item) => item.value === value))
 
   // Pathway
-  const [pathway, setPathway] = useState('hospitality')
+  const [selectedPathway, setSelectedPathway] = useState(null)
+  const pathway = selectedPathway ?? savedProfilePathway ?? 'hospitality'
   const [showPathwayBrowser, setShowPathwayBrowser] = useState(false)
   // Which category accordion sections are expanded — open the group holding the
   // current pathway by default so the selection is always visible on load.
@@ -467,7 +470,6 @@ export default function CteGenerator() {
 
   // First-run capture. CTE has no K-12 grade selector, so only state is
   // pre-filled; grade_levels is not written from this module.
-  const { onboarded, ready: profileReady, refresh: refreshProfile } = useProfileDefaults()
   useGradeStateDefaults(null, setState)
   // Pre-select the module she's already in — she's confirming + adding, not starting cold.
   const [firstRun, setFirstRun] = useState({ areas: ['cte'], ctePathways: [], other: '' })
@@ -493,7 +495,7 @@ export default function CteGenerator() {
     setMaterials((prev) => prev.map((m, idx) => (idx === i ? value : m)))
 
   function handlePathwayChange(value) {
-    setPathway(value)
+    setSelectedPathway(value)
     setMaterials(['', ''])
     setCourseName('')
     setTopic('')
@@ -597,7 +599,7 @@ export default function CteGenerator() {
             </button>
             {savedId && (
               <Link
-                to={`/lessons/${savedId}`}
+                to={`/lessons/${savedId}?module=CTE`}
                 className="flex items-center gap-1.5 text-sm text-ink-400 hover:text-ink-200 transition-colors"
               >
                 View lesson detail

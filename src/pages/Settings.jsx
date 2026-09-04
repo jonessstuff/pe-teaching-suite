@@ -54,6 +54,7 @@ export default function Settings() {
   const [cancelReason, setCancelReason] = useState('not_using')
   const [cancelDetail, setCancelDetail] = useState('')
   const [cancelSaving, setCancelSaving] = useState(false)
+  const usesCteOnly = form.teaching_areas.includes('cte') && !form.teaching_areas.includes('pe_health')
 
   async function handleRefreshStatus() {
     setStatusRefreshing(true)
@@ -101,6 +102,7 @@ export default function Settings() {
     setSaveError(null)
     try {
       await updateProfile(form)
+      await trial.refresh()
       setSaveStatus('saved')
       setTimeout(() => setSaveStatus('idle'), 3000)
     } catch (err) {
@@ -338,7 +340,7 @@ export default function Settings() {
               </select>
             </Field>
 
-            <Field label="Default subject">
+            {!usesCteOnly && <Field label="Default PE & Health subject">
               <select
                 className="input-field"
                 value={form.default_subject}
@@ -348,7 +350,7 @@ export default function Settings() {
                   <option key={s} value={s}>{s}</option>
                 ))}
               </select>
-            </Field>
+            </Field>}
 
             <Field label="What do you teach?" hint="Select all that apply — helps us tailor what we surface to you.">
               <TeachingAreasField
@@ -358,6 +360,10 @@ export default function Settings() {
                 }
               />
             </Field>
+
+            {usesCteOnly && <div className="rounded-xl border border-pink-500/20 bg-pink-500/5 px-4 py-3 text-sm text-ink-400">
+              Your CTE pathway selections become the defaults inside the CTE lesson generator.
+            </div>}
 
             <div className="border-t border-ink-800 pt-5">
               <h3 className="font-semibold text-ink-100">Reusable teaching preferences</h3>
