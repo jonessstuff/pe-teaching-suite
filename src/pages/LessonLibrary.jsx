@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Sparkles, Loader2, Search, Star, FileDown, Lock } from 'lucide-react'
+import { Sparkles, Loader2, Search, Star, FileDown, Lock, FileCheck2 } from 'lucide-react'
 import { listLessons } from '../services/lessonsService'
 import { MODULES, subjectMatchesFilter } from '../constants/modules'
 import { SPECIALTY_CONTEXTS } from '../constants/moduleHomes'
@@ -149,6 +149,10 @@ export default function LessonLibrary() {
           {isModuleLibrary && <p className="mt-1 text-sm text-ink-500">Only {libraryNounPlural} created for this specialty appear here.</p>}
         </div>
         <div className="flex items-center gap-2">
+          <Link to={`/submit-plans${activeModuleFilter === 'All' ? '' : `?module=${encodeURIComponent(activeModuleFilter)}`}`} className="btn-secondary">
+            <FileCheck2 size={16} />
+            Submit plans
+          </Link>
           <button
             onClick={handleExportAll}
             disabled={exporting || exportLessons.length === 0}

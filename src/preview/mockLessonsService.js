@@ -66,6 +66,32 @@ const lessons = [
     created_at: now,
     updated_at: now,
   },
+  {
+    id: '5',
+    teacher_id: 'preview-user',
+    title: 'Professional Communication: Workplace Introductions',
+    subject: 'CTE',
+    grade_bands: [9, 10],
+    duration_minutes: 55,
+    scheduled_date: dateOffset(0),
+    period_label: 'Period 2',
+    lesson_object: { ...sampleKickballLesson, title: 'Professional Communication: Workplace Introductions', unit: 'Employability Skills', subject: 'CTE', grade_bands: [9, 10], standards: [{ code: '21.2', text: 'Demonstrate professional communication and workplace-readiness skills.' }], learning_targets: ['I can introduce myself professionally and adjust my communication for a workplace audience.'], success_criteria: ['Use an appropriate greeting and introduction.', 'Maintain professional body language.', 'Respond to a follow-up question clearly.'], warm_up: 'Compare two sample introductions and identify which sounds more professional.', whole_group_instruction: 'Model the greeting, name, role or interest, and follow-up question in a concise workplace introduction.', fitness_activities: 'Students rotate through partner scenarios for a job fair, first day at work, and customer greeting.', closure: 'Students complete a self-check and name one communication choice they will improve.', evidence_of_learning: 'Teacher observation checklist, partner feedback, and a final 30-second introduction.', equipment_needed: ['Workplace scenario cards', 'Communication checklist'], tier1_supports: ['Display a visual introduction frame and model one complete example.'], tier2_supports: ['Rehearse with the teacher in a small group before the final introduction.'] },
+    created_at: now,
+    updated_at: now,
+  },
+  {
+    id: '6',
+    teacher_id: 'preview-user',
+    title: 'Dollars & Sense: Building a Monthly Budget',
+    subject: 'CTE',
+    grade_bands: [8, 9],
+    duration_minutes: 55,
+    scheduled_date: dateOffset(2),
+    period_label: 'Period 4',
+    lesson_object: { ...sampleKickballLesson, title: 'Dollars & Sense: Building a Monthly Budget', unit: 'Financial Literacy', subject: 'CTE', grade_bands: [8, 9], standards: [{ code: 'FIN.4', text: 'Create and evaluate a personal spending and savings plan.' }], learning_targets: ['I can build a balanced monthly budget using income, fixed expenses, and variable expenses.'], success_criteria: ['Categorize common monthly expenses.', 'Calculate remaining income accurately.', 'Explain one responsible budget decision.'], warm_up: 'Sort six expenses into needs, wants, fixed costs, and variable costs.', whole_group_instruction: 'Model a monthly budget and demonstrate how to calculate the remaining balance.', fitness_activities: 'Teams complete a realistic household budget scenario and respond to one unexpected expense card.', closure: 'Students explain one adjustment that keeps their budget balanced.', evidence_of_learning: 'Completed budget sheet, calculation check, and a written financial decision.', equipment_needed: ['Budget scenario cards', 'Calculator or spreadsheet', 'Monthly budget template'], tier1_supports: ['Use a color-coded budget model and provide a completed example.'], tier2_supports: ['Use a reduced-number budget and guided calculation check with the teacher.'] },
+    created_at: now,
+    updated_at: now,
+  },
 ]
 
 export async function listLessons() {

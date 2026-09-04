@@ -103,6 +103,7 @@ import AdvancedThinkersStudio from './pages/AdvancedThinkersStudio'
 import MySchoolYear from './pages/MySchoolYear'
 import LessonPlanFormat from './pages/LessonPlanFormat'
 import TeacherHealthWellness from './pages/TeacherHealthWellness'
+import SubmitPlans from './pages/SubmitPlans'
 
 // Module-level promise reference. When a genuine new login triggers claimSession(),
 // this holds the in-flight Promise so that any concurrent SIGNED_IN events (e.g.
@@ -384,6 +385,7 @@ function App() {
           <Route path="schedule" element={<Schedule />} />
           <Route path="my-year" element={<MySchoolYear />} />
           <Route path="lesson-format" element={<LessonPlanFormat />} />
+          <Route path="submit-plans" element={<SubmitPlans />} />
           <Route path="students" element={<Students />} />
           <Route path="participation" element={<ParticipationTracker />} />
           <Route path="run-tracker" element={<RunTracker />} />

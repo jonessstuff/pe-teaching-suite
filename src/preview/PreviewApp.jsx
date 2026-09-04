@@ -83,6 +83,7 @@ import Landing from '../pages/Landing'
 import MySchoolYear from '../pages/MySchoolYear'
 import LessonPlanFormat from '../pages/LessonPlanFormat'
 import TeacherHealthWellness from '../pages/TeacherHealthWellness'
+import SubmitPlans from '../pages/SubmitPlans'
 
 /**
  * Standalone preview app.
@@ -108,6 +109,7 @@ export default function PreviewApp() {
           <Route path="schedule" element={<Schedule />} />
           <Route path="my-year" element={<MySchoolYear />} />
           <Route path="lesson-format" element={<LessonPlanFormat />} />
+          <Route path="submit-plans" element={<SubmitPlans />} />
           <Route path="students" element={<Students />} />
           <Route path="participation" element={<ParticipationTracker />} />
           <Route path="run-tracker" element={<RunTracker />} />

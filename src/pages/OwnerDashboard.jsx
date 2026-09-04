@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Activity, BarChart3, Building2, Copy, CreditCard, DollarSign, Download, Eye, Layers, Link2, Loader2, Mail, Megaphone, MousePointerClick, RefreshCw, Search, TrendingDown, TrendingUp, UserCheck, Users, UserX, Wrench, XCircle } from 'lucide-react'
+import { Activity, BarChart3, Building2, Copy, CreditCard, DollarSign, Download, Eye, Layers, Link2, Loader2, Mail, Megaphone, MousePointerClick, RefreshCw, Search, TrendingDown, TrendingUp, UserCheck, Users, UserX, Video, Wrench, XCircle } from 'lucide-react'
 import { useTrial } from '../context/TrialContext'
 import { getOwnerAnalytics, saveOwnerContact, saveSchoolLead, sendCancellationRecoveryEmail } from '../services/ownerAnalyticsService'
 import { MODULE_HOMES } from '../constants/moduleHomes'
@@ -29,6 +29,85 @@ function rangeLabel(days) {
 function Metric({ icon: Icon, label, value, note, color = 'text-accent-400', onClick }) {
   const content = <><Icon size={21} className={color} /><p className="mt-4 text-2xl font-bold text-ink-50">{value}</p><p className="mt-1 text-sm font-semibold text-ink-300">{label}</p>{note && <p className="mt-1 text-xs text-ink-500">{note}</p>}</>
   return onClick ? <button type="button" onClick={onClick} className="card p-5 text-left transition-colors hover:border-accent-500/40">{content}</button> : <div className="card p-5">{content}</div>
+}
+
+const UPDATE_POSTS = [
+  {
+    id: 'submit-my-plans',
+    title: 'Submit My Plans',
+    module: 'General',
+    caption: `New in PlansK12: Submit My Plans!\n\nTeachers told me that moving a completed lesson into a school-required template was taking too much extra time. This new tool turns saved lessons into a brief weekly plan, a complete school-format plan, or a year-at-a-glance. Choose the lessons you need, then copy them into your school system, download for Word or Google Docs, or save as a PDF.\n\nBuilt from real teacher feedback—because the lesson should be the hard part, not reformatting it.`,
+  },
+  {
+    id: 'teacher-wellness',
+    title: 'Teacher Health & Wellness',
+    module: 'PE & Health',
+    caption: `Teachers take care of everyone else, so PlansK12 now has a space that helps teachers take care of themselves too.\n\nTeacher Health & Wellness includes personalized walk/run progression, an interval timer, stress-reset ideas, simple stretches, packed-lunch inspiration, and desk-snack ideas. Start where you are, choose your own goal, and build gradually.`,
+  },
+  {
+    id: 'cte-course-fit',
+    title: 'CTE Course Fit',
+    module: 'CTE',
+    caption: `CTE teachers asked for more control over exactly what kind of lesson they receive. PlansK12 now lets CTE educators identify their pathway, specific course, lesson type, and classroom needs before generating.\n\nThat means an Intro to Computers lesson can actually fit Intro to Computers—instead of returning a generic technology activity.`,
+  },
+  {
+    id: 'advanced-thinkers-k5',
+    title: 'Advanced Thinkers K–5',
+    module: 'Gifted & Talented',
+    caption: `New for gifted and advanced learners: a complete K–5 Advanced Thinkers resource that goes beyond a loose activity idea.\n\nIt supports reasoning, problem solving, creative thinking, communication, and reflection with ready-to-use student materials—so teachers are not left searching for all the missing pieces.`,
+  },
+  {
+    id: 'funding-grants',
+    title: 'Funding & Grants',
+    module: 'General',
+    caption: `A new PlansK12 tool is helping teachers turn real classroom needs into stronger funding requests.\n\nFunding & Grants helps narrow opportunities by school type, grade level, Title I or free/reduced-lunch information, and the actual program need—then helps organize the grant-writing process.`,
+  },
+]
+
+function OwnerUpdatePostHelper() {
+  const [selectedId, setSelectedId] = useState(UPDATE_POSTS[0].id)
+  const [caption, setCaption] = useState(UPDATE_POSTS[0].caption)
+  const [youtubeUrl, setYoutubeUrl] = useState('')
+  const [copied, setCopied] = useState('')
+  const selected = UPDATE_POSTS.find((item) => item.id === selectedId) ?? UPDATE_POSTS[0]
+  const link = campaignLink({ campaign: `${selected.id}-youtube`, module: selected.module, content: 'youtube-description' })
+  const youtubeReady = /^https?:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)\//i.test(youtubeUrl.trim())
+  const post = `${caption.trim()}\n\nWatch the walkthrough: ${youtubeUrl.trim()}`
+
+  async function copyPost() {
+    if (!youtubeReady) return
+    await navigator.clipboard.writeText(post)
+    setCopied('facebook')
+    window.setTimeout(() => setCopied(''), 1600)
+  }
+
+  async function copyYouTubeLink() {
+    await navigator.clipboard.writeText(link)
+    setCopied('youtube')
+    window.setTimeout(() => setCopied(''), 1600)
+  }
+
+  function chooseUpdate(id) {
+    const next = UPDATE_POSTS.find((item) => item.id === id) ?? UPDATE_POSTS[0]
+    setSelectedId(next.id)
+    setCaption(next.caption)
+    setYoutubeUrl('')
+    setCopied('')
+  }
+
+  return <section className="card overflow-hidden">
+    <div className="border-b border-ink-800 p-5 sm:p-6"><div className="flex items-center gap-2"><Megaphone size={19} className="text-violet-400" /><h2 className="font-semibold text-ink-100">Share a PlansK12 update</h2></div><p className="mt-1 text-xs text-ink-500">YouTube first: Facebook sends viewers to your video, and the video description sends them to a tracked PlansK12 link.</p></div>
+    <div className="grid gap-5 p-5 lg:grid-cols-[260px_1fr] sm:p-6">
+      <div><p className="text-xs font-bold uppercase tracking-wide text-ink-600">Choose an update</p><div className="mt-3 space-y-2">{UPDATE_POSTS.map((item) => <button key={item.id} type="button" onClick={() => chooseUpdate(item.id)} className={`w-full rounded-xl border px-3 py-2.5 text-left text-sm font-semibold transition ${selectedId === item.id ? 'border-violet-500/50 bg-violet-500/10 text-violet-300' : 'border-ink-800 text-ink-400 hover:border-ink-700 hover:text-ink-200'}`}>{item.title}<span className="mt-0.5 block text-[11px] font-normal text-ink-600">{item.module}</span></button>)}</div></div>
+      <div>
+        <label className="text-xs font-bold uppercase tracking-wide text-ink-600">Facebook caption<textarea value={caption} onChange={(event) => setCaption(event.target.value)} className="input-field mt-2 min-h-56 w-full whitespace-pre-wrap text-sm font-normal leading-6" /></label>
+        <label className="mt-4 block text-xs font-bold uppercase tracking-wide text-ink-600">YouTube video URL<div className="relative mt-2"><Video size={17} className="pointer-events-none absolute left-3 top-3 text-red-400" /><input type="url" value={youtubeUrl} onChange={(event) => { setYoutubeUrl(event.target.value); setCopied('') }} placeholder="https://youtu.be/..." className="input-field w-full pl-10 text-sm font-normal" /></div></label>
+        <p className={`mt-1 text-xs ${youtubeUrl && !youtubeReady ? 'text-amber-400' : 'text-ink-600'}`}>{youtubeUrl && !youtubeReady ? 'Paste a valid YouTube or youtu.be link.' : 'Upload the video to YouTube, then paste its share link here.'}</p>
+        <div className="mt-4 rounded-xl border border-ink-800 bg-ink-950 p-3"><div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-ink-500"><Link2 size={14} />PlansK12 link for the YouTube description</div><p className="mt-2 break-all text-xs text-ink-600">{link}</p><button type="button" onClick={copyYouTubeLink} className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-violet-300 hover:text-violet-200"><Copy size={13} />{copied === 'youtube' ? 'Copied for YouTube' : 'Copy tracked PlansK12 link'}</button></div>
+        <div className="mt-4 flex flex-wrap items-center gap-2"><button type="button" onClick={copyPost} disabled={!youtubeReady} className="btn-primary disabled:cursor-not-allowed disabled:opacity-45"><Copy size={15} />{copied === 'facebook' ? 'Copied—ready for Facebook' : 'Copy Facebook post'}</button><span className="text-xs text-ink-600">The Facebook post will link to YouTube—not directly to the site.</span></div>
+      </div>
+    </div>
+  </section>
 }
 
 export default function OwnerDashboard() {
@@ -69,6 +148,7 @@ export default function OwnerDashboard() {
   const maxSection = Math.max(1, ...Object.values(f.sections))
   return <div className="space-y-7">
     <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="label-eyebrow mb-2">Private owner view</p><h1 className="text-3xl font-semibold text-ink-50">Growth &amp; Retention</h1><p className="mt-2 text-ink-400">Subscriptions are live from Stripe. Campaign and product activity covers the selected period.</p></div><div className="flex flex-wrap items-center gap-2"><div className="flex rounded-xl border border-ink-800 bg-ink-950 p-1">{[0, 7, 30, 90, 365].map((days) => <button key={days} type="button" onClick={() => setRangeDays(days)} className={`rounded-lg px-3 py-2 text-xs font-semibold transition ${rangeDays === days ? 'bg-accent-500 text-white' : 'text-ink-400 hover:text-ink-100'}`}>{days === 0 ? 'Today' : days === 365 ? '1 year' : `${days} days`}</button>)}</div><button onClick={load} className="btn-secondary"><RefreshCw size={16} /> Refresh</button></div></div>
+    <OwnerUpdatePostHelper />
     <section><h2 className="mb-3 font-semibold text-ink-200">Revenue health</h2><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><Metric icon={CreditCard} label="Paying subscriptions" value={s.active} color="text-emerald-400" /><Metric icon={Users} label="Trials" value={s.trialing} color="text-violet-400" /><Metric icon={DollarSign} label="Estimated MRR" value={`$${(s.mrrCents / 100).toFixed(0)}`} note="Annual plans normalized" color="text-amber-400" /><Metric icon={TrendingUp} label="Current access" value={s.current} note="Paid + trialing subscriptions" /></div></section>
     {data.schoolLeads && <SchoolLeadWorkspace leads={data.schoolLeads} onRefresh={load} />}
     <section><div className="mb-3"><h2 className="font-semibold text-ink-200">Cancellation recovery</h2><p className="mt-1 text-xs text-ink-500">Click a card to see the people behind the number and plan personal follow-up.</p></div><div className="grid gap-4 sm:grid-cols-3"><Metric icon={XCircle} label="Canceling soon" value={s.scheduledCancel} note="Still active—best chance to save" color="text-red-400" onClick={() => openCustomers('canceling')} /><Metric icon={XCircle} label="Canceled · last 30 days" value={s.canceled30d} note="Recent win-back opportunities" color="text-orange-400" onClick={() => openCustomers('canceled_30')} /><Metric icon={XCircle} label="All canceled" value={s.canceledTotal} note="Historical former subscribers" color="text-ink-400" onClick={() => openCustomers('canceled')} /></div></section>

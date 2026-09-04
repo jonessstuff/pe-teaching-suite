@@ -35,6 +35,7 @@ import {
   School,
   BadgeDollarSign,
   FileSliders,
+  FileCheck2,
 } from 'lucide-react'
 import { useTheme } from '../../hooks/useTheme'
 import { useTrial } from '../../context/TrialContext'
@@ -74,6 +75,7 @@ function findModuleByLabel(value) {
 
 const TRACKED_TOOL_ROUTES = [
   ['/lesson-format', 'lesson-plan-format'],
+  ['/submit-plans', 'submit-plans'],
   ['/teacher-wellness', 'teacher-wellness'],
   ['/my-year', 'my-school-year'],
   ['/participation', 'participation'], ['/run-tracker', 'run-tracker'], ['/coaching', 'coaching-tryouts'],
@@ -131,6 +133,7 @@ const NAV_ITEMS = [
   { to: '/my-year', label: 'My School Year', mobileLabel: 'My Year', icon: CalendarCheck2 },
   { to: '/lesson-format', label: 'My Plan Format', mobileLabel: 'Plan Format', icon: FileSliders, mobileHidden: true },
   { to: '/lessons', label: 'Lesson Library', mobileLabel: 'Library', icon: BookOpen },
+  { to: '/submit-plans', label: 'Submit My Plans', mobileLabel: 'Submit', icon: FileCheck2, mobileHidden: true },
   { to: '/schedule', label: 'My Schedule', mobileLabel: 'Schedule', icon: CalendarDays },
   { to: '/students', label: 'Classes & Rosters', mobileLabel: 'Classes', icon: Users2 },
   { to: '/participation', label: 'Participation', mobileLabel: 'Participation', icon: ClipboardCheck },
@@ -157,6 +160,7 @@ const PE_NAV_ITEMS = [
   { to: '/curriculum-map', label: 'Year Plan', mobileLabel: 'Year', icon: CalendarRange, mobileHidden: true },
   { to: '/lessons?module=PE%20%26%20Health', label: 'PE Lesson Library', mobileLabel: 'Library', icon: BookOpen, mobileHidden: true },
   { to: '/schedule?module=PE%20%26%20Health', label: 'My Schedule', mobileLabel: 'Schedule', icon: CalendarDays, mobileHidden: true },
+  { to: '/submit-plans?module=PE%20%26%20Health', label: 'Submit My Plans', mobileLabel: 'Submit', icon: FileCheck2, mobileHidden: true },
 ]
 
 const PE_MOBILE_MORE_ITEMS = [
@@ -207,6 +211,7 @@ function getModuleNavItems(slug, config) {
     { to: '/lesson-format', label: 'My Plan Format', mobileLabel: 'Plan Format', icon: FileSliders },
     { to: config.generatePath, label: 'Create New', mobileLabel: 'Create', icon: Sparkles },
     { to: browseTo, label: 'My Lessons & Resources', mobileLabel: 'Lessons', icon: BookOpen },
+    { to: withModuleContext('/submit-plans', config, slug), label: 'Submit My Plans', mobileLabel: 'Submit', icon: FileCheck2 },
     { to: withModuleContext('/smart-goals', config, slug), label: 'SMART Goals', mobileLabel: 'SMART Goal', icon: Target },
     { to: withModuleContext('/students', config, slug), label: 'Classes & Rosters', mobileLabel: 'Classes', icon: Users2 },
     { to: withModuleContext('/schedule', config, slug), label: 'My Schedule', mobileLabel: 'Schedule', icon: CalendarDays },
@@ -243,6 +248,9 @@ export default function AppShell() {
   const navigate = useNavigate()
   const requestedUsageModule = new URLSearchParams(search).get('module')
   const usageModuleLabel = navigation.type === 'pe' ? 'PE & Health' : navigation.type === 'module' ? navigation.config.moduleLabel : requestedUsageModule || 'Shared tools'
+  const showWhatsNew = pathname === '/'
+    || pathname === '/pe-health'
+    || (navigation.type === 'module' && pathname === `/${navigation.slug}`)
 
   useEffect(() => {
     const toolKey = trackedToolFor(pathname)
@@ -280,7 +288,7 @@ export default function AppShell() {
             <SetPasswordBanner />
             <CustomerMilestone />
             <GettingStartedChecklist />
-            {(pathname === '/' || pathname === '/pe-health') && <WhatsNewBanner />}
+            {showWhatsNew && <WhatsNewBanner />}
             <Outlet />
             <TrialWatermark />
             <SiteFooter />
